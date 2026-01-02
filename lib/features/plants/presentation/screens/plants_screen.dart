@@ -93,270 +93,278 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
     final totalCount = ref.watch(totalPlantsCountProvider);
 
     return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            // Header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: AppSpacing.screenPadding,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: AppSpacing.lg),
-                    Row(
+      body: Stack(
+        children: [
+          // Background décoratif
+          const _DecorativeBackground(),
+
+          // Contenu
+          SafeArea(
+            bottom: false,
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                // Header
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: AppSpacing.screenPadding,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            'Plantes',
-                            style: AppTypography.displayMedium,
-                          ),
-                        ),
-                        totalCount.when(
-                          data: (count) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryContainer,
-                              borderRadius: AppSpacing.borderRadiusFull,
-                            ),
-                            child: Text(
-                              '$count variétés',
-                              style: AppTypography.labelSmall.copyWith(
-                                color: AppColors.primary,
+                        const SizedBox(height: AppSpacing.lg),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Plantes',
+                                style: AppTypography.displayMedium,
                               ),
                             ),
-                          ),
-                          loading: () => const SizedBox.shrink(),
-                          error: (_, __) => const SizedBox.shrink(),
+                            totalCount.when(
+                              data: (count) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryContainer,
+                                  borderRadius: AppSpacing.borderRadiusFull,
+                                ),
+                                child: Text(
+                                  '$count variétés',
+                                  style: AppTypography.labelSmall.copyWith(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                              loading: () => const SizedBox.shrink(),
+                              error: (_, __) => const SizedBox.shrink(),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Découvrez et gérez vos variétés',
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      'Découvrez et gérez vos variétés',
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xl),
-                  ],
-                ),
-              ),
-            ),
-
-            // Barre de recherche
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: AppSpacing.horizontalPadding,
-                child: _SearchBar(
-                  controller: _searchController,
-                  onChanged: _onSearchChanged,
-                  onClear: () {
-                    _searchController.clear();
-                    _onSearchChanged('');
-                  },
-                ),
-              ),
-            ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
-
-            // Filtres par catégorie
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: AppSpacing.horizontalPadding,
-                    child: Text(
-                      'Catégorie',
-                      style: AppTypography.labelSmall.copyWith(
-                        color: AppColors.textTertiary,
-                      ),
-                    ),
                   ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 38,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: AppSpacing.horizontalPadding,
-                      itemCount: PlantCategory.values.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        final category = PlantCategory.values[index];
-                        final isSelected = filters.category == category;
-                        return _CategoryChip(
-                          emoji: category.emoji,
-                          label: category.label,
-                          isSelected: isSelected,
-                          onTap: () {
-                            ref
-                                .read(plantsFilterProvider.notifier)
-                                .setCategory(category);
-                            _resetPagination();
-                          },
-                        );
+                ),
+
+                // Barre de recherche
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: AppSpacing.horizontalPadding,
+                    child: _SearchBar(
+                      controller: _searchController,
+                      onChanged: _onSearchChanged,
+                      onClear: () {
+                        _searchController.clear();
+                        _onSearchChanged('');
                       },
                     ),
                   ),
-                ],
-              ),
-            ),
+                ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
 
-            // Filtres par exposition
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: AppSpacing.horizontalPadding,
-                    child: Text(
-                      'Exposition',
-                      style: AppTypography.labelSmall.copyWith(
-                        color: AppColors.textTertiary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 38,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: AppSpacing.horizontalPadding,
-                      itemCount: PlantSunFilter.values.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        final filter = PlantSunFilter.values[index];
-                        final isSelected = filters.sunFilter == filter;
-                        return _FilterChip(
-                          label: filter.label,
-                          isSelected: isSelected,
-                          onTap: () {
-                            ref
-                                .read(plantsFilterProvider.notifier)
-                                .setSunFilter(filter);
-                            _resetPagination();
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
-
-            // Résultats info + bouton clear
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: AppSpacing.horizontalPadding,
-                child: plantsAsync.when(
-                  data: (plants) {
-                    if (!filters.hasActiveFilters) {
-                      return const SizedBox.shrink();
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Row(
-                        children: [
-                          Text(
-                            '${plants.length} résultat${plants.length > 1 ? 's' : ''}',
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
+                // Filtres par catégorie
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: AppSpacing.horizontalPadding,
+                        child: Text(
+                          'Catégorie',
+                          style: AppTypography.labelSmall.copyWith(
+                            color: AppColors.textTertiary,
                           ),
-                          const Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              _searchController.clear();
-                              ref
-                                  .read(plantsFilterProvider.notifier)
-                                  .clearFilters();
-                              _resetPagination();
-                            },
-                            child: Text(
-                              'Effacer les filtres',
-                              style: AppTypography.labelSmall.copyWith(
-                                color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 38,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          padding: AppSpacing.horizontalPadding,
+                          itemCount: PlantCategory.values.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 8),
+                          itemBuilder: (context, index) {
+                            final category = PlantCategory.values[index];
+                            final isSelected = filters.category == category;
+                            return _CategoryChip(
+                              emoji: category.emoji,
+                              label: category.label,
+                              isSelected: isSelected,
+                              onTap: () {
+                                ref
+                                    .read(plantsFilterProvider.notifier)
+                                    .setCategory(category);
+                                _resetPagination();
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+
+                // Filtres par exposition
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: AppSpacing.horizontalPadding,
+                        child: Text(
+                          'Exposition',
+                          style: AppTypography.labelSmall.copyWith(
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 38,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          padding: AppSpacing.horizontalPadding,
+                          itemCount: PlantSunFilter.values.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 8),
+                          itemBuilder: (context, index) {
+                            final filter = PlantSunFilter.values[index];
+                            final isSelected = filters.sunFilter == filter;
+                            return _FilterChip(
+                              label: filter.label,
+                              isSelected: isSelected,
+                              onTap: () {
+                                ref
+                                    .read(plantsFilterProvider.notifier)
+                                    .setSunFilter(filter);
+                                _resetPagination();
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+
+                // Résultats info + bouton clear
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: AppSpacing.horizontalPadding,
+                    child: plantsAsync.when(
+                      data: (plants) {
+                        if (!filters.hasActiveFilters) {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                          child: Row(
+                            children: [
+                              Text(
+                                '${plants.length} résultat${plants.length > 1 ? 's' : ''}',
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
-                            ),
+                              const Spacer(),
+                              GestureDetector(
+                                onTap: () {
+                                  _searchController.clear();
+                                  ref
+                                      .read(plantsFilterProvider.notifier)
+                                      .clearFilters();
+                                  _resetPagination();
+                                },
+                                child: Text(
+                                  'Effacer les filtres',
+                                  style: AppTypography.labelSmall.copyWith(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        );
+                      },
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
+
+                // Liste des plantes
+                plantsAsync.when(
+                  data: (plants) {
+                    if (plants.isEmpty) {
+                      return SliverFillRemaining(
+                        child: _EmptyState(
+                          hasFilters: filters.hasActiveFilters,
+                          onClearFilters: () {
+                            _searchController.clear();
+                            ref.read(plantsFilterProvider.notifier).clearFilters();
+                            _resetPagination();
+                          },
+                        ),
+                      );
+                    }
+
+                    final displayedPlants = plants.take(_displayedCount).toList();
+                    final hasMore = _displayedCount < plants.length;
+
+                    return SliverPadding(
+                      padding: AppSpacing.horizontalPadding,
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          if (index == displayedPlants.length) {
+                            return _LoadingIndicator(isLoading: _isLoadingMore);
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                            child: _PlantCard(plant: displayedPlants[index]),
+                          );
+                        }, childCount: displayedPlants.length + (hasMore ? 1 : 0)),
                       ),
                     );
                   },
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
-                ),
-              ),
-            ),
-
-            // Liste des plantes
-            plantsAsync.when(
-              data: (plants) {
-                if (plants.isEmpty) {
-                  return SliverFillRemaining(
-                    child: _EmptyState(
-                      hasFilters: filters.hasActiveFilters,
-                      onClearFilters: () {
-                        _searchController.clear();
-                        ref.read(plantsFilterProvider.notifier).clearFilters();
-                        _resetPagination();
-                      },
+                  loading: () => SliverPadding(
+                    padding: AppSpacing.horizontalPadding,
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                            (context, index) => const Padding(
+                          padding: EdgeInsets.only(bottom: AppSpacing.md),
+                          child: _PlantCardSkeleton(),
+                        ),
+                        childCount: 6,
+                      ),
                     ),
-                  );
-                }
-
-                final displayedPlants = plants.take(_displayedCount).toList();
-                final hasMore = _displayedCount < plants.length;
-
-                return SliverPadding(
-                  padding: AppSpacing.horizontalPadding,
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      if (index == displayedPlants.length) {
-                        return _LoadingIndicator(isLoading: _isLoadingMore);
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                        child: _PlantCard(plant: displayedPlants[index]),
-                      );
-                    }, childCount: displayedPlants.length + (hasMore ? 1 : 0)),
                   ),
-                );
-              },
-              loading: () => SliverPadding(
-                padding: AppSpacing.horizontalPadding,
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => const Padding(
-                      padding: EdgeInsets.only(bottom: AppSpacing.md),
-                      child: _PlantCardSkeleton(),
+                  error: (error, _) => SliverFillRemaining(
+                    child: _ErrorState(
+                      error: error.toString(),
+                      onRetry: () => ref.invalidate(filteredPlantsProvider),
                     ),
-                    childCount: 6,
                   ),
                 ),
-              ),
-              error: (error, _) => SliverFillRemaining(
-                child: _ErrorState(
-                  error: error.toString(),
-                  onRetry: () => ref.invalidate(filteredPlantsProvider),
-                ),
-              ),
-            ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 120)),
-          ],
-        ),
+                const SliverToBoxAdapter(child: SizedBox(height: 120)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -396,13 +404,13 @@ class _SearchBar extends StatelessWidget {
           ),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-                  icon: Icon(
-                    PhosphorIcons.x(PhosphorIconsStyle.bold),
-                    color: AppColors.textTertiary,
-                    size: 18,
-                  ),
-                  onPressed: onClear,
-                )
+            icon: Icon(
+              PhosphorIcons.x(PhosphorIconsStyle.bold),
+              color: AppColors.textTertiary,
+              size: 18,
+            ),
+            onPressed: onClear,
+          )
               : null,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -444,12 +452,12 @@ class _CategoryChip extends StatelessWidget {
           ),
           boxShadow: isSelected
               ? [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ]
               : null,
         ),
         child: Row(
@@ -908,11 +916,11 @@ class _PlantDetailSheet extends ConsumerWidget {
                         children: companions
                             .map(
                               (c) => _PlantChip(
-                                emoji: c.emoji,
-                                name: c.commonName,
-                                color: AppColors.success,
-                              ),
-                            )
+                            emoji: c.emoji,
+                            name: c.commonName,
+                            color: AppColors.success,
+                          ),
+                        )
                             .toList(),
                       ),
                       const SizedBox(height: 16),
@@ -946,11 +954,11 @@ class _PlantDetailSheet extends ConsumerWidget {
                         children: antagonists
                             .map(
                               (a) => _PlantChip(
-                                emoji: a.emoji,
-                                name: a.commonName,
-                                color: AppColors.error,
-                              ),
-                            )
+                            emoji: a.emoji,
+                            name: a.commonName,
+                            color: AppColors.error,
+                          ),
+                        )
                             .toList(),
                       ),
                       const SizedBox(height: 16),
@@ -1069,4 +1077,109 @@ class _PlantChip extends StatelessWidget {
       ),
     );
   }
+}
+
+// ============================================
+// BACKGROUND DÉCORATIF - RONDS ÉPARS
+// ============================================
+
+class _DecorativeBackground extends StatelessWidget {
+  const _DecorativeBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: AppColors.background,
+      child: CustomPaint(
+        size: size,
+        painter: _OrganicBlobsPainter(
+          primaryColor: AppColors.primary,
+          primaryLightColor: AppColors.primaryContainer,
+        ),
+      ),
+    );
+  }
+}
+
+class _OrganicBlobsPainter extends CustomPainter {
+  final Color primaryColor;
+  final Color primaryLightColor;
+
+  _OrganicBlobsPainter({
+    required this.primaryColor,
+    required this.primaryLightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final darkPaint = Paint()..style = PaintingStyle.fill;
+    final lightPaint = Paint()..style = PaintingStyle.fill;
+
+    // === COIN HAUT DROITE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.5);
+    canvas.drawCircle(Offset(size.width + 20, -30), 120, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.15);
+    canvas.drawCircle(Offset(size.width - 40, 60), 45, darkPaint);
+
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.4);
+    canvas.drawCircle(Offset(size.width - 20, 130), 25, lightPaint);
+
+    // === COIN HAUT GAUCHE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.35);
+    canvas.drawCircle(Offset(-30, 80), 55, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.12);
+    canvas.drawCircle(Offset(40, 50), 20, darkPaint);
+
+    // === MILIEU GAUCHE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.3);
+    canvas.drawCircle(Offset(-60, size.height * 0.4), 90, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.1);
+    canvas.drawCircle(Offset(25, size.height * 0.35), 18, darkPaint);
+
+    // === MILIEU DROITE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.25);
+    canvas.drawCircle(Offset(size.width + 30, size.height * 0.5), 70, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.08);
+    canvas.drawCircle(Offset(size.width - 35, size.height * 0.45), 15, darkPaint);
+
+    // === BAS GAUCHE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.4);
+    canvas.drawCircle(Offset(-50, size.height * 0.75), 100, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.12);
+    canvas.drawCircle(Offset(50, size.height * 0.8), 35, darkPaint);
+
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.3);
+    canvas.drawCircle(Offset(20, size.height * 0.7), 22, lightPaint);
+
+    // === BAS DROITE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.35);
+    canvas.drawCircle(Offset(size.width + 40, size.height * 0.85), 80, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.1);
+    canvas.drawCircle(Offset(size.width - 50, size.height * 0.9), 25, darkPaint);
+
+    // === PETITS RONDS DISPERSÉS ===
+    darkPaint.color = primaryColor.withValues(alpha: 0.06);
+    canvas.drawCircle(Offset(size.width * 0.2, size.height * 0.15), 12, darkPaint);
+    canvas.drawCircle(Offset(size.width * 0.85, size.height * 0.3), 10, darkPaint);
+    canvas.drawCircle(Offset(size.width * 0.15, size.height * 0.55), 8, darkPaint);
+    canvas.drawCircle(Offset(size.width * 0.9, size.height * 0.65), 14, darkPaint);
+
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.2);
+    canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.2), 16, lightPaint);
+    canvas.drawCircle(Offset(size.width * 0.1, size.height * 0.6), 12, lightPaint);
+    canvas.drawCircle(Offset(size.width * 0.8, size.height * 0.75), 10, lightPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

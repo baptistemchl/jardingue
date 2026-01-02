@@ -42,7 +42,12 @@ class _WeatherContent extends StatelessWidget {
 
     return Stack(
       children: [
+        // Background météo animé
         Positioned.fill(child: WeatherBackground(condition: condition)),
+
+        // Ronds décoratifs par-dessus
+        Positioned.fill(child: _DecorativeOverlay()),
+
         SafeArea(
           bottom: false,
           child: CustomScrollView(
@@ -1768,6 +1773,169 @@ class _WeatherError extends StatelessWidget {
       ),
     );
   }
+}
+
+// ============================================
+// BACKGROUND DÉCORATIF - RONDS ÉPARS
+// ============================================
+
+class _DecorativeOverlay extends StatelessWidget {
+  const _DecorativeOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return IgnorePointer(
+      child: CustomPaint(
+        size: size,
+        painter: _OrganicBlobsPainter(
+          primaryColor: AppColors.primary,
+          primaryLightColor: AppColors.primaryContainer,
+        ),
+      ),
+    );
+  }
+}
+
+class _OrganicBlobsPainter extends CustomPainter {
+  final Color primaryColor;
+  final Color primaryLightColor;
+
+  _OrganicBlobsPainter({
+    required this.primaryColor,
+    required this.primaryLightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Ronds verts foncés (primary)
+    final darkPaint = Paint()..style = PaintingStyle.fill;
+
+    // Ronds verts clairs (primaryContainer)
+    final lightPaint = Paint()..style = PaintingStyle.fill;
+
+    // === COIN HAUT DROITE ===
+    // Grand rond vert clair
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.4);
+    canvas.drawCircle(Offset(size.width + 20, -30), 120, lightPaint);
+
+    // Rond vert foncé moyen
+    darkPaint.color = primaryColor.withValues(alpha: 0.12);
+    canvas.drawCircle(Offset(size.width - 40, 60), 45, darkPaint);
+
+    // Petit rond vert clair
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.35);
+    canvas.drawCircle(Offset(size.width - 20, 130), 25, lightPaint);
+
+    // === COIN HAUT GAUCHE ===
+    // Rond moyen vert clair
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.3);
+    canvas.drawCircle(Offset(-30, 80), 55, lightPaint);
+
+    // Petit rond vert foncé
+    darkPaint.color = primaryColor.withValues(alpha: 0.1);
+    canvas.drawCircle(Offset(40, 50), 20, darkPaint);
+
+    // === MILIEU GAUCHE ===
+    // Grand rond vert clair
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.25);
+    canvas.drawCircle(Offset(-60, size.height * 0.4), 90, lightPaint);
+
+    // Petit rond vert foncé
+    darkPaint.color = primaryColor.withValues(alpha: 0.08);
+    canvas.drawCircle(Offset(25, size.height * 0.35), 18, darkPaint);
+
+    // === MILIEU DROITE ===
+    // Rond moyen vert clair
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.2);
+    canvas.drawCircle(
+      Offset(size.width + 30, size.height * 0.5),
+      70,
+      lightPaint,
+    );
+
+    // Petit rond vert foncé
+    darkPaint.color = primaryColor.withValues(alpha: 0.06);
+    canvas.drawCircle(
+      Offset(size.width - 35, size.height * 0.45),
+      15,
+      darkPaint,
+    );
+
+    // === BAS GAUCHE ===
+    // Grand rond vert clair
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.35);
+    canvas.drawCircle(Offset(-50, size.height * 0.75), 100, lightPaint);
+
+    // Rond moyen vert foncé
+    darkPaint.color = primaryColor.withValues(alpha: 0.1);
+    canvas.drawCircle(Offset(50, size.height * 0.8), 35, darkPaint);
+
+    // Petit rond vert clair
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.25);
+    canvas.drawCircle(Offset(20, size.height * 0.7), 22, lightPaint);
+
+    // === BAS DROITE ===
+    // Rond moyen vert clair
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.3);
+    canvas.drawCircle(
+      Offset(size.width + 40, size.height * 0.85),
+      80,
+      lightPaint,
+    );
+
+    // Petit rond vert foncé
+    darkPaint.color = primaryColor.withValues(alpha: 0.08);
+    canvas.drawCircle(
+      Offset(size.width - 50, size.height * 0.9),
+      25,
+      darkPaint,
+    );
+
+    // === PETITS RONDS DISPERSÉS ===
+    darkPaint.color = primaryColor.withValues(alpha: 0.05);
+    canvas.drawCircle(
+      Offset(size.width * 0.2, size.height * 0.15),
+      12,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.85, size.height * 0.3),
+      10,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.15, size.height * 0.55),
+      8,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.9, size.height * 0.65),
+      14,
+      darkPaint,
+    );
+
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.15);
+    canvas.drawCircle(
+      Offset(size.width * 0.75, size.height * 0.2),
+      16,
+      lightPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.1, size.height * 0.6),
+      12,
+      lightPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.8, size.height * 0.75),
+      10,
+      lightPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 // ============================================

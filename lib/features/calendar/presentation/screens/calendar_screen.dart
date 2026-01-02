@@ -16,49 +16,98 @@ import '../../../../core/services/database/database.dart';
 enum CalendarViewType { calendar, list }
 
 final calendarViewProvider = StateProvider<CalendarViewType>(
-  (ref) => CalendarViewType.calendar,
+      (ref) => CalendarViewType.calendar,
 );
 
 /// Écran calendrier du potager
-class CalendarScreen extends ConsumerWidget {
+class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
+}
+
+class _CalendarScreenState extends ConsumerState<CalendarScreen> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onPageChanged(int index) {
+    ref.read(calendarViewProvider.notifier).state =
+    index == 0 ? CalendarViewType.calendar : CalendarViewType.list;
+  }
+
+  void _onTabChanged(CalendarViewType view) {
+    final targetPage = view == CalendarViewType.calendar ? 0 : 1;
+    _pageController.animateToPage(
+      targetPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final selectedMonth = ref.watch(selectedMonthProvider);
     final activitiesAsync = ref.watch(monthActivitiesProvider(selectedMonth));
     final currentView = ref.watch(calendarViewProvider);
 
     return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _CalendarHeader(selectedMonth: selectedMonth),
-            const SizedBox(height: AppSpacing.sm),
+      body: Stack(
+        children: [
+          // Background décoratif
+          const _DecorativeBackground(),
 
-            // TabBar pour choisir la vue
-            const _ViewTabBar(),
-            const SizedBox(height: AppSpacing.md),
+          // Contenu
+          SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                _CalendarHeader(selectedMonth: selectedMonth),
+                const SizedBox(height: AppSpacing.sm),
 
-            // Contenu selon la vue sélectionnée
-            Expanded(
-              child: activitiesAsync.when(
-                data: (activities) => currentView == CalendarViewType.calendar
-                    ? _CalendarView(
-                        selectedMonth: selectedMonth,
-                        activities: activities,
-                      )
-                    : _MonthListView(
-                        selectedMonth: selectedMonth,
-                        activities: activities,
-                      ),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text('Erreur: $e')),
-              ),
+                // TabBar pour choisir la vue
+                _ViewTabBar(
+                  currentView: currentView,
+                  onTabChanged: _onTabChanged,
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                // Contenu avec PageView pour le swipe
+                Expanded(
+                  child: activitiesAsync.when(
+                    data: (activities) => PageView(
+                      controller: _pageController,
+                      onPageChanged: _onPageChanged,
+                      children: [
+                        _CalendarView(
+                          selectedMonth: selectedMonth,
+                          activities: activities,
+                        ),
+                        _MonthListView(
+                          selectedMonth: selectedMonth,
+                          activities: activities,
+                        ),
+                      ],
+                    ),
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text('Erreur: $e')),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -68,13 +117,17 @@ class CalendarScreen extends ConsumerWidget {
 // TAB BAR VUE CALENDRIER / LISTE
 // ============================================
 
-class _ViewTabBar extends ConsumerWidget {
-  const _ViewTabBar();
+class _ViewTabBar extends StatelessWidget {
+  final CalendarViewType currentView;
+  final void Function(CalendarViewType) onTabChanged;
+
+  const _ViewTabBar({
+    required this.currentView,
+    required this.onTabChanged,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentView = ref.watch(calendarViewProvider);
-
+  Widget build(BuildContext context) {
     return Padding(
       padding: AppSpacing.horizontalPadding,
       child: Container(
@@ -92,8 +145,7 @@ class _ViewTabBar extends ConsumerWidget {
                 icon: PhosphorIcons.calendarDots(PhosphorIconsStyle.fill),
                 label: 'Calendrier',
                 isSelected: currentView == CalendarViewType.calendar,
-                onTap: () => ref.read(calendarViewProvider.notifier).state =
-                    CalendarViewType.calendar,
+                onTap: () => onTabChanged(CalendarViewType.calendar),
               ),
             ),
             Expanded(
@@ -101,8 +153,7 @@ class _ViewTabBar extends ConsumerWidget {
                 icon: PhosphorIcons.listBullets(PhosphorIconsStyle.fill),
                 label: 'Liste du mois',
                 isSelected: currentView == CalendarViewType.list,
-                onTap: () => ref.read(calendarViewProvider.notifier).state =
-                    CalendarViewType.list,
+                onTap: () => onTabChanged(CalendarViewType.list),
               ),
             ),
           ],
@@ -246,9 +297,9 @@ class _CalendarView extends ConsumerWidget {
   }
 
   List<Widget> _buildFilteredSections(
-    MonthActivities activities,
-    GardenActivityType filter,
-  ) {
+      MonthActivities activities,
+      GardenActivityType filter,
+      ) {
     final filteredActivities = activities.getActivitiesByType(filter);
     if (filteredActivities.isEmpty) {
       return [
@@ -316,18 +367,18 @@ class _CompactMonthCalendar extends StatelessWidget {
             children: dayNames
                 .map(
                   (d) => Expanded(
-                    child: Center(
-                      child: Text(
-                        d,
-                        style: AppTypography.caption.copyWith(
-                          color: AppColors.textTertiary,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 11,
-                        ),
-                      ),
+                child: Center(
+                  child: Text(
+                    d,
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textTertiary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
                     ),
                   ),
-                )
+                ),
+              ),
+            )
                 .toList(),
           ),
           const SizedBox(height: 6),
@@ -352,14 +403,14 @@ class _CompactMonthCalendar extends StatelessWidget {
               final day = dayOffset + 1;
               final isToday =
                   now.year == selectedMonth.year &&
-                  now.month == selectedMonth.month &&
-                  now.day == day;
+                      now.month == selectedMonth.month &&
+                      now.day == day;
 
               return _CompactDayCell(
                 day: day,
                 isToday: isToday,
                 hasActivities:
-                    hasSowingUnderCover ||
+                hasSowingUnderCover ||
                     hasSowingOpenGround ||
                     hasPlanting ||
                     hasHarvest,
@@ -512,7 +563,7 @@ class _MonthListView extends StatelessWidget {
 
     // Trier par nom de plante
     allActivities.sort(
-      (a, b) => a.plant.commonName.compareTo(b.plant.commonName),
+          (a, b) => a.plant.commonName.compareTo(b.plant.commonName),
     );
 
     return Column(
@@ -816,7 +867,7 @@ class _CalendarHeader extends ConsumerWidget {
                   );
                 },
                 isCurrentMonth:
-                    selectedMonth.year == DateTime.now().year &&
+                selectedMonth.year == DateTime.now().year &&
                     selectedMonth.month == DateTime.now().month,
               ),
             ],
@@ -972,7 +1023,7 @@ class _ActivityFilters extends ConsumerWidget {
           ),
           const SizedBox(width: 8),
           ...GardenActivityType.values.map(
-            (type) => Padding(
+                (type) => Padding(
               padding: const EdgeInsets.only(right: 8),
               child: _FilterChip(
                 label: type.label,
@@ -980,7 +1031,7 @@ class _ActivityFilters extends ConsumerWidget {
                 color: type.color,
                 isSelected: currentFilter == type,
                 onTap: () =>
-                    ref.read(activityFilterProvider.notifier).state = type,
+                ref.read(activityFilterProvider.notifier).state = type,
               ),
             ),
           ),
@@ -1018,12 +1069,12 @@ class _FilterChip extends StatelessWidget {
           border: Border.all(color: isSelected ? color : AppColors.border),
           boxShadow: isSelected
               ? [
-                  BoxShadow(
-                    color: color.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
+            BoxShadow(
+              color: color.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ]
               : null,
         ),
         child: Row(
@@ -1647,11 +1698,11 @@ class _PlantDetailSheet extends ConsumerWidget {
                         children: companions
                             .map(
                               (c) => _PlantChip(
-                                emoji: c.emoji,
-                                name: c.commonName,
-                                color: AppColors.success,
-                              ),
-                            )
+                            emoji: c.emoji,
+                            name: c.commonName,
+                            color: AppColors.success,
+                          ),
+                        )
                             .toList(),
                       ),
                       const SizedBox(height: 16),
@@ -1685,11 +1736,11 @@ class _PlantDetailSheet extends ConsumerWidget {
                         children: antagonists
                             .map(
                               (a) => _PlantChip(
-                                emoji: a.emoji,
-                                name: a.commonName,
-                                color: AppColors.error,
-                              ),
-                            )
+                            emoji: a.emoji,
+                            name: a.commonName,
+                            color: AppColors.error,
+                          ),
+                        )
                             .toList(),
                       ),
                       const SizedBox(height: 16),
@@ -1798,29 +1849,29 @@ class _DestroyersList extends StatelessWidget {
       children: destroyers
           .map(
             (d) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.08),
-                borderRadius: AppSpacing.borderRadiusFull,
-                border: Border.all(
-                  color: AppColors.error.withValues(alpha: 0.2),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.error.withValues(alpha: 0.08),
+            borderRadius: AppSpacing.borderRadiusFull,
+            border: Border.all(
+              color: AppColors.error.withValues(alpha: 0.2),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('🐛', style: TextStyle(fontSize: 12)),
+              const SizedBox(width: 4),
+              Text(
+                d,
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.error,
                 ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('🐛', style: TextStyle(fontSize: 12)),
-                  const SizedBox(width: 4),
-                  Text(
-                    d,
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.error,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
+            ],
+          ),
+        ),
+      )
           .toList(),
     );
   }
@@ -1969,15 +2020,15 @@ class _PlantYearCalendar extends StatelessWidget {
                             : null,
                         gradient: activities.isNotEmpty
                             ? LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: activities.length == 1
-                                    ? [
-                                        activities.first.color,
-                                        activities.first.color,
-                                      ]
-                                    : activities.map((a) => a.color).toList(),
-                              )
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: activities.length == 1
+                              ? [
+                            activities.first.color,
+                            activities.first.color,
+                          ]
+                              : activities.map((a) => a.color).toList(),
+                        )
                             : null,
                       ),
                     ),
@@ -2103,4 +2154,109 @@ class _PeriodInfo extends StatelessWidget {
       ),
     );
   }
+}
+
+// ============================================
+// BACKGROUND DÉCORATIF - RONDS ÉPARS
+// ============================================
+
+class _DecorativeBackground extends StatelessWidget {
+  const _DecorativeBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: AppColors.background,
+      child: CustomPaint(
+        size: size,
+        painter: _OrganicBlobsPainter(
+          primaryColor: AppColors.primary,
+          primaryLightColor: AppColors.primaryContainer,
+        ),
+      ),
+    );
+  }
+}
+
+class _OrganicBlobsPainter extends CustomPainter {
+  final Color primaryColor;
+  final Color primaryLightColor;
+
+  _OrganicBlobsPainter({
+    required this.primaryColor,
+    required this.primaryLightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final darkPaint = Paint()..style = PaintingStyle.fill;
+    final lightPaint = Paint()..style = PaintingStyle.fill;
+
+    // === COIN HAUT DROITE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.5);
+    canvas.drawCircle(Offset(size.width + 20, -30), 120, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.15);
+    canvas.drawCircle(Offset(size.width - 40, 60), 45, darkPaint);
+
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.4);
+    canvas.drawCircle(Offset(size.width - 20, 130), 25, lightPaint);
+
+    // === COIN HAUT GAUCHE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.35);
+    canvas.drawCircle(Offset(-30, 80), 55, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.12);
+    canvas.drawCircle(Offset(40, 50), 20, darkPaint);
+
+    // === MILIEU GAUCHE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.3);
+    canvas.drawCircle(Offset(-60, size.height * 0.4), 90, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.1);
+    canvas.drawCircle(Offset(25, size.height * 0.35), 18, darkPaint);
+
+    // === MILIEU DROITE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.25);
+    canvas.drawCircle(Offset(size.width + 30, size.height * 0.5), 70, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.08);
+    canvas.drawCircle(Offset(size.width - 35, size.height * 0.45), 15, darkPaint);
+
+    // === BAS GAUCHE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.4);
+    canvas.drawCircle(Offset(-50, size.height * 0.75), 100, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.12);
+    canvas.drawCircle(Offset(50, size.height * 0.8), 35, darkPaint);
+
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.3);
+    canvas.drawCircle(Offset(20, size.height * 0.7), 22, lightPaint);
+
+    // === BAS DROITE ===
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.35);
+    canvas.drawCircle(Offset(size.width + 40, size.height * 0.85), 80, lightPaint);
+
+    darkPaint.color = primaryColor.withValues(alpha: 0.1);
+    canvas.drawCircle(Offset(size.width - 50, size.height * 0.9), 25, darkPaint);
+
+    // === PETITS RONDS DISPERSÉS ===
+    darkPaint.color = primaryColor.withValues(alpha: 0.06);
+    canvas.drawCircle(Offset(size.width * 0.2, size.height * 0.15), 12, darkPaint);
+    canvas.drawCircle(Offset(size.width * 0.85, size.height * 0.3), 10, darkPaint);
+    canvas.drawCircle(Offset(size.width * 0.15, size.height * 0.55), 8, darkPaint);
+    canvas.drawCircle(Offset(size.width * 0.9, size.height * 0.65), 14, darkPaint);
+
+    lightPaint.color = primaryLightColor.withValues(alpha: 0.2);
+    canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.2), 16, lightPaint);
+    canvas.drawCircle(Offset(size.width * 0.1, size.height * 0.6), 12, lightPaint);
+    canvas.drawCircle(Offset(size.width * 0.8, size.height * 0.75), 10, lightPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
