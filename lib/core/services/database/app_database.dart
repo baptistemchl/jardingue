@@ -8,7 +8,9 @@ import 'tables.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Plants, PlantCompanions, PlantAntagonists, Gardens, GardenPlants])
+@DriftDatabase(
+  tables: [Plants, PlantCompanions, PlantAntagonists, Gardens, GardenPlants],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -39,7 +41,9 @@ class AppDatabase extends _$AppDatabase {
 
   /// Récupère toutes les plantes triées par nom
   Future<List<Plant>> getAllPlantsSorted() {
-    return (select(plants)..orderBy([(t) => OrderingTerm.asc(t.commonName)])).get();
+    return (select(
+      plants,
+    )..orderBy([(t) => OrderingTerm.asc(t.commonName)])).get();
   }
 
   /// Récupère une plante par son ID
@@ -50,8 +54,11 @@ class AppDatabase extends _$AppDatabase {
   /// Recherche de plantes par nom
   Future<List<Plant>> searchPlants(String query) {
     final lowerQuery = '%${query.toLowerCase()}%';
-    return (select(plants)
-          ..where((t) => t.commonName.lower().like(lowerQuery) | t.latinName.lower().like(lowerQuery)))
+    return (select(plants)..where(
+          (t) =>
+              t.commonName.lower().like(lowerQuery) |
+              t.latinName.lower().like(lowerQuery),
+        ))
         .get();
   }
 
@@ -82,7 +89,8 @@ class AppDatabase extends _$AppDatabase {
 
   /// Récupère les IDs des plantes compagnes
   Future<List<int>> getCompanionIds(int plantId) async {
-    final query = select(plantCompanions)..where((t) => t.plantId.equals(plantId));
+    final query = select(plantCompanions)
+      ..where((t) => t.plantId.equals(plantId));
     final results = await query.get();
     return results.map((r) => r.companionId).toList();
   }
@@ -96,7 +104,8 @@ class AppDatabase extends _$AppDatabase {
 
   /// Récupère les IDs des plantes antagonistes
   Future<List<int>> getAntagonistIds(int plantId) async {
-    final query = select(plantAntagonists)..where((t) => t.plantId.equals(plantId));
+    final query = select(plantAntagonists)
+      ..where((t) => t.plantId.equals(plantId));
     final results = await query.get();
     return results.map((r) => r.antagonistId).toList();
   }
@@ -169,7 +178,9 @@ class AppDatabase extends _$AppDatabase {
 
   /// Récupère les plantes d'un potager
   Future<List<GardenPlant>> getGardenPlants(int gardenId) {
-    return (select(gardenPlants)..where((t) => t.gardenId.equals(gardenId))).get();
+    return (select(
+      gardenPlants,
+    )..where((t) => t.gardenId.equals(gardenId))).get();
   }
 
   /// Ajoute une plante à un potager
@@ -186,6 +197,16 @@ class AppDatabase extends _$AppDatabase {
   Future<void> updateGardenPlantPosition(int id, int x, int y) {
     return (update(gardenPlants)..where((t) => t.id.equals(id))).write(
       GardenPlantsCompanion(gridX: Value(x), gridY: Value(y)),
+    );
+  }
+
+  /// Met à jour la taille d'une plante dans un potager
+  Future<void> updateGardenPlantSize(int id, int widthCells, int heightCells) {
+    return (update(gardenPlants)..where((t) => t.id.equals(id))).write(
+      GardenPlantsCompanion(
+        widthCells: Value(widthCells),
+        heightCells: Value(heightCells),
+      ),
     );
   }
 }

@@ -80,7 +80,8 @@ class WeatherService {
       final hourlyData = data['hourly'] as Map<String, dynamic>;
       final hourlyTimes = (hourlyData['time'] as List).cast<String>();
       final hourlyTemps = (hourlyData['temperature_2m'] as List);
-      final hourlyPrecipProb = (hourlyData['precipitation_probability'] as List);
+      final hourlyPrecipProb =
+          (hourlyData['precipitation_probability'] as List);
       final hourlyPrecip = (hourlyData['precipitation'] as List);
       final hourlyCodes = (hourlyData['weather_code'] as List);
       final hourlyIsDay = (hourlyData['is_day'] as List);
@@ -88,17 +89,24 @@ class WeatherService {
       final now = DateTime.now();
       final hourlyForecast = <HourlyForecast>[];
 
-      for (var i = 0; i < hourlyTimes.length && hourlyForecast.length < 24; i++) {
+      for (
+        var i = 0;
+        i < hourlyTimes.length && hourlyForecast.length < 24;
+        i++
+      ) {
         final time = DateTime.parse(hourlyTimes[i]);
         if (time.isAfter(now.subtract(const Duration(hours: 1)))) {
-          hourlyForecast.add(HourlyForecast(
-            time: time,
-            temperature: (hourlyTemps[i] as num).toDouble(),
-            weatherCode: (hourlyCodes[i] as num).toInt(),
-            precipitationProbability: (hourlyPrecipProb[i] as num?)?.toInt() ?? 0,
-            precipitation: (hourlyPrecip[i] as num?)?.toDouble() ?? 0,
-            isDay: hourlyIsDay[i] == 1,
-          ));
+          hourlyForecast.add(
+            HourlyForecast(
+              time: time,
+              temperature: (hourlyTemps[i] as num).toDouble(),
+              weatherCode: (hourlyCodes[i] as num).toInt(),
+              precipitationProbability:
+                  (hourlyPrecipProb[i] as num?)?.toInt() ?? 0,
+              precipitation: (hourlyPrecip[i] as num?)?.toDouble() ?? 0,
+              isDay: hourlyIsDay[i] == 1,
+            ),
+          );
         }
       }
 
@@ -108,7 +116,8 @@ class WeatherService {
       final dailyTempMax = (dailyData['temperature_2m_max'] as List);
       final dailyTempMin = (dailyData['temperature_2m_min'] as List);
       final dailyCodes = (dailyData['weather_code'] as List);
-      final dailyPrecipProb = (dailyData['precipitation_probability_max'] as List);
+      final dailyPrecipProb =
+          (dailyData['precipitation_probability_max'] as List);
       final dailyPrecipSum = (dailyData['precipitation_sum'] as List);
       final dailySunrise = (dailyData['sunrise'] as List).cast<String>();
       final dailySunset = (dailyData['sunset'] as List).cast<String>();
@@ -116,24 +125,30 @@ class WeatherService {
 
       final dailyForecast = <DailyForecast>[];
       for (var i = 0; i < dailyTimes.length; i++) {
-        dailyForecast.add(DailyForecast(
-          date: DateTime.parse(dailyTimes[i]),
-          tempMax: (dailyTempMax[i] as num).toDouble(),
-          tempMin: (dailyTempMin[i] as num).toDouble(),
-          weatherCode: (dailyCodes[i] as num).toInt(),
-          precipitationProbability: (dailyPrecipProb[i] as num?)?.toInt() ?? 0,
-          precipitationSum: (dailyPrecipSum[i] as num?)?.toDouble() ?? 0,
-          sunrise: DateTime.parse(dailySunrise[i]),
-          sunset: DateTime.parse(dailySunset[i]),
-          uvIndexMax: (dailyUvMax[i] as num?)?.toDouble() ?? 0,
-        ));
+        dailyForecast.add(
+          DailyForecast(
+            date: DateTime.parse(dailyTimes[i]),
+            tempMax: (dailyTempMax[i] as num).toDouble(),
+            tempMin: (dailyTempMin[i] as num).toDouble(),
+            weatherCode: (dailyCodes[i] as num).toInt(),
+            precipitationProbability:
+                (dailyPrecipProb[i] as num?)?.toInt() ?? 0,
+            precipitationSum: (dailyPrecipSum[i] as num?)?.toDouble() ?? 0,
+            sunrise: DateTime.parse(dailySunrise[i]),
+            sunset: DateTime.parse(dailySunset[i]),
+            uvIndexMax: (dailyUvMax[i] as num?)?.toDouble() ?? 0,
+          ),
+        );
       }
 
       // Calculate moon data
       final moon = MoonData.calculate(now);
 
       // Generate gardening advice
-      final gardeningAdvice = GardeningAdvice.fromWeather(current, dailyForecast);
+      final gardeningAdvice = GardeningAdvice.fromWeather(
+        current,
+        dailyForecast,
+      );
 
       return WeatherData(
         fetchedAt: now,

@@ -1,4 +1,4 @@
-package com.example.jardingue
+package com.agenceixp.jardingue
 
 import io.flutter.embedding.android.FlutterActivity
 

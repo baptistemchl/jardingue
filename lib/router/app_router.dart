@@ -40,18 +40,16 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: AppRoutes.garden,
           name: 'garden',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: GardenScreen(),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: GardenScreen()),
         ),
 
         // Plants - Liste des plantes
         GoRoute(
           path: AppRoutes.plants,
           name: 'plants',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: PlantsScreen(),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: PlantsScreen()),
           routes: [
             // Detail d'une plante
             GoRoute(
@@ -69,18 +67,16 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: AppRoutes.calendar,
           name: 'calendar',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: CalendarScreen(),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: CalendarScreen()),
         ),
 
         // Weather - Météo
         GoRoute(
           path: AppRoutes.weather,
           name: 'weather',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: WeatherScreen(),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: WeatherScreen()),
         ),
       ],
     ),

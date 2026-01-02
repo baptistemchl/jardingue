@@ -1,7 +1,7 @@
-name: jardingue
+name: Jardingue
 description: "Application de gestion de potager intelligente"
-publish_to: 'none'
-version: 1.0.0+1
+publish_to: "none"
+version: 1.0.1+2
 
 environment:
   sdk: ^3.9.2
@@ -58,9 +58,37 @@ dev_dependencies:
   json_serializable: ^6.9.5
   drift_dev: ^2.26.0
 
+  # App icon generation
+  flutter_launcher_icons: ^0.14.4
+
+  # Native splash generation
+  flutter_native_splash: ^2.4.7
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  remove_alpha_ios: true
+
+
+flutter_native_splash:
+  color: "#F3EDE6"
+  image: "assets/splash/splash.png"
+  fullscreen: true
+
+  android_12:
+    color: "#F3EDE6"
+    image: "assets/splash/splash_android12.png"
+    icon_background_color: "#F3EDE6"
+
+
+
+
 flutter:
   uses-material-design: true
 
   assets:
     - assets/data/
     - assets/images/
+    - assets/icon/
+    - assets/splash/

@@ -3,7 +3,7 @@
     {
       "common_name": "Tomate",
       "latin_name": "Solanum lycopersicum",
-      "spacing_cm_between_plants": 50,
+      "spacing_cm_between_plants": 60,
       "spacing_cm_between_rows": 80,
       "planting_depth_cm": 2,
       "sun_exposure": "ensoleillé",
@@ -95,7 +95,7 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 18,
+          "soil_temp_min_celsius": 15,
           "soil_temp_max_celsius": 30,
           "light": "Élevée",
           "humidity": "Modérée",
@@ -151,9 +151,9 @@
     {
       "common_name": "Pomme de terre",
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l’automne précédent.",
@@ -164,7 +164,7 @@
       "harvest_period": "juin (primeurs) à septembre (conservation)",
       "sowing_recommendation": "Planter directement les tubercules pré-germés en pleine terre.",
       "cultivation_greenhouse": "Culture possible sous tunnel pour obtenir des primeurs très précoces.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "planting_weather_conditions": "Sol ressuyé, non gorgé d’eau, hors fortes gelées.",
       "planting_advice": "Planter les tubercules germes vers le haut, buter progressivement au fur et à mesure de la croissance.",
       "care_advice": "Buttage, surveillance des doryphores, arrosages en période de tubérisation en cas de sécheresse.",
@@ -285,10 +285,10 @@
     {
       "common_name": "Carotte",
       "latin_name": "Daucus carota subsp. sativus",
-      "spacing_cm_between_plants": 5,
+      "spacing_cm_between_plants": 8,
       "spacing_cm_between_rows": 25,
       "planting_depth_cm": 1,
-      "sun_exposure": "mi-ensoleillé",
+      "sun_exposure": "ensoleillé à mi-ombragé",
       "soil_moisture_preference": "frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, sans cailloux, sans fumier frais pour éviter les fourches.",
       "red_flags": "Mouche de la carotte fréquente; levée irrégulière si croûte de battance.",
@@ -3936,9 +3936,9 @@
     {
       "common_name": "Basilic",
       "latin_name": "Ocimum basilicum",
-      "spacing_cm_between_plants": 25,
-      "spacing_cm_between_rows": 30,
-      "planting_depth_cm": 1,
+      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_rows": 40,
+      "planting_depth_cm": 5,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais",
       "soil_treatment_advice": "Sol léger, riche en humus, bien drainé.",
@@ -3949,7 +3949,7 @@
       "harvest_period": "juin-septembre",
       "sowing_recommendation": "Semis en godets, repiquage en place après les gelées.",
       "cultivation_greenhouse": "Très bien en pot ou bac sous abri pour prolonger la saison.",
-      "planting_min_temp_c": 12,
+      "planting_min_temp_c": 18,
       "planting_weather_conditions": "Temps chaud, sans risque de froid nocturne.",
       "planting_advice": "Planter à proximité des tomates, en plein soleil, à l’abri du vent.",
       "care_advice": "Pincer les têtes pour favoriser la ramification, arroser régulièrement sans détremper.",
@@ -4673,8 +4673,8 @@
     {
       "common_name": "Chou-fleur",
       "latin_name": "Brassica oleracea var. botrytis",
-      "spacing_cm_between_plants": 20,
-      "spacing_cm_between_rows": 30,
+      "spacing_cm_between_plants": 60,
+      "spacing_cm_between_rows": 70,
       "planting_depth_cm": 2,
       "sun_exposure": "mi-ensoleillé",
       "soil_moisture_preference": "normal",
@@ -4806,8 +4806,8 @@
     {
       "common_name": "Brocoli",
       "latin_name": "Brassica oleracea var. italica",
-      "spacing_cm_between_plants": 20,
-      "spacing_cm_between_rows": 30,
+      "spacing_cm_between_plants": 50,
+      "spacing_cm_between_rows": 60,
       "planting_depth_cm": 2,
       "sun_exposure": "mi-ensoleillé",
       "soil_moisture_preference": "normal",
@@ -5425,8 +5425,8 @@
     {
       "common_name": "Melon",
       "latin_name": "Cucumis melo",
-      "spacing_cm_between_plants": 20,
-      "spacing_cm_between_rows": 30,
+      "spacing_cm_between_plants": 80,
+      "spacing_cm_between_rows": 150,
       "planting_depth_cm": 2,
       "sun_exposure": "mi-ensoleillé",
       "soil_moisture_preference": "normal",
@@ -5553,9 +5553,9 @@
     {
       "common_name": "Artichaut",
       "latin_name": "Cynara cardunculus var. scolymus",
-      "spacing_cm_between_plants": 20,
-      "spacing_cm_between_rows": 30,
-      "planting_depth_cm": 2,
+      "spacing_cm_between_plants": 100,
+      "spacing_cm_between_rows": 120,
+      "planting_depth_cm": 10,
       "sun_exposure": "mi-ensoleillé",
       "soil_moisture_preference": "normal",
       "soil_treatment_advice": "Sol de jardin classique, bien drainé.",
@@ -5662,9 +5662,9 @@
     {
       "common_name": "Asperge",
       "latin_name": "Asparagus officinalis",
-      "spacing_cm_between_plants": 20,
-      "spacing_cm_between_rows": 30,
-      "planting_depth_cm": 2,
+      "spacing_cm_between_plants": 50,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 20,
       "sun_exposure": "mi-ensoleillé",
       "soil_moisture_preference": "normal",
       "soil_treatment_advice": "Sol de jardin classique, bien drainé.",
@@ -8159,8 +8159,8 @@
     {
       "common_name": "Topinambour",
       "latin_name": "Helianthus tuberosus",
-      "spacing_cm_between_plants": 20,
-      "spacing_cm_between_rows": 30,
+      "spacing_cm_between_plants": 60,
+      "spacing_cm_between_rows": 80,
       "planting_depth_cm": 2,
       "sun_exposure": "mi-ensoleillé",
       "soil_moisture_preference": "normal",
@@ -8514,8 +8514,8 @@
     {
       "common_name": "Rhubarbe",
       "latin_name": "Rheum rhabarbarum",
-      "spacing_cm_between_plants": 20,
-      "spacing_cm_between_rows": 30,
+      "spacing_cm_between_plants": 100,
+      "spacing_cm_between_rows": 120,
       "planting_depth_cm": 2,
       "sun_exposure": "mi-ensoleillé",
       "soil_moisture_preference": "normal",
@@ -8630,8 +8630,8 @@
     {
       "common_name": "Fraisier",
       "latin_name": "Fragaria × ananassa",
-      "spacing_cm_between_plants": 20,
-      "spacing_cm_between_rows": 30,
+      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_rows": 50,
       "planting_depth_cm": 2,
       "sun_exposure": "mi-ensoleillé",
       "soil_moisture_preference": "normal",
@@ -8980,7 +8980,7 @@
     {
       "common_name": "Tomate cerise",
       "latin_name": "Solanum lycopersicum var. cerasiforme",
-      "spacing_cm_between_plants": 40,
+      "spacing_cm_between_plants": 60,
       "spacing_cm_between_rows": 80,
       "planting_depth_cm": 2,
       "sun_exposure": "ensoleillé",
@@ -9072,7 +9072,7 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 18,
+          "soil_temp_min_celsius": 15,
           "soil_temp_max_celsius": 30,
           "light": "Élevée",
           "humidity": "Modérée",
@@ -9105,7 +9105,7 @@
       "common_name": "Tomate cœur de bœuf",
       "latin_name": "Solanum lycopersicum",
       "spacing_cm_between_plants": 60,
-      "spacing_cm_between_rows": 90,
+      "spacing_cm_between_rows": 80,
       "planting_depth_cm": 2,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais",
@@ -9196,7 +9196,7 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 18,
+          "soil_temp_min_celsius": 15,
           "soil_temp_max_celsius": 30,
           "light": "Élevée",
           "humidity": "Modérée",
@@ -9228,7 +9228,7 @@
     {
       "common_name": "Tomate Roma",
       "latin_name": "Solanum lycopersicum",
-      "spacing_cm_between_plants": 50,
+      "spacing_cm_between_plants": 60,
       "spacing_cm_between_rows": 80,
       "planting_depth_cm": 2,
       "sun_exposure": "ensoleillé",
@@ -9320,7 +9320,7 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 18,
+          "soil_temp_min_celsius": 15,
           "soil_temp_max_celsius": 30,
           "light": "Élevée",
           "humidity": "Modérée",
@@ -13065,9 +13065,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -13128,7 +13128,7 @@
       "transplanting_period": "",
       "harvest_period": "mai-juillet (primeur)",
       "sowing_recommendation": "Variété précoce à chair ferme, excellente en salade et vapeur. Pré-germer 4-6 semaines avant plantation.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Oui (pré-germination)",
@@ -13204,9 +13204,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -13267,7 +13267,7 @@
       "transplanting_period": "",
       "harvest_period": "mai-juillet (primeur)",
       "sowing_recommendation": "Variété ancienne précoce, chair ferme jaune, goût de noisette. Rendement moyen mais qualité gustative exceptionnelle.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Oui (pré-germination)",
@@ -13343,9 +13343,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -13406,7 +13406,7 @@
       "transplanting_period": "",
       "harvest_period": "mai-juin (très précoce)",
       "sowing_recommendation": "Très précoce, chair tendre. Bon rendement. Idéale pour primeurs.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Oui (pré-germination)",
@@ -13482,9 +13482,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -13545,7 +13545,7 @@
       "transplanting_period": "",
       "harvest_period": "juin-juillet",
       "sowing_recommendation": "Précoce, polyvalente, bon rendement. Chair tendre jaune pâle.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Oui (pré-germination)",
@@ -13621,9 +13621,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -13684,7 +13684,7 @@
       "transplanting_period": "",
       "harvest_period": "juillet-août",
       "sowing_recommendation": "La référence des chairs fermes. Excellent goût, bonne productivité. Se conserve bien.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -13760,9 +13760,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -13823,7 +13823,7 @@
       "transplanting_period": "",
       "harvest_period": "juillet-août",
       "sowing_recommendation": "Polyvalente, très bon rendement. Chair tendre, calibre régulier.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -13899,9 +13899,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -13962,7 +13962,7 @@
       "transplanting_period": "",
       "harvest_period": "juillet-août",
       "sowing_recommendation": "Chair ferme, peau jaune. Bonne tenue à la cuisson. Bon rendement.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -14038,9 +14038,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -14101,7 +14101,7 @@
       "transplanting_period": "",
       "harvest_period": "juillet-septembre",
       "sowing_recommendation": "Variété ancienne de forme allongée. Chair ferme au goût de châtaigne. Rendement faible mais qualité exceptionnelle.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -14177,9 +14177,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -14240,7 +14240,7 @@
       "transplanting_period": "",
       "harvest_period": "juillet-août",
       "sowing_recommendation": "Peau rouge, chair ferme jaune. Bon goût, belle présentation.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -14316,9 +14316,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -14379,7 +14379,7 @@
       "transplanting_period": "",
       "harvest_period": "août-septembre (conservation)",
       "sowing_recommendation": "LA référence pour les frites ! Chair farineuse, très bon rendement. Sensible au mildiou.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -14455,9 +14455,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -14518,7 +14518,7 @@
       "transplanting_period": "",
       "harvest_period": "août-octobre",
       "sowing_recommendation": "Peau rouge, chair jaune. Polyvalente, bon rendement, très bonne conservation.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -14594,9 +14594,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -14657,7 +14657,7 @@
       "transplanting_period": "",
       "harvest_period": "août-septembre",
       "sowing_recommendation": "Gros tubercules allongés. Chair tendre, rendement excellent. Bonne résistance à la sécheresse.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -14733,9 +14733,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -14796,7 +14796,7 @@
       "transplanting_period": "",
       "harvest_period": "août-septembre",
       "sowing_recommendation": "Chair ferme, bon rendement. Se conserve très bien. Bonne résistance aux maladies.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -14872,9 +14872,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -14935,7 +14935,7 @@
       "transplanting_period": "",
       "harvest_period": "septembre-octobre (conservation)",
       "sowing_recommendation": "Peau rose-rouge, chair jaune. Saveur excellente. Rendement moyen mais qualité exceptionnelle.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -15011,9 +15011,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -15074,7 +15074,7 @@
       "transplanting_period": "",
       "harvest_period": "septembre-octobre",
       "sowing_recommendation": "Issue d'un croisement Roseval x BF15. Chair ferme, goût subtil. Excellente conservation.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -15150,9 +15150,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -15213,7 +15213,7 @@
       "transplanting_period": "",
       "harvest_period": "septembre-octobre",
       "sowing_recommendation": "Variété ancienne proche de la Ratte. Forme allongée, peau rosée. Saveur délicate.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -15289,9 +15289,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -15352,7 +15352,7 @@
       "transplanting_period": "",
       "harvest_period": "septembre-octobre",
       "sowing_recommendation": "Chair et peau violettes! Variété ancienne originale, rendement faible. Riche en antioxydants.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -15428,9 +15428,9 @@
     },
     {
       "latin_name": "Solanum tuberosum",
-      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_plants": 35,
       "spacing_cm_between_rows": 70,
-      "planting_depth_cm": 10,
+      "planting_depth_cm": 12,
       "sun_exposure": "ensoleillé",
       "soil_moisture_preference": "normal à frais, sans excès",
       "soil_treatment_advice": "Sol léger, profond, ameubli sur 25–30 cm, fumure organique plutôt à l'automne précédent.",
@@ -15491,7 +15491,7 @@
       "transplanting_period": "",
       "harvest_period": "septembre-octobre",
       "sowing_recommendation": "Peau et chair bleues-violettes. Bon rendement, originale et savoureuse.",
-      "planting_min_temp_c": 8,
+      "planting_min_temp_c": 10,
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
@@ -15564,6 +15564,1161 @@
           "note": "Récolter par temps sec avant les premières gelées. Excellente conservation tout l'hiver."
         }
       }
+    },
+    {
+      "id": 127,
+      "common_name": "Chou-rave pourpre",
+      "latin_name": "Brassica oleracea var. gongylodes",
+      "spacing_cm_between_plants": 25,
+      "spacing_cm_between_rows": 35,
+      "planting_depth_cm": 1,
+      "sun_exposure": "ensoleillé à mi-ombragé",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol riche, frais, bien amendé en compost.",
+      "red_flags": "Sensible à l'altise et à la piéride. Éviter les stress hydriques.",
+      "sowing_under_cover_period": "février-mars sous abri",
+      "sowing_open_ground_period": "avril-juillet",
+      "transplanting_period": "avril-août",
+      "harvest_period": "juin-octobre (selon semis)",
+      "sowing_recommendation": "Semis direct ou repiquage. Récolter jeune (8-10 cm) pour plus de tendreté.",
+      "cultivation_greenhouse": "Possible sous abri pour primeurs.",
+      "planting_min_temp_c": 10,
+      "planting_weather_conditions": "Sol ressuyé, hors gel.",
+      "planting_advice": "Repiquer sans enterrer le collet. Pailler pour garder la fraîcheur.",
+      "care_advice": "Arrosages réguliers, binages. Récolter avant que le bulbe ne devienne fibreux.",
+      "main_destroyers": [
+        "altises",
+        "piéride du chou",
+        "mouche du chou",
+        "limaces"
+      ],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Régulier, sol toujours frais.",
+      "soil_type": "Sol riche, frais, humifère.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Oui (sous abri)",
+          "March": "Oui (sous abri)",
+          "April": "Oui",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Oui",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Oui",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Oui",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Laitue pommée",
+          "companion_id": 10
+        },
+        {
+          "common_name": "Épinard",
+          "companion_id": 14
+        }
+      ],
+      "plants_antagonists": [
+        {
+          "common_name": "Tomate",
+          "antagonist_id": 1
+        }
+      ],
+      "companion_plant_ids": [
+        10,
+        14
+      ],
+      "antagonistic_plant_ids": [
+        1
+      ],
+      "category_code": "stem",
+      "category_label": "Légume-tige"
+    },
+    {
+      "id": 128,
+      "common_name": "Livèche",
+      "latin_name": "Levisticum officinale",
+      "spacing_cm_between_plants": 60,
+      "spacing_cm_between_rows": 80,
+      "planting_depth_cm": 1,
+      "sun_exposure": "ensoleillé à mi-ombragé",
+      "soil_moisture_preference": "frais à normal",
+      "soil_treatment_advice": "Sol profond, frais, riche en humus.",
+      "red_flags": "Peut devenir très grande (jusqu'à 2m). Réservez-lui de la place.",
+      "sowing_under_cover_period": "mars-avril",
+      "sowing_open_ground_period": "avril-mai",
+      "transplanting_period": "mai-juin ou automne",
+      "harvest_period": "avril-octobre (feuilles), automne (racines)",
+      "sowing_recommendation": "Semis ou division de touffe. Vivace rustique très parfumée.",
+      "cultivation_greenhouse": "Non nécessaire.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Sol réchauffé, hors gel.",
+      "planting_advice": "Planter profond, bien arroser à la reprise.",
+      "care_advice": "Couper les tiges florales pour prolonger la production de feuilles. Division tous les 3-4 ans.",
+      "main_destroyers": [
+        "pucerons",
+        "limaces sur jeunes plants"
+      ],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Modéré, sol frais.",
+      "soil_type": "Sol profond, frais, humifère.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Oui (sous abri)",
+          "April": "Oui",
+          "May": "Oui",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Non",
+          "August": "Non",
+          "September": "Oui",
+          "October": "Oui",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Oui",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Tomate",
+          "companion_id": 1
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        1
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "herb",
+      "category_label": "Aromatique"
+    },
+    {
+      "id": 129,
+      "common_name": "Arroche",
+      "latin_name": "Atriplex hortensis",
+      "spacing_cm_between_plants": 40,
+      "spacing_cm_between_rows": 50,
+      "planting_depth_cm": 1,
+      "sun_exposure": "ensoleillé à mi-ombragé",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol ordinaire, frais.",
+      "red_flags": "Monte vite en graines par temps chaud. Semer échelonné.",
+      "sowing_under_cover_period": "février-mars",
+      "sowing_open_ground_period": "mars-août",
+      "transplanting_period": "avril-juin",
+      "harvest_period": "mai-octobre",
+      "sowing_recommendation": "Semer clair en place, éclaircir. Alternative idéale à l'épinard en été.",
+      "cultivation_greenhouse": "Possible pour primeurs.",
+      "planting_min_temp_c": 8,
+      "planting_weather_conditions": "Sol ressuyé.",
+      "planting_advice": "Semis direct de préférence. Ne pas repiquer trop tard.",
+      "care_advice": "Arrosages réguliers pour retarder la montée à graines. Récolter les jeunes feuilles.",
+      "main_destroyers": [
+        "pucerons",
+        "altises"
+      ],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Régulier.",
+      "soil_type": "Sol ordinaire à riche, frais.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Oui (sous abri)",
+          "March": "Oui",
+          "April": "Oui",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 8,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 8,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Oui",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Haricot nain",
+          "companion_id": 22
+        },
+        {
+          "common_name": "Pois à écosser",
+          "companion_id": 24
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        22,
+        24
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "leafy_green",
+      "category_label": "Légume-feuille"
+    },
+    {
+      "id": 130,
+      "common_name": "Tétragone cornue",
+      "latin_name": "Tetragonia tetragonioides",
+      "spacing_cm_between_plants": 80,
+      "spacing_cm_between_rows": 100,
+      "planting_depth_cm": 2,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "normal à frais",
+      "soil_treatment_advice": "Sol ordinaire, même pauvre.",
+      "red_flags": "Tremper les graines 24h avant semis. Plante rampante, prévoir de la place.",
+      "sowing_under_cover_period": "avril-mai",
+      "sowing_open_ground_period": "mai-juin (après gelées)",
+      "transplanting_period": "mai-juin",
+      "harvest_period": "juillet-octobre",
+      "sowing_recommendation": "Tremper les graines dures 24h avant semis. Idéal pour remplacer l'épinard en été.",
+      "cultivation_greenhouse": "Possible pour avancer la culture.",
+      "planting_min_temp_c": 15,
+      "planting_weather_conditions": "Sol réchauffé (>15°C), hors gel.",
+      "planting_advice": "Planter après les Saints de Glace. Prévoir 1m² par plant.",
+      "care_advice": "Peu d'entretien. Récolter régulièrement les jeunes pousses pour stimuler la production.",
+      "main_destroyers": [
+        "limaces sur jeunes plants"
+      ],
+      "growing_zone": "Plein soleil",
+      "watering": "Modéré, résiste bien à la sécheresse.",
+      "soil_type": "Sol ordinaire, drainé.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (sous abri)",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Oui",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Haricot nain",
+          "companion_id": 22
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        22
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "leafy_green",
+      "category_label": "Légume-feuille"
+    },
+    {
+      "id": 131,
+      "common_name": "Pourpier",
+      "latin_name": "Portulaca oleracea",
+      "spacing_cm_between_plants": 20,
+      "spacing_cm_between_rows": 25,
+      "planting_depth_cm": 5,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "sec à normal",
+      "soil_treatment_advice": "Sol léger, même pauvre et sableux.",
+      "red_flags": "Se ressème facilement. Peut devenir envahissant.",
+      "sowing_under_cover_period": "avril",
+      "sowing_open_ground_period": "mai-août",
+      "transplanting_period": "mai-juin",
+      "harvest_period": "juin-septembre",
+      "sowing_recommendation": "Semis en place très clair. Récolte 6-8 semaines après semis.",
+      "cultivation_greenhouse": "Possible.",
+      "planting_min_temp_c": 15,
+      "planting_weather_conditions": "Sol réchauffé.",
+      "planting_advice": "Semis en surface, tasser légèrement. Très facile.",
+      "care_advice": "Peu d'entretien. Couper régulièrement pour éviter la montée à graines.",
+      "main_destroyers": [
+        "pucerons"
+      ],
+      "growing_zone": "Plein soleil",
+      "watering": "Faible, très résistant à la sécheresse.",
+      "soil_type": "Sol léger, sableux, drainé.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (sous abri)",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Oui",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Tomate",
+          "companion_id": 1
+        },
+        {
+          "common_name": "Maïs doux",
+          "companion_id": 98
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        1,
+        98
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "leafy_green",
+      "category_label": "Légume-feuille"
+    },
+    {
+      "id": 132,
+      "common_name": "Crosne du Japon",
+      "latin_name": "Stachys affinis",
+      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_rows": 50,
+      "planting_depth_cm": 8,
+      "sun_exposure": "ensoleillé à mi-ombragé",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol léger, profond, bien drainé.",
+      "red_flags": "Peut devenir envahissant si on ne récolte pas tous les tubercules.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "plantation février-avril",
+      "transplanting_period": "",
+      "harvest_period": "novembre-mars",
+      "sowing_recommendation": "Planter les tubercules à 8-10 cm de profondeur. Légume ancien à redécouvrir.",
+      "cultivation_greenhouse": "Non nécessaire.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Sol ressuyé.",
+      "planting_advice": "Planter les tubercules germes vers le haut. Butter légèrement.",
+      "care_advice": "Arrosages en cas de sécheresse. Laisser en terre et récolter au fur et à mesure des besoins.",
+      "main_destroyers": [
+        "limaces",
+        "campagnols"
+      ],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Modéré.",
+      "soil_type": "Sol léger, profond, drainé.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Oui (plantation)",
+          "March": "Oui (plantation)",
+          "April": "Oui (plantation)",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Oui",
+          "March": "Oui",
+          "April": "Oui",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Oui",
+          "February": "Oui",
+          "March": "Oui",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Oui",
+          "December": "Oui"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [],
+      "plants_antagonists": [],
+      "companion_plant_ids": [],
+      "antagonistic_plant_ids": [],
+      "category_code": "tuber",
+      "category_label": "Tubercule"
+    },
+    {
+      "id": 133,
+      "common_name": "Oca du Pérou",
+      "latin_name": "Oxalis tuberosa",
+      "spacing_cm_between_plants": 40,
+      "spacing_cm_between_rows": 60,
+      "planting_depth_cm": 10,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol léger, riche, bien drainé.",
+      "red_flags": "Tubérisation tardive (jours courts). Récolter avant les fortes gelées.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "plantation avril-mai",
+      "transplanting_period": "",
+      "harvest_period": "octobre-novembre",
+      "sowing_recommendation": "Planter les tubercules à 10 cm de profondeur. Légume ancien original.",
+      "cultivation_greenhouse": "Possibilité de démarrer sous abri.",
+      "planting_min_temp_c": 10,
+      "planting_weather_conditions": "Sol réchauffé, hors gel.",
+      "planting_advice": "Planter après les gelées. Butter comme les pommes de terre.",
+      "care_advice": "Buttage régulier. Pailler en fin de saison pour protéger du gel.",
+      "main_destroyers": [
+        "limaces",
+        "pucerons"
+      ],
+      "growing_zone": "Plein soleil",
+      "watering": "Régulier.",
+      "soil_type": "Sol léger, riche, drainé.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (plantation sous abri)",
+          "May": "Oui (plantation)",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (sous abri)",
+          "May": "Oui",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Oui",
+          "November": "Oui (avant gelées)",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Haricot nain",
+          "companion_id": 22
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        22
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "tuber",
+      "category_label": "Tubercule"
+    },
+    {
+      "id": 134,
+      "common_name": "Cardon",
+      "latin_name": "Cynara cardunculus",
+      "spacing_cm_between_plants": 100,
+      "spacing_cm_between_rows": 120,
+      "planting_depth_cm": 3,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol profond, riche, bien amendé.",
+      "red_flags": "Plante imposante (1,5m). Nécessite un blanchiment avant récolte.",
+      "sowing_under_cover_period": "mars-avril",
+      "sowing_open_ground_period": "avril-mai",
+      "transplanting_period": "mai-juin",
+      "harvest_period": "octobre-décembre (après blanchiment)",
+      "sowing_recommendation": "Semis en godets puis repiquage. Blanchir 3-4 semaines avant récolte.",
+      "cultivation_greenhouse": "Semis sous abri conseillé.",
+      "planting_min_temp_c": 10,
+      "planting_weather_conditions": "Sol réchauffé.",
+      "planting_advice": "Planter profond, arroser copieusement. Prévoir de la place!",
+      "care_advice": "Arrosages réguliers. Butter et lier les feuilles en automne pour le blanchiment.",
+      "main_destroyers": [
+        "pucerons noirs",
+        "limaces"
+      ],
+      "growing_zone": "Plein soleil",
+      "watering": "Abondant.",
+      "soil_type": "Sol profond, riche, frais.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Oui (sous abri)",
+          "April": "Oui",
+          "May": "Oui",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Oui",
+          "November": "Oui",
+          "December": "Oui"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Fève",
+          "companion_id": 25
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        25
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "stem",
+      "category_label": "Légume-tige"
+    },
+    {
+      "id": 135,
+      "common_name": "Moutarde de Chine",
+      "latin_name": "Brassica juncea",
+      "spacing_cm_between_plants": 20,
+      "spacing_cm_between_rows": 30,
+      "planting_depth_cm": 1,
+      "sun_exposure": "ensoleillé à mi-ombragé",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol ordinaire.",
+      "red_flags": "Monte vite en graines par temps chaud. Préférer culture d'automne.",
+      "sowing_under_cover_period": "février-mars, août-septembre",
+      "sowing_open_ground_period": "mars-avril, août-octobre",
+      "transplanting_period": "",
+      "harvest_period": "avril-juin, septembre-novembre",
+      "sowing_recommendation": "Semis direct en ligne. Idéale comme culture dérobée ou engrais vert.",
+      "cultivation_greenhouse": "Possible.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Sol ressuyé.",
+      "planting_advice": "Semis direct, éclaircir à 20 cm.",
+      "care_advice": "Récolter jeunes les feuilles pour salades, ou laisser monter pour les graines.",
+      "main_destroyers": [
+        "altises",
+        "limaces"
+      ],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Régulier.",
+      "soil_type": "Sol ordinaire, frais.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Oui (sous abri)",
+          "March": "Oui",
+          "April": "Oui",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Oui",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Non",
+          "August": "Non",
+          "September": "Oui",
+          "October": "Oui",
+          "November": "Oui",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Laitue pommée",
+          "companion_id": 10
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        10
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "leafy_green",
+      "category_label": "Légume-feuille"
+    },
+    {
+      "id": 136,
+      "common_name": "Chayotte",
+      "latin_name": "Sechium edule",
+      "spacing_cm_between_plants": 200,
+      "spacing_cm_between_rows": 200,
+      "planting_depth_cm": 10,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol riche, profond, bien drainé.",
+      "red_flags": "Plante grimpante très vigoureuse, nécessite un support solide. Craint le gel.",
+      "sowing_under_cover_period": "février-mars (faire germer le fruit entier)",
+      "sowing_open_ground_period": "plantation mai-juin",
+      "transplanting_period": "mai-juin (après gelées)",
+      "harvest_period": "septembre-novembre",
+      "sowing_recommendation": "Planter le fruit entier germé. Culture possible dans le sud ou en pot rentré l'hiver.",
+      "cultivation_greenhouse": "Conseillé pour démarrage et dans les régions froides.",
+      "planting_min_temp_c": 15,
+      "planting_weather_conditions": "Sol réchauffé, hors gel.",
+      "planting_advice": "Planter le fruit entier, légèrement incliné, pointe vers le haut.",
+      "care_advice": "Arrosages copieux. Palisser sur treille ou grillage. Rentrer la souche en pot l'hiver au nord.",
+      "main_destroyers": [
+        "pucerons",
+        "limaces"
+      ],
+      "growing_zone": "Plein soleil, abrité",
+      "watering": "Abondant en été.",
+      "soil_type": "Sol riche, profond, frais.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Oui (germination sous abri)",
+          "March": "Oui (germination sous abri)",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui",
+          "June": "Oui",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": null,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Oui",
+          "October": "Oui",
+          "November": "Oui (avant gelées)",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": 25,
+          "light": "Modérée",
+          "humidity": "Modérée",
+          "frost_risk": "Non",
+          "note": ""
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Maïs doux",
+          "companion_id": 98
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        98
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit_vegetable",
+      "category_label": "Légume-fruit"
     }
   ]
 }

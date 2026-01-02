@@ -57,11 +57,7 @@ class _FloatingGlassNavBar extends StatelessWidget {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Padding(
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        bottom: bottomPadding + 16,
-      ),
+      padding: EdgeInsets.only(left: 24, right: 24, bottom: bottomPadding + 16),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: BackdropFilter(
@@ -108,7 +104,9 @@ class _FloatingGlassNavBar extends StatelessWidget {
                     children: [
                       _AnimatedNavItem(
                         icon: PhosphorIcons.plant(PhosphorIconsStyle.regular),
-                        activeIcon: PhosphorIcons.plant(PhosphorIconsStyle.fill),
+                        activeIcon: PhosphorIcons.plant(
+                          PhosphorIconsStyle.fill,
+                        ),
                         label: 'Potager',
                         isSelected: currentIndex == 0,
                         onTap: () => _onTap(context, 0),
@@ -123,8 +121,12 @@ class _FloatingGlassNavBar extends StatelessWidget {
                         color: AppColors.success,
                       ),
                       _AnimatedNavItem(
-                        icon: PhosphorIcons.calendar(PhosphorIconsStyle.regular),
-                        activeIcon: PhosphorIcons.calendar(PhosphorIconsStyle.fill),
+                        icon: PhosphorIcons.calendar(
+                          PhosphorIconsStyle.regular,
+                        ),
+                        activeIcon: PhosphorIcons.calendar(
+                          PhosphorIconsStyle.fill,
+                        ),
                         label: 'Calendrier',
                         isSelected: currentIndex == 2,
                         onTap: () => _onTap(context, 2),
@@ -199,9 +201,7 @@ class _Circle extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color, color.withValues(alpha: 0)],
-        ),
+        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0)]),
       ),
     );
   }
@@ -257,18 +257,24 @@ class _AnimatedNavItemState extends State<_AnimatedNavItem>
     );
     _bounceAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 1.2)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.2,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 30,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.2, end: 0.95)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween<double>(
+          begin: 1.2,
+          end: 0.95,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 30,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.95, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 0.95,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 40,
       ),
     ]).animate(_bounceController);
@@ -277,11 +283,23 @@ class _AnimatedNavItemState extends State<_AnimatedNavItem>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _rotationAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween<double>(begin: 0, end: 0.08), weight: 25),
-      TweenSequenceItem(tween: Tween<double>(begin: 0.08, end: -0.08), weight: 50),
-      TweenSequenceItem(tween: Tween<double>(begin: -0.08, end: 0), weight: 25),
-    ]).animate(CurvedAnimation(parent: _rotationController, curve: Curves.easeInOut));
+    _rotationAnimation =
+        TweenSequence<double>([
+          TweenSequenceItem(
+            tween: Tween<double>(begin: 0, end: 0.08),
+            weight: 25,
+          ),
+          TweenSequenceItem(
+            tween: Tween<double>(begin: 0.08, end: -0.08),
+            weight: 50,
+          ),
+          TweenSequenceItem(
+            tween: Tween<double>(begin: -0.08, end: 0),
+            weight: 25,
+          ),
+        ]).animate(
+          CurvedAnimation(parent: _rotationController, curve: Curves.easeInOut),
+        );
   }
 
   @override
@@ -306,6 +324,7 @@ class _AnimatedNavItemState extends State<_AnimatedNavItem>
     _scaleController.reverse();
     widget.onTap();
   }
+
   void _handleTapCancel() => _scaleController.reverse();
 
   @override
@@ -316,9 +335,15 @@ class _AnimatedNavItemState extends State<_AnimatedNavItem>
       onTapCancel: _handleTapCancel,
       behavior: HitTestBehavior.opaque,
       child: AnimatedBuilder(
-        animation: Listenable.merge([_scaleAnimation, _bounceAnimation, _rotationAnimation]),
+        animation: Listenable.merge([
+          _scaleAnimation,
+          _bounceAnimation,
+          _rotationAnimation,
+        ]),
         builder: (context, child) {
-          final scale = widget.isSelected ? _bounceAnimation.value : _scaleAnimation.value;
+          final scale = widget.isSelected
+              ? _bounceAnimation.value
+              : _scaleAnimation.value;
           return Transform.scale(
             scale: scale,
             child: Transform.rotate(
@@ -335,7 +360,9 @@ class _AnimatedNavItemState extends State<_AnimatedNavItem>
             vertical: 6,
           ),
           decoration: BoxDecoration(
-            color: widget.isSelected ? widget.color.withValues(alpha: 0.12) : Colors.transparent,
+            color: widget.isSelected
+                ? widget.color.withValues(alpha: 0.12)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
@@ -344,12 +371,15 @@ class _AnimatedNavItemState extends State<_AnimatedNavItem>
             children: [
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 150),
-                transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(scale: animation, child: child),
                 child: Icon(
                   widget.isSelected ? widget.activeIcon : widget.icon,
                   key: ValueKey(widget.isSelected),
                   size: 18,
-                  color: widget.isSelected ? widget.color : AppColors.textTertiary,
+                  color: widget.isSelected
+                      ? widget.color
+                      : AppColors.textTertiary,
                 ),
               ),
 
@@ -360,16 +390,16 @@ class _AnimatedNavItemState extends State<_AnimatedNavItem>
                   curve: Curves.easeOutCubic,
                   child: widget.isSelected
                       ? Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: Text(
-                      widget.label,
-                      style: AppTypography.caption.copyWith(
-                        color: widget.color,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11,
-                      ),
-                    ),
-                  )
+                          padding: const EdgeInsets.only(left: 4),
+                          child: Text(
+                            widget.label,
+                            style: AppTypography.caption.copyWith(
+                              color: widget.color,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                            ),
+                          ),
+                        )
                       : const SizedBox.shrink(),
                 ),
               ),

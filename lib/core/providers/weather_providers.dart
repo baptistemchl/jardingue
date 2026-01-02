@@ -59,7 +59,10 @@ final weatherRefreshProvider = Provider<Future<void> Function()>((ref) {
 });
 
 /// Provider pour rechercher une ville
-final citySearchProvider = FutureProvider.family<List<LocationResult>, String>((ref, query) async {
+final citySearchProvider = FutureProvider.family<List<LocationResult>, String>((
+  ref,
+  query,
+) async {
   if (query.isEmpty) return [];
   final locationService = ref.watch(locationServiceProvider);
   return locationService.searchCity(query);
@@ -72,7 +75,9 @@ final currentWeatherProvider = Provider<AsyncValue<CurrentWeather>>((ref) {
 });
 
 /// Provider pour les prévisions horaires
-final hourlyForecastProvider = Provider<AsyncValue<List<HourlyForecast>>>((ref) {
+final hourlyForecastProvider = Provider<AsyncValue<List<HourlyForecast>>>((
+  ref,
+) {
   final weatherAsync = ref.watch(weatherDataProvider);
   return weatherAsync.whenData((data) => data.hourlyForecast);
 });

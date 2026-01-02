@@ -118,9 +118,7 @@ abstract final class AppTheme {
       cardTheme: CardThemeData(
         elevation: 0,
         color: AppColors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppSpacing.borderRadiusXl,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
         margin: EdgeInsets.zero,
       ),
 
@@ -155,9 +153,7 @@ abstract final class AppTheme {
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.textOnPrimary,
         elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppSpacing.borderRadiusLg,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
       ),
 
       // Divider
@@ -171,9 +167,7 @@ abstract final class AppTheme {
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppSpacing.borderRadiusXxl,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXxl),
       ),
 
       // Bottom Sheet
@@ -193,9 +187,7 @@ abstract final class AppTheme {
         contentTextStyle: AppTypography.bodyMedium.copyWith(
           color: AppColors.surface,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppSpacing.borderRadiusMd,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusMd),
         behavior: SnackBarBehavior.floating,
       ),
 

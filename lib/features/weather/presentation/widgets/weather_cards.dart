@@ -75,10 +75,7 @@ class MainWeatherCard extends StatelessWidget {
                 ),
               ),
               // Icône météo
-              Text(
-                condition.icon,
-                style: const TextStyle(fontSize: 64),
-              ),
+              Text(condition.icon, style: const TextStyle(fontSize: 64)),
             ],
           ),
           const SizedBox(height: 20),
@@ -174,14 +171,11 @@ class HourlyForecastCard extends StatelessWidget {
           final gap = isCompact ? 4.0 : 8.0;
           final iconSize = isCompact ? 20.0 : 24.0;
 
-          final showPrecip = !isCompact &&
-              forecast.precipitationProbability > 0;
+          final showPrecip =
+              !isCompact && forecast.precipitationProbability > 0;
 
           return Container(
-            padding: EdgeInsets.symmetric(
-              vertical: paddingV,
-              horizontal: 8,
-            ),
+            padding: EdgeInsets.symmetric(vertical: paddingV, horizontal: 8),
             decoration: BoxDecoration(
               color: isNow
                   ? AppColors.primary.withValues(alpha: 0.15)
@@ -200,11 +194,8 @@ class HourlyForecastCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.caption.copyWith(
-                    color: isNow
-                        ? AppColors.primary
-                        : AppColors.textSecondary,
-                    fontWeight:
-                    isNow ? FontWeight.w600 : FontWeight.normal,
+                    color: isNow ? AppColors.primary : AppColors.textSecondary,
+                    fontWeight: isNow ? FontWeight.w600 : FontWeight.normal,
                   ),
                 ),
                 SizedBox(height: gap),
@@ -218,9 +209,7 @@ class HourlyForecastCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.titleSmall.copyWith(
-                    color: isNow
-                        ? AppColors.primary
-                        : AppColors.textPrimary,
+                    color: isNow ? AppColors.primary : AppColors.textPrimary,
                   ),
                 ),
                 if (showPrecip) ...[
@@ -352,19 +341,13 @@ class MoonPhaseCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                moon.phaseEmoji,
-                style: const TextStyle(fontSize: 40),
-              ),
+              Text(moon.phaseEmoji, style: const TextStyle(fontSize: 40)),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      moon.phaseName,
-                      style: AppTypography.titleMedium,
-                    ),
+                    Text(moon.phaseName, style: AppTypography.titleMedium),
                     const SizedBox(height: 2),
                     Text(
                       moon.isWaxing ? 'Lune croissante' : 'Lune décroissante',
@@ -375,9 +358,14 @@ class MoonPhaseCard extends StatelessWidget {
               ),
               // Score jardinage
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: _scoreColor(moon.moonAdvice.score).withValues(alpha: 0.15),
+                  color: _scoreColor(
+                    moon.moonAdvice.score,
+                  ).withValues(alpha: 0.15),
                   borderRadius: AppSpacing.borderRadiusFull,
                 ),
                 child: Row(
@@ -404,15 +392,10 @@ class MoonPhaseCard extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             moon.moonAdvice.title,
-            style: AppTypography.titleSmall.copyWith(
-              color: AppColors.primary,
-            ),
+            style: AppTypography.titleSmall.copyWith(color: AppColors.primary),
           ),
           const SizedBox(height: 4),
-          Text(
-            moon.moonAdvice.description,
-            style: AppTypography.bodySmall,
-          ),
+          Text(moon.moonAdvice.description, style: AppTypography.bodySmall),
           const SizedBox(height: 12),
           // Activités recommandées
           Wrap(
@@ -485,10 +468,7 @@ class GardeningAdviceCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      advice.mainAdvice,
-                      style: AppTypography.bodyMedium,
-                    ),
+                    Text(advice.mainAdvice, style: AppTypography.bodyMedium),
                   ],
                 ),
               ),
@@ -496,15 +476,17 @@ class GardeningAdviceCard extends StatelessWidget {
           ),
           if (advice.tips.isNotEmpty) ...[
             const SizedBox(height: 12),
-            ...advice.tips.map((tip) => Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                tip,
-                style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
+            ...advice.tips.map(
+              (tip) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  tip,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
-            )),
+            ),
           ],
           const SizedBox(height: 12),
           // Indicateurs rapides
@@ -577,10 +559,7 @@ class _QuickIndicator extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: AppTypography.caption.copyWith(
-            color: color,
-            fontSize: 10,
-          ),
+          style: AppTypography.caption.copyWith(color: color, fontSize: 10),
         ),
       ],
     );

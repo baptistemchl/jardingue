@@ -261,8 +261,9 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                 padding: AppSpacing.horizontalPadding,
                 child: plantsAsync.when(
                   data: (plants) {
-                    if (!filters.hasActiveFilters)
+                    if (!filters.hasActiveFilters) {
                       return const SizedBox.shrink();
+                    }
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: Row(

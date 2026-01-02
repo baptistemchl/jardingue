@@ -33,11 +33,10 @@ class WeatherBackground extends StatelessWidget {
           const RainAnimation(intensity: 0.5),
         if (condition.animation == 'heavy_rain')
           const RainAnimation(intensity: 1.0),
-        if (condition.animation == 'snow')
-          const SnowAnimation(),
-        if (condition.animation == 'sunny')
-          const SunAnimation(),
-        if (condition.animation == 'partly_cloudy' || condition.animation == 'cloudy')
+        if (condition.animation == 'snow') const SnowAnimation(),
+        if (condition.animation == 'sunny') const SunAnimation(),
+        if (condition.animation == 'partly_cloudy' ||
+            condition.animation == 'cloudy')
           const CloudsAnimation(),
         if (condition.animation == 'thunderstorm')
           const ThunderstormAnimation(),
@@ -142,13 +141,11 @@ class RainPainter extends CustomPainter {
     for (final drop in drops) {
       final x = drop.x * size.width;
       final totalTravel = size.height + drop.length;
-      final y = ((drop.startY + progress * drop.speed * 2) % 1.2) * totalTravel - drop.length;
+      final y =
+          ((drop.startY + progress * drop.speed * 2) % 1.2) * totalTravel -
+          drop.length;
 
-      canvas.drawLine(
-        Offset(x, y),
-        Offset(x - 2, y + drop.length),
-        paint,
-      );
+      canvas.drawLine(Offset(x, y), Offset(x - 2, y + drop.length), paint);
     }
   }
 
@@ -192,10 +189,7 @@ class _SnowAnimationState extends State<SnowAnimation>
       animation: _controller,
       builder: (context, child) {
         return CustomPaint(
-          painter: SnowPainter(
-            flakes: _flakes,
-            progress: _controller.value,
-          ),
+          painter: SnowPainter(flakes: _flakes, progress: _controller.value),
           size: Size.infinite,
         );
       },
@@ -441,26 +435,30 @@ class CloudsPainter extends CustomPainter {
     final path = Path();
 
     // Forme de nuage avec plusieurs cercles
-    path.addOval(Rect.fromCenter(
-      center: center,
-      width: scale,
-      height: scale * 0.6,
-    ));
-    path.addOval(Rect.fromCenter(
-      center: Offset(center.dx - scale * 0.3, center.dy),
-      width: scale * 0.7,
-      height: scale * 0.5,
-    ));
-    path.addOval(Rect.fromCenter(
-      center: Offset(center.dx + scale * 0.3, center.dy),
-      width: scale * 0.8,
-      height: scale * 0.55,
-    ));
-    path.addOval(Rect.fromCenter(
-      center: Offset(center.dx, center.dy - scale * 0.15),
-      width: scale * 0.6,
-      height: scale * 0.5,
-    ));
+    path.addOval(
+      Rect.fromCenter(center: center, width: scale, height: scale * 0.6),
+    );
+    path.addOval(
+      Rect.fromCenter(
+        center: Offset(center.dx - scale * 0.3, center.dy),
+        width: scale * 0.7,
+        height: scale * 0.5,
+      ),
+    );
+    path.addOval(
+      Rect.fromCenter(
+        center: Offset(center.dx + scale * 0.3, center.dy),
+        width: scale * 0.8,
+        height: scale * 0.55,
+      ),
+    );
+    path.addOval(
+      Rect.fromCenter(
+        center: Offset(center.dx, center.dy - scale * 0.15),
+        width: scale * 0.6,
+        height: scale * 0.5,
+      ),
+    );
 
     canvas.drawPath(path, paint);
   }

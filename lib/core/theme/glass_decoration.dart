@@ -12,94 +12,85 @@ abstract final class GlassDecoration {
 
   /// Décoration glass standard
   static BoxDecoration get standard => BoxDecoration(
-        color: AppColors.glassFill,
-        borderRadius: AppSpacing.borderRadiusXl,
-        border: Border.all(
-          color: AppColors.glassBorder,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.glassShadow,
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      );
+    color: AppColors.glassFill,
+    borderRadius: AppSpacing.borderRadiusXl,
+    border: Border.all(color: AppColors.glassBorder, width: 1),
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.glassShadow,
+        blurRadius: 20,
+        offset: const Offset(0, 8),
+      ),
+    ],
+  );
 
   /// Décoration glass plus opaque
   static BoxDecoration get strong => BoxDecoration(
-        color: AppColors.glassFillStrong,
-        borderRadius: AppSpacing.borderRadiusXl,
-        border: Border.all(
-          color: AppColors.glassBorder,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.glassShadow,
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      );
+    color: AppColors.glassFillStrong,
+    borderRadius: AppSpacing.borderRadiusXl,
+    border: Border.all(color: AppColors.glassBorder, width: 1),
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.glassShadow,
+        blurRadius: 24,
+        offset: const Offset(0, 10),
+      ),
+    ],
+  );
 
   /// Décoration glass subtile (pour éléments secondaires)
   static BoxDecoration get subtle => BoxDecoration(
-        color: AppColors.glassFill.withValues(alpha: 0.15),
-        borderRadius: AppSpacing.borderRadiusLg,
-        border: Border.all(
-          color: AppColors.glassBorder.withValues(alpha: 0.2),
-          width: 0.5,
-        ),
-      );
+    color: AppColors.glassFill.withValues(alpha: 0.15),
+    borderRadius: AppSpacing.borderRadiusLg,
+    border: Border.all(
+      color: AppColors.glassBorder.withValues(alpha: 0.2),
+      width: 0.5,
+    ),
+  );
 
   /// Décoration glass pour cartes
   static BoxDecoration get card => BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.85),
-        borderRadius: AppSpacing.borderRadiusXl,
-        border: Border.all(
-          color: AppColors.glassBorder,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.glassShadow,
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      );
+    color: AppColors.surface.withValues(alpha: 0.85),
+    borderRadius: AppSpacing.borderRadiusXl,
+    border: Border.all(color: AppColors.glassBorder, width: 1),
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.glassShadow,
+        blurRadius: 16,
+        offset: const Offset(0, 6),
+      ),
+    ],
+  );
 
   /// Décoration glass pour nav bar
   static BoxDecoration get navBar => BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.9),
-        border: Border(
-          top: BorderSide(
-            color: AppColors.border.withValues(alpha: 0.5),
-            width: 0.5,
-          ),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.glassShadow,
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      );
+    color: AppColors.surface.withValues(alpha: 0.9),
+    border: Border(
+      top: BorderSide(
+        color: AppColors.border.withValues(alpha: 0.5),
+        width: 0.5,
+      ),
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.glassShadow,
+        blurRadius: 20,
+        offset: const Offset(0, -5),
+      ),
+    ],
+  );
 
   /// Décoration glass pour app bar
   static BoxDecoration get appBar => BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.85),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.glassShadow.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      );
+    color: AppColors.surface.withValues(alpha: 0.85),
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.glassShadow.withValues(alpha: 0.05),
+        blurRadius: 10,
+        offset: const Offset(0, 2),
+      ),
+    ],
+  );
 
   // ============================================
   // CUSTOM RADIUS VARIANTS
@@ -107,30 +98,24 @@ abstract final class GlassDecoration {
 
   /// Glass avec radius personnalisé
   static BoxDecoration withRadius(double radius) => BoxDecoration(
-        color: AppColors.glassFill,
-        borderRadius: BorderRadius.circular(radius),
-        border: Border.all(
-          color: AppColors.glassBorder,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.glassShadow,
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      );
+    color: AppColors.glassFill,
+    borderRadius: BorderRadius.circular(radius),
+    border: Border.all(color: AppColors.glassBorder, width: 1),
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.glassShadow,
+        blurRadius: 20,
+        offset: const Offset(0, 8),
+      ),
+    ],
+  );
 
   /// Glass pill (boutons, tags)
   static BoxDecoration get pill => BoxDecoration(
-        color: AppColors.glassFill,
-        borderRadius: AppSpacing.borderRadiusFull,
-        border: Border.all(
-          color: AppColors.glassBorder,
-          width: 1,
-        ),
-      );
+    color: AppColors.glassFill,
+    borderRadius: AppSpacing.borderRadiusFull,
+    border: Border.all(color: AppColors.glassBorder, width: 1),
+  );
 
   // ============================================
   // COLORED VARIANTS
@@ -141,10 +126,7 @@ abstract final class GlassDecoration {
       BoxDecoration(
         color: color.withValues(alpha: opacity),
         borderRadius: AppSpacing.borderRadiusXl,
-        border: Border.all(
-          color: color.withValues(alpha: 0.2),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       );
 
   /// Glass primaire (vert)
@@ -182,7 +164,8 @@ class GlassContainer extends StatelessWidget {
     return Container(
       margin: margin,
       child: ClipRRect(
-        borderRadius: (decoration?.borderRadius as BorderRadius?) ??
+        borderRadius:
+            (decoration?.borderRadius as BorderRadius?) ??
             AppSpacing.borderRadiusXl,
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
@@ -225,10 +208,7 @@ class GlassCard extends StatelessWidget {
     );
 
     if (onTap != null) {
-      return GestureDetector(
-        onTap: onTap,
-        child: container,
-      );
+      return GestureDetector(onTap: onTap, child: container);
     }
 
     return container;
