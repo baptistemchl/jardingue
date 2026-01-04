@@ -21,6 +21,7 @@ class PlantsScreen extends ConsumerStatefulWidget {
 class _PlantsScreenState extends ConsumerState<PlantsScreen> {
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
+  final _searchFocusNode = FocusNode();
   Timer? _debounce;
 
   // Pagination
@@ -38,6 +39,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
+    _searchFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -86,304 +88,341 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
     setState(() => _displayedCount = _pageSize);
   }
 
+  void _unfocus() {
+    _searchFocusNode.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     final plantsAsync = ref.watch(filteredPlantsProvider);
     final filters = ref.watch(plantsFilterProvider);
     final totalCount = ref.watch(totalPlantsCountProvider);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background décoratif
-          const _DecorativeBackground(),
+    return GestureDetector(
+      onTap: _unfocus,
+      behavior: HitTestBehavior.translucent,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            // Background décoratif
+            const _DecorativeBackground(),
 
-          // Contenu
-          SafeArea(
-            bottom: false,
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                // Header
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: AppSpacing.screenPadding,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: AppSpacing.lg),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Plantes',
-                                style: AppTypography.displayMedium,
-                              ),
-                            ),
-                            totalCount.when(
-                              data: (count) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryContainer,
-                                  borderRadius: AppSpacing.borderRadiusFull,
-                                ),
-                                child: Text(
-                                  '$count variétés',
-                                  style: AppTypography.labelSmall.copyWith(
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                              ),
-                              loading: () => const SizedBox.shrink(),
-                              error: (_, __) => const SizedBox.shrink(),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          'Découvrez et gérez vos variétés',
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Barre de recherche
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: AppSpacing.horizontalPadding,
-                    child: _SearchBar(
-                      controller: _searchController,
-                      onChanged: _onSearchChanged,
-                      onClear: () {
-                        _searchController.clear();
-                        _onSearchChanged('');
-                      },
-                    ),
-                  ),
-                ),
-
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppSpacing.lg),
-                ),
-
-                // Filtres par catégorie
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: AppSpacing.horizontalPadding,
-                        child: Text(
-                          'Catégorie',
-                          style: AppTypography.labelSmall.copyWith(
-                            color: AppColors.textTertiary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: 38,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: AppSpacing.horizontalPadding,
-                          itemCount: PlantCategory.values.length,
-                          separatorBuilder: (_, __) => const SizedBox(width: 8),
-                          itemBuilder: (context, index) {
-                            final category = PlantCategory.values[index];
-                            final isSelected = filters.category == category;
-                            return _CategoryChip(
-                              emoji: category.emoji,
-                              label: category.label,
-                              isSelected: isSelected,
-                              onTap: () {
-                                ref
-                                    .read(plantsFilterProvider.notifier)
-                                    .setCategory(category);
-                                _resetPagination();
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppSpacing.md),
-                ),
-
-                // Filtres par exposition
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: AppSpacing.horizontalPadding,
-                        child: Text(
-                          'Exposition',
-                          style: AppTypography.labelSmall.copyWith(
-                            color: AppColors.textTertiary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: 38,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: AppSpacing.horizontalPadding,
-                          itemCount: PlantSunFilter.values.length,
-                          separatorBuilder: (_, __) => const SizedBox(width: 8),
-                          itemBuilder: (context, index) {
-                            final filter = PlantSunFilter.values[index];
-                            final isSelected = filters.sunFilter == filter;
-                            return _FilterChip(
-                              label: filter.label,
-                              isSelected: isSelected,
-                              onTap: () {
-                                ref
-                                    .read(plantsFilterProvider.notifier)
-                                    .setSunFilter(filter);
-                                _resetPagination();
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppSpacing.lg),
-                ),
-
-                // Résultats info + bouton clear
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: AppSpacing.horizontalPadding,
-                    child: plantsAsync.when(
-                      data: (plants) {
-                        if (!filters.hasActiveFilters) {
-                          return const SizedBox.shrink();
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                          child: Row(
+            // Contenu
+            SafeArea(
+              bottom: false,
+              child: CustomScrollView(
+                controller: _scrollController,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                slivers: [
+                  // Header
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: AppSpacing.screenPadding,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: AppSpacing.lg),
+                          Row(
                             children: [
-                              Text(
-                                '${plants.length} résultat${plants.length > 1 ? 's' : ''}',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.textSecondary,
+                              Expanded(
+                                child: Text(
+                                  'Plantes',
+                                  style: AppTypography.displayMedium,
                                 ),
                               ),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: () {
-                                  _searchController.clear();
-                                  ref
-                                      .read(plantsFilterProvider.notifier)
-                                      .clearFilters();
-                                  _resetPagination();
-                                },
-                                child: Text(
-                                  'Effacer les filtres',
-                                  style: AppTypography.labelSmall.copyWith(
-                                    color: AppColors.primary,
+                              totalCount.when(
+                                data: (count) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primaryContainer,
+                                    borderRadius: AppSpacing.borderRadiusFull,
+                                  ),
+                                  child: Text(
+                                    '$count variétés',
+                                    style: AppTypography.labelSmall.copyWith(
+                                      color: AppColors.primary,
+                                    ),
                                   ),
                                 ),
+                                loading: () => const SizedBox.shrink(),
+                                error: (_, __) => const SizedBox.shrink(),
                               ),
                             ],
                           ),
-                        );
-                      },
-                      loading: () => const SizedBox.shrink(),
-                      error: (_, __) => const SizedBox.shrink(),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'Découvrez et gérez vos variétés',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+                        ],
+                      ),
                     ),
                   ),
-                ),
 
-                // Liste des plantes
-                plantsAsync.when(
-                  data: (plants) {
-                    if (plants.isEmpty) {
-                      return SliverFillRemaining(
-                        child: _EmptyState(
-                          hasFilters: filters.hasActiveFilters,
-                          onClearFilters: () {
-                            _searchController.clear();
-                            ref
-                                .read(plantsFilterProvider.notifier)
-                                .clearFilters();
-                            _resetPagination();
-                          },
+                  // Barre de recherche
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: AppSpacing.horizontalPadding,
+                      child: _SearchBar(
+                        controller: _searchController,
+                        focusNode: _searchFocusNode,
+                        onChanged: _onSearchChanged,
+                        onClear: () {
+                          _searchController.clear();
+                          _onSearchChanged('');
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppSpacing.lg),
+                  ),
+
+                  // Filtres par catégorie
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: AppSpacing.horizontalPadding,
+                          child: Text(
+                            'Catégorie',
+                            style: AppTypography.labelSmall.copyWith(
+                              color: AppColors.textTertiary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 38,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: AppSpacing.horizontalPadding,
+                            itemCount: PlantCategory.values.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(width: 8),
+                            itemBuilder: (context, index) {
+                              final category = PlantCategory.values[index];
+                              final isSelected = filters.category == category;
+                              return _CategoryChip(
+                                emoji: category.emoji,
+                                label: category.label,
+                                isSelected: isSelected,
+                                onTap: () {
+                                  _unfocus();
+                                  ref
+                                      .read(plantsFilterProvider.notifier)
+                                      .setCategory(category);
+                                  _resetPagination();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppSpacing.md),
+                  ),
+
+                  // Filtres par exposition
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: AppSpacing.horizontalPadding,
+                          child: Text(
+                            'Exposition',
+                            style: AppTypography.labelSmall.copyWith(
+                              color: AppColors.textTertiary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 38,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: AppSpacing.horizontalPadding,
+                            itemCount: PlantSunFilter.values.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(width: 8),
+                            itemBuilder: (context, index) {
+                              final filter = PlantSunFilter.values[index];
+                              final isSelected = filters.sunFilter == filter;
+                              return _FilterChip(
+                                label: filter.label,
+                                isSelected: isSelected,
+                                onTap: () {
+                                  _unfocus();
+                                  ref
+                                      .read(plantsFilterProvider.notifier)
+                                      .setSunFilter(filter);
+                                  _resetPagination();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppSpacing.lg),
+                  ),
+
+                  // Résultats info + bouton clear
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: AppSpacing.horizontalPadding,
+                      child: plantsAsync.when(
+                        data: (plants) {
+                          if (!filters.hasActiveFilters) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacing.md,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '${plants.length} résultat${plants.length > 1 ? 's' : ''}',
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _unfocus();
+                                    _searchController.clear();
+                                    ref
+                                        .read(plantsFilterProvider.notifier)
+                                        .clearFilters();
+                                    _resetPagination();
+                                  },
+                                  child: Text(
+                                    'Effacer les filtres',
+                                    style: AppTypography.labelSmall.copyWith(
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+
+                  // Liste des plantes
+                  plantsAsync.when(
+                    data: (plants) {
+                      if (plants.isEmpty) {
+                        return SliverFillRemaining(
+                          child: _EmptyState(
+                            hasFilters: filters.hasActiveFilters,
+                            onClearFilters: () {
+                              _unfocus();
+                              _searchController.clear();
+                              ref
+                                  .read(plantsFilterProvider.notifier)
+                                  .clearFilters();
+                              _resetPagination();
+                            },
+                          ),
+                        );
+                      }
+
+                      final displayedPlants = plants
+                          .take(_displayedCount)
+                          .toList();
+                      final hasMore = _displayedCount < plants.length;
+
+                      return SliverPadding(
+                        padding: AppSpacing.horizontalPadding,
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              if (index == displayedPlants.length) {
+                                return _LoadingIndicator(
+                                  isLoading: _isLoadingMore,
+                                );
+                              }
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: AppSpacing.md,
+                                ),
+                                child: _PlantCard(
+                                  plant: displayedPlants[index],
+                                  onTap: () {
+                                    _unfocus();
+                                    _showPlantDetail(
+                                      context,
+                                      displayedPlants[index],
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            childCount:
+                                displayedPlants.length + (hasMore ? 1 : 0),
+                          ),
                         ),
                       );
-                    }
-
-                    final displayedPlants = plants
-                        .take(_displayedCount)
-                        .toList();
-                    final hasMore = _displayedCount < plants.length;
-
-                    return SliverPadding(
+                    },
+                    loading: () => SliverPadding(
                       padding: AppSpacing.horizontalPadding,
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            if (index == displayedPlants.length) {
-                              return _LoadingIndicator(
-                                isLoading: _isLoadingMore,
-                              );
-                            }
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: AppSpacing.md,
-                              ),
-                              child: _PlantCard(plant: displayedPlants[index]),
-                            );
-                          },
-                          childCount:
-                              displayedPlants.length + (hasMore ? 1 : 0),
+                          (context, index) => const Padding(
+                            padding: EdgeInsets.only(bottom: AppSpacing.md),
+                            child: _PlantCardSkeleton(),
+                          ),
+                          childCount: 6,
                         ),
                       ),
-                    );
-                  },
-                  loading: () => SliverPadding(
-                    padding: AppSpacing.horizontalPadding,
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => const Padding(
-                          padding: EdgeInsets.only(bottom: AppSpacing.md),
-                          child: _PlantCardSkeleton(),
-                        ),
-                        childCount: 6,
+                    ),
+                    error: (error, _) => SliverFillRemaining(
+                      child: _ErrorState(
+                        error: error.toString(),
+                        onRetry: () => ref.invalidate(filteredPlantsProvider),
                       ),
                     ),
                   ),
-                  error: (error, _) => SliverFillRemaining(
-                    child: _ErrorState(
-                      error: error.toString(),
-                      onRetry: () => ref.invalidate(filteredPlantsProvider),
-                    ),
-                  ),
-                ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: 120)),
-              ],
+                  const SliverToBoxAdapter(child: SizedBox(height: 120)),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  void _showPlantDetail(BuildContext context, Plant plant) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _PlantDetailSheet(plant: plant),
     );
   }
 }
@@ -394,11 +433,13 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
 
 class _SearchBar extends StatelessWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
   final ValueChanged<String> onChanged;
   final VoidCallback onClear;
 
   const _SearchBar({
     required this.controller,
+    required this.focusNode,
     required this.onChanged,
     required this.onClear,
   });
@@ -413,6 +454,7 @@ class _SearchBar extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
+        focusNode: focusNode,
         onChanged: onChanged,
         decoration: InputDecoration(
           hintText: 'Rechercher une plante...',
@@ -536,13 +578,14 @@ class _FilterChip extends StatelessWidget {
 
 class _PlantCard extends StatelessWidget {
   final Plant plant;
+  final VoidCallback onTap;
 
-  const _PlantCard({required this.plant});
+  const _PlantCard({required this.plant, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      onTap: () => _showPlantDetail(context, plant),
+      onTap: onTap,
       child: Row(
         children: [
           Container(
@@ -608,15 +651,6 @@ class _PlantCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  void _showPlantDetail(BuildContext context, Plant plant) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _PlantDetailSheet(plant: plant),
     );
   }
 }
@@ -987,7 +1021,7 @@ class _PlantDetailSheet extends ConsumerWidget {
                 error: (_, __) => const SizedBox.shrink(),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 80),
             ],
           ),
         );

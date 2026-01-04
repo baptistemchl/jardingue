@@ -1750,7 +1750,7 @@ class _PlantDetailSheet extends ConsumerWidget {
                 error: (_, __) => const SizedBox.shrink(),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 80),
             ],
           ),
         );
