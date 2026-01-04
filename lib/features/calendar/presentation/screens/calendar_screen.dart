@@ -16,7 +16,7 @@ import '../../../../core/services/database/database.dart';
 enum CalendarViewType { calendar, list }
 
 final calendarViewProvider = StateProvider<CalendarViewType>(
-      (ref) => CalendarViewType.calendar,
+  (ref) => CalendarViewType.calendar,
 );
 
 /// Écran calendrier du potager
@@ -43,8 +43,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   void _onPageChanged(int index) {
-    ref.read(calendarViewProvider.notifier).state =
-    index == 0 ? CalendarViewType.calendar : CalendarViewType.list;
+    ref.read(calendarViewProvider.notifier).state = index == 0
+        ? CalendarViewType.calendar
+        : CalendarViewType.list;
   }
 
   void _onTabChanged(CalendarViewType view) {
@@ -100,7 +101,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         ),
                       ],
                     ),
-                    loading: () => const Center(child: CircularProgressIndicator()),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
                     error: (e, _) => Center(child: Text('Erreur: $e')),
                   ),
                 ),
@@ -121,10 +123,7 @@ class _ViewTabBar extends StatelessWidget {
   final CalendarViewType currentView;
   final void Function(CalendarViewType) onTabChanged;
 
-  const _ViewTabBar({
-    required this.currentView,
-    required this.onTabChanged,
-  });
+  const _ViewTabBar({required this.currentView, required this.onTabChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -297,9 +296,9 @@ class _CalendarView extends ConsumerWidget {
   }
 
   List<Widget> _buildFilteredSections(
-      MonthActivities activities,
-      GardenActivityType filter,
-      ) {
+    MonthActivities activities,
+    GardenActivityType filter,
+  ) {
     final filteredActivities = activities.getActivitiesByType(filter);
     if (filteredActivities.isEmpty) {
       return [
@@ -367,18 +366,18 @@ class _CompactMonthCalendar extends StatelessWidget {
             children: dayNames
                 .map(
                   (d) => Expanded(
-                child: Center(
-                  child: Text(
-                    d,
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.textTertiary,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 11,
+                    child: Center(
+                      child: Text(
+                        d,
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textTertiary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            )
+                )
                 .toList(),
           ),
           const SizedBox(height: 6),
@@ -403,14 +402,14 @@ class _CompactMonthCalendar extends StatelessWidget {
               final day = dayOffset + 1;
               final isToday =
                   now.year == selectedMonth.year &&
-                      now.month == selectedMonth.month &&
-                      now.day == day;
+                  now.month == selectedMonth.month &&
+                  now.day == day;
 
               return _CompactDayCell(
                 day: day,
                 isToday: isToday,
                 hasActivities:
-                hasSowingUnderCover ||
+                    hasSowingUnderCover ||
                     hasSowingOpenGround ||
                     hasPlanting ||
                     hasHarvest,
@@ -563,7 +562,7 @@ class _MonthListView extends StatelessWidget {
 
     // Trier par nom de plante
     allActivities.sort(
-          (a, b) => a.plant.commonName.compareTo(b.plant.commonName),
+      (a, b) => a.plant.commonName.compareTo(b.plant.commonName),
     );
 
     return Column(
@@ -867,7 +866,7 @@ class _CalendarHeader extends ConsumerWidget {
                   );
                 },
                 isCurrentMonth:
-                selectedMonth.year == DateTime.now().year &&
+                    selectedMonth.year == DateTime.now().year &&
                     selectedMonth.month == DateTime.now().month,
               ),
             ],
@@ -1023,7 +1022,7 @@ class _ActivityFilters extends ConsumerWidget {
           ),
           const SizedBox(width: 8),
           ...GardenActivityType.values.map(
-                (type) => Padding(
+            (type) => Padding(
               padding: const EdgeInsets.only(right: 8),
               child: _FilterChip(
                 label: type.label,
@@ -1031,7 +1030,7 @@ class _ActivityFilters extends ConsumerWidget {
                 color: type.color,
                 isSelected: currentFilter == type,
                 onTap: () =>
-                ref.read(activityFilterProvider.notifier).state = type,
+                    ref.read(activityFilterProvider.notifier).state = type,
               ),
             ),
           ),
@@ -1069,12 +1068,12 @@ class _FilterChip extends StatelessWidget {
           border: Border.all(color: isSelected ? color : AppColors.border),
           boxShadow: isSelected
               ? [
-            BoxShadow(
-              color: color.withValues(alpha: 0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ]
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
               : null,
         ),
         child: Row(
@@ -1698,11 +1697,11 @@ class _PlantDetailSheet extends ConsumerWidget {
                         children: companions
                             .map(
                               (c) => _PlantChip(
-                            emoji: c.emoji,
-                            name: c.commonName,
-                            color: AppColors.success,
-                          ),
-                        )
+                                emoji: c.emoji,
+                                name: c.commonName,
+                                color: AppColors.success,
+                              ),
+                            )
                             .toList(),
                       ),
                       const SizedBox(height: 16),
@@ -1736,11 +1735,11 @@ class _PlantDetailSheet extends ConsumerWidget {
                         children: antagonists
                             .map(
                               (a) => _PlantChip(
-                            emoji: a.emoji,
-                            name: a.commonName,
-                            color: AppColors.error,
-                          ),
-                        )
+                                emoji: a.emoji,
+                                name: a.commonName,
+                                color: AppColors.error,
+                              ),
+                            )
                             .toList(),
                       ),
                       const SizedBox(height: 16),
@@ -1849,29 +1848,29 @@ class _DestroyersList extends StatelessWidget {
       children: destroyers
           .map(
             (d) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: AppColors.error.withValues(alpha: 0.08),
-            borderRadius: AppSpacing.borderRadiusFull,
-            border: Border.all(
-              color: AppColors.error.withValues(alpha: 0.2),
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('🐛', style: TextStyle(fontSize: 12)),
-              const SizedBox(width: 4),
-              Text(
-                d,
-                style: AppTypography.caption.copyWith(
-                  color: AppColors.error,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.08),
+                borderRadius: AppSpacing.borderRadiusFull,
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.2),
                 ),
               ),
-            ],
-          ),
-        ),
-      )
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('🐛', style: TextStyle(fontSize: 12)),
+                  const SizedBox(width: 4),
+                  Text(
+                    d,
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.error,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -2020,15 +2019,15 @@ class _PlantYearCalendar extends StatelessWidget {
                             : null,
                         gradient: activities.isNotEmpty
                             ? LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: activities.length == 1
-                              ? [
-                            activities.first.color,
-                            activities.first.color,
-                          ]
-                              : activities.map((a) => a.color).toList(),
-                        )
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: activities.length == 1
+                                    ? [
+                                        activities.first.color,
+                                        activities.first.color,
+                                      ]
+                                    : activities.map((a) => a.color).toList(),
+                              )
                             : null,
                       ),
                     ),
@@ -2222,10 +2221,18 @@ class _OrganicBlobsPainter extends CustomPainter {
 
     // === MILIEU DROITE ===
     lightPaint.color = primaryLightColor.withValues(alpha: 0.25);
-    canvas.drawCircle(Offset(size.width + 30, size.height * 0.5), 70, lightPaint);
+    canvas.drawCircle(
+      Offset(size.width + 30, size.height * 0.5),
+      70,
+      lightPaint,
+    );
 
     darkPaint.color = primaryColor.withValues(alpha: 0.08);
-    canvas.drawCircle(Offset(size.width - 35, size.height * 0.45), 15, darkPaint);
+    canvas.drawCircle(
+      Offset(size.width - 35, size.height * 0.45),
+      15,
+      darkPaint,
+    );
 
     // === BAS GAUCHE ===
     lightPaint.color = primaryLightColor.withValues(alpha: 0.4);
@@ -2239,22 +2246,58 @@ class _OrganicBlobsPainter extends CustomPainter {
 
     // === BAS DROITE ===
     lightPaint.color = primaryLightColor.withValues(alpha: 0.35);
-    canvas.drawCircle(Offset(size.width + 40, size.height * 0.85), 80, lightPaint);
+    canvas.drawCircle(
+      Offset(size.width + 40, size.height * 0.85),
+      80,
+      lightPaint,
+    );
 
     darkPaint.color = primaryColor.withValues(alpha: 0.1);
-    canvas.drawCircle(Offset(size.width - 50, size.height * 0.9), 25, darkPaint);
+    canvas.drawCircle(
+      Offset(size.width - 50, size.height * 0.9),
+      25,
+      darkPaint,
+    );
 
     // === PETITS RONDS DISPERSÉS ===
     darkPaint.color = primaryColor.withValues(alpha: 0.06);
-    canvas.drawCircle(Offset(size.width * 0.2, size.height * 0.15), 12, darkPaint);
-    canvas.drawCircle(Offset(size.width * 0.85, size.height * 0.3), 10, darkPaint);
-    canvas.drawCircle(Offset(size.width * 0.15, size.height * 0.55), 8, darkPaint);
-    canvas.drawCircle(Offset(size.width * 0.9, size.height * 0.65), 14, darkPaint);
+    canvas.drawCircle(
+      Offset(size.width * 0.2, size.height * 0.15),
+      12,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.85, size.height * 0.3),
+      10,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.15, size.height * 0.55),
+      8,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.9, size.height * 0.65),
+      14,
+      darkPaint,
+    );
 
     lightPaint.color = primaryLightColor.withValues(alpha: 0.2);
-    canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.2), 16, lightPaint);
-    canvas.drawCircle(Offset(size.width * 0.1, size.height * 0.6), 12, lightPaint);
-    canvas.drawCircle(Offset(size.width * 0.8, size.height * 0.75), 10, lightPaint);
+    canvas.drawCircle(
+      Offset(size.width * 0.75, size.height * 0.2),
+      16,
+      lightPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.1, size.height * 0.6),
+      12,
+      lightPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.8, size.height * 0.75),
+      10,
+      lightPaint,
+    );
   }
 
   @override

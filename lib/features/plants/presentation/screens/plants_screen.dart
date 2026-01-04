@@ -170,7 +170,9 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                   ),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.lg),
+                ),
 
                 // Filtres par catégorie
                 SliverToBoxAdapter(
@@ -215,7 +217,9 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                   ),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.md),
+                ),
 
                 // Filtres par exposition
                 SliverToBoxAdapter(
@@ -259,7 +263,9 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                   ),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.lg),
+                ),
 
                 // Résultats info + bouton clear
                 SliverToBoxAdapter(
@@ -315,28 +321,40 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                           hasFilters: filters.hasActiveFilters,
                           onClearFilters: () {
                             _searchController.clear();
-                            ref.read(plantsFilterProvider.notifier).clearFilters();
+                            ref
+                                .read(plantsFilterProvider.notifier)
+                                .clearFilters();
                             _resetPagination();
                           },
                         ),
                       );
                     }
 
-                    final displayedPlants = plants.take(_displayedCount).toList();
+                    final displayedPlants = plants
+                        .take(_displayedCount)
+                        .toList();
                     final hasMore = _displayedCount < plants.length;
 
                     return SliverPadding(
                       padding: AppSpacing.horizontalPadding,
                       sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          if (index == displayedPlants.length) {
-                            return _LoadingIndicator(isLoading: _isLoadingMore);
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                            child: _PlantCard(plant: displayedPlants[index]),
-                          );
-                        }, childCount: displayedPlants.length + (hasMore ? 1 : 0)),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            if (index == displayedPlants.length) {
+                              return _LoadingIndicator(
+                                isLoading: _isLoadingMore,
+                              );
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: AppSpacing.md,
+                              ),
+                              child: _PlantCard(plant: displayedPlants[index]),
+                            );
+                          },
+                          childCount:
+                              displayedPlants.length + (hasMore ? 1 : 0),
+                        ),
                       ),
                     );
                   },
@@ -344,7 +362,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                     padding: AppSpacing.horizontalPadding,
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
-                            (context, index) => const Padding(
+                        (context, index) => const Padding(
                           padding: EdgeInsets.only(bottom: AppSpacing.md),
                           child: _PlantCardSkeleton(),
                         ),
@@ -404,13 +422,13 @@ class _SearchBar extends StatelessWidget {
           ),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-            icon: Icon(
-              PhosphorIcons.x(PhosphorIconsStyle.bold),
-              color: AppColors.textTertiary,
-              size: 18,
-            ),
-            onPressed: onClear,
-          )
+                  icon: Icon(
+                    PhosphorIcons.x(PhosphorIconsStyle.bold),
+                    color: AppColors.textTertiary,
+                    size: 18,
+                  ),
+                  onPressed: onClear,
+                )
               : null,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -452,12 +470,12 @@ class _CategoryChip extends StatelessWidget {
           ),
           boxShadow: isSelected
               ? [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ]
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
               : null,
         ),
         child: Row(
@@ -916,11 +934,11 @@ class _PlantDetailSheet extends ConsumerWidget {
                         children: companions
                             .map(
                               (c) => _PlantChip(
-                            emoji: c.emoji,
-                            name: c.commonName,
-                            color: AppColors.success,
-                          ),
-                        )
+                                emoji: c.emoji,
+                                name: c.commonName,
+                                color: AppColors.success,
+                              ),
+                            )
                             .toList(),
                       ),
                       const SizedBox(height: 16),
@@ -954,11 +972,11 @@ class _PlantDetailSheet extends ConsumerWidget {
                         children: antagonists
                             .map(
                               (a) => _PlantChip(
-                            emoji: a.emoji,
-                            name: a.commonName,
-                            color: AppColors.error,
-                          ),
-                        )
+                                emoji: a.emoji,
+                                name: a.commonName,
+                                color: AppColors.error,
+                              ),
+                            )
                             .toList(),
                       ),
                       const SizedBox(height: 16),
@@ -1145,10 +1163,18 @@ class _OrganicBlobsPainter extends CustomPainter {
 
     // === MILIEU DROITE ===
     lightPaint.color = primaryLightColor.withValues(alpha: 0.25);
-    canvas.drawCircle(Offset(size.width + 30, size.height * 0.5), 70, lightPaint);
+    canvas.drawCircle(
+      Offset(size.width + 30, size.height * 0.5),
+      70,
+      lightPaint,
+    );
 
     darkPaint.color = primaryColor.withValues(alpha: 0.08);
-    canvas.drawCircle(Offset(size.width - 35, size.height * 0.45), 15, darkPaint);
+    canvas.drawCircle(
+      Offset(size.width - 35, size.height * 0.45),
+      15,
+      darkPaint,
+    );
 
     // === BAS GAUCHE ===
     lightPaint.color = primaryLightColor.withValues(alpha: 0.4);
@@ -1162,22 +1188,58 @@ class _OrganicBlobsPainter extends CustomPainter {
 
     // === BAS DROITE ===
     lightPaint.color = primaryLightColor.withValues(alpha: 0.35);
-    canvas.drawCircle(Offset(size.width + 40, size.height * 0.85), 80, lightPaint);
+    canvas.drawCircle(
+      Offset(size.width + 40, size.height * 0.85),
+      80,
+      lightPaint,
+    );
 
     darkPaint.color = primaryColor.withValues(alpha: 0.1);
-    canvas.drawCircle(Offset(size.width - 50, size.height * 0.9), 25, darkPaint);
+    canvas.drawCircle(
+      Offset(size.width - 50, size.height * 0.9),
+      25,
+      darkPaint,
+    );
 
     // === PETITS RONDS DISPERSÉS ===
     darkPaint.color = primaryColor.withValues(alpha: 0.06);
-    canvas.drawCircle(Offset(size.width * 0.2, size.height * 0.15), 12, darkPaint);
-    canvas.drawCircle(Offset(size.width * 0.85, size.height * 0.3), 10, darkPaint);
-    canvas.drawCircle(Offset(size.width * 0.15, size.height * 0.55), 8, darkPaint);
-    canvas.drawCircle(Offset(size.width * 0.9, size.height * 0.65), 14, darkPaint);
+    canvas.drawCircle(
+      Offset(size.width * 0.2, size.height * 0.15),
+      12,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.85, size.height * 0.3),
+      10,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.15, size.height * 0.55),
+      8,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.9, size.height * 0.65),
+      14,
+      darkPaint,
+    );
 
     lightPaint.color = primaryLightColor.withValues(alpha: 0.2);
-    canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.2), 16, lightPaint);
-    canvas.drawCircle(Offset(size.width * 0.1, size.height * 0.6), 12, lightPaint);
-    canvas.drawCircle(Offset(size.width * 0.8, size.height * 0.75), 10, lightPaint);
+    canvas.drawCircle(
+      Offset(size.width * 0.75, size.height * 0.2),
+      16,
+      lightPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.1, size.height * 0.6),
+      12,
+      lightPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.8, size.height * 0.75),
+      10,
+      lightPaint,
+    );
   }
 
   @override
