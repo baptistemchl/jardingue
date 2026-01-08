@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:Jardingue/features/orchard/presentation/widgets/orchard_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -268,10 +269,7 @@ class GardenScreen extends ConsumerWidget {
                     child: const _SmartWeatherCard(),
                   ),
                 ),
-
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppSpacing.xl),
-                ),
+                SliverToBoxAdapter(child: SizedBox(height: 20)),
 
                 // Section liste des potagers (container unique)
                 SliverToBoxAdapter(
@@ -288,6 +286,12 @@ class GardenScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+                SliverPadding(
+                  padding: AppSpacing.horizontalPadding,
+                  sliver: SliverToBoxAdapter(child: OrchardContainer()),
+                ),
 
                 SliverToBoxAdapter(child: SizedBox(height: kNavBarHeight)),
               ],
@@ -300,6 +304,7 @@ class GardenScreen extends ConsumerWidget {
 
   void _showCreateSheet(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -314,6 +319,7 @@ class GardenScreen extends ConsumerWidget {
 
   void _showEditSheet(BuildContext context, WidgetRef ref, Garden garden) {
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

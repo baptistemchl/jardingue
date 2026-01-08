@@ -3408,6 +3408,2818 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
   }
 }
 
+class $FruitTreesTable extends FruitTrees
+    with TableInfo<$FruitTreesTable, FruitTree> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FruitTreesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _commonNameMeta = const VerificationMeta(
+    'commonName',
+  );
+  @override
+  late final GeneratedColumn<String> commonName = GeneratedColumn<String>(
+    'common_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latinNameMeta = const VerificationMeta(
+    'latinName',
+  );
+  @override
+  late final GeneratedColumn<String> latinName = GeneratedColumn<String>(
+    'latin_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _subcategoryMeta = const VerificationMeta(
+    'subcategory',
+  );
+  @override
+  late final GeneratedColumn<String> subcategory = GeneratedColumn<String>(
+    'subcategory',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _emojiMeta = const VerificationMeta('emoji');
+  @override
+  late final GeneratedColumn<String> emoji = GeneratedColumn<String>(
+    'emoji',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('🌳'),
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightAdultMMeta = const VerificationMeta(
+    'heightAdultM',
+  );
+  @override
+  late final GeneratedColumn<double> heightAdultM = GeneratedColumn<double>(
+    'height_adult_m',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _spreadAdultMMeta = const VerificationMeta(
+    'spreadAdultM',
+  );
+  @override
+  late final GeneratedColumn<double> spreadAdultM = GeneratedColumn<double>(
+    'spread_adult_m',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _growthRateMeta = const VerificationMeta(
+    'growthRate',
+  );
+  @override
+  late final GeneratedColumn<String> growthRate = GeneratedColumn<String>(
+    'growth_rate',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lifespanYearsMeta = const VerificationMeta(
+    'lifespanYears',
+  );
+  @override
+  late final GeneratedColumn<int> lifespanYears = GeneratedColumn<int>(
+    'lifespan_years',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hardinessZoneMeta = const VerificationMeta(
+    'hardinessZone',
+  );
+  @override
+  late final GeneratedColumn<String> hardinessZone = GeneratedColumn<String>(
+    'hardiness_zone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _coldResistanceCelsiusMeta =
+      const VerificationMeta('coldResistanceCelsius');
+  @override
+  late final GeneratedColumn<int> coldResistanceCelsius = GeneratedColumn<int>(
+    'cold_resistance_celsius',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sunExposureMeta = const VerificationMeta(
+    'sunExposure',
+  );
+  @override
+  late final GeneratedColumn<String> sunExposure = GeneratedColumn<String>(
+    'sun_exposure',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _soilTypeMeta = const VerificationMeta(
+    'soilType',
+  );
+  @override
+  late final GeneratedColumn<String> soilType = GeneratedColumn<String>(
+    'soil_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _soilPhMeta = const VerificationMeta('soilPh');
+  @override
+  late final GeneratedColumn<String> soilPh = GeneratedColumn<String>(
+    'soil_ph',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _waterNeedsMeta = const VerificationMeta(
+    'waterNeeds',
+  );
+  @override
+  late final GeneratedColumn<String> waterNeeds = GeneratedColumn<String>(
+    'water_needs',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _droughtToleranceMeta = const VerificationMeta(
+    'droughtTolerance',
+  );
+  @override
+  late final GeneratedColumn<bool> droughtTolerance = GeneratedColumn<bool>(
+    'drought_tolerance',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("drought_tolerance" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _selfFertileMeta = const VerificationMeta(
+    'selfFertile',
+  );
+  @override
+  late final GeneratedColumn<bool> selfFertile = GeneratedColumn<bool>(
+    'self_fertile',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("self_fertile" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _pollinationDetailsMeta =
+      const VerificationMeta('pollinationDetails');
+  @override
+  late final GeneratedColumn<String> pollinationDetails =
+      GeneratedColumn<String>(
+        'pollination_details',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _floweringPeriodMeta = const VerificationMeta(
+    'floweringPeriod',
+  );
+  @override
+  late final GeneratedColumn<String> floweringPeriod = GeneratedColumn<String>(
+    'flowering_period',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _harvestPeriodMeta = const VerificationMeta(
+    'harvestPeriod',
+  );
+  @override
+  late final GeneratedColumn<String> harvestPeriod = GeneratedColumn<String>(
+    'harvest_period',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _yearsToFirstFruitMeta = const VerificationMeta(
+    'yearsToFirstFruit',
+  );
+  @override
+  late final GeneratedColumn<int> yearsToFirstFruit = GeneratedColumn<int>(
+    'years_to_first_fruit',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _yieldKgPerTreeMeta = const VerificationMeta(
+    'yieldKgPerTree',
+  );
+  @override
+  late final GeneratedColumn<double> yieldKgPerTree = GeneratedColumn<double>(
+    'yield_kg_per_tree',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _plantingPeriodMeta = const VerificationMeta(
+    'plantingPeriod',
+  );
+  @override
+  late final GeneratedColumn<String> plantingPeriod = GeneratedColumn<String>(
+    'planting_period',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _plantingDistanceMMeta = const VerificationMeta(
+    'plantingDistanceM',
+  );
+  @override
+  late final GeneratedColumn<double> plantingDistanceM =
+      GeneratedColumn<double>(
+        'planting_distance_m',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _pruningTrainingPeriodMeta =
+      const VerificationMeta('pruningTrainingPeriod');
+  @override
+  late final GeneratedColumn<String> pruningTrainingPeriod =
+      GeneratedColumn<String>(
+        'pruning_training_period',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _pruningMaintenancePeriodMeta =
+      const VerificationMeta('pruningMaintenancePeriod');
+  @override
+  late final GeneratedColumn<String> pruningMaintenancePeriod =
+      GeneratedColumn<String>(
+        'pruning_maintenance_period',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _diseasesMeta = const VerificationMeta(
+    'diseases',
+  );
+  @override
+  late final GeneratedColumn<String> diseases = GeneratedColumn<String>(
+    'diseases',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _pestsMeta = const VerificationMeta('pests');
+  @override
+  late final GeneratedColumn<String> pests = GeneratedColumn<String>(
+    'pests',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _containerSuitableMeta = const VerificationMeta(
+    'containerSuitable',
+  );
+  @override
+  late final GeneratedColumn<bool> containerSuitable = GeneratedColumn<bool>(
+    'container_suitable',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("container_suitable" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _containerMinSizeLMeta = const VerificationMeta(
+    'containerMinSizeL',
+  );
+  @override
+  late final GeneratedColumn<int> containerMinSizeL = GeneratedColumn<int>(
+    'container_min_size_l',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _popularVarietiesMeta = const VerificationMeta(
+    'popularVarieties',
+  );
+  @override
+  late final GeneratedColumn<String> popularVarieties = GeneratedColumn<String>(
+    'popular_varieties',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    commonName,
+    latinName,
+    category,
+    subcategory,
+    emoji,
+    description,
+    heightAdultM,
+    spreadAdultM,
+    growthRate,
+    lifespanYears,
+    hardinessZone,
+    coldResistanceCelsius,
+    sunExposure,
+    soilType,
+    soilPh,
+    waterNeeds,
+    droughtTolerance,
+    selfFertile,
+    pollinationDetails,
+    floweringPeriod,
+    harvestPeriod,
+    yearsToFirstFruit,
+    yieldKgPerTree,
+    plantingPeriod,
+    plantingDistanceM,
+    pruningTrainingPeriod,
+    pruningMaintenancePeriod,
+    diseases,
+    pests,
+    containerSuitable,
+    containerMinSizeL,
+    popularVarieties,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'fruit_trees';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FruitTree> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('common_name')) {
+      context.handle(
+        _commonNameMeta,
+        commonName.isAcceptableOrUnknown(data['common_name']!, _commonNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_commonNameMeta);
+    }
+    if (data.containsKey('latin_name')) {
+      context.handle(
+        _latinNameMeta,
+        latinName.isAcceptableOrUnknown(data['latin_name']!, _latinNameMeta),
+      );
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    }
+    if (data.containsKey('subcategory')) {
+      context.handle(
+        _subcategoryMeta,
+        subcategory.isAcceptableOrUnknown(
+          data['subcategory']!,
+          _subcategoryMeta,
+        ),
+      );
+    }
+    if (data.containsKey('emoji')) {
+      context.handle(
+        _emojiMeta,
+        emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('height_adult_m')) {
+      context.handle(
+        _heightAdultMMeta,
+        heightAdultM.isAcceptableOrUnknown(
+          data['height_adult_m']!,
+          _heightAdultMMeta,
+        ),
+      );
+    }
+    if (data.containsKey('spread_adult_m')) {
+      context.handle(
+        _spreadAdultMMeta,
+        spreadAdultM.isAcceptableOrUnknown(
+          data['spread_adult_m']!,
+          _spreadAdultMMeta,
+        ),
+      );
+    }
+    if (data.containsKey('growth_rate')) {
+      context.handle(
+        _growthRateMeta,
+        growthRate.isAcceptableOrUnknown(data['growth_rate']!, _growthRateMeta),
+      );
+    }
+    if (data.containsKey('lifespan_years')) {
+      context.handle(
+        _lifespanYearsMeta,
+        lifespanYears.isAcceptableOrUnknown(
+          data['lifespan_years']!,
+          _lifespanYearsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('hardiness_zone')) {
+      context.handle(
+        _hardinessZoneMeta,
+        hardinessZone.isAcceptableOrUnknown(
+          data['hardiness_zone']!,
+          _hardinessZoneMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cold_resistance_celsius')) {
+      context.handle(
+        _coldResistanceCelsiusMeta,
+        coldResistanceCelsius.isAcceptableOrUnknown(
+          data['cold_resistance_celsius']!,
+          _coldResistanceCelsiusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sun_exposure')) {
+      context.handle(
+        _sunExposureMeta,
+        sunExposure.isAcceptableOrUnknown(
+          data['sun_exposure']!,
+          _sunExposureMeta,
+        ),
+      );
+    }
+    if (data.containsKey('soil_type')) {
+      context.handle(
+        _soilTypeMeta,
+        soilType.isAcceptableOrUnknown(data['soil_type']!, _soilTypeMeta),
+      );
+    }
+    if (data.containsKey('soil_ph')) {
+      context.handle(
+        _soilPhMeta,
+        soilPh.isAcceptableOrUnknown(data['soil_ph']!, _soilPhMeta),
+      );
+    }
+    if (data.containsKey('water_needs')) {
+      context.handle(
+        _waterNeedsMeta,
+        waterNeeds.isAcceptableOrUnknown(data['water_needs']!, _waterNeedsMeta),
+      );
+    }
+    if (data.containsKey('drought_tolerance')) {
+      context.handle(
+        _droughtToleranceMeta,
+        droughtTolerance.isAcceptableOrUnknown(
+          data['drought_tolerance']!,
+          _droughtToleranceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('self_fertile')) {
+      context.handle(
+        _selfFertileMeta,
+        selfFertile.isAcceptableOrUnknown(
+          data['self_fertile']!,
+          _selfFertileMeta,
+        ),
+      );
+    }
+    if (data.containsKey('pollination_details')) {
+      context.handle(
+        _pollinationDetailsMeta,
+        pollinationDetails.isAcceptableOrUnknown(
+          data['pollination_details']!,
+          _pollinationDetailsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('flowering_period')) {
+      context.handle(
+        _floweringPeriodMeta,
+        floweringPeriod.isAcceptableOrUnknown(
+          data['flowering_period']!,
+          _floweringPeriodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('harvest_period')) {
+      context.handle(
+        _harvestPeriodMeta,
+        harvestPeriod.isAcceptableOrUnknown(
+          data['harvest_period']!,
+          _harvestPeriodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('years_to_first_fruit')) {
+      context.handle(
+        _yearsToFirstFruitMeta,
+        yearsToFirstFruit.isAcceptableOrUnknown(
+          data['years_to_first_fruit']!,
+          _yearsToFirstFruitMeta,
+        ),
+      );
+    }
+    if (data.containsKey('yield_kg_per_tree')) {
+      context.handle(
+        _yieldKgPerTreeMeta,
+        yieldKgPerTree.isAcceptableOrUnknown(
+          data['yield_kg_per_tree']!,
+          _yieldKgPerTreeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('planting_period')) {
+      context.handle(
+        _plantingPeriodMeta,
+        plantingPeriod.isAcceptableOrUnknown(
+          data['planting_period']!,
+          _plantingPeriodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('planting_distance_m')) {
+      context.handle(
+        _plantingDistanceMMeta,
+        plantingDistanceM.isAcceptableOrUnknown(
+          data['planting_distance_m']!,
+          _plantingDistanceMMeta,
+        ),
+      );
+    }
+    if (data.containsKey('pruning_training_period')) {
+      context.handle(
+        _pruningTrainingPeriodMeta,
+        pruningTrainingPeriod.isAcceptableOrUnknown(
+          data['pruning_training_period']!,
+          _pruningTrainingPeriodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('pruning_maintenance_period')) {
+      context.handle(
+        _pruningMaintenancePeriodMeta,
+        pruningMaintenancePeriod.isAcceptableOrUnknown(
+          data['pruning_maintenance_period']!,
+          _pruningMaintenancePeriodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('diseases')) {
+      context.handle(
+        _diseasesMeta,
+        diseases.isAcceptableOrUnknown(data['diseases']!, _diseasesMeta),
+      );
+    }
+    if (data.containsKey('pests')) {
+      context.handle(
+        _pestsMeta,
+        pests.isAcceptableOrUnknown(data['pests']!, _pestsMeta),
+      );
+    }
+    if (data.containsKey('container_suitable')) {
+      context.handle(
+        _containerSuitableMeta,
+        containerSuitable.isAcceptableOrUnknown(
+          data['container_suitable']!,
+          _containerSuitableMeta,
+        ),
+      );
+    }
+    if (data.containsKey('container_min_size_l')) {
+      context.handle(
+        _containerMinSizeLMeta,
+        containerMinSizeL.isAcceptableOrUnknown(
+          data['container_min_size_l']!,
+          _containerMinSizeLMeta,
+        ),
+      );
+    }
+    if (data.containsKey('popular_varieties')) {
+      context.handle(
+        _popularVarietiesMeta,
+        popularVarieties.isAcceptableOrUnknown(
+          data['popular_varieties']!,
+          _popularVarietiesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FruitTree map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FruitTree(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      commonName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}common_name'],
+      )!,
+      latinName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}latin_name'],
+      ),
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      ),
+      subcategory: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subcategory'],
+      ),
+      emoji: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}emoji'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      heightAdultM: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}height_adult_m'],
+      ),
+      spreadAdultM: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}spread_adult_m'],
+      ),
+      growthRate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}growth_rate'],
+      ),
+      lifespanYears: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lifespan_years'],
+      ),
+      hardinessZone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hardiness_zone'],
+      ),
+      coldResistanceCelsius: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cold_resistance_celsius'],
+      ),
+      sunExposure: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sun_exposure'],
+      ),
+      soilType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}soil_type'],
+      ),
+      soilPh: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}soil_ph'],
+      ),
+      waterNeeds: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}water_needs'],
+      ),
+      droughtTolerance: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}drought_tolerance'],
+      )!,
+      selfFertile: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}self_fertile'],
+      )!,
+      pollinationDetails: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pollination_details'],
+      ),
+      floweringPeriod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}flowering_period'],
+      ),
+      harvestPeriod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}harvest_period'],
+      ),
+      yearsToFirstFruit: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}years_to_first_fruit'],
+      ),
+      yieldKgPerTree: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}yield_kg_per_tree'],
+      ),
+      plantingPeriod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}planting_period'],
+      ),
+      plantingDistanceM: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}planting_distance_m'],
+      ),
+      pruningTrainingPeriod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pruning_training_period'],
+      ),
+      pruningMaintenancePeriod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pruning_maintenance_period'],
+      ),
+      diseases: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}diseases'],
+      ),
+      pests: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pests'],
+      ),
+      containerSuitable: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}container_suitable'],
+      )!,
+      containerMinSizeL: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}container_min_size_l'],
+      ),
+      popularVarieties: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}popular_varieties'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $FruitTreesTable createAlias(String alias) {
+    return $FruitTreesTable(attachedDatabase, alias);
+  }
+}
+
+class FruitTree extends DataClass implements Insertable<FruitTree> {
+  final int id;
+  final String commonName;
+  final String? latinName;
+  final String? category;
+  final String? subcategory;
+  final String emoji;
+  final String? description;
+  final double? heightAdultM;
+  final double? spreadAdultM;
+  final String? growthRate;
+  final int? lifespanYears;
+  final String? hardinessZone;
+  final int? coldResistanceCelsius;
+  final String? sunExposure;
+  final String? soilType;
+  final String? soilPh;
+  final String? waterNeeds;
+  final bool droughtTolerance;
+  final bool selfFertile;
+  final String? pollinationDetails;
+  final String? floweringPeriod;
+  final String? harvestPeriod;
+  final int? yearsToFirstFruit;
+  final double? yieldKgPerTree;
+  final String? plantingPeriod;
+  final double? plantingDistanceM;
+  final String? pruningTrainingPeriod;
+  final String? pruningMaintenancePeriod;
+  final String? diseases;
+  final String? pests;
+  final bool containerSuitable;
+  final int? containerMinSizeL;
+  final String? popularVarieties;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const FruitTree({
+    required this.id,
+    required this.commonName,
+    this.latinName,
+    this.category,
+    this.subcategory,
+    required this.emoji,
+    this.description,
+    this.heightAdultM,
+    this.spreadAdultM,
+    this.growthRate,
+    this.lifespanYears,
+    this.hardinessZone,
+    this.coldResistanceCelsius,
+    this.sunExposure,
+    this.soilType,
+    this.soilPh,
+    this.waterNeeds,
+    required this.droughtTolerance,
+    required this.selfFertile,
+    this.pollinationDetails,
+    this.floweringPeriod,
+    this.harvestPeriod,
+    this.yearsToFirstFruit,
+    this.yieldKgPerTree,
+    this.plantingPeriod,
+    this.plantingDistanceM,
+    this.pruningTrainingPeriod,
+    this.pruningMaintenancePeriod,
+    this.diseases,
+    this.pests,
+    required this.containerSuitable,
+    this.containerMinSizeL,
+    this.popularVarieties,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['common_name'] = Variable<String>(commonName);
+    if (!nullToAbsent || latinName != null) {
+      map['latin_name'] = Variable<String>(latinName);
+    }
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(category);
+    }
+    if (!nullToAbsent || subcategory != null) {
+      map['subcategory'] = Variable<String>(subcategory);
+    }
+    map['emoji'] = Variable<String>(emoji);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || heightAdultM != null) {
+      map['height_adult_m'] = Variable<double>(heightAdultM);
+    }
+    if (!nullToAbsent || spreadAdultM != null) {
+      map['spread_adult_m'] = Variable<double>(spreadAdultM);
+    }
+    if (!nullToAbsent || growthRate != null) {
+      map['growth_rate'] = Variable<String>(growthRate);
+    }
+    if (!nullToAbsent || lifespanYears != null) {
+      map['lifespan_years'] = Variable<int>(lifespanYears);
+    }
+    if (!nullToAbsent || hardinessZone != null) {
+      map['hardiness_zone'] = Variable<String>(hardinessZone);
+    }
+    if (!nullToAbsent || coldResistanceCelsius != null) {
+      map['cold_resistance_celsius'] = Variable<int>(coldResistanceCelsius);
+    }
+    if (!nullToAbsent || sunExposure != null) {
+      map['sun_exposure'] = Variable<String>(sunExposure);
+    }
+    if (!nullToAbsent || soilType != null) {
+      map['soil_type'] = Variable<String>(soilType);
+    }
+    if (!nullToAbsent || soilPh != null) {
+      map['soil_ph'] = Variable<String>(soilPh);
+    }
+    if (!nullToAbsent || waterNeeds != null) {
+      map['water_needs'] = Variable<String>(waterNeeds);
+    }
+    map['drought_tolerance'] = Variable<bool>(droughtTolerance);
+    map['self_fertile'] = Variable<bool>(selfFertile);
+    if (!nullToAbsent || pollinationDetails != null) {
+      map['pollination_details'] = Variable<String>(pollinationDetails);
+    }
+    if (!nullToAbsent || floweringPeriod != null) {
+      map['flowering_period'] = Variable<String>(floweringPeriod);
+    }
+    if (!nullToAbsent || harvestPeriod != null) {
+      map['harvest_period'] = Variable<String>(harvestPeriod);
+    }
+    if (!nullToAbsent || yearsToFirstFruit != null) {
+      map['years_to_first_fruit'] = Variable<int>(yearsToFirstFruit);
+    }
+    if (!nullToAbsent || yieldKgPerTree != null) {
+      map['yield_kg_per_tree'] = Variable<double>(yieldKgPerTree);
+    }
+    if (!nullToAbsent || plantingPeriod != null) {
+      map['planting_period'] = Variable<String>(plantingPeriod);
+    }
+    if (!nullToAbsent || plantingDistanceM != null) {
+      map['planting_distance_m'] = Variable<double>(plantingDistanceM);
+    }
+    if (!nullToAbsent || pruningTrainingPeriod != null) {
+      map['pruning_training_period'] = Variable<String>(pruningTrainingPeriod);
+    }
+    if (!nullToAbsent || pruningMaintenancePeriod != null) {
+      map['pruning_maintenance_period'] = Variable<String>(
+        pruningMaintenancePeriod,
+      );
+    }
+    if (!nullToAbsent || diseases != null) {
+      map['diseases'] = Variable<String>(diseases);
+    }
+    if (!nullToAbsent || pests != null) {
+      map['pests'] = Variable<String>(pests);
+    }
+    map['container_suitable'] = Variable<bool>(containerSuitable);
+    if (!nullToAbsent || containerMinSizeL != null) {
+      map['container_min_size_l'] = Variable<int>(containerMinSizeL);
+    }
+    if (!nullToAbsent || popularVarieties != null) {
+      map['popular_varieties'] = Variable<String>(popularVarieties);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  FruitTreesCompanion toCompanion(bool nullToAbsent) {
+    return FruitTreesCompanion(
+      id: Value(id),
+      commonName: Value(commonName),
+      latinName: latinName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latinName),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
+      subcategory: subcategory == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subcategory),
+      emoji: Value(emoji),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      heightAdultM: heightAdultM == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightAdultM),
+      spreadAdultM: spreadAdultM == null && nullToAbsent
+          ? const Value.absent()
+          : Value(spreadAdultM),
+      growthRate: growthRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(growthRate),
+      lifespanYears: lifespanYears == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lifespanYears),
+      hardinessZone: hardinessZone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hardinessZone),
+      coldResistanceCelsius: coldResistanceCelsius == null && nullToAbsent
+          ? const Value.absent()
+          : Value(coldResistanceCelsius),
+      sunExposure: sunExposure == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sunExposure),
+      soilType: soilType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(soilType),
+      soilPh: soilPh == null && nullToAbsent
+          ? const Value.absent()
+          : Value(soilPh),
+      waterNeeds: waterNeeds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(waterNeeds),
+      droughtTolerance: Value(droughtTolerance),
+      selfFertile: Value(selfFertile),
+      pollinationDetails: pollinationDetails == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pollinationDetails),
+      floweringPeriod: floweringPeriod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(floweringPeriod),
+      harvestPeriod: harvestPeriod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(harvestPeriod),
+      yearsToFirstFruit: yearsToFirstFruit == null && nullToAbsent
+          ? const Value.absent()
+          : Value(yearsToFirstFruit),
+      yieldKgPerTree: yieldKgPerTree == null && nullToAbsent
+          ? const Value.absent()
+          : Value(yieldKgPerTree),
+      plantingPeriod: plantingPeriod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plantingPeriod),
+      plantingDistanceM: plantingDistanceM == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plantingDistanceM),
+      pruningTrainingPeriod: pruningTrainingPeriod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pruningTrainingPeriod),
+      pruningMaintenancePeriod: pruningMaintenancePeriod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pruningMaintenancePeriod),
+      diseases: diseases == null && nullToAbsent
+          ? const Value.absent()
+          : Value(diseases),
+      pests: pests == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pests),
+      containerSuitable: Value(containerSuitable),
+      containerMinSizeL: containerMinSizeL == null && nullToAbsent
+          ? const Value.absent()
+          : Value(containerMinSizeL),
+      popularVarieties: popularVarieties == null && nullToAbsent
+          ? const Value.absent()
+          : Value(popularVarieties),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory FruitTree.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FruitTree(
+      id: serializer.fromJson<int>(json['id']),
+      commonName: serializer.fromJson<String>(json['commonName']),
+      latinName: serializer.fromJson<String?>(json['latinName']),
+      category: serializer.fromJson<String?>(json['category']),
+      subcategory: serializer.fromJson<String?>(json['subcategory']),
+      emoji: serializer.fromJson<String>(json['emoji']),
+      description: serializer.fromJson<String?>(json['description']),
+      heightAdultM: serializer.fromJson<double?>(json['heightAdultM']),
+      spreadAdultM: serializer.fromJson<double?>(json['spreadAdultM']),
+      growthRate: serializer.fromJson<String?>(json['growthRate']),
+      lifespanYears: serializer.fromJson<int?>(json['lifespanYears']),
+      hardinessZone: serializer.fromJson<String?>(json['hardinessZone']),
+      coldResistanceCelsius: serializer.fromJson<int?>(
+        json['coldResistanceCelsius'],
+      ),
+      sunExposure: serializer.fromJson<String?>(json['sunExposure']),
+      soilType: serializer.fromJson<String?>(json['soilType']),
+      soilPh: serializer.fromJson<String?>(json['soilPh']),
+      waterNeeds: serializer.fromJson<String?>(json['waterNeeds']),
+      droughtTolerance: serializer.fromJson<bool>(json['droughtTolerance']),
+      selfFertile: serializer.fromJson<bool>(json['selfFertile']),
+      pollinationDetails: serializer.fromJson<String?>(
+        json['pollinationDetails'],
+      ),
+      floweringPeriod: serializer.fromJson<String?>(json['floweringPeriod']),
+      harvestPeriod: serializer.fromJson<String?>(json['harvestPeriod']),
+      yearsToFirstFruit: serializer.fromJson<int?>(json['yearsToFirstFruit']),
+      yieldKgPerTree: serializer.fromJson<double?>(json['yieldKgPerTree']),
+      plantingPeriod: serializer.fromJson<String?>(json['plantingPeriod']),
+      plantingDistanceM: serializer.fromJson<double?>(
+        json['plantingDistanceM'],
+      ),
+      pruningTrainingPeriod: serializer.fromJson<String?>(
+        json['pruningTrainingPeriod'],
+      ),
+      pruningMaintenancePeriod: serializer.fromJson<String?>(
+        json['pruningMaintenancePeriod'],
+      ),
+      diseases: serializer.fromJson<String?>(json['diseases']),
+      pests: serializer.fromJson<String?>(json['pests']),
+      containerSuitable: serializer.fromJson<bool>(json['containerSuitable']),
+      containerMinSizeL: serializer.fromJson<int?>(json['containerMinSizeL']),
+      popularVarieties: serializer.fromJson<String?>(json['popularVarieties']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'commonName': serializer.toJson<String>(commonName),
+      'latinName': serializer.toJson<String?>(latinName),
+      'category': serializer.toJson<String?>(category),
+      'subcategory': serializer.toJson<String?>(subcategory),
+      'emoji': serializer.toJson<String>(emoji),
+      'description': serializer.toJson<String?>(description),
+      'heightAdultM': serializer.toJson<double?>(heightAdultM),
+      'spreadAdultM': serializer.toJson<double?>(spreadAdultM),
+      'growthRate': serializer.toJson<String?>(growthRate),
+      'lifespanYears': serializer.toJson<int?>(lifespanYears),
+      'hardinessZone': serializer.toJson<String?>(hardinessZone),
+      'coldResistanceCelsius': serializer.toJson<int?>(coldResistanceCelsius),
+      'sunExposure': serializer.toJson<String?>(sunExposure),
+      'soilType': serializer.toJson<String?>(soilType),
+      'soilPh': serializer.toJson<String?>(soilPh),
+      'waterNeeds': serializer.toJson<String?>(waterNeeds),
+      'droughtTolerance': serializer.toJson<bool>(droughtTolerance),
+      'selfFertile': serializer.toJson<bool>(selfFertile),
+      'pollinationDetails': serializer.toJson<String?>(pollinationDetails),
+      'floweringPeriod': serializer.toJson<String?>(floweringPeriod),
+      'harvestPeriod': serializer.toJson<String?>(harvestPeriod),
+      'yearsToFirstFruit': serializer.toJson<int?>(yearsToFirstFruit),
+      'yieldKgPerTree': serializer.toJson<double?>(yieldKgPerTree),
+      'plantingPeriod': serializer.toJson<String?>(plantingPeriod),
+      'plantingDistanceM': serializer.toJson<double?>(plantingDistanceM),
+      'pruningTrainingPeriod': serializer.toJson<String?>(
+        pruningTrainingPeriod,
+      ),
+      'pruningMaintenancePeriod': serializer.toJson<String?>(
+        pruningMaintenancePeriod,
+      ),
+      'diseases': serializer.toJson<String?>(diseases),
+      'pests': serializer.toJson<String?>(pests),
+      'containerSuitable': serializer.toJson<bool>(containerSuitable),
+      'containerMinSizeL': serializer.toJson<int?>(containerMinSizeL),
+      'popularVarieties': serializer.toJson<String?>(popularVarieties),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  FruitTree copyWith({
+    int? id,
+    String? commonName,
+    Value<String?> latinName = const Value.absent(),
+    Value<String?> category = const Value.absent(),
+    Value<String?> subcategory = const Value.absent(),
+    String? emoji,
+    Value<String?> description = const Value.absent(),
+    Value<double?> heightAdultM = const Value.absent(),
+    Value<double?> spreadAdultM = const Value.absent(),
+    Value<String?> growthRate = const Value.absent(),
+    Value<int?> lifespanYears = const Value.absent(),
+    Value<String?> hardinessZone = const Value.absent(),
+    Value<int?> coldResistanceCelsius = const Value.absent(),
+    Value<String?> sunExposure = const Value.absent(),
+    Value<String?> soilType = const Value.absent(),
+    Value<String?> soilPh = const Value.absent(),
+    Value<String?> waterNeeds = const Value.absent(),
+    bool? droughtTolerance,
+    bool? selfFertile,
+    Value<String?> pollinationDetails = const Value.absent(),
+    Value<String?> floweringPeriod = const Value.absent(),
+    Value<String?> harvestPeriod = const Value.absent(),
+    Value<int?> yearsToFirstFruit = const Value.absent(),
+    Value<double?> yieldKgPerTree = const Value.absent(),
+    Value<String?> plantingPeriod = const Value.absent(),
+    Value<double?> plantingDistanceM = const Value.absent(),
+    Value<String?> pruningTrainingPeriod = const Value.absent(),
+    Value<String?> pruningMaintenancePeriod = const Value.absent(),
+    Value<String?> diseases = const Value.absent(),
+    Value<String?> pests = const Value.absent(),
+    bool? containerSuitable,
+    Value<int?> containerMinSizeL = const Value.absent(),
+    Value<String?> popularVarieties = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => FruitTree(
+    id: id ?? this.id,
+    commonName: commonName ?? this.commonName,
+    latinName: latinName.present ? latinName.value : this.latinName,
+    category: category.present ? category.value : this.category,
+    subcategory: subcategory.present ? subcategory.value : this.subcategory,
+    emoji: emoji ?? this.emoji,
+    description: description.present ? description.value : this.description,
+    heightAdultM: heightAdultM.present ? heightAdultM.value : this.heightAdultM,
+    spreadAdultM: spreadAdultM.present ? spreadAdultM.value : this.spreadAdultM,
+    growthRate: growthRate.present ? growthRate.value : this.growthRate,
+    lifespanYears: lifespanYears.present
+        ? lifespanYears.value
+        : this.lifespanYears,
+    hardinessZone: hardinessZone.present
+        ? hardinessZone.value
+        : this.hardinessZone,
+    coldResistanceCelsius: coldResistanceCelsius.present
+        ? coldResistanceCelsius.value
+        : this.coldResistanceCelsius,
+    sunExposure: sunExposure.present ? sunExposure.value : this.sunExposure,
+    soilType: soilType.present ? soilType.value : this.soilType,
+    soilPh: soilPh.present ? soilPh.value : this.soilPh,
+    waterNeeds: waterNeeds.present ? waterNeeds.value : this.waterNeeds,
+    droughtTolerance: droughtTolerance ?? this.droughtTolerance,
+    selfFertile: selfFertile ?? this.selfFertile,
+    pollinationDetails: pollinationDetails.present
+        ? pollinationDetails.value
+        : this.pollinationDetails,
+    floweringPeriod: floweringPeriod.present
+        ? floweringPeriod.value
+        : this.floweringPeriod,
+    harvestPeriod: harvestPeriod.present
+        ? harvestPeriod.value
+        : this.harvestPeriod,
+    yearsToFirstFruit: yearsToFirstFruit.present
+        ? yearsToFirstFruit.value
+        : this.yearsToFirstFruit,
+    yieldKgPerTree: yieldKgPerTree.present
+        ? yieldKgPerTree.value
+        : this.yieldKgPerTree,
+    plantingPeriod: plantingPeriod.present
+        ? plantingPeriod.value
+        : this.plantingPeriod,
+    plantingDistanceM: plantingDistanceM.present
+        ? plantingDistanceM.value
+        : this.plantingDistanceM,
+    pruningTrainingPeriod: pruningTrainingPeriod.present
+        ? pruningTrainingPeriod.value
+        : this.pruningTrainingPeriod,
+    pruningMaintenancePeriod: pruningMaintenancePeriod.present
+        ? pruningMaintenancePeriod.value
+        : this.pruningMaintenancePeriod,
+    diseases: diseases.present ? diseases.value : this.diseases,
+    pests: pests.present ? pests.value : this.pests,
+    containerSuitable: containerSuitable ?? this.containerSuitable,
+    containerMinSizeL: containerMinSizeL.present
+        ? containerMinSizeL.value
+        : this.containerMinSizeL,
+    popularVarieties: popularVarieties.present
+        ? popularVarieties.value
+        : this.popularVarieties,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  FruitTree copyWithCompanion(FruitTreesCompanion data) {
+    return FruitTree(
+      id: data.id.present ? data.id.value : this.id,
+      commonName: data.commonName.present
+          ? data.commonName.value
+          : this.commonName,
+      latinName: data.latinName.present ? data.latinName.value : this.latinName,
+      category: data.category.present ? data.category.value : this.category,
+      subcategory: data.subcategory.present
+          ? data.subcategory.value
+          : this.subcategory,
+      emoji: data.emoji.present ? data.emoji.value : this.emoji,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      heightAdultM: data.heightAdultM.present
+          ? data.heightAdultM.value
+          : this.heightAdultM,
+      spreadAdultM: data.spreadAdultM.present
+          ? data.spreadAdultM.value
+          : this.spreadAdultM,
+      growthRate: data.growthRate.present
+          ? data.growthRate.value
+          : this.growthRate,
+      lifespanYears: data.lifespanYears.present
+          ? data.lifespanYears.value
+          : this.lifespanYears,
+      hardinessZone: data.hardinessZone.present
+          ? data.hardinessZone.value
+          : this.hardinessZone,
+      coldResistanceCelsius: data.coldResistanceCelsius.present
+          ? data.coldResistanceCelsius.value
+          : this.coldResistanceCelsius,
+      sunExposure: data.sunExposure.present
+          ? data.sunExposure.value
+          : this.sunExposure,
+      soilType: data.soilType.present ? data.soilType.value : this.soilType,
+      soilPh: data.soilPh.present ? data.soilPh.value : this.soilPh,
+      waterNeeds: data.waterNeeds.present
+          ? data.waterNeeds.value
+          : this.waterNeeds,
+      droughtTolerance: data.droughtTolerance.present
+          ? data.droughtTolerance.value
+          : this.droughtTolerance,
+      selfFertile: data.selfFertile.present
+          ? data.selfFertile.value
+          : this.selfFertile,
+      pollinationDetails: data.pollinationDetails.present
+          ? data.pollinationDetails.value
+          : this.pollinationDetails,
+      floweringPeriod: data.floweringPeriod.present
+          ? data.floweringPeriod.value
+          : this.floweringPeriod,
+      harvestPeriod: data.harvestPeriod.present
+          ? data.harvestPeriod.value
+          : this.harvestPeriod,
+      yearsToFirstFruit: data.yearsToFirstFruit.present
+          ? data.yearsToFirstFruit.value
+          : this.yearsToFirstFruit,
+      yieldKgPerTree: data.yieldKgPerTree.present
+          ? data.yieldKgPerTree.value
+          : this.yieldKgPerTree,
+      plantingPeriod: data.plantingPeriod.present
+          ? data.plantingPeriod.value
+          : this.plantingPeriod,
+      plantingDistanceM: data.plantingDistanceM.present
+          ? data.plantingDistanceM.value
+          : this.plantingDistanceM,
+      pruningTrainingPeriod: data.pruningTrainingPeriod.present
+          ? data.pruningTrainingPeriod.value
+          : this.pruningTrainingPeriod,
+      pruningMaintenancePeriod: data.pruningMaintenancePeriod.present
+          ? data.pruningMaintenancePeriod.value
+          : this.pruningMaintenancePeriod,
+      diseases: data.diseases.present ? data.diseases.value : this.diseases,
+      pests: data.pests.present ? data.pests.value : this.pests,
+      containerSuitable: data.containerSuitable.present
+          ? data.containerSuitable.value
+          : this.containerSuitable,
+      containerMinSizeL: data.containerMinSizeL.present
+          ? data.containerMinSizeL.value
+          : this.containerMinSizeL,
+      popularVarieties: data.popularVarieties.present
+          ? data.popularVarieties.value
+          : this.popularVarieties,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FruitTree(')
+          ..write('id: $id, ')
+          ..write('commonName: $commonName, ')
+          ..write('latinName: $latinName, ')
+          ..write('category: $category, ')
+          ..write('subcategory: $subcategory, ')
+          ..write('emoji: $emoji, ')
+          ..write('description: $description, ')
+          ..write('heightAdultM: $heightAdultM, ')
+          ..write('spreadAdultM: $spreadAdultM, ')
+          ..write('growthRate: $growthRate, ')
+          ..write('lifespanYears: $lifespanYears, ')
+          ..write('hardinessZone: $hardinessZone, ')
+          ..write('coldResistanceCelsius: $coldResistanceCelsius, ')
+          ..write('sunExposure: $sunExposure, ')
+          ..write('soilType: $soilType, ')
+          ..write('soilPh: $soilPh, ')
+          ..write('waterNeeds: $waterNeeds, ')
+          ..write('droughtTolerance: $droughtTolerance, ')
+          ..write('selfFertile: $selfFertile, ')
+          ..write('pollinationDetails: $pollinationDetails, ')
+          ..write('floweringPeriod: $floweringPeriod, ')
+          ..write('harvestPeriod: $harvestPeriod, ')
+          ..write('yearsToFirstFruit: $yearsToFirstFruit, ')
+          ..write('yieldKgPerTree: $yieldKgPerTree, ')
+          ..write('plantingPeriod: $plantingPeriod, ')
+          ..write('plantingDistanceM: $plantingDistanceM, ')
+          ..write('pruningTrainingPeriod: $pruningTrainingPeriod, ')
+          ..write('pruningMaintenancePeriod: $pruningMaintenancePeriod, ')
+          ..write('diseases: $diseases, ')
+          ..write('pests: $pests, ')
+          ..write('containerSuitable: $containerSuitable, ')
+          ..write('containerMinSizeL: $containerMinSizeL, ')
+          ..write('popularVarieties: $popularVarieties, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    commonName,
+    latinName,
+    category,
+    subcategory,
+    emoji,
+    description,
+    heightAdultM,
+    spreadAdultM,
+    growthRate,
+    lifespanYears,
+    hardinessZone,
+    coldResistanceCelsius,
+    sunExposure,
+    soilType,
+    soilPh,
+    waterNeeds,
+    droughtTolerance,
+    selfFertile,
+    pollinationDetails,
+    floweringPeriod,
+    harvestPeriod,
+    yearsToFirstFruit,
+    yieldKgPerTree,
+    plantingPeriod,
+    plantingDistanceM,
+    pruningTrainingPeriod,
+    pruningMaintenancePeriod,
+    diseases,
+    pests,
+    containerSuitable,
+    containerMinSizeL,
+    popularVarieties,
+    createdAt,
+    updatedAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FruitTree &&
+          other.id == this.id &&
+          other.commonName == this.commonName &&
+          other.latinName == this.latinName &&
+          other.category == this.category &&
+          other.subcategory == this.subcategory &&
+          other.emoji == this.emoji &&
+          other.description == this.description &&
+          other.heightAdultM == this.heightAdultM &&
+          other.spreadAdultM == this.spreadAdultM &&
+          other.growthRate == this.growthRate &&
+          other.lifespanYears == this.lifespanYears &&
+          other.hardinessZone == this.hardinessZone &&
+          other.coldResistanceCelsius == this.coldResistanceCelsius &&
+          other.sunExposure == this.sunExposure &&
+          other.soilType == this.soilType &&
+          other.soilPh == this.soilPh &&
+          other.waterNeeds == this.waterNeeds &&
+          other.droughtTolerance == this.droughtTolerance &&
+          other.selfFertile == this.selfFertile &&
+          other.pollinationDetails == this.pollinationDetails &&
+          other.floweringPeriod == this.floweringPeriod &&
+          other.harvestPeriod == this.harvestPeriod &&
+          other.yearsToFirstFruit == this.yearsToFirstFruit &&
+          other.yieldKgPerTree == this.yieldKgPerTree &&
+          other.plantingPeriod == this.plantingPeriod &&
+          other.plantingDistanceM == this.plantingDistanceM &&
+          other.pruningTrainingPeriod == this.pruningTrainingPeriod &&
+          other.pruningMaintenancePeriod == this.pruningMaintenancePeriod &&
+          other.diseases == this.diseases &&
+          other.pests == this.pests &&
+          other.containerSuitable == this.containerSuitable &&
+          other.containerMinSizeL == this.containerMinSizeL &&
+          other.popularVarieties == this.popularVarieties &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
+  final Value<int> id;
+  final Value<String> commonName;
+  final Value<String?> latinName;
+  final Value<String?> category;
+  final Value<String?> subcategory;
+  final Value<String> emoji;
+  final Value<String?> description;
+  final Value<double?> heightAdultM;
+  final Value<double?> spreadAdultM;
+  final Value<String?> growthRate;
+  final Value<int?> lifespanYears;
+  final Value<String?> hardinessZone;
+  final Value<int?> coldResistanceCelsius;
+  final Value<String?> sunExposure;
+  final Value<String?> soilType;
+  final Value<String?> soilPh;
+  final Value<String?> waterNeeds;
+  final Value<bool> droughtTolerance;
+  final Value<bool> selfFertile;
+  final Value<String?> pollinationDetails;
+  final Value<String?> floweringPeriod;
+  final Value<String?> harvestPeriod;
+  final Value<int?> yearsToFirstFruit;
+  final Value<double?> yieldKgPerTree;
+  final Value<String?> plantingPeriod;
+  final Value<double?> plantingDistanceM;
+  final Value<String?> pruningTrainingPeriod;
+  final Value<String?> pruningMaintenancePeriod;
+  final Value<String?> diseases;
+  final Value<String?> pests;
+  final Value<bool> containerSuitable;
+  final Value<int?> containerMinSizeL;
+  final Value<String?> popularVarieties;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const FruitTreesCompanion({
+    this.id = const Value.absent(),
+    this.commonName = const Value.absent(),
+    this.latinName = const Value.absent(),
+    this.category = const Value.absent(),
+    this.subcategory = const Value.absent(),
+    this.emoji = const Value.absent(),
+    this.description = const Value.absent(),
+    this.heightAdultM = const Value.absent(),
+    this.spreadAdultM = const Value.absent(),
+    this.growthRate = const Value.absent(),
+    this.lifespanYears = const Value.absent(),
+    this.hardinessZone = const Value.absent(),
+    this.coldResistanceCelsius = const Value.absent(),
+    this.sunExposure = const Value.absent(),
+    this.soilType = const Value.absent(),
+    this.soilPh = const Value.absent(),
+    this.waterNeeds = const Value.absent(),
+    this.droughtTolerance = const Value.absent(),
+    this.selfFertile = const Value.absent(),
+    this.pollinationDetails = const Value.absent(),
+    this.floweringPeriod = const Value.absent(),
+    this.harvestPeriod = const Value.absent(),
+    this.yearsToFirstFruit = const Value.absent(),
+    this.yieldKgPerTree = const Value.absent(),
+    this.plantingPeriod = const Value.absent(),
+    this.plantingDistanceM = const Value.absent(),
+    this.pruningTrainingPeriod = const Value.absent(),
+    this.pruningMaintenancePeriod = const Value.absent(),
+    this.diseases = const Value.absent(),
+    this.pests = const Value.absent(),
+    this.containerSuitable = const Value.absent(),
+    this.containerMinSizeL = const Value.absent(),
+    this.popularVarieties = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  FruitTreesCompanion.insert({
+    this.id = const Value.absent(),
+    required String commonName,
+    this.latinName = const Value.absent(),
+    this.category = const Value.absent(),
+    this.subcategory = const Value.absent(),
+    this.emoji = const Value.absent(),
+    this.description = const Value.absent(),
+    this.heightAdultM = const Value.absent(),
+    this.spreadAdultM = const Value.absent(),
+    this.growthRate = const Value.absent(),
+    this.lifespanYears = const Value.absent(),
+    this.hardinessZone = const Value.absent(),
+    this.coldResistanceCelsius = const Value.absent(),
+    this.sunExposure = const Value.absent(),
+    this.soilType = const Value.absent(),
+    this.soilPh = const Value.absent(),
+    this.waterNeeds = const Value.absent(),
+    this.droughtTolerance = const Value.absent(),
+    this.selfFertile = const Value.absent(),
+    this.pollinationDetails = const Value.absent(),
+    this.floweringPeriod = const Value.absent(),
+    this.harvestPeriod = const Value.absent(),
+    this.yearsToFirstFruit = const Value.absent(),
+    this.yieldKgPerTree = const Value.absent(),
+    this.plantingPeriod = const Value.absent(),
+    this.plantingDistanceM = const Value.absent(),
+    this.pruningTrainingPeriod = const Value.absent(),
+    this.pruningMaintenancePeriod = const Value.absent(),
+    this.diseases = const Value.absent(),
+    this.pests = const Value.absent(),
+    this.containerSuitable = const Value.absent(),
+    this.containerMinSizeL = const Value.absent(),
+    this.popularVarieties = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : commonName = Value(commonName);
+  static Insertable<FruitTree> custom({
+    Expression<int>? id,
+    Expression<String>? commonName,
+    Expression<String>? latinName,
+    Expression<String>? category,
+    Expression<String>? subcategory,
+    Expression<String>? emoji,
+    Expression<String>? description,
+    Expression<double>? heightAdultM,
+    Expression<double>? spreadAdultM,
+    Expression<String>? growthRate,
+    Expression<int>? lifespanYears,
+    Expression<String>? hardinessZone,
+    Expression<int>? coldResistanceCelsius,
+    Expression<String>? sunExposure,
+    Expression<String>? soilType,
+    Expression<String>? soilPh,
+    Expression<String>? waterNeeds,
+    Expression<bool>? droughtTolerance,
+    Expression<bool>? selfFertile,
+    Expression<String>? pollinationDetails,
+    Expression<String>? floweringPeriod,
+    Expression<String>? harvestPeriod,
+    Expression<int>? yearsToFirstFruit,
+    Expression<double>? yieldKgPerTree,
+    Expression<String>? plantingPeriod,
+    Expression<double>? plantingDistanceM,
+    Expression<String>? pruningTrainingPeriod,
+    Expression<String>? pruningMaintenancePeriod,
+    Expression<String>? diseases,
+    Expression<String>? pests,
+    Expression<bool>? containerSuitable,
+    Expression<int>? containerMinSizeL,
+    Expression<String>? popularVarieties,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (commonName != null) 'common_name': commonName,
+      if (latinName != null) 'latin_name': latinName,
+      if (category != null) 'category': category,
+      if (subcategory != null) 'subcategory': subcategory,
+      if (emoji != null) 'emoji': emoji,
+      if (description != null) 'description': description,
+      if (heightAdultM != null) 'height_adult_m': heightAdultM,
+      if (spreadAdultM != null) 'spread_adult_m': spreadAdultM,
+      if (growthRate != null) 'growth_rate': growthRate,
+      if (lifespanYears != null) 'lifespan_years': lifespanYears,
+      if (hardinessZone != null) 'hardiness_zone': hardinessZone,
+      if (coldResistanceCelsius != null)
+        'cold_resistance_celsius': coldResistanceCelsius,
+      if (sunExposure != null) 'sun_exposure': sunExposure,
+      if (soilType != null) 'soil_type': soilType,
+      if (soilPh != null) 'soil_ph': soilPh,
+      if (waterNeeds != null) 'water_needs': waterNeeds,
+      if (droughtTolerance != null) 'drought_tolerance': droughtTolerance,
+      if (selfFertile != null) 'self_fertile': selfFertile,
+      if (pollinationDetails != null) 'pollination_details': pollinationDetails,
+      if (floweringPeriod != null) 'flowering_period': floweringPeriod,
+      if (harvestPeriod != null) 'harvest_period': harvestPeriod,
+      if (yearsToFirstFruit != null) 'years_to_first_fruit': yearsToFirstFruit,
+      if (yieldKgPerTree != null) 'yield_kg_per_tree': yieldKgPerTree,
+      if (plantingPeriod != null) 'planting_period': plantingPeriod,
+      if (plantingDistanceM != null) 'planting_distance_m': plantingDistanceM,
+      if (pruningTrainingPeriod != null)
+        'pruning_training_period': pruningTrainingPeriod,
+      if (pruningMaintenancePeriod != null)
+        'pruning_maintenance_period': pruningMaintenancePeriod,
+      if (diseases != null) 'diseases': diseases,
+      if (pests != null) 'pests': pests,
+      if (containerSuitable != null) 'container_suitable': containerSuitable,
+      if (containerMinSizeL != null) 'container_min_size_l': containerMinSizeL,
+      if (popularVarieties != null) 'popular_varieties': popularVarieties,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  FruitTreesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? commonName,
+    Value<String?>? latinName,
+    Value<String?>? category,
+    Value<String?>? subcategory,
+    Value<String>? emoji,
+    Value<String?>? description,
+    Value<double?>? heightAdultM,
+    Value<double?>? spreadAdultM,
+    Value<String?>? growthRate,
+    Value<int?>? lifespanYears,
+    Value<String?>? hardinessZone,
+    Value<int?>? coldResistanceCelsius,
+    Value<String?>? sunExposure,
+    Value<String?>? soilType,
+    Value<String?>? soilPh,
+    Value<String?>? waterNeeds,
+    Value<bool>? droughtTolerance,
+    Value<bool>? selfFertile,
+    Value<String?>? pollinationDetails,
+    Value<String?>? floweringPeriod,
+    Value<String?>? harvestPeriod,
+    Value<int?>? yearsToFirstFruit,
+    Value<double?>? yieldKgPerTree,
+    Value<String?>? plantingPeriod,
+    Value<double?>? plantingDistanceM,
+    Value<String?>? pruningTrainingPeriod,
+    Value<String?>? pruningMaintenancePeriod,
+    Value<String?>? diseases,
+    Value<String?>? pests,
+    Value<bool>? containerSuitable,
+    Value<int?>? containerMinSizeL,
+    Value<String?>? popularVarieties,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return FruitTreesCompanion(
+      id: id ?? this.id,
+      commonName: commonName ?? this.commonName,
+      latinName: latinName ?? this.latinName,
+      category: category ?? this.category,
+      subcategory: subcategory ?? this.subcategory,
+      emoji: emoji ?? this.emoji,
+      description: description ?? this.description,
+      heightAdultM: heightAdultM ?? this.heightAdultM,
+      spreadAdultM: spreadAdultM ?? this.spreadAdultM,
+      growthRate: growthRate ?? this.growthRate,
+      lifespanYears: lifespanYears ?? this.lifespanYears,
+      hardinessZone: hardinessZone ?? this.hardinessZone,
+      coldResistanceCelsius:
+          coldResistanceCelsius ?? this.coldResistanceCelsius,
+      sunExposure: sunExposure ?? this.sunExposure,
+      soilType: soilType ?? this.soilType,
+      soilPh: soilPh ?? this.soilPh,
+      waterNeeds: waterNeeds ?? this.waterNeeds,
+      droughtTolerance: droughtTolerance ?? this.droughtTolerance,
+      selfFertile: selfFertile ?? this.selfFertile,
+      pollinationDetails: pollinationDetails ?? this.pollinationDetails,
+      floweringPeriod: floweringPeriod ?? this.floweringPeriod,
+      harvestPeriod: harvestPeriod ?? this.harvestPeriod,
+      yearsToFirstFruit: yearsToFirstFruit ?? this.yearsToFirstFruit,
+      yieldKgPerTree: yieldKgPerTree ?? this.yieldKgPerTree,
+      plantingPeriod: plantingPeriod ?? this.plantingPeriod,
+      plantingDistanceM: plantingDistanceM ?? this.plantingDistanceM,
+      pruningTrainingPeriod:
+          pruningTrainingPeriod ?? this.pruningTrainingPeriod,
+      pruningMaintenancePeriod:
+          pruningMaintenancePeriod ?? this.pruningMaintenancePeriod,
+      diseases: diseases ?? this.diseases,
+      pests: pests ?? this.pests,
+      containerSuitable: containerSuitable ?? this.containerSuitable,
+      containerMinSizeL: containerMinSizeL ?? this.containerMinSizeL,
+      popularVarieties: popularVarieties ?? this.popularVarieties,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (commonName.present) {
+      map['common_name'] = Variable<String>(commonName.value);
+    }
+    if (latinName.present) {
+      map['latin_name'] = Variable<String>(latinName.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (subcategory.present) {
+      map['subcategory'] = Variable<String>(subcategory.value);
+    }
+    if (emoji.present) {
+      map['emoji'] = Variable<String>(emoji.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (heightAdultM.present) {
+      map['height_adult_m'] = Variable<double>(heightAdultM.value);
+    }
+    if (spreadAdultM.present) {
+      map['spread_adult_m'] = Variable<double>(spreadAdultM.value);
+    }
+    if (growthRate.present) {
+      map['growth_rate'] = Variable<String>(growthRate.value);
+    }
+    if (lifespanYears.present) {
+      map['lifespan_years'] = Variable<int>(lifespanYears.value);
+    }
+    if (hardinessZone.present) {
+      map['hardiness_zone'] = Variable<String>(hardinessZone.value);
+    }
+    if (coldResistanceCelsius.present) {
+      map['cold_resistance_celsius'] = Variable<int>(
+        coldResistanceCelsius.value,
+      );
+    }
+    if (sunExposure.present) {
+      map['sun_exposure'] = Variable<String>(sunExposure.value);
+    }
+    if (soilType.present) {
+      map['soil_type'] = Variable<String>(soilType.value);
+    }
+    if (soilPh.present) {
+      map['soil_ph'] = Variable<String>(soilPh.value);
+    }
+    if (waterNeeds.present) {
+      map['water_needs'] = Variable<String>(waterNeeds.value);
+    }
+    if (droughtTolerance.present) {
+      map['drought_tolerance'] = Variable<bool>(droughtTolerance.value);
+    }
+    if (selfFertile.present) {
+      map['self_fertile'] = Variable<bool>(selfFertile.value);
+    }
+    if (pollinationDetails.present) {
+      map['pollination_details'] = Variable<String>(pollinationDetails.value);
+    }
+    if (floweringPeriod.present) {
+      map['flowering_period'] = Variable<String>(floweringPeriod.value);
+    }
+    if (harvestPeriod.present) {
+      map['harvest_period'] = Variable<String>(harvestPeriod.value);
+    }
+    if (yearsToFirstFruit.present) {
+      map['years_to_first_fruit'] = Variable<int>(yearsToFirstFruit.value);
+    }
+    if (yieldKgPerTree.present) {
+      map['yield_kg_per_tree'] = Variable<double>(yieldKgPerTree.value);
+    }
+    if (plantingPeriod.present) {
+      map['planting_period'] = Variable<String>(plantingPeriod.value);
+    }
+    if (plantingDistanceM.present) {
+      map['planting_distance_m'] = Variable<double>(plantingDistanceM.value);
+    }
+    if (pruningTrainingPeriod.present) {
+      map['pruning_training_period'] = Variable<String>(
+        pruningTrainingPeriod.value,
+      );
+    }
+    if (pruningMaintenancePeriod.present) {
+      map['pruning_maintenance_period'] = Variable<String>(
+        pruningMaintenancePeriod.value,
+      );
+    }
+    if (diseases.present) {
+      map['diseases'] = Variable<String>(diseases.value);
+    }
+    if (pests.present) {
+      map['pests'] = Variable<String>(pests.value);
+    }
+    if (containerSuitable.present) {
+      map['container_suitable'] = Variable<bool>(containerSuitable.value);
+    }
+    if (containerMinSizeL.present) {
+      map['container_min_size_l'] = Variable<int>(containerMinSizeL.value);
+    }
+    if (popularVarieties.present) {
+      map['popular_varieties'] = Variable<String>(popularVarieties.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FruitTreesCompanion(')
+          ..write('id: $id, ')
+          ..write('commonName: $commonName, ')
+          ..write('latinName: $latinName, ')
+          ..write('category: $category, ')
+          ..write('subcategory: $subcategory, ')
+          ..write('emoji: $emoji, ')
+          ..write('description: $description, ')
+          ..write('heightAdultM: $heightAdultM, ')
+          ..write('spreadAdultM: $spreadAdultM, ')
+          ..write('growthRate: $growthRate, ')
+          ..write('lifespanYears: $lifespanYears, ')
+          ..write('hardinessZone: $hardinessZone, ')
+          ..write('coldResistanceCelsius: $coldResistanceCelsius, ')
+          ..write('sunExposure: $sunExposure, ')
+          ..write('soilType: $soilType, ')
+          ..write('soilPh: $soilPh, ')
+          ..write('waterNeeds: $waterNeeds, ')
+          ..write('droughtTolerance: $droughtTolerance, ')
+          ..write('selfFertile: $selfFertile, ')
+          ..write('pollinationDetails: $pollinationDetails, ')
+          ..write('floweringPeriod: $floweringPeriod, ')
+          ..write('harvestPeriod: $harvestPeriod, ')
+          ..write('yearsToFirstFruit: $yearsToFirstFruit, ')
+          ..write('yieldKgPerTree: $yieldKgPerTree, ')
+          ..write('plantingPeriod: $plantingPeriod, ')
+          ..write('plantingDistanceM: $plantingDistanceM, ')
+          ..write('pruningTrainingPeriod: $pruningTrainingPeriod, ')
+          ..write('pruningMaintenancePeriod: $pruningMaintenancePeriod, ')
+          ..write('diseases: $diseases, ')
+          ..write('pests: $pests, ')
+          ..write('containerSuitable: $containerSuitable, ')
+          ..write('containerMinSizeL: $containerMinSizeL, ')
+          ..write('popularVarieties: $popularVarieties, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UserFruitTreesTable extends UserFruitTrees
+    with TableInfo<$UserFruitTreesTable, UserFruitTree> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserFruitTreesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _fruitTreeIdMeta = const VerificationMeta(
+    'fruitTreeId',
+  );
+  @override
+  late final GeneratedColumn<int> fruitTreeId = GeneratedColumn<int>(
+    'fruit_tree_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES fruit_trees (id)',
+    ),
+  );
+  static const VerificationMeta _nicknameMeta = const VerificationMeta(
+    'nickname',
+  );
+  @override
+  late final GeneratedColumn<String> nickname = GeneratedColumn<String>(
+    'nickname',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _varietyMeta = const VerificationMeta(
+    'variety',
+  );
+  @override
+  late final GeneratedColumn<String> variety = GeneratedColumn<String>(
+    'variety',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _plantingDateMeta = const VerificationMeta(
+    'plantingDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> plantingDate = GeneratedColumn<DateTime>(
+    'planting_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _locationMeta = const VerificationMeta(
+    'location',
+  );
+  @override
+  late final GeneratedColumn<String> location = GeneratedColumn<String>(
+    'location',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _healthStatusMeta = const VerificationMeta(
+    'healthStatus',
+  );
+  @override
+  late final GeneratedColumn<String> healthStatus = GeneratedColumn<String>(
+    'health_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('good'),
+  );
+  static const VerificationMeta _lastPruningDateMeta = const VerificationMeta(
+    'lastPruningDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastPruningDate =
+      GeneratedColumn<DateTime>(
+        'last_pruning_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _lastHarvestDateMeta = const VerificationMeta(
+    'lastHarvestDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastHarvestDate =
+      GeneratedColumn<DateTime>(
+        'last_harvest_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _lastYieldKgMeta = const VerificationMeta(
+    'lastYieldKg',
+  );
+  @override
+  late final GeneratedColumn<double> lastYieldKg = GeneratedColumn<double>(
+    'last_yield_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _photosMeta = const VerificationMeta('photos');
+  @override
+  late final GeneratedColumn<String> photos = GeneratedColumn<String>(
+    'photos',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    fruitTreeId,
+    nickname,
+    variety,
+    plantingDate,
+    location,
+    notes,
+    healthStatus,
+    lastPruningDate,
+    lastHarvestDate,
+    lastYieldKg,
+    photos,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_fruit_trees';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UserFruitTree> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('fruit_tree_id')) {
+      context.handle(
+        _fruitTreeIdMeta,
+        fruitTreeId.isAcceptableOrUnknown(
+          data['fruit_tree_id']!,
+          _fruitTreeIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fruitTreeIdMeta);
+    }
+    if (data.containsKey('nickname')) {
+      context.handle(
+        _nicknameMeta,
+        nickname.isAcceptableOrUnknown(data['nickname']!, _nicknameMeta),
+      );
+    }
+    if (data.containsKey('variety')) {
+      context.handle(
+        _varietyMeta,
+        variety.isAcceptableOrUnknown(data['variety']!, _varietyMeta),
+      );
+    }
+    if (data.containsKey('planting_date')) {
+      context.handle(
+        _plantingDateMeta,
+        plantingDate.isAcceptableOrUnknown(
+          data['planting_date']!,
+          _plantingDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('location')) {
+      context.handle(
+        _locationMeta,
+        location.isAcceptableOrUnknown(data['location']!, _locationMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('health_status')) {
+      context.handle(
+        _healthStatusMeta,
+        healthStatus.isAcceptableOrUnknown(
+          data['health_status']!,
+          _healthStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_pruning_date')) {
+      context.handle(
+        _lastPruningDateMeta,
+        lastPruningDate.isAcceptableOrUnknown(
+          data['last_pruning_date']!,
+          _lastPruningDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_harvest_date')) {
+      context.handle(
+        _lastHarvestDateMeta,
+        lastHarvestDate.isAcceptableOrUnknown(
+          data['last_harvest_date']!,
+          _lastHarvestDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_yield_kg')) {
+      context.handle(
+        _lastYieldKgMeta,
+        lastYieldKg.isAcceptableOrUnknown(
+          data['last_yield_kg']!,
+          _lastYieldKgMeta,
+        ),
+      );
+    }
+    if (data.containsKey('photos')) {
+      context.handle(
+        _photosMeta,
+        photos.isAcceptableOrUnknown(data['photos']!, _photosMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserFruitTree map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserFruitTree(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      fruitTreeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}fruit_tree_id'],
+      )!,
+      nickname: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nickname'],
+      ),
+      variety: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}variety'],
+      ),
+      plantingDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}planting_date'],
+      ),
+      location: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}location'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      healthStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}health_status'],
+      )!,
+      lastPruningDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_pruning_date'],
+      ),
+      lastHarvestDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_harvest_date'],
+      ),
+      lastYieldKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}last_yield_kg'],
+      ),
+      photos: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}photos'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UserFruitTreesTable createAlias(String alias) {
+    return $UserFruitTreesTable(attachedDatabase, alias);
+  }
+}
+
+class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
+  final int id;
+  final int fruitTreeId;
+  final String? nickname;
+  final String? variety;
+  final DateTime? plantingDate;
+  final String? location;
+  final String? notes;
+  final String healthStatus;
+  final DateTime? lastPruningDate;
+  final DateTime? lastHarvestDate;
+  final double? lastYieldKg;
+  final String? photos;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const UserFruitTree({
+    required this.id,
+    required this.fruitTreeId,
+    this.nickname,
+    this.variety,
+    this.plantingDate,
+    this.location,
+    this.notes,
+    required this.healthStatus,
+    this.lastPruningDate,
+    this.lastHarvestDate,
+    this.lastYieldKg,
+    this.photos,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['fruit_tree_id'] = Variable<int>(fruitTreeId);
+    if (!nullToAbsent || nickname != null) {
+      map['nickname'] = Variable<String>(nickname);
+    }
+    if (!nullToAbsent || variety != null) {
+      map['variety'] = Variable<String>(variety);
+    }
+    if (!nullToAbsent || plantingDate != null) {
+      map['planting_date'] = Variable<DateTime>(plantingDate);
+    }
+    if (!nullToAbsent || location != null) {
+      map['location'] = Variable<String>(location);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['health_status'] = Variable<String>(healthStatus);
+    if (!nullToAbsent || lastPruningDate != null) {
+      map['last_pruning_date'] = Variable<DateTime>(lastPruningDate);
+    }
+    if (!nullToAbsent || lastHarvestDate != null) {
+      map['last_harvest_date'] = Variable<DateTime>(lastHarvestDate);
+    }
+    if (!nullToAbsent || lastYieldKg != null) {
+      map['last_yield_kg'] = Variable<double>(lastYieldKg);
+    }
+    if (!nullToAbsent || photos != null) {
+      map['photos'] = Variable<String>(photos);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  UserFruitTreesCompanion toCompanion(bool nullToAbsent) {
+    return UserFruitTreesCompanion(
+      id: Value(id),
+      fruitTreeId: Value(fruitTreeId),
+      nickname: nickname == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nickname),
+      variety: variety == null && nullToAbsent
+          ? const Value.absent()
+          : Value(variety),
+      plantingDate: plantingDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plantingDate),
+      location: location == null && nullToAbsent
+          ? const Value.absent()
+          : Value(location),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      healthStatus: Value(healthStatus),
+      lastPruningDate: lastPruningDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastPruningDate),
+      lastHarvestDate: lastHarvestDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastHarvestDate),
+      lastYieldKg: lastYieldKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastYieldKg),
+      photos: photos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photos),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory UserFruitTree.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserFruitTree(
+      id: serializer.fromJson<int>(json['id']),
+      fruitTreeId: serializer.fromJson<int>(json['fruitTreeId']),
+      nickname: serializer.fromJson<String?>(json['nickname']),
+      variety: serializer.fromJson<String?>(json['variety']),
+      plantingDate: serializer.fromJson<DateTime?>(json['plantingDate']),
+      location: serializer.fromJson<String?>(json['location']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      healthStatus: serializer.fromJson<String>(json['healthStatus']),
+      lastPruningDate: serializer.fromJson<DateTime?>(json['lastPruningDate']),
+      lastHarvestDate: serializer.fromJson<DateTime?>(json['lastHarvestDate']),
+      lastYieldKg: serializer.fromJson<double?>(json['lastYieldKg']),
+      photos: serializer.fromJson<String?>(json['photos']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'fruitTreeId': serializer.toJson<int>(fruitTreeId),
+      'nickname': serializer.toJson<String?>(nickname),
+      'variety': serializer.toJson<String?>(variety),
+      'plantingDate': serializer.toJson<DateTime?>(plantingDate),
+      'location': serializer.toJson<String?>(location),
+      'notes': serializer.toJson<String?>(notes),
+      'healthStatus': serializer.toJson<String>(healthStatus),
+      'lastPruningDate': serializer.toJson<DateTime?>(lastPruningDate),
+      'lastHarvestDate': serializer.toJson<DateTime?>(lastHarvestDate),
+      'lastYieldKg': serializer.toJson<double?>(lastYieldKg),
+      'photos': serializer.toJson<String?>(photos),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  UserFruitTree copyWith({
+    int? id,
+    int? fruitTreeId,
+    Value<String?> nickname = const Value.absent(),
+    Value<String?> variety = const Value.absent(),
+    Value<DateTime?> plantingDate = const Value.absent(),
+    Value<String?> location = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    String? healthStatus,
+    Value<DateTime?> lastPruningDate = const Value.absent(),
+    Value<DateTime?> lastHarvestDate = const Value.absent(),
+    Value<double?> lastYieldKg = const Value.absent(),
+    Value<String?> photos = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => UserFruitTree(
+    id: id ?? this.id,
+    fruitTreeId: fruitTreeId ?? this.fruitTreeId,
+    nickname: nickname.present ? nickname.value : this.nickname,
+    variety: variety.present ? variety.value : this.variety,
+    plantingDate: plantingDate.present ? plantingDate.value : this.plantingDate,
+    location: location.present ? location.value : this.location,
+    notes: notes.present ? notes.value : this.notes,
+    healthStatus: healthStatus ?? this.healthStatus,
+    lastPruningDate: lastPruningDate.present
+        ? lastPruningDate.value
+        : this.lastPruningDate,
+    lastHarvestDate: lastHarvestDate.present
+        ? lastHarvestDate.value
+        : this.lastHarvestDate,
+    lastYieldKg: lastYieldKg.present ? lastYieldKg.value : this.lastYieldKg,
+    photos: photos.present ? photos.value : this.photos,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  UserFruitTree copyWithCompanion(UserFruitTreesCompanion data) {
+    return UserFruitTree(
+      id: data.id.present ? data.id.value : this.id,
+      fruitTreeId: data.fruitTreeId.present
+          ? data.fruitTreeId.value
+          : this.fruitTreeId,
+      nickname: data.nickname.present ? data.nickname.value : this.nickname,
+      variety: data.variety.present ? data.variety.value : this.variety,
+      plantingDate: data.plantingDate.present
+          ? data.plantingDate.value
+          : this.plantingDate,
+      location: data.location.present ? data.location.value : this.location,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      healthStatus: data.healthStatus.present
+          ? data.healthStatus.value
+          : this.healthStatus,
+      lastPruningDate: data.lastPruningDate.present
+          ? data.lastPruningDate.value
+          : this.lastPruningDate,
+      lastHarvestDate: data.lastHarvestDate.present
+          ? data.lastHarvestDate.value
+          : this.lastHarvestDate,
+      lastYieldKg: data.lastYieldKg.present
+          ? data.lastYieldKg.value
+          : this.lastYieldKg,
+      photos: data.photos.present ? data.photos.value : this.photos,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserFruitTree(')
+          ..write('id: $id, ')
+          ..write('fruitTreeId: $fruitTreeId, ')
+          ..write('nickname: $nickname, ')
+          ..write('variety: $variety, ')
+          ..write('plantingDate: $plantingDate, ')
+          ..write('location: $location, ')
+          ..write('notes: $notes, ')
+          ..write('healthStatus: $healthStatus, ')
+          ..write('lastPruningDate: $lastPruningDate, ')
+          ..write('lastHarvestDate: $lastHarvestDate, ')
+          ..write('lastYieldKg: $lastYieldKg, ')
+          ..write('photos: $photos, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    fruitTreeId,
+    nickname,
+    variety,
+    plantingDate,
+    location,
+    notes,
+    healthStatus,
+    lastPruningDate,
+    lastHarvestDate,
+    lastYieldKg,
+    photos,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserFruitTree &&
+          other.id == this.id &&
+          other.fruitTreeId == this.fruitTreeId &&
+          other.nickname == this.nickname &&
+          other.variety == this.variety &&
+          other.plantingDate == this.plantingDate &&
+          other.location == this.location &&
+          other.notes == this.notes &&
+          other.healthStatus == this.healthStatus &&
+          other.lastPruningDate == this.lastPruningDate &&
+          other.lastHarvestDate == this.lastHarvestDate &&
+          other.lastYieldKg == this.lastYieldKg &&
+          other.photos == this.photos &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
+  final Value<int> id;
+  final Value<int> fruitTreeId;
+  final Value<String?> nickname;
+  final Value<String?> variety;
+  final Value<DateTime?> plantingDate;
+  final Value<String?> location;
+  final Value<String?> notes;
+  final Value<String> healthStatus;
+  final Value<DateTime?> lastPruningDate;
+  final Value<DateTime?> lastHarvestDate;
+  final Value<double?> lastYieldKg;
+  final Value<String?> photos;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const UserFruitTreesCompanion({
+    this.id = const Value.absent(),
+    this.fruitTreeId = const Value.absent(),
+    this.nickname = const Value.absent(),
+    this.variety = const Value.absent(),
+    this.plantingDate = const Value.absent(),
+    this.location = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.healthStatus = const Value.absent(),
+    this.lastPruningDate = const Value.absent(),
+    this.lastHarvestDate = const Value.absent(),
+    this.lastYieldKg = const Value.absent(),
+    this.photos = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  UserFruitTreesCompanion.insert({
+    this.id = const Value.absent(),
+    required int fruitTreeId,
+    this.nickname = const Value.absent(),
+    this.variety = const Value.absent(),
+    this.plantingDate = const Value.absent(),
+    this.location = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.healthStatus = const Value.absent(),
+    this.lastPruningDate = const Value.absent(),
+    this.lastHarvestDate = const Value.absent(),
+    this.lastYieldKg = const Value.absent(),
+    this.photos = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : fruitTreeId = Value(fruitTreeId);
+  static Insertable<UserFruitTree> custom({
+    Expression<int>? id,
+    Expression<int>? fruitTreeId,
+    Expression<String>? nickname,
+    Expression<String>? variety,
+    Expression<DateTime>? plantingDate,
+    Expression<String>? location,
+    Expression<String>? notes,
+    Expression<String>? healthStatus,
+    Expression<DateTime>? lastPruningDate,
+    Expression<DateTime>? lastHarvestDate,
+    Expression<double>? lastYieldKg,
+    Expression<String>? photos,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (fruitTreeId != null) 'fruit_tree_id': fruitTreeId,
+      if (nickname != null) 'nickname': nickname,
+      if (variety != null) 'variety': variety,
+      if (plantingDate != null) 'planting_date': plantingDate,
+      if (location != null) 'location': location,
+      if (notes != null) 'notes': notes,
+      if (healthStatus != null) 'health_status': healthStatus,
+      if (lastPruningDate != null) 'last_pruning_date': lastPruningDate,
+      if (lastHarvestDate != null) 'last_harvest_date': lastHarvestDate,
+      if (lastYieldKg != null) 'last_yield_kg': lastYieldKg,
+      if (photos != null) 'photos': photos,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  UserFruitTreesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? fruitTreeId,
+    Value<String?>? nickname,
+    Value<String?>? variety,
+    Value<DateTime?>? plantingDate,
+    Value<String?>? location,
+    Value<String?>? notes,
+    Value<String>? healthStatus,
+    Value<DateTime?>? lastPruningDate,
+    Value<DateTime?>? lastHarvestDate,
+    Value<double?>? lastYieldKg,
+    Value<String?>? photos,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return UserFruitTreesCompanion(
+      id: id ?? this.id,
+      fruitTreeId: fruitTreeId ?? this.fruitTreeId,
+      nickname: nickname ?? this.nickname,
+      variety: variety ?? this.variety,
+      plantingDate: plantingDate ?? this.plantingDate,
+      location: location ?? this.location,
+      notes: notes ?? this.notes,
+      healthStatus: healthStatus ?? this.healthStatus,
+      lastPruningDate: lastPruningDate ?? this.lastPruningDate,
+      lastHarvestDate: lastHarvestDate ?? this.lastHarvestDate,
+      lastYieldKg: lastYieldKg ?? this.lastYieldKg,
+      photos: photos ?? this.photos,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (fruitTreeId.present) {
+      map['fruit_tree_id'] = Variable<int>(fruitTreeId.value);
+    }
+    if (nickname.present) {
+      map['nickname'] = Variable<String>(nickname.value);
+    }
+    if (variety.present) {
+      map['variety'] = Variable<String>(variety.value);
+    }
+    if (plantingDate.present) {
+      map['planting_date'] = Variable<DateTime>(plantingDate.value);
+    }
+    if (location.present) {
+      map['location'] = Variable<String>(location.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (healthStatus.present) {
+      map['health_status'] = Variable<String>(healthStatus.value);
+    }
+    if (lastPruningDate.present) {
+      map['last_pruning_date'] = Variable<DateTime>(lastPruningDate.value);
+    }
+    if (lastHarvestDate.present) {
+      map['last_harvest_date'] = Variable<DateTime>(lastHarvestDate.value);
+    }
+    if (lastYieldKg.present) {
+      map['last_yield_kg'] = Variable<double>(lastYieldKg.value);
+    }
+    if (photos.present) {
+      map['photos'] = Variable<String>(photos.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserFruitTreesCompanion(')
+          ..write('id: $id, ')
+          ..write('fruitTreeId: $fruitTreeId, ')
+          ..write('nickname: $nickname, ')
+          ..write('variety: $variety, ')
+          ..write('plantingDate: $plantingDate, ')
+          ..write('location: $location, ')
+          ..write('notes: $notes, ')
+          ..write('healthStatus: $healthStatus, ')
+          ..write('lastPruningDate: $lastPruningDate, ')
+          ..write('lastHarvestDate: $lastHarvestDate, ')
+          ..write('lastYieldKg: $lastYieldKg, ')
+          ..write('photos: $photos, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3420,6 +6232,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $GardensTable gardens = $GardensTable(this);
   late final $GardenPlantsTable gardenPlants = $GardenPlantsTable(this);
+  late final $FruitTreesTable fruitTrees = $FruitTreesTable(this);
+  late final $UserFruitTreesTable userFruitTrees = $UserFruitTreesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3430,6 +6244,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     plantAntagonists,
     gardens,
     gardenPlants,
+    fruitTrees,
+    userFruitTrees,
   ];
 }
 
@@ -5841,6 +8657,1429 @@ typedef $$GardenPlantsTableProcessedTableManager =
       GardenPlant,
       PrefetchHooks Function({bool gardenId, bool plantId})
     >;
+typedef $$FruitTreesTableCreateCompanionBuilder =
+    FruitTreesCompanion Function({
+      Value<int> id,
+      required String commonName,
+      Value<String?> latinName,
+      Value<String?> category,
+      Value<String?> subcategory,
+      Value<String> emoji,
+      Value<String?> description,
+      Value<double?> heightAdultM,
+      Value<double?> spreadAdultM,
+      Value<String?> growthRate,
+      Value<int?> lifespanYears,
+      Value<String?> hardinessZone,
+      Value<int?> coldResistanceCelsius,
+      Value<String?> sunExposure,
+      Value<String?> soilType,
+      Value<String?> soilPh,
+      Value<String?> waterNeeds,
+      Value<bool> droughtTolerance,
+      Value<bool> selfFertile,
+      Value<String?> pollinationDetails,
+      Value<String?> floweringPeriod,
+      Value<String?> harvestPeriod,
+      Value<int?> yearsToFirstFruit,
+      Value<double?> yieldKgPerTree,
+      Value<String?> plantingPeriod,
+      Value<double?> plantingDistanceM,
+      Value<String?> pruningTrainingPeriod,
+      Value<String?> pruningMaintenancePeriod,
+      Value<String?> diseases,
+      Value<String?> pests,
+      Value<bool> containerSuitable,
+      Value<int?> containerMinSizeL,
+      Value<String?> popularVarieties,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+typedef $$FruitTreesTableUpdateCompanionBuilder =
+    FruitTreesCompanion Function({
+      Value<int> id,
+      Value<String> commonName,
+      Value<String?> latinName,
+      Value<String?> category,
+      Value<String?> subcategory,
+      Value<String> emoji,
+      Value<String?> description,
+      Value<double?> heightAdultM,
+      Value<double?> spreadAdultM,
+      Value<String?> growthRate,
+      Value<int?> lifespanYears,
+      Value<String?> hardinessZone,
+      Value<int?> coldResistanceCelsius,
+      Value<String?> sunExposure,
+      Value<String?> soilType,
+      Value<String?> soilPh,
+      Value<String?> waterNeeds,
+      Value<bool> droughtTolerance,
+      Value<bool> selfFertile,
+      Value<String?> pollinationDetails,
+      Value<String?> floweringPeriod,
+      Value<String?> harvestPeriod,
+      Value<int?> yearsToFirstFruit,
+      Value<double?> yieldKgPerTree,
+      Value<String?> plantingPeriod,
+      Value<double?> plantingDistanceM,
+      Value<String?> pruningTrainingPeriod,
+      Value<String?> pruningMaintenancePeriod,
+      Value<String?> diseases,
+      Value<String?> pests,
+      Value<bool> containerSuitable,
+      Value<int?> containerMinSizeL,
+      Value<String?> popularVarieties,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$FruitTreesTableReferences
+    extends BaseReferences<_$AppDatabase, $FruitTreesTable, FruitTree> {
+  $$FruitTreesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$UserFruitTreesTable, List<UserFruitTree>>
+  _userFruitTreesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.userFruitTrees,
+    aliasName: $_aliasNameGenerator(
+      db.fruitTrees.id,
+      db.userFruitTrees.fruitTreeId,
+    ),
+  );
+
+  $$UserFruitTreesTableProcessedTableManager get userFruitTreesRefs {
+    final manager = $$UserFruitTreesTableTableManager(
+      $_db,
+      $_db.userFruitTrees,
+    ).filter((f) => f.fruitTreeId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_userFruitTreesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$FruitTreesTableFilterComposer
+    extends Composer<_$AppDatabase, $FruitTreesTable> {
+  $$FruitTreesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get commonName => $composableBuilder(
+    column: $table.commonName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get latinName => $composableBuilder(
+    column: $table.latinName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subcategory => $composableBuilder(
+    column: $table.subcategory,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get emoji => $composableBuilder(
+    column: $table.emoji,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heightAdultM => $composableBuilder(
+    column: $table.heightAdultM,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get spreadAdultM => $composableBuilder(
+    column: $table.spreadAdultM,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get growthRate => $composableBuilder(
+    column: $table.growthRate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lifespanYears => $composableBuilder(
+    column: $table.lifespanYears,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hardinessZone => $composableBuilder(
+    column: $table.hardinessZone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get coldResistanceCelsius => $composableBuilder(
+    column: $table.coldResistanceCelsius,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sunExposure => $composableBuilder(
+    column: $table.sunExposure,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get soilType => $composableBuilder(
+    column: $table.soilType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get soilPh => $composableBuilder(
+    column: $table.soilPh,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get waterNeeds => $composableBuilder(
+    column: $table.waterNeeds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get droughtTolerance => $composableBuilder(
+    column: $table.droughtTolerance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get selfFertile => $composableBuilder(
+    column: $table.selfFertile,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pollinationDetails => $composableBuilder(
+    column: $table.pollinationDetails,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get floweringPeriod => $composableBuilder(
+    column: $table.floweringPeriod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get harvestPeriod => $composableBuilder(
+    column: $table.harvestPeriod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get yearsToFirstFruit => $composableBuilder(
+    column: $table.yearsToFirstFruit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get yieldKgPerTree => $composableBuilder(
+    column: $table.yieldKgPerTree,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get plantingPeriod => $composableBuilder(
+    column: $table.plantingPeriod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get plantingDistanceM => $composableBuilder(
+    column: $table.plantingDistanceM,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pruningTrainingPeriod => $composableBuilder(
+    column: $table.pruningTrainingPeriod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pruningMaintenancePeriod => $composableBuilder(
+    column: $table.pruningMaintenancePeriod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get diseases => $composableBuilder(
+    column: $table.diseases,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pests => $composableBuilder(
+    column: $table.pests,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get containerSuitable => $composableBuilder(
+    column: $table.containerSuitable,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get containerMinSizeL => $composableBuilder(
+    column: $table.containerMinSizeL,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get popularVarieties => $composableBuilder(
+    column: $table.popularVarieties,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> userFruitTreesRefs(
+    Expression<bool> Function($$UserFruitTreesTableFilterComposer f) f,
+  ) {
+    final $$UserFruitTreesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.userFruitTrees,
+      getReferencedColumn: (t) => t.fruitTreeId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UserFruitTreesTableFilterComposer(
+            $db: $db,
+            $table: $db.userFruitTrees,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$FruitTreesTableOrderingComposer
+    extends Composer<_$AppDatabase, $FruitTreesTable> {
+  $$FruitTreesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get commonName => $composableBuilder(
+    column: $table.commonName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get latinName => $composableBuilder(
+    column: $table.latinName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subcategory => $composableBuilder(
+    column: $table.subcategory,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get emoji => $composableBuilder(
+    column: $table.emoji,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heightAdultM => $composableBuilder(
+    column: $table.heightAdultM,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get spreadAdultM => $composableBuilder(
+    column: $table.spreadAdultM,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get growthRate => $composableBuilder(
+    column: $table.growthRate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lifespanYears => $composableBuilder(
+    column: $table.lifespanYears,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hardinessZone => $composableBuilder(
+    column: $table.hardinessZone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get coldResistanceCelsius => $composableBuilder(
+    column: $table.coldResistanceCelsius,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sunExposure => $composableBuilder(
+    column: $table.sunExposure,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get soilType => $composableBuilder(
+    column: $table.soilType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get soilPh => $composableBuilder(
+    column: $table.soilPh,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get waterNeeds => $composableBuilder(
+    column: $table.waterNeeds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get droughtTolerance => $composableBuilder(
+    column: $table.droughtTolerance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get selfFertile => $composableBuilder(
+    column: $table.selfFertile,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pollinationDetails => $composableBuilder(
+    column: $table.pollinationDetails,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get floweringPeriod => $composableBuilder(
+    column: $table.floweringPeriod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get harvestPeriod => $composableBuilder(
+    column: $table.harvestPeriod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get yearsToFirstFruit => $composableBuilder(
+    column: $table.yearsToFirstFruit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get yieldKgPerTree => $composableBuilder(
+    column: $table.yieldKgPerTree,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get plantingPeriod => $composableBuilder(
+    column: $table.plantingPeriod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get plantingDistanceM => $composableBuilder(
+    column: $table.plantingDistanceM,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pruningTrainingPeriod => $composableBuilder(
+    column: $table.pruningTrainingPeriod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pruningMaintenancePeriod => $composableBuilder(
+    column: $table.pruningMaintenancePeriod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get diseases => $composableBuilder(
+    column: $table.diseases,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pests => $composableBuilder(
+    column: $table.pests,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get containerSuitable => $composableBuilder(
+    column: $table.containerSuitable,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get containerMinSizeL => $composableBuilder(
+    column: $table.containerMinSizeL,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get popularVarieties => $composableBuilder(
+    column: $table.popularVarieties,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FruitTreesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FruitTreesTable> {
+  $$FruitTreesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get commonName => $composableBuilder(
+    column: $table.commonName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get latinName =>
+      $composableBuilder(column: $table.latinName, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get subcategory => $composableBuilder(
+    column: $table.subcategory,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get emoji =>
+      $composableBuilder(column: $table.emoji, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get heightAdultM => $composableBuilder(
+    column: $table.heightAdultM,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get spreadAdultM => $composableBuilder(
+    column: $table.spreadAdultM,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get growthRate => $composableBuilder(
+    column: $table.growthRate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lifespanYears => $composableBuilder(
+    column: $table.lifespanYears,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get hardinessZone => $composableBuilder(
+    column: $table.hardinessZone,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get coldResistanceCelsius => $composableBuilder(
+    column: $table.coldResistanceCelsius,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sunExposure => $composableBuilder(
+    column: $table.sunExposure,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get soilType =>
+      $composableBuilder(column: $table.soilType, builder: (column) => column);
+
+  GeneratedColumn<String> get soilPh =>
+      $composableBuilder(column: $table.soilPh, builder: (column) => column);
+
+  GeneratedColumn<String> get waterNeeds => $composableBuilder(
+    column: $table.waterNeeds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get droughtTolerance => $composableBuilder(
+    column: $table.droughtTolerance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get selfFertile => $composableBuilder(
+    column: $table.selfFertile,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pollinationDetails => $composableBuilder(
+    column: $table.pollinationDetails,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get floweringPeriod => $composableBuilder(
+    column: $table.floweringPeriod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get harvestPeriod => $composableBuilder(
+    column: $table.harvestPeriod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get yearsToFirstFruit => $composableBuilder(
+    column: $table.yearsToFirstFruit,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get yieldKgPerTree => $composableBuilder(
+    column: $table.yieldKgPerTree,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get plantingPeriod => $composableBuilder(
+    column: $table.plantingPeriod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get plantingDistanceM => $composableBuilder(
+    column: $table.plantingDistanceM,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pruningTrainingPeriod => $composableBuilder(
+    column: $table.pruningTrainingPeriod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pruningMaintenancePeriod => $composableBuilder(
+    column: $table.pruningMaintenancePeriod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get diseases =>
+      $composableBuilder(column: $table.diseases, builder: (column) => column);
+
+  GeneratedColumn<String> get pests =>
+      $composableBuilder(column: $table.pests, builder: (column) => column);
+
+  GeneratedColumn<bool> get containerSuitable => $composableBuilder(
+    column: $table.containerSuitable,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get containerMinSizeL => $composableBuilder(
+    column: $table.containerMinSizeL,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get popularVarieties => $composableBuilder(
+    column: $table.popularVarieties,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> userFruitTreesRefs<T extends Object>(
+    Expression<T> Function($$UserFruitTreesTableAnnotationComposer a) f,
+  ) {
+    final $$UserFruitTreesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.userFruitTrees,
+      getReferencedColumn: (t) => t.fruitTreeId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UserFruitTreesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.userFruitTrees,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$FruitTreesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FruitTreesTable,
+          FruitTree,
+          $$FruitTreesTableFilterComposer,
+          $$FruitTreesTableOrderingComposer,
+          $$FruitTreesTableAnnotationComposer,
+          $$FruitTreesTableCreateCompanionBuilder,
+          $$FruitTreesTableUpdateCompanionBuilder,
+          (FruitTree, $$FruitTreesTableReferences),
+          FruitTree,
+          PrefetchHooks Function({bool userFruitTreesRefs})
+        > {
+  $$FruitTreesTableTableManager(_$AppDatabase db, $FruitTreesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FruitTreesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FruitTreesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FruitTreesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> commonName = const Value.absent(),
+                Value<String?> latinName = const Value.absent(),
+                Value<String?> category = const Value.absent(),
+                Value<String?> subcategory = const Value.absent(),
+                Value<String> emoji = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<double?> heightAdultM = const Value.absent(),
+                Value<double?> spreadAdultM = const Value.absent(),
+                Value<String?> growthRate = const Value.absent(),
+                Value<int?> lifespanYears = const Value.absent(),
+                Value<String?> hardinessZone = const Value.absent(),
+                Value<int?> coldResistanceCelsius = const Value.absent(),
+                Value<String?> sunExposure = const Value.absent(),
+                Value<String?> soilType = const Value.absent(),
+                Value<String?> soilPh = const Value.absent(),
+                Value<String?> waterNeeds = const Value.absent(),
+                Value<bool> droughtTolerance = const Value.absent(),
+                Value<bool> selfFertile = const Value.absent(),
+                Value<String?> pollinationDetails = const Value.absent(),
+                Value<String?> floweringPeriod = const Value.absent(),
+                Value<String?> harvestPeriod = const Value.absent(),
+                Value<int?> yearsToFirstFruit = const Value.absent(),
+                Value<double?> yieldKgPerTree = const Value.absent(),
+                Value<String?> plantingPeriod = const Value.absent(),
+                Value<double?> plantingDistanceM = const Value.absent(),
+                Value<String?> pruningTrainingPeriod = const Value.absent(),
+                Value<String?> pruningMaintenancePeriod = const Value.absent(),
+                Value<String?> diseases = const Value.absent(),
+                Value<String?> pests = const Value.absent(),
+                Value<bool> containerSuitable = const Value.absent(),
+                Value<int?> containerMinSizeL = const Value.absent(),
+                Value<String?> popularVarieties = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => FruitTreesCompanion(
+                id: id,
+                commonName: commonName,
+                latinName: latinName,
+                category: category,
+                subcategory: subcategory,
+                emoji: emoji,
+                description: description,
+                heightAdultM: heightAdultM,
+                spreadAdultM: spreadAdultM,
+                growthRate: growthRate,
+                lifespanYears: lifespanYears,
+                hardinessZone: hardinessZone,
+                coldResistanceCelsius: coldResistanceCelsius,
+                sunExposure: sunExposure,
+                soilType: soilType,
+                soilPh: soilPh,
+                waterNeeds: waterNeeds,
+                droughtTolerance: droughtTolerance,
+                selfFertile: selfFertile,
+                pollinationDetails: pollinationDetails,
+                floweringPeriod: floweringPeriod,
+                harvestPeriod: harvestPeriod,
+                yearsToFirstFruit: yearsToFirstFruit,
+                yieldKgPerTree: yieldKgPerTree,
+                plantingPeriod: plantingPeriod,
+                plantingDistanceM: plantingDistanceM,
+                pruningTrainingPeriod: pruningTrainingPeriod,
+                pruningMaintenancePeriod: pruningMaintenancePeriod,
+                diseases: diseases,
+                pests: pests,
+                containerSuitable: containerSuitable,
+                containerMinSizeL: containerMinSizeL,
+                popularVarieties: popularVarieties,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String commonName,
+                Value<String?> latinName = const Value.absent(),
+                Value<String?> category = const Value.absent(),
+                Value<String?> subcategory = const Value.absent(),
+                Value<String> emoji = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<double?> heightAdultM = const Value.absent(),
+                Value<double?> spreadAdultM = const Value.absent(),
+                Value<String?> growthRate = const Value.absent(),
+                Value<int?> lifespanYears = const Value.absent(),
+                Value<String?> hardinessZone = const Value.absent(),
+                Value<int?> coldResistanceCelsius = const Value.absent(),
+                Value<String?> sunExposure = const Value.absent(),
+                Value<String?> soilType = const Value.absent(),
+                Value<String?> soilPh = const Value.absent(),
+                Value<String?> waterNeeds = const Value.absent(),
+                Value<bool> droughtTolerance = const Value.absent(),
+                Value<bool> selfFertile = const Value.absent(),
+                Value<String?> pollinationDetails = const Value.absent(),
+                Value<String?> floweringPeriod = const Value.absent(),
+                Value<String?> harvestPeriod = const Value.absent(),
+                Value<int?> yearsToFirstFruit = const Value.absent(),
+                Value<double?> yieldKgPerTree = const Value.absent(),
+                Value<String?> plantingPeriod = const Value.absent(),
+                Value<double?> plantingDistanceM = const Value.absent(),
+                Value<String?> pruningTrainingPeriod = const Value.absent(),
+                Value<String?> pruningMaintenancePeriod = const Value.absent(),
+                Value<String?> diseases = const Value.absent(),
+                Value<String?> pests = const Value.absent(),
+                Value<bool> containerSuitable = const Value.absent(),
+                Value<int?> containerMinSizeL = const Value.absent(),
+                Value<String?> popularVarieties = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => FruitTreesCompanion.insert(
+                id: id,
+                commonName: commonName,
+                latinName: latinName,
+                category: category,
+                subcategory: subcategory,
+                emoji: emoji,
+                description: description,
+                heightAdultM: heightAdultM,
+                spreadAdultM: spreadAdultM,
+                growthRate: growthRate,
+                lifespanYears: lifespanYears,
+                hardinessZone: hardinessZone,
+                coldResistanceCelsius: coldResistanceCelsius,
+                sunExposure: sunExposure,
+                soilType: soilType,
+                soilPh: soilPh,
+                waterNeeds: waterNeeds,
+                droughtTolerance: droughtTolerance,
+                selfFertile: selfFertile,
+                pollinationDetails: pollinationDetails,
+                floweringPeriod: floweringPeriod,
+                harvestPeriod: harvestPeriod,
+                yearsToFirstFruit: yearsToFirstFruit,
+                yieldKgPerTree: yieldKgPerTree,
+                plantingPeriod: plantingPeriod,
+                plantingDistanceM: plantingDistanceM,
+                pruningTrainingPeriod: pruningTrainingPeriod,
+                pruningMaintenancePeriod: pruningMaintenancePeriod,
+                diseases: diseases,
+                pests: pests,
+                containerSuitable: containerSuitable,
+                containerMinSizeL: containerMinSizeL,
+                popularVarieties: popularVarieties,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$FruitTreesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({userFruitTreesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (userFruitTreesRefs) db.userFruitTrees,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (userFruitTreesRefs)
+                    await $_getPrefetchedData<
+                      FruitTree,
+                      $FruitTreesTable,
+                      UserFruitTree
+                    >(
+                      currentTable: table,
+                      referencedTable: $$FruitTreesTableReferences
+                          ._userFruitTreesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$FruitTreesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).userFruitTreesRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where(
+                            (e) => e.fruitTreeId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FruitTreesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FruitTreesTable,
+      FruitTree,
+      $$FruitTreesTableFilterComposer,
+      $$FruitTreesTableOrderingComposer,
+      $$FruitTreesTableAnnotationComposer,
+      $$FruitTreesTableCreateCompanionBuilder,
+      $$FruitTreesTableUpdateCompanionBuilder,
+      (FruitTree, $$FruitTreesTableReferences),
+      FruitTree,
+      PrefetchHooks Function({bool userFruitTreesRefs})
+    >;
+typedef $$UserFruitTreesTableCreateCompanionBuilder =
+    UserFruitTreesCompanion Function({
+      Value<int> id,
+      required int fruitTreeId,
+      Value<String?> nickname,
+      Value<String?> variety,
+      Value<DateTime?> plantingDate,
+      Value<String?> location,
+      Value<String?> notes,
+      Value<String> healthStatus,
+      Value<DateTime?> lastPruningDate,
+      Value<DateTime?> lastHarvestDate,
+      Value<double?> lastYieldKg,
+      Value<String?> photos,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+typedef $$UserFruitTreesTableUpdateCompanionBuilder =
+    UserFruitTreesCompanion Function({
+      Value<int> id,
+      Value<int> fruitTreeId,
+      Value<String?> nickname,
+      Value<String?> variety,
+      Value<DateTime?> plantingDate,
+      Value<String?> location,
+      Value<String?> notes,
+      Value<String> healthStatus,
+      Value<DateTime?> lastPruningDate,
+      Value<DateTime?> lastHarvestDate,
+      Value<double?> lastYieldKg,
+      Value<String?> photos,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$UserFruitTreesTableReferences
+    extends BaseReferences<_$AppDatabase, $UserFruitTreesTable, UserFruitTree> {
+  $$UserFruitTreesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $FruitTreesTable _fruitTreeIdTable(_$AppDatabase db) =>
+      db.fruitTrees.createAlias(
+        $_aliasNameGenerator(db.userFruitTrees.fruitTreeId, db.fruitTrees.id),
+      );
+
+  $$FruitTreesTableProcessedTableManager get fruitTreeId {
+    final $_column = $_itemColumn<int>('fruit_tree_id')!;
+
+    final manager = $$FruitTreesTableTableManager(
+      $_db,
+      $_db.fruitTrees,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_fruitTreeIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$UserFruitTreesTableFilterComposer
+    extends Composer<_$AppDatabase, $UserFruitTreesTable> {
+  $$UserFruitTreesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nickname => $composableBuilder(
+    column: $table.nickname,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get variety => $composableBuilder(
+    column: $table.variety,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get plantingDate => $composableBuilder(
+    column: $table.plantingDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get healthStatus => $composableBuilder(
+    column: $table.healthStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastPruningDate => $composableBuilder(
+    column: $table.lastPruningDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastHarvestDate => $composableBuilder(
+    column: $table.lastHarvestDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get lastYieldKg => $composableBuilder(
+    column: $table.lastYieldKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get photos => $composableBuilder(
+    column: $table.photos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$FruitTreesTableFilterComposer get fruitTreeId {
+    final $$FruitTreesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.fruitTreeId,
+      referencedTable: $db.fruitTrees,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FruitTreesTableFilterComposer(
+            $db: $db,
+            $table: $db.fruitTrees,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UserFruitTreesTableOrderingComposer
+    extends Composer<_$AppDatabase, $UserFruitTreesTable> {
+  $$UserFruitTreesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nickname => $composableBuilder(
+    column: $table.nickname,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get variety => $composableBuilder(
+    column: $table.variety,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get plantingDate => $composableBuilder(
+    column: $table.plantingDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get healthStatus => $composableBuilder(
+    column: $table.healthStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastPruningDate => $composableBuilder(
+    column: $table.lastPruningDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastHarvestDate => $composableBuilder(
+    column: $table.lastHarvestDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get lastYieldKg => $composableBuilder(
+    column: $table.lastYieldKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get photos => $composableBuilder(
+    column: $table.photos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$FruitTreesTableOrderingComposer get fruitTreeId {
+    final $$FruitTreesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.fruitTreeId,
+      referencedTable: $db.fruitTrees,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FruitTreesTableOrderingComposer(
+            $db: $db,
+            $table: $db.fruitTrees,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UserFruitTreesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UserFruitTreesTable> {
+  $$UserFruitTreesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get nickname =>
+      $composableBuilder(column: $table.nickname, builder: (column) => column);
+
+  GeneratedColumn<String> get variety =>
+      $composableBuilder(column: $table.variety, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get plantingDate => $composableBuilder(
+    column: $table.plantingDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get location =>
+      $composableBuilder(column: $table.location, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get healthStatus => $composableBuilder(
+    column: $table.healthStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastPruningDate => $composableBuilder(
+    column: $table.lastPruningDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastHarvestDate => $composableBuilder(
+    column: $table.lastHarvestDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get lastYieldKg => $composableBuilder(
+    column: $table.lastYieldKg,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get photos =>
+      $composableBuilder(column: $table.photos, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$FruitTreesTableAnnotationComposer get fruitTreeId {
+    final $$FruitTreesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.fruitTreeId,
+      referencedTable: $db.fruitTrees,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FruitTreesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.fruitTrees,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UserFruitTreesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UserFruitTreesTable,
+          UserFruitTree,
+          $$UserFruitTreesTableFilterComposer,
+          $$UserFruitTreesTableOrderingComposer,
+          $$UserFruitTreesTableAnnotationComposer,
+          $$UserFruitTreesTableCreateCompanionBuilder,
+          $$UserFruitTreesTableUpdateCompanionBuilder,
+          (UserFruitTree, $$UserFruitTreesTableReferences),
+          UserFruitTree,
+          PrefetchHooks Function({bool fruitTreeId})
+        > {
+  $$UserFruitTreesTableTableManager(
+    _$AppDatabase db,
+    $UserFruitTreesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UserFruitTreesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UserFruitTreesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UserFruitTreesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> fruitTreeId = const Value.absent(),
+                Value<String?> nickname = const Value.absent(),
+                Value<String?> variety = const Value.absent(),
+                Value<DateTime?> plantingDate = const Value.absent(),
+                Value<String?> location = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String> healthStatus = const Value.absent(),
+                Value<DateTime?> lastPruningDate = const Value.absent(),
+                Value<DateTime?> lastHarvestDate = const Value.absent(),
+                Value<double?> lastYieldKg = const Value.absent(),
+                Value<String?> photos = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => UserFruitTreesCompanion(
+                id: id,
+                fruitTreeId: fruitTreeId,
+                nickname: nickname,
+                variety: variety,
+                plantingDate: plantingDate,
+                location: location,
+                notes: notes,
+                healthStatus: healthStatus,
+                lastPruningDate: lastPruningDate,
+                lastHarvestDate: lastHarvestDate,
+                lastYieldKg: lastYieldKg,
+                photos: photos,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int fruitTreeId,
+                Value<String?> nickname = const Value.absent(),
+                Value<String?> variety = const Value.absent(),
+                Value<DateTime?> plantingDate = const Value.absent(),
+                Value<String?> location = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String> healthStatus = const Value.absent(),
+                Value<DateTime?> lastPruningDate = const Value.absent(),
+                Value<DateTime?> lastHarvestDate = const Value.absent(),
+                Value<double?> lastYieldKg = const Value.absent(),
+                Value<String?> photos = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => UserFruitTreesCompanion.insert(
+                id: id,
+                fruitTreeId: fruitTreeId,
+                nickname: nickname,
+                variety: variety,
+                plantingDate: plantingDate,
+                location: location,
+                notes: notes,
+                healthStatus: healthStatus,
+                lastPruningDate: lastPruningDate,
+                lastHarvestDate: lastHarvestDate,
+                lastYieldKg: lastYieldKg,
+                photos: photos,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$UserFruitTreesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({fruitTreeId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (fruitTreeId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.fruitTreeId,
+                                referencedTable: $$UserFruitTreesTableReferences
+                                    ._fruitTreeIdTable(db),
+                                referencedColumn:
+                                    $$UserFruitTreesTableReferences
+                                        ._fruitTreeIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$UserFruitTreesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserFruitTreesTable,
+      UserFruitTree,
+      $$UserFruitTreesTableFilterComposer,
+      $$UserFruitTreesTableOrderingComposer,
+      $$UserFruitTreesTableAnnotationComposer,
+      $$UserFruitTreesTableCreateCompanionBuilder,
+      $$UserFruitTreesTableUpdateCompanionBuilder,
+      (UserFruitTree, $$UserFruitTreesTableReferences),
+      UserFruitTree,
+      PrefetchHooks Function({bool fruitTreeId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5855,4 +10094,8 @@ class $AppDatabaseManager {
       $$GardensTableTableManager(_db, _db.gardens);
   $$GardenPlantsTableTableManager get gardenPlants =>
       $$GardenPlantsTableTableManager(_db, _db.gardenPlants);
+  $$FruitTreesTableTableManager get fruitTrees =>
+      $$FruitTreesTableTableManager(_db, _db.fruitTrees);
+  $$UserFruitTreesTableTableManager get userFruitTrees =>
+      $$UserFruitTreesTableTableManager(_db, _db.userFruitTrees);
 }

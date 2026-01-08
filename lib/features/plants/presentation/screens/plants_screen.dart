@@ -419,6 +419,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
 
   void _showPlantDetail(BuildContext context, Plant plant) {
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

@@ -79,6 +79,7 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
     final maxHeightM = garden.heightCells * garden.cellSizeCm / 100.0;
 
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -122,6 +123,7 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
     final maxHeightM = garden.heightCells * garden.cellSizeCm / 100.0;
 
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

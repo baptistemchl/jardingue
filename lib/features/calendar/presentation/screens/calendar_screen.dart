@@ -921,6 +921,7 @@ class _CalendarHeader extends ConsumerWidget {
 
   void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => _MonthPickerSheet(
@@ -1400,6 +1401,7 @@ class _MonthPickerSheet extends StatelessWidget {
 
 void _showPlantDetail(BuildContext context, Plant plant) {
   showModalBottomSheet(
+    useRootNavigator: true,
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,

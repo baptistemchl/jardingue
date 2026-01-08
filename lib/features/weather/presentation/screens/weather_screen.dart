@@ -312,6 +312,7 @@ class _Header extends ConsumerWidget {
 
   void _showLocationPicker(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
