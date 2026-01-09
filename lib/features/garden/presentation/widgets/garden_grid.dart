@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/garden_providers.dart';
@@ -437,7 +439,9 @@ class _DraggableElementState extends State<_DraggableElement>
               border: Border.all(
                 color: _isDragging
                     ? Colors.white
-                    : Colors.white.withValues(alpha: 0.7),
+                    : (widget.isLocked
+                          ? Colors.white.withValues(alpha: 0.7)
+                          : AppColors.primary),
                 width: _isDragging ? 3 : 2,
               ),
               boxShadow: _isDragging
@@ -492,23 +496,56 @@ class _DraggableElementState extends State<_DraggableElement>
                     ],
                   ),
                 ),
-                // Indicateur lock
+                // Indicateur lock amélioré
                 if (displayWidth > 40)
                   Positioned(
                     right: 2,
                     top: 2,
                     child: Container(
-                      padding: const EdgeInsets.all(2),
+                      padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(4),
+                        color: widget.isLocked
+                            ? Colors.white.withValues(alpha: 0.3)
+                            : AppColors.primary.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Icon(
                         widget.isLocked
-                            ? Icons.touch_app
-                            : Icons.drag_indicator,
-                        size: 10,
-                        color: Colors.white.withValues(alpha: 0.9),
+                            ? PhosphorIcons.lock(PhosphorIconsStyle.fill)
+                            : PhosphorIcons.arrowsOutCardinal(
+                                PhosphorIconsStyle.fill,
+                              ),
+                        size: 12,
+                        color: widget.isLocked
+                            ? Colors.white.withValues(alpha: 0.8)
+                            : Colors.white,
+                      ),
+                    ),
+                  ),
+                // Indicateur de déplacement quand déverrouillé
+                if (!widget.isLocked && displayWidth > 60 && !_isDragging)
+                  Positioned(
+                    bottom: 2,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'Glisser',
+                          style: AppTypography.caption.copyWith(
+                            color: Colors.white,
+                            fontSize: 8,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                   ),

@@ -14,7 +14,6 @@ import '../../../../core/services/database/app_database.dart';
 import '../../../../router/app_router.dart';
 import '../../../weather/presentation/widgets/weather_animations.dart';
 import 'garden_create_screen.dart';
-import 'garden_editor_screen.dart';
 
 const double kNavBarHeight = 100.0;
 
@@ -334,12 +333,9 @@ class GardenScreen extends ConsumerWidget {
   }
 
   void _openGarden(BuildContext context, Garden garden) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => GardenEditorScreen(gardenId: garden.id),
-      ),
-    );
+    // Utiliser GoRouter pour naviguer vers l'éditeur
+    // Cela permet à la navbar de continuer à fonctionner
+    context.push('${AppRoutes.garden}/editor/${garden.id}');
   }
 
   void _confirmDelete(BuildContext context, WidgetRef ref, Garden garden) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../features/garden/presentation/screens/garden_screen.dart';
+import '../features/garden/presentation/screens/garden_editor_screen.dart';
 import '../features/plants/presentation/screens/plants_screen.dart';
 import '../features/calendar/presentation/screens/calendar_screen.dart';
 import '../features/weather/presentation/screens/weather_screen.dart';
@@ -16,6 +17,7 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 /// Routes nommées
 abstract final class AppRoutes {
   static const String garden = '/garden';
+  static const String gardenEditor = '/garden/editor';
   static const String plants = '/plants';
   static const String plantDetail = '/plants/:id';
   static const String calendar = '/calendar';
@@ -42,6 +44,19 @@ final GoRouter appRouter = GoRouter(
           name: 'garden',
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: GardenScreen()),
+          routes: [
+            // Éditeur de jardin (sous-route pour garder la navbar)
+            GoRoute(
+              path: 'editor/:gardenId',
+              name: 'gardenEditor',
+              pageBuilder: (context, state) {
+                final gardenId = int.parse(state.pathParameters['gardenId']!);
+                return NoTransitionPage(
+                  child: GardenEditorScreen(gardenId: gardenId),
+                );
+              },
+            ),
+          ],
         ),
 
         // Plants - Liste des plantes

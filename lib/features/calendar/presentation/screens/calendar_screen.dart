@@ -1286,7 +1286,7 @@ class _EmptyStateForType extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Aucune plante à ${type.label.toLowerCase()} ce mois',
+              'Aucune ${type.label.toLowerCase()} ce mois',
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
