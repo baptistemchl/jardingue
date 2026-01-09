@@ -139,7 +139,7 @@ class _EditElementSheetState extends ConsumerState<EditElementSheet> {
                 ),
                 const SizedBox(height: 16),
                 _DimensionSlider(
-                  label: 'Hauteur',
+                  label: 'Longueur',
                   value: _heightMeters,
                   max: widget.garden.heightMeters - e.yMeters(cellSize),
                   onChanged: (v) => setState(() => _heightMeters = v),

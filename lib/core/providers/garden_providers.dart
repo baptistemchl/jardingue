@@ -198,7 +198,8 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       final id = await _db.addPlantToGarden(
         GardenPlantsCompanion.insert(
           gardenId: gardenId,
-          plantId: 0, // 0 = zone spéciale
+          plantId: 0,
+          // 0 = zone spéciale
           gridX: gridX,
           gridY: gridY,
           widthCells: Value(widthCells.clamp(1, 100)),
@@ -312,11 +313,17 @@ class GardenPlantWithDetails {
   GardenPlantWithDetails({required this.gardenPlant, this.plant});
 
   int get id => gardenPlant.id;
+
   int get gridX => gardenPlant.gridX;
+
   int get gridY => gardenPlant.gridY;
+
   int get widthCells => gardenPlant.widthCells;
+
   int get heightCells => gardenPlant.heightCells;
+
   String? get notes => gardenPlant.notes;
+
   DateTime? get plantedAt => gardenPlant.plantedAt;
 
   bool get isZone => gardenPlant.plantId == 0;
@@ -357,6 +364,12 @@ class GardenPlantWithDetails {
       'persil': '🌿',
       'menthe': '🌿',
       'maïs': '🌽',
+      'citrouille': '\u{1F383}',
+      'courge': '\u{1F383}',
+      'potiron': '\u{1F383}',
+      'potimarron': '\u{1F383}',
+      'butternut': '\u{1F383}',
+      'patisson': '\u{1F383}',
     };
     for (final entry in map.entries) {
       if (name.contains(entry.key)) return entry.value;
@@ -397,14 +410,19 @@ class GardenPlantWithDetails {
 
   /// Convertit en mètres
   double xMeters(int cellSizeCm) => gridX * cellSizeCm / 100;
+
   double yMeters(int cellSizeCm) => gridY * cellSizeCm / 100;
+
   double widthMeters(int cellSizeCm) => widthCells * cellSizeCm / 100;
+
   double heightMeters(int cellSizeCm) => heightCells * cellSizeCm / 100;
 }
 
 /// Extension pour Garden
 extension GardenExtension on Garden {
   double get widthMeters => widthCells * cellSizeCm / 100;
+
   double get heightMeters => heightCells * cellSizeCm / 100;
+
   double get surfaceM2 => widthMeters * heightMeters;
 }

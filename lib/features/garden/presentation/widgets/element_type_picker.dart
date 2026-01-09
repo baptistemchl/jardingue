@@ -513,7 +513,7 @@ class _ZoneConfigSheetState extends State<ZoneConfigSheet> {
               const SizedBox(width: 16),
               Expanded(
                 child: _DimensionInput(
-                  label: 'Hauteur',
+                  label: 'Longueur',
                   value: _height,
                   onChanged: (v) => setState(() => _height = v),
                 ),

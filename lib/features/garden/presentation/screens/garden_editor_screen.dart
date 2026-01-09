@@ -1296,7 +1296,7 @@ class _EnhancedAddElementSheetState
             ),
             const SizedBox(height: 16),
             _DimensionInput(
-              label: 'Hauteur',
+              label: 'Longueur',
               value: _height,
               min: 0.1,
               max: widget.maxHeightM,
@@ -1765,7 +1765,7 @@ class _EnhancedEditElementSheetState extends State<_EnhancedEditElementSheet> {
             ),
             const SizedBox(height: 16),
             _DimensionInput(
-              label: 'Hauteur',
+              label: 'Longueur',
               value: _height,
               min: 0.1,
               max: widget.maxHeightM,
@@ -2406,7 +2406,7 @@ class _PlantDetailSheetState extends ConsumerState<_PlantDetailSheet> {
                           ),
                           const SizedBox(height: 12),
                           _DimensionInput(
-                            label: 'Hauteur',
+                            label: 'Longueur',
                             value: _height,
                             min: 0.1,
                             max: widget.maxHeightM,
@@ -2700,26 +2700,36 @@ class _DetailInfoRow extends StatelessWidget {
 
   const _DetailInfoRow({required this.label, required this.value});
 
+  static const double _minGap = 12;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+          Expanded(
+            flex: 2,
+            child: Text(
+              label,
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          Flexible(
+          const SizedBox(width: _minGap),
+          Expanded(
+            flex: 3,
             child: Text(
               value,
               style: AppTypography.bodySmall.copyWith(
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.end,
+              softWrap: true,
             ),
           ),
         ],

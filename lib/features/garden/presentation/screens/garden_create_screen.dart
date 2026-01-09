@@ -170,7 +170,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _DimensionSlider(
-                        label: 'Hauteur',
+                        label: 'Longueur',
                         value: _heightMeters,
                         onChanged: (v) => setState(() => _heightMeters = v),
                       ),
@@ -213,7 +213,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                       ),
                       _Stat(
                         emoji: '↕️',
-                        label: 'Hauteur',
+                        label: 'Longueur',
                         value: '${_heightMeters.toStringAsFixed(1)} m',
                       ),
                     ],

@@ -99,7 +99,7 @@ class ElementDetailSheet extends ConsumerWidget {
                           '${element.widthMeters(cellSize).toStringAsFixed(2)} m',
                     ),
                     _InfoRow(
-                      label: 'Hauteur',
+                      label: 'Longueur',
                       value:
                           '${element.heightMeters(cellSize).toStringAsFixed(2)} m',
                     ),

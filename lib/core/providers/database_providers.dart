@@ -280,12 +280,20 @@ extension PlantHelpers on Plant {
       'citrouille',
       'butternut',
       'patisson',
-    ]))
+    ])) {
       return '🎃';
+    }
 
     // Légumes feuilles
-    if (_matchesAny(name, ['salade', 'laitue', 'épinard', 'mâche', 'roquette']))
+    if (_matchesAny(name, [
+      'salade',
+      'laitue',
+      'épinard',
+      'mâche',
+      'roquette',
+    ])) {
       return '🥬';
+    }
     if (name.contains('chou')) return '🥬';
     if (_matchesAny(name, ['bette', 'blette'])) return '🥬';
 
@@ -335,8 +343,9 @@ extension PlantHelpers on Plant {
       'cerfeuil',
       'marjolaine',
       'sarriette',
-    ]))
+    ])) {
       return '🌿';
+    }
 
     // Autres
     if (name.contains('artichaut')) return '🌻';

@@ -64,7 +64,7 @@ class WeatherService {
       final current = CurrentWeather(
         temperature: (currentData['temperature_2m'] as num).toDouble(),
         feelsLike: (currentData['apparent_temperature'] as num).toDouble(),
-        humidity: (currentData['relative_humidity_2m'] as num).toInt(),
+        humidity: (currentData['relative_humidity_2m'] as num).toDouble(),
         windSpeed: (currentData['wind_speed_10m'] as num).toDouble(),
         windDirection: (currentData['wind_direction_10m'] as num).toInt(),
         cloudCover: (currentData['cloud_cover'] as num).toInt(),

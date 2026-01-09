@@ -40,7 +40,7 @@ class LocationData {
 class CurrentWeather {
   final double temperature;
   final double feelsLike;
-  final int humidity;
+  final double humidity;
   final double windSpeed;
   final int windDirection;
   final int cloudCover;

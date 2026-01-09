@@ -399,7 +399,7 @@ class _AddElementSheetState extends ConsumerState<AddElementSheet> {
         ),
         const SizedBox(height: 12),
         _DimensionSliderCm(
-          label: 'Hauteur',
+          label: 'Longueur',
           valueCm: _heightCm,
           maxCm: maxHeightCm,
           onChanged: (v) => setState(() => _heightCm = v),

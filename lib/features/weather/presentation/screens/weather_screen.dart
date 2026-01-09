@@ -1,4 +1,5 @@
-import 'dart:math' as math;
+import 'package:Jardingue/core/services/weather/weather_analysis/garden_analysis.dart';
+import 'package:Jardingue/core/services/weather/weather_analysis/garden_analysis_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -38,7 +39,7 @@ class _WeatherContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final condition = weather.current.condition;
-    final analysis = _FullGardenAnalysis.fromWeather(weather);
+    final analysis = GardenAnalysis.fromWeather(weather);
 
     return Stack(
       children: [
@@ -503,7 +504,7 @@ class _WeatherStat extends StatelessWidget {
 // ============================================
 
 class _GardenVerdictCard extends StatelessWidget {
-  final _FullGardenAnalysis analysis;
+  final GardenAnalysis analysis;
 
   const _GardenVerdictCard({required this.analysis});
 
@@ -515,7 +516,7 @@ class _GardenVerdictCard extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: AppSpacing.borderRadiusXl,
         border: Border.all(
-          color: analysis.globalColor.withValues(alpha: 0.3),
+          color: analysis.severity.color.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
@@ -528,12 +529,12 @@ class _GardenVerdictCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: analysis.globalColor.withValues(alpha: 0.15),
+                  color: analysis.severity.color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
                   child: Text(
-                    analysis.globalEmoji,
+                    analysis.emoji,
                     style: const TextStyle(fontSize: 28),
                   ),
                 ),
@@ -546,14 +547,11 @@ class _GardenVerdictCard extends StatelessWidget {
                     Text(
                       'Verdict jardinage',
                       style: AppTypography.labelMedium.copyWith(
-                        color: analysis.globalColor,
+                        color: analysis.severity.color,
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      analysis.globalVerdict,
-                      style: AppTypography.titleSmall,
-                    ),
+                    Text(analysis.verdict, style: AppTypography.titleSmall),
                   ],
                 ),
               ),
@@ -563,13 +561,13 @@ class _GardenVerdictCard extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: analysis.globalColor.withValues(alpha: 0.15),
+                  color: analysis.severity.color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  analysis.globalScore,
+                  analysis.scoreLabel,
                   style: AppTypography.labelMedium.copyWith(
-                    color: analysis.globalColor,
+                    color: analysis.severity.color,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -649,7 +647,7 @@ class _GardenVerdictCard extends StatelessWidget {
 class _VerdictIndicator extends StatelessWidget {
   final String emoji;
   final String label;
-  final _Status status;
+  final GardenStatus status;
   final String detail;
 
   const _VerdictIndicator({
@@ -663,13 +661,13 @@ class _VerdictIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     Color color;
     switch (status) {
-      case _Status.good:
+      case GardenStatus.good:
         color = AppColors.success;
         break;
-      case _Status.warning:
+      case GardenStatus.warning:
         color = AppColors.warning;
         break;
-      case _Status.bad:
+      case GardenStatus.bad:
         color = AppColors.error;
         break;
     }
@@ -712,7 +710,7 @@ class _VerdictIndicator extends StatelessWidget {
 // ============================================
 
 class _PlantingAnalysisCard extends StatelessWidget {
-  final _FullGardenAnalysis analysis;
+  final GardenAnalysis analysis;
   final WeatherData weather;
 
   const _PlantingAnalysisCard({required this.analysis, required this.weather});
@@ -759,8 +757,10 @@ class _PlantingAnalysisCard extends StatelessWidget {
             value: current.feelsLikeDisplay,
             ideal: '> 10°C',
             status: current.feelsLike >= 10
-                ? _Status.good
-                : (current.feelsLike >= 5 ? _Status.warning : _Status.bad),
+                ? GardenStatus.good
+                : (current.feelsLike >= 5
+                      ? GardenStatus.warning
+                      : GardenStatus.bad),
           ),
 
           // Température min cette nuit
@@ -770,8 +770,10 @@ class _PlantingAnalysisCard extends StatelessWidget {
               value: '${daily[0].tempMin.round()}°C',
               ideal: '> 5°C',
               status: daily[0].tempMin >= 5
-                  ? _Status.good
-                  : (daily[0].tempMin >= 0 ? _Status.warning : _Status.bad),
+                  ? GardenStatus.good
+                  : (daily[0].tempMin >= 0
+                        ? GardenStatus.warning
+                        : GardenStatus.bad),
             ),
 
           // Vent
@@ -780,8 +782,10 @@ class _PlantingAnalysisCard extends StatelessWidget {
             value: current.windSpeedDisplay,
             ideal: '< 20 km/h',
             status: current.windSpeed < 20
-                ? _Status.good
-                : (current.windSpeed < 35 ? _Status.warning : _Status.bad),
+                ? GardenStatus.good
+                : (current.windSpeed < 35
+                      ? GardenStatus.warning
+                      : GardenStatus.bad),
           ),
 
           // Sol (basé sur précipitations récentes)
@@ -791,7 +795,9 @@ class _PlantingAnalysisCard extends StatelessWidget {
                 ? 'Humide'
                 : (current.humidity > 70 ? 'Correct' : 'Sec'),
             ideal: 'Humide/frais',
-            status: current.precipitation > 5 ? _Status.warning : _Status.good,
+            status: current.precipitation > 5
+                ? GardenStatus.warning
+                : GardenStatus.good,
           ),
 
           const SizedBox(height: 12),
@@ -830,10 +836,10 @@ class _PlantingAnalysisCard extends StatelessWidget {
     );
   }
 
-  _Status _getTempStatus(double temp) {
-    if (temp >= 15 && temp <= 25) return _Status.good;
-    if (temp >= 10 && temp <= 30) return _Status.warning;
-    return _Status.bad;
+  GardenStatus _getTempStatus(double temp) {
+    if (temp >= 15 && temp <= 25) return GardenStatus.good;
+    if (temp >= 10 && temp <= 30) return GardenStatus.warning;
+    return GardenStatus.bad;
   }
 }
 
@@ -842,7 +848,7 @@ class _PlantingAnalysisCard extends StatelessWidget {
 // ============================================
 
 class _WateringAnalysisCard extends StatelessWidget {
-  final _FullGardenAnalysis analysis;
+  final GardenAnalysis analysis;
   final WeatherData weather;
 
   const _WateringAnalysisCard({required this.analysis, required this.weather});
@@ -893,7 +899,9 @@ class _WateringAnalysisCard extends StatelessWidget {
             label: 'Précipitations actuelles',
             value: '${current.precipitation.toStringAsFixed(1)} mm',
             ideal: current.precipitation > 0 ? 'Pluie ✓' : '-',
-            status: current.precipitation > 0 ? _Status.good : _Status.warning,
+            status: current.precipitation > 0
+                ? GardenStatus.good
+                : GardenStatus.warning,
           ),
 
           // Humidité
@@ -902,8 +910,10 @@ class _WateringAnalysisCard extends StatelessWidget {
             value: current.humidityDisplay,
             ideal: '50-70%',
             status: current.humidity >= 50 && current.humidity <= 80
-                ? _Status.good
-                : (current.humidity < 30 ? _Status.bad : _Status.warning),
+                ? GardenStatus.good
+                : (current.humidity < 30
+                      ? GardenStatus.bad
+                      : GardenStatus.warning),
           ),
 
           // Prévisions 6h
@@ -912,8 +922,8 @@ class _WateringAnalysisCard extends StatelessWidget {
             value: '${precipNext6h.toStringAsFixed(1)} mm',
             ideal: precipNext6h > 2 ? 'Pas d\'arrosage' : 'Arrosez',
             status: precipNext6h > 2
-                ? _Status.good
-                : (precipNext6h > 0 ? _Status.warning : _Status.bad),
+                ? GardenStatus.good
+                : (precipNext6h > 0 ? GardenStatus.warning : GardenStatus.bad),
           ),
 
           // Prévisions 24h
@@ -922,8 +932,8 @@ class _WateringAnalysisCard extends StatelessWidget {
             value: '${precipNext24h.toStringAsFixed(1)} mm',
             ideal: '-',
             status: precipNext24h > 5
-                ? _Status.good
-                : (precipNext24h > 0 ? _Status.warning : _Status.bad),
+                ? GardenStatus.good
+                : (precipNext24h > 0 ? GardenStatus.warning : GardenStatus.bad),
           ),
 
           // Probabilité max
@@ -932,8 +942,10 @@ class _WateringAnalysisCard extends StatelessWidget {
             value: '$maxPrecipProb%',
             ideal: '> 60% = reportez',
             status: maxPrecipProb > 60
-                ? _Status.good
-                : (maxPrecipProb > 30 ? _Status.warning : _Status.bad),
+                ? GardenStatus.good
+                : (maxPrecipProb > 30
+                      ? GardenStatus.warning
+                      : GardenStatus.bad),
           ),
 
           // Température (évaporation)
@@ -943,7 +955,9 @@ class _WateringAnalysisCard extends StatelessWidget {
                 ? 'Forte'
                 : (current.temperature > 15 ? 'Modérée' : 'Faible'),
             ideal: current.temperature > 25 ? 'Arrosez le soir' : '-',
-            status: current.temperature > 30 ? _Status.warning : _Status.good,
+            status: current.temperature > 30
+                ? GardenStatus.warning
+                : GardenStatus.good,
           ),
 
           const SizedBox(height: 12),
@@ -954,9 +968,9 @@ class _WateringAnalysisCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: analysis.wateringStatus == _Status.good
+              color: GardenStatus.good == analysis.wateringStatus
                   ? AppColors.success.withValues(alpha: 0.1)
-                  : (analysis.wateringStatus == _Status.warning
+                  : (analysis.wateringStatus == GardenStatus.warning
                         ? AppColors.warning.withValues(alpha: 0.1)
                         : AppColors.info.withValues(alpha: 0.1)),
               borderRadius: BorderRadius.circular(10),
@@ -964,9 +978,9 @@ class _WateringAnalysisCard extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  analysis.wateringStatus == _Status.good
+                  analysis.wateringStatus == GardenStatus.good
                       ? '✅'
-                      : (analysis.wateringStatus == _Status.warning
+                      : (analysis.wateringStatus == GardenStatus.warning
                             ? '⚠️'
                             : '💧'),
                   style: const TextStyle(fontSize: 20),
@@ -1196,7 +1210,7 @@ class _AnalysisRow extends StatelessWidget {
   final String label;
   final String value;
   final String ideal;
-  final _Status status;
+  final GardenStatus status;
 
   const _AnalysisRow({
     required this.label,
@@ -1210,15 +1224,15 @@ class _AnalysisRow extends StatelessWidget {
     Color statusColor;
     IconData statusIcon;
     switch (status) {
-      case _Status.good:
+      case GardenStatus.good:
         statusColor = AppColors.success;
         statusIcon = PhosphorIcons.checkCircle(PhosphorIconsStyle.fill);
         break;
-      case _Status.warning:
+      case GardenStatus.warning:
         statusColor = AppColors.warning;
         statusIcon = PhosphorIcons.warning(PhosphorIconsStyle.fill);
         break;
-      case _Status.bad:
+      case GardenStatus.bad:
         statusColor = AppColors.error;
         statusIcon = PhosphorIcons.xCircle(PhosphorIconsStyle.fill);
         break;
@@ -1937,248 +1951,4 @@ class _OrganicBlobsPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// ============================================
-// ANALYSE COMPLÈTE JARDINAGE
-// ============================================
-
-enum _Status { good, warning, bad }
-
-class _FullGardenAnalysis {
-  final String globalVerdict;
-  final String globalEmoji;
-  final Color globalColor;
-  final String globalScore;
-  final List<String> alerts;
-
-  final _Status plantingStatus;
-  final String plantingDetail;
-  final List<String> plantingRecommendations;
-
-  final _Status wateringStatus;
-  final String wateringDetail;
-  final String wateringAdvice;
-
-  final _Status harvestStatus;
-  final String harvestDetail;
-
-  _FullGardenAnalysis({
-    required this.globalVerdict,
-    required this.globalEmoji,
-    required this.globalColor,
-    required this.globalScore,
-    required this.alerts,
-    required this.plantingStatus,
-    required this.plantingDetail,
-    required this.plantingRecommendations,
-    required this.wateringStatus,
-    required this.wateringDetail,
-    required this.wateringAdvice,
-    required this.harvestStatus,
-    required this.harvestDetail,
-  });
-
-  factory _FullGardenAnalysis.fromWeather(WeatherData weather) {
-    final current = weather.current;
-    final hourly = weather.hourlyForecast;
-    final daily = weather.dailyForecast;
-
-    final temp = current.temperature;
-    final humidity = current.humidity;
-    final precip = current.precipitation;
-    final wind = current.windSpeed;
-    final uv = current.uvIndex;
-
-    // Prévisions
-    double minTemp24h = temp;
-    double maxTemp24h = temp;
-    double totalPrecip24h = precip;
-    int maxPrecipProb = 0;
-
-    for (int i = 0; i < math.min(24, hourly.length); i++) {
-      final h = hourly[i];
-      if (h.temperature < minTemp24h) minTemp24h = h.temperature;
-      if (h.temperature > maxTemp24h) maxTemp24h = h.temperature;
-      totalPrecip24h += h.precipitation;
-      if (h.precipitationProbability > maxPrecipProb) {
-        maxPrecipProb = h.precipitationProbability;
-      }
-    }
-
-    double minTempTonight = daily.isNotEmpty ? daily[0].tempMin : temp;
-
-    // === ALERTES ===
-    List<String> alerts = [];
-    if (temp < 0) {
-      alerts.add('Gel actif ! Rentrez les plants sensibles immédiatement.');
-    } else if (minTempTonight < 0)
-      alerts.add(
-        'Gel prévu cette nuit (${minTempTonight.round()}°C). Protégez vos plants.',
-      );
-    else if (minTempTonight < 3)
-      alerts.add('Risque de gelée cette nuit. Surveillez les jeunes plants.');
-    if (temp > 35) {
-      alerts.add(
-        'Canicule : évitez toute activité au jardin entre 11h et 17h.',
-      );
-    }
-    if (wind > 50) {
-      alerts.add(
-        'Vent violent (${wind.round()} km/h). Tuteurez vos plants hauts.',
-      );
-    }
-    if (uv > 8) alerts.add('UV très élevés. Protégez-vous si vous jardinez.');
-
-    // === PLANTATION ===
-    _Status plantingStatus;
-    String plantingDetail;
-    List<String> plantingRecs = [];
-
-    if (temp < 5 || minTempTonight < 0) {
-      plantingStatus = _Status.bad;
-      plantingDetail = 'Trop froid';
-      plantingRecs.add('✗ Ne plantez rien en pleine terre');
-      plantingRecs.add('✗ Risque de gel pour les jeunes plants');
-      if (temp > 0) plantingRecs.add('• Travaux en serre possibles');
-    } else if (temp > 32 || wind > 40) {
-      plantingStatus = _Status.bad;
-      plantingDetail = temp > 32 ? 'Trop chaud' : 'Trop venteux';
-      plantingRecs.add('✗ Stress hydrique pour les plants');
-      plantingRecs.add('• Plantez tôt le matin ou le soir');
-    } else if (temp < 10 || temp > 28 || wind > 25 || precip > 5) {
-      plantingStatus = _Status.warning;
-      plantingDetail = 'Conditions moyennes';
-      if (temp < 12) {
-        plantingRecs.add(
-          '• Privilégiez les légumes rustiques (choux, poireaux)',
-        );
-      }
-      if (temp > 26) {
-        plantingRecs.add('• Arrosez immédiatement après plantation');
-      }
-      if (wind > 20) plantingRecs.add('• Protégez du vent avec un voile');
-      if (precip > 3) {
-        plantingRecs.add('• Sol détrempé : attendez qu\'il ressuie');
-      }
-    } else {
-      plantingStatus = _Status.good;
-      plantingDetail = 'Idéal';
-      plantingRecs.add('✓ Conditions parfaites pour planter');
-      plantingRecs.add('✓ Tomates, courgettes, salades...');
-      plantingRecs.add('✓ Le sol est à bonne température');
-      if (maxPrecipProb > 50) {
-        plantingRecs.add('✓ Pluie prévue = pas besoin d\'arroser après');
-      }
-    }
-
-    // === ARROSAGE ===
-    _Status wateringStatus;
-    String wateringDetail;
-    String wateringAdvice;
-
-    if (precip > 2 || totalPrecip24h > 5) {
-      wateringStatus = _Status.good;
-      wateringDetail = 'Pluie suffisante';
-      wateringAdvice = 'Pas besoin d\'arroser. La pluie s\'en charge !';
-    } else if (maxPrecipProb > 60) {
-      wateringStatus = _Status.good;
-      wateringDetail = 'Pluie prévue';
-      wateringAdvice =
-          'Pluie annoncée à $maxPrecipProb%. Reportez l\'arrosage.';
-    } else if (temp > 28 && humidity < 50) {
-      wateringStatus = _Status.warning;
-      wateringDetail = 'Arrosage urgent';
-      wateringAdvice =
-          'Forte évaporation. Arrosez ce soir en profondeur, jamais en plein soleil.';
-    } else if (humidity < 40 && precip == 0) {
-      wateringStatus = _Status.warning;
-      wateringDetail = 'Sol sec';
-      wateringAdvice =
-          'Humidité faible. Arrosez le soir pour limiter l\'évaporation.';
-    } else {
-      wateringStatus = _Status.good;
-      wateringDetail = 'Normal';
-      wateringAdvice =
-          'Arrosage classique si nécessaire. Vérifiez l\'humidité du sol en profondeur.';
-    }
-
-    // === RÉCOLTE ===
-    _Status harvestStatus;
-    String harvestDetail;
-
-    if (precip > 3) {
-      harvestStatus = _Status.warning;
-      harvestDetail = 'Sol humide';
-    } else if (temp > 30) {
-      harvestStatus = _Status.warning;
-      harvestDetail = 'Récoltez tôt';
-    } else if (temp < 5) {
-      harvestStatus = _Status.warning;
-      harvestDetail = 'Avant le gel';
-    } else {
-      harvestStatus = _Status.good;
-      harvestDetail = 'Bon moment';
-    }
-
-    // === VERDICT GLOBAL ===
-    String globalVerdict;
-    String globalEmoji;
-    Color globalColor;
-    String globalScore;
-
-    int score = 0;
-    if (plantingStatus == _Status.good) {
-      score += 2;
-    } else if (plantingStatus == _Status.warning)
-      score += 1;
-    if (wateringStatus == _Status.good) {
-      score += 2;
-    } else if (wateringStatus == _Status.warning)
-      score += 1;
-    if (harvestStatus == _Status.good) score += 1;
-
-    if (alerts.isNotEmpty && (temp < 0 || temp > 35)) {
-      globalVerdict = 'Conditions critiques';
-      globalEmoji = '⛔';
-      globalColor = Colors.red;
-      globalScore = '1/5';
-    } else if (score >= 4 && alerts.isEmpty) {
-      globalVerdict = 'Excellentes conditions';
-      globalEmoji = '🌟';
-      globalColor = Colors.green;
-      globalScore = '5/5';
-    } else if (score >= 3) {
-      globalVerdict = 'Bonnes conditions';
-      globalEmoji = '👍';
-      globalColor = Colors.green;
-      globalScore = '4/5';
-    } else if (score >= 2) {
-      globalVerdict = 'Conditions acceptables';
-      globalEmoji = '👌';
-      globalColor = Colors.orange;
-      globalScore = '3/5';
-    } else {
-      globalVerdict = 'Conditions difficiles';
-      globalEmoji = '⚠️';
-      globalColor = Colors.orange;
-      globalScore = '2/5';
-    }
-
-    return _FullGardenAnalysis(
-      globalVerdict: globalVerdict,
-      globalEmoji: globalEmoji,
-      globalColor: globalColor,
-      globalScore: globalScore,
-      alerts: alerts,
-      plantingStatus: plantingStatus,
-      plantingDetail: plantingDetail,
-      plantingRecommendations: plantingRecs,
-      wateringStatus: wateringStatus,
-      wateringDetail: wateringDetail,
-      wateringAdvice: wateringAdvice,
-      harvestStatus: harvestStatus,
-      harvestDetail: harvestDetail,
-    );
-  }
 }
