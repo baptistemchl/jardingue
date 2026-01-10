@@ -1,5 +1,5 @@
-import 'package:Jardingue/core/services/weather/weather_analysis/garden_analysis.dart';
 import 'package:flutter/material.dart';
+import 'package:jardingue/core/services/weather/weather_analysis/garden_analysis.dart';
 
 import '../../../../core/constants/app_colors.dart';
 

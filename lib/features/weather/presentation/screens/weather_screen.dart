@@ -1,7 +1,7 @@
-import 'package:Jardingue/core/services/weather/weather_analysis/garden_analysis.dart';
-import 'package:Jardingue/core/services/weather/weather_analysis/garden_analysis_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jardingue/core/services/weather/weather_analysis/garden_analysis.dart';
+import 'package:jardingue/core/services/weather/weather_analysis/garden_analysis_ui.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
