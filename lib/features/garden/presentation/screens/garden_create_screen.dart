@@ -22,6 +22,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
   late double _widthMeters;
   late double _heightMeters;
   bool _isLoading = false;
+  String? _errorMessage;
 
   bool get isEditing => widget.garden != null;
 
@@ -39,49 +40,77 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
     super.dispose();
   }
 
+  void _showError(String message) {
+    setState(() => _errorMessage = message);
+    // Effacer l'erreur après 3 secondes
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() => _errorMessage = null);
+      }
+    });
+  }
+
+  void _closeSheet() {
+    // Utiliser le rootNavigator pour fermer le ModalBottomSheet
+    // car il a été ouvert avec useRootNavigator: true
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
   Future<void> _save() async {
+    // Validation
     if (_nameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Veuillez entrer un nom')));
+      _showError('Veuillez entrer un nom pour votre potager');
       return;
     }
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
     try {
       if (isEditing) {
         await ref
             .read(gardenNotifierProvider.notifier)
             .updateGarden(
-              id: widget.garden!.id,
-              name: _nameController.text.trim(),
-              widthMeters: _widthMeters,
-              heightMeters: _heightMeters,
-            );
+          id: widget.garden!.id,
+          name: _nameController.text.trim(),
+          widthMeters: _widthMeters,
+          heightMeters: _heightMeters,
+        );
       } else {
         await ref
             .read(gardenNotifierProvider.notifier)
             .createGarden(
-              name: _nameController.text.trim(),
-              widthMeters: _widthMeters,
-              heightMeters: _heightMeters,
-            );
+          name: _nameController.text.trim(),
+          widthMeters: _widthMeters,
+          heightMeters: _heightMeters,
+        );
       }
-      widget.onSaved?.call();
+
+      if (mounted) {
+        // D'abord appeler le callback (qui invalide le provider)
+        widget.onSaved?.call();
+        // Puis fermer le bottom sheet avec un léger délai
+        // pour éviter le conflit de navigation
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _closeSheet();
+          }
+        });
+      }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Erreur: $e')));
+        _showError('Erreur: $e');
+        setState(() => _isLoading = false);
       }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: const BoxDecoration(
@@ -115,7 +144,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: _closeSheet,
                   icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.bold)),
                 ),
               ],
@@ -123,6 +152,38 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
           ),
 
           const Divider(),
+
+          // Message d'erreur intégré
+          if (_errorMessage != null)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    PhosphorIcons.warning(PhosphorIconsStyle.fill),
+                    color: AppColors.error,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      _errorMessage!,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.error,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
           // Contenu
           Expanded(
@@ -142,7 +203,26 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
+                    // Bordure d'erreur si le champ est vide et une erreur est affichée
+                    enabledBorder: _errorMessage != null &&
+                        _nameController.text.trim().isEmpty
+                        ? OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: AppColors.error.withValues(alpha: 0.5),
+                      ),
+                    )
+                        : OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
+                  onChanged: (_) {
+                    // Effacer l'erreur quand l'utilisateur tape
+                    if (_errorMessage != null) {
+                      setState(() => _errorMessage = null);
+                    }
+                  },
                 ),
 
                 const SizedBox(height: 24),
@@ -170,7 +250,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _DimensionSlider(
-                        label: 'Longueur',
+                        label: 'Hauteur',
                         value: _heightMeters,
                         onChanged: (v) => setState(() => _heightMeters = v),
                       ),
@@ -204,7 +284,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                         emoji: '📐',
                         label: 'Surface',
                         value:
-                            '${(_widthMeters * _heightMeters).toStringAsFixed(1)} m²',
+                        '${(_widthMeters * _heightMeters).toStringAsFixed(1)} m²',
                       ),
                       _Stat(
                         emoji: '↔️',
@@ -213,7 +293,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                       ),
                       _Stat(
                         emoji: '↕️',
-                        label: 'Longueur',
+                        label: 'Hauteur',
                         value: '${_heightMeters.toStringAsFixed(1)} m',
                       ),
                     ],
@@ -225,7 +305,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
 
           // Bouton
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+            padding: EdgeInsets.fromLTRB(20, 16, 20, bottomPadding + 16),
             decoration: BoxDecoration(
               color: AppColors.surface,
               border: Border(top: BorderSide(color: AppColors.border)),
@@ -244,13 +324,13 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                 ),
                 child: _isLoading
                     ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
                     : Text(isEditing ? 'Enregistrer' : 'Créer le potager'),
               ),
             ),
@@ -402,7 +482,7 @@ class _GridPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _GridPainter oldDelegate) =>
       oldDelegate.widthMeters != widthMeters ||
-      oldDelegate.heightMeters != heightMeters;
+          oldDelegate.heightMeters != heightMeters;
 }
 
 class _Stat extends StatelessWidget {

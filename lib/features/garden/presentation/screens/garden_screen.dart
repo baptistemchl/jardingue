@@ -284,6 +284,7 @@ class GardenScreen extends ConsumerWidget {
                 ),
                 SliverToBoxAdapter(child: SizedBox(height: 20)),
 
+                // Section verger
                 SliverPadding(
                   padding: AppSpacing.horizontalPadding,
                   sliver: SliverToBoxAdapter(child: OrchardContainer()),
@@ -300,14 +301,15 @@ class GardenScreen extends ConsumerWidget {
 
   void _showCreateSheet(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
-      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      // IMPORTANT: Utiliser le rootNavigator pour éviter les conflits avec go_router
+      useRootNavigator: true,
       builder: (_) => GardenCreateScreen(
         onSaved: () {
+          // Invalider le provider pour rafraîchir la liste
           ref.invalidate(gardensListProvider);
-          Navigator.pop(context);
         },
       ),
     );
@@ -315,15 +317,16 @@ class GardenScreen extends ConsumerWidget {
 
   void _showEditSheet(BuildContext context, WidgetRef ref, Garden garden) {
     showModalBottomSheet(
-      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      // IMPORTANT: Utiliser le rootNavigator pour éviter les conflits avec go_router
+      useRootNavigator: true,
       builder: (_) => GardenCreateScreen(
         garden: garden,
         onSaved: () {
+          // Invalider le provider pour rafraîchir la liste
           ref.invalidate(gardensListProvider);
-          Navigator.pop(context);
         },
       ),
     );
@@ -331,7 +334,6 @@ class GardenScreen extends ConsumerWidget {
 
   void _openGarden(BuildContext context, Garden garden) {
     // Utiliser GoRouter pour naviguer vers l'éditeur
-    // Cela permet à la navbar de continuer à fonctionner
     context.push('${AppRoutes.garden}/editor/${garden.id}');
   }
 
@@ -550,7 +552,7 @@ class _GardensList extends StatelessWidget {
             garden.cellSizeCm *
             garden.heightCells *
             garden.cellSizeCm) /
-        10000;
+            10000;
     return '${surface.toStringAsFixed(1)} m²';
   }
 
@@ -560,7 +562,7 @@ class _GardensList extends StatelessWidget {
       children: [
         // Liste des potagers
         ...gardens.map(
-          (garden) => Column(
+              (garden) => Column(
             children: [
               InkWell(
                 onTap: () => onGardenTap(garden),
@@ -790,170 +792,6 @@ class _CreateButton extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _WeatherCardSkeleton extends StatefulWidget {
-  const _WeatherCardSkeleton();
-
-  @override
-  State<_WeatherCardSkeleton> createState() => _WeatherCardSkeletonState();
-}
-
-class _WeatherCardSkeletonState extends State<_WeatherCardSkeleton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _shimmerController;
-
-  @override
-  void initState() {
-    super.initState();
-    _shimmerController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _shimmerController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: _shimmerController,
-      builder: (context, child) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: AppColors.surface,
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Ligne 1: Température + condition + icône
-              Row(
-                children: [
-                  _ShimmerBox(
-                    width: 75,
-                    height: 48,
-                    borderRadius: 8,
-                    shimmerValue: _shimmerController.value,
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _ShimmerBox(
-                          width: 100,
-                          height: 14,
-                          borderRadius: 4,
-                          shimmerValue: _shimmerController.value,
-                        ),
-                        const SizedBox(height: 8),
-                        _ShimmerBox(
-                          width: 70,
-                          height: 12,
-                          borderRadius: 4,
-                          shimmerValue: _shimmerController.value,
-                        ),
-                      ],
-                    ),
-                  ),
-                  _ShimmerBox(
-                    width: 48,
-                    height: 48,
-                    borderRadius: 12,
-                    shimmerValue: _shimmerController.value,
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              // Ligne 2: Verdict
-              _ShimmerBox(
-                width: double.infinity,
-                height: 38,
-                borderRadius: 12,
-                shimmerValue: _shimmerController.value,
-              ),
-
-              const SizedBox(height: 14),
-
-              // Ligne 3: 3 indicateurs
-              Row(
-                children: [
-                  Expanded(
-                    child: _ShimmerBox(
-                      height: 46,
-                      borderRadius: 8,
-                      shimmerValue: _shimmerController.value,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _ShimmerBox(
-                      height: 46,
-                      borderRadius: 8,
-                      shimmerValue: _shimmerController.value,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _ShimmerBox(
-                      height: 46,
-                      borderRadius: 8,
-                      shimmerValue: _shimmerController.value,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _ShimmerBox extends StatelessWidget {
-  final double? width;
-  final double height;
-  final double borderRadius;
-  final double shimmerValue;
-
-  const _ShimmerBox({
-    this.width,
-    required this.height,
-    required this.borderRadius,
-    required this.shimmerValue,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(borderRadius),
-        gradient: LinearGradient(
-          begin: Alignment(-1.0 + 2 * shimmerValue, 0),
-          end: Alignment(-0.5 + 2 * shimmerValue, 0),
-          colors: [
-            AppColors.border,
-            AppColors.border.withValues(alpha: 0.3),
-            AppColors.border,
-          ],
-          stops: const [0.0, 0.5, 1.0],
         ),
       ),
     );
