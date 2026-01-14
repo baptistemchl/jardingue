@@ -31,7 +31,28 @@ final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.garden,
   debugLogDiagnostics: true,
   routes: [
-    // Shell route pour la navigation avec bottom bar
+    // =========================================
+    // ROUTE HORS SHELL (SANS NAVBAR)
+    // =========================================
+
+    // Éditeur de jardin - SANS navbar pour éviter les changements de page accidentels
+    GoRoute(
+      path: '${AppRoutes.garden}/editor/:gardenId',
+      name: 'gardenEditor',
+      parentNavigatorKey: _rootNavigatorKey,
+      // Utilise le navigateur root (pas le shell)
+      pageBuilder: (context, state) {
+        final gardenId = int.parse(state.pathParameters['gardenId']!);
+        return MaterialPage(
+          key: state.pageKey,
+          child: GardenEditorScreen(gardenId: gardenId),
+        );
+      },
+    ),
+
+    // =========================================
+    // SHELL ROUTE (AVEC NAVBAR)
+    // =========================================
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
@@ -44,19 +65,6 @@ final GoRouter appRouter = GoRouter(
           name: 'garden',
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: GardenScreen()),
-          routes: [
-            // Éditeur de jardin (sous-route pour garder la navbar)
-            GoRoute(
-              path: 'editor/:gardenId',
-              name: 'gardenEditor',
-              pageBuilder: (context, state) {
-                final gardenId = int.parse(state.pathParameters['gardenId']!);
-                return NoTransitionPage(
-                  child: GardenEditorScreen(gardenId: gardenId),
-                );
-              },
-            ),
-          ],
         ),
 
         // Plants - Liste des plantes
@@ -65,17 +73,6 @@ final GoRouter appRouter = GoRouter(
           name: 'plants',
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: PlantsScreen()),
-          routes: [
-            // Detail d'une plante
-            GoRoute(
-              path: ':id',
-              name: 'plantDetail',
-              builder: (context, state) {
-                final plantId = state.pathParameters['id']!;
-                return PlantDetailScreen(plantId: plantId);
-              },
-            ),
-          ],
         ),
 
         // Calendar - Calendrier du potager
@@ -97,18 +94,3 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
-
-/// Placeholder pour PlantDetailScreen (à implémenter)
-class PlantDetailScreen extends StatelessWidget {
-  final String plantId;
-
-  const PlantDetailScreen({super.key, required this.plantId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Plante $plantId')),
-      body: Center(child: Text('Détail de la plante $plantId')),
-    );
-  }
-}

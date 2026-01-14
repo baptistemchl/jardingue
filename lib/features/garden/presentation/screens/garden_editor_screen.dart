@@ -7,11 +7,192 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
-import '../../../../core/providers/garden_providers.dart'; // Contient ZoneType et GardenPlantWithDetails
-import '../../../../core/providers/database_providers.dart'; // Pour filteredPlantsProvider
+import '../../../../core/providers/garden_providers.dart';
+import '../../../../core/providers/database_providers.dart';
 import '../widgets/garden_grid.dart';
 
-/// Écran d'édition du potager
+// =============================================================================
+// SYSTÈME D'HISTORIQUE POUR UNDO/REDO
+// =============================================================================
+
+/// Représente une action qui peut être annulée/refaite
+abstract class GardenAction {
+  Future<void> execute(GardenNotifier notifier);
+
+  Future<void> undo(GardenNotifier notifier);
+
+  String get description;
+}
+
+/// Action de déplacement d'un élément
+class MoveElementAction extends GardenAction {
+  final int elementId;
+  final int gardenId;
+  final double oldX, oldY;
+  final double newX, newY;
+
+  MoveElementAction({
+    required this.elementId,
+    required this.gardenId,
+    required this.oldX,
+    required this.oldY,
+    required this.newX,
+    required this.newY,
+  });
+
+  @override
+  Future<void> execute(GardenNotifier notifier) async {
+    await notifier.moveElement(elementId, newX, newY, gardenId);
+  }
+
+  @override
+  Future<void> undo(GardenNotifier notifier) async {
+    await notifier.moveElement(elementId, oldX, oldY, gardenId);
+  }
+
+  @override
+  String get description => 'Déplacement';
+}
+
+/// Action de suppression d'un élément
+class DeleteElementAction extends GardenAction {
+  final int elementId;
+  final int gardenId;
+
+  final bool isZone;
+  final int? plantId;
+  final String zoneType;
+
+  final double xMeters;
+  final double yMeters;
+  final double widthMeters;
+  final double heightMeters;
+
+  DeleteElementAction({
+    required this.elementId,
+    required this.gardenId,
+    required this.isZone,
+    required this.plantId,
+    required this.zoneType,
+    required this.xMeters,
+    required this.yMeters,
+    required this.widthMeters,
+    required this.heightMeters,
+  });
+
+  @override
+  Future<void> execute(GardenNotifier notifier) async {
+    await notifier.removeElement(elementId, gardenId);
+  }
+
+  @override
+  Future<void> undo(GardenNotifier notifier) async {
+    if (isZone) {
+      await notifier.addZoneToGarden(
+        gardenId: gardenId,
+        xMeters: xMeters,
+        yMeters: yMeters,
+        widthMeters: widthMeters,
+        heightMeters: heightMeters,
+        zoneType: zoneType,
+      );
+      return;
+    }
+
+    await notifier.addPlantToGarden(
+      gardenId: gardenId,
+      plantId: plantId!,
+      xMeters: xMeters,
+      yMeters: yMeters,
+      widthMeters: widthMeters,
+      heightMeters: heightMeters,
+    );
+  }
+
+  @override
+  String get description => 'Suppression';
+}
+
+/// Action de redimensionnement d'un élément
+class ResizeElementAction extends GardenAction {
+  final int elementId;
+  final int gardenId;
+  final double oldWidth, oldHeight;
+  final double newWidth, newHeight;
+
+  ResizeElementAction({
+    required this.elementId,
+    required this.gardenId,
+    required this.oldWidth,
+    required this.oldHeight,
+    required this.newWidth,
+    required this.newHeight,
+  });
+
+  @override
+  Future<void> execute(GardenNotifier notifier) async {
+    await notifier.updateElementSize(elementId, newWidth, newHeight, gardenId);
+  }
+
+  @override
+  Future<void> undo(GardenNotifier notifier) async {
+    await notifier.updateElementSize(elementId, oldWidth, oldHeight, gardenId);
+  }
+
+  @override
+  String get description => 'Redimensionnement';
+}
+
+/// Gestionnaire d'historique pour les actions
+class ActionHistory extends ChangeNotifier {
+  final List<GardenAction> _undoStack = [];
+  final List<GardenAction> _redoStack = [];
+  static const int maxHistory = 50;
+
+  bool get canUndo => _undoStack.isNotEmpty;
+
+  bool get canRedo => _redoStack.isNotEmpty;
+
+  int get undoCount => _undoStack.length;
+
+  int get redoCount => _redoStack.length;
+
+  void addAction(GardenAction action) {
+    _undoStack.add(action);
+    _redoStack.clear();
+    if (_undoStack.length > maxHistory) {
+      _undoStack.removeAt(0);
+    }
+    notifyListeners();
+  }
+
+  GardenAction? popUndo() {
+    if (_undoStack.isEmpty) return null;
+    final action = _undoStack.removeLast();
+    _redoStack.add(action);
+    notifyListeners();
+    return action;
+  }
+
+  GardenAction? popRedo() {
+    if (_redoStack.isEmpty) return null;
+    final action = _redoStack.removeLast();
+    _undoStack.add(action);
+    notifyListeners();
+    return action;
+  }
+
+  void clear() {
+    _undoStack.clear();
+    _redoStack.clear();
+    notifyListeners();
+  }
+}
+
+// =============================================================================
+// ÉCRAN PRINCIPAL DE L'ÉDITEUR
+// =============================================================================
+
 class GardenEditorScreen extends ConsumerStatefulWidget {
   final int gardenId;
 
@@ -24,44 +205,51 @@ class GardenEditorScreen extends ConsumerStatefulWidget {
 class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
   final TransformationController _transformController =
       TransformationController();
+  final ActionHistory _actionHistory = ActionHistory();
+
   double _currentScale = 1.0;
-  double _displayScale = 1.0; // Scale affiché (mis à jour de façon fluide)
+  double _displayScale = 1.0;
   bool _isLocked = true;
   bool _initialized = false;
 
-  // Timer pour le debounce du scale
   Timer? _scaleDebounceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _actionHistory.addListener(_onHistoryChanged);
+  }
 
   @override
   void dispose() {
     _transformController.dispose();
     _scaleDebounceTimer?.cancel();
+    _actionHistory.removeListener(_onHistoryChanged);
+    _actionHistory.dispose();
     super.dispose();
+  }
+
+  void _onHistoryChanged() {
+    if (mounted) setState(() {});
   }
 
   void _initializeView(Garden garden, BoxConstraints constraints) {
     if (_initialized) return;
     _initialized = true;
 
-    // Calcul des dimensions du jardin en pixels (kPixelsPerMeter = 100)
-    final gardenWidthPx =
-        garden.widthCells * garden.cellSizeCm; // en pixels directement
+    final gardenWidthPx = garden.widthCells * garden.cellSizeCm;
     final gardenHeightPx = garden.heightCells * garden.cellSizeCm;
 
-    // Espace disponible (avec marges)
     final availableWidth = constraints.maxWidth - 32;
     final availableHeight = constraints.maxHeight - 100;
 
-    // Calcul du scale pour que le jardin tienne dans l'écran
     final scaleX = availableWidth / gardenWidthPx;
     final scaleY = availableHeight / gardenHeightPx;
     final fitScale = math.min(scaleX, scaleY);
 
-    // On démarre avec un scale qui montre tout le jardin
-    _currentScale = fitScale.clamp(0.05, 2.0);
+    _currentScale = fitScale;
     _displayScale = _currentScale;
 
-    // Centrer la vue
     final scaledWidth = gardenWidthPx * _currentScale;
     final scaledHeight = gardenHeightPx * _currentScale;
     final dx = (constraints.maxWidth - scaledWidth) / 2;
@@ -74,14 +262,186 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
     setState(() {});
   }
 
+  // ============================================
+  // UNDO / REDO
+  // ============================================
+
+  Future<void> _undo() async {
+    if (!_actionHistory.canUndo) return;
+
+    final action = _actionHistory.popUndo();
+    if (action != null) {
+      await action.undo(ref.read(gardenNotifierProvider.notifier));
+      _showActionFeedback('↩️ Annulé : ${action.description}');
+    }
+  }
+
+  Future<void> _redo() async {
+    if (!_actionHistory.canRedo) return;
+
+    final action = _actionHistory.popRedo();
+    if (action != null) {
+      await action.execute(ref.read(gardenNotifierProvider.notifier));
+      _showActionFeedback('↪️ Rétabli : ${action.description}');
+    }
+  }
+
+  void _showActionFeedback(String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(milliseconds: 1200),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.textSecondary,
+        margin: const EdgeInsets.only(bottom: 100, left: 16, right: 16),
+      ),
+    );
+  }
+
+  // ============================================
+  // GESTION DES ÉLÉMENTS AVEC HISTORIQUE
+  // ============================================
+
+  Future<void> _onElementMoved(
+    GardenPlantWithDetails element,
+    double newXMeters,
+    double newYMeters,
+    int cellSizeCm,
+  ) async {
+    if (_isLocked) return;
+
+    final action = MoveElementAction(
+      elementId: element.id,
+      gardenId: widget.gardenId,
+      oldX: element.xMeters(cellSizeCm),
+      oldY: element.yMeters(cellSizeCm),
+      newX: newXMeters,
+      newY: newYMeters,
+    );
+
+    await action.execute(ref.read(gardenNotifierProvider.notifier));
+    _actionHistory.addAction(action);
+  }
+
+  Future<void> _deleteElement(
+    GardenPlantWithDetails element,
+    int cellSizeCm,
+  ) async {
+    final action = DeleteElementAction(
+      elementId: element.id,
+      gardenId: widget.gardenId,
+      isZone: element.isZone,
+      plantId: element.id,
+      zoneType: element.zoneType.toString(),
+      xMeters: element.xMeters(cellSizeCm),
+      yMeters: element.yMeters(cellSizeCm),
+      widthMeters: element.widthMeters(cellSizeCm),
+      heightMeters: element.heightMeters(cellSizeCm),
+    );
+
+    await action.execute(ref.read(gardenNotifierProvider.notifier));
+    _actionHistory.addAction(action);
+  }
+
+  Future<void> _resizeElement(
+    GardenPlantWithDetails element,
+    double newWidth,
+    double newHeight,
+    int cellSizeCm,
+  ) async {
+    final action = ResizeElementAction(
+      elementId: element.id,
+      gardenId: widget.gardenId,
+      oldWidth: element.widthMeters(cellSizeCm),
+      oldHeight: element.heightMeters(cellSizeCm),
+      newWidth: newWidth,
+      newHeight: newHeight,
+    );
+
+    await action.execute(ref.read(gardenNotifierProvider.notifier));
+    _actionHistory.addAction(action);
+  }
+
+  // ============================================
+  // ZOOM - SANS LIMITES BLOQUANTES
+  // ============================================
+
+  void _zoomIn() {
+    final newScale = _currentScale * 1.5;
+    _applyScale(newScale);
+  }
+
+  void _zoomOut() {
+    // Pas de limite basse restrictive
+    final newScale = _currentScale / 1.5;
+    _applyScale(newScale);
+  }
+
+  void _applyScale(double newScale) {
+    // Seule limite : éviter les valeurs négatives ou trop petites pour le rendu
+    if (newScale < 0.001) newScale = 0.001;
+    if (newScale > 100) newScale = 100; // Limite haute raisonnable
+
+    final matrix = _transformController.value.clone();
+    final currentScale = matrix.getMaxScaleOnAxis();
+    if (currentScale <= 0) return;
+
+    final scaleFactor = newScale / currentScale;
+    matrix.scale(scaleFactor);
+    _transformController.value = matrix;
+
+    setState(() {
+      _currentScale = newScale;
+      _displayScale = newScale;
+    });
+  }
+
+  void _onInteractionUpdate(ScaleUpdateDetails details) {
+    final newScale = _transformController.value.getMaxScaleOnAxis();
+
+    _scaleDebounceTimer?.cancel();
+    _scaleDebounceTimer = Timer(const Duration(milliseconds: 16), () {
+      if (mounted && (_displayScale - newScale).abs() > 0.001) {
+        setState(() => _displayScale = newScale);
+      }
+    });
+  }
+
+  void _onInteractionEnd(ScaleEndDetails details) {
+    _scaleDebounceTimer?.cancel();
+    final newScale = _transformController.value.getMaxScaleOnAxis();
+    setState(() {
+      _currentScale = newScale;
+      _displayScale = newScale;
+    });
+  }
+
+  void _resetView() {
+    _initialized = false;
+    setState(() {});
+  }
+
+  // ============================================
+  // VERROUILLAGE - PLUS INTUITIF
+  // ============================================
+
+  void _toggleLock() {
+    setState(() => _isLocked = !_isLocked);
+    HapticFeedback.mediumImpact();
+  }
+
+  // ============================================
+  // BOTTOM SHEETS
+  // ============================================
+
   void _showAddElementSheet(Garden garden) {
-    // Calcul des dimensions max du jardin en mètres
     final maxWidthM = garden.widthCells * garden.cellSizeCm / 100.0;
     final maxHeightM = garden.heightCells * garden.cellSizeCm / 100.0;
 
     showModalBottomSheet(
       context: context,
-      useRootNavigator: true, // Pour passer au-dessus de la navbar
+      useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) => _EnhancedAddElementSheet(
@@ -89,9 +449,7 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
         maxWidthM: maxWidthM,
         maxHeightM: maxHeightM,
         onPlantAdded: (plantId, widthM, heightM) async {
-          // Fermer le bottom sheet avec le root navigator
           Navigator.of(sheetContext, rootNavigator: true).pop();
-          // Puis ajouter la plante
           await ref
               .read(gardenNotifierProvider.notifier)
               .addPlantToGarden(
@@ -104,9 +462,7 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
               );
         },
         onZoneAdded: (zoneType, widthM, heightM) async {
-          // Fermer le bottom sheet avec le root navigator
           Navigator.of(sheetContext, rootNavigator: true).pop();
-          // Puis ajouter la zone
           await ref
               .read(gardenNotifierProvider.notifier)
               .addZoneToGarden(
@@ -123,11 +479,9 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
   }
 
   void _showEditElementSheet(GardenPlantWithDetails element, Garden garden) {
-    // Calcul des dimensions max du jardin en mètres
     final maxWidthM = garden.widthCells * garden.cellSizeCm / 100.0;
     final maxHeightM = garden.heightCells * garden.cellSizeCm / 100.0;
 
-    // Si c'est une plante (pas une zone), afficher les détails complets
     if (!element.isZone && element.plant != null) {
       showModalBottomSheet(
         context: context,
@@ -141,25 +495,15 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
           maxHeightM: maxHeightM,
           onUpdate: (widthM, heightM) async {
             Navigator.of(sheetContext, rootNavigator: true).pop();
-            await ref
-                .read(gardenNotifierProvider.notifier)
-                .updateElementSize(
-                  element.id,
-                  widthM,
-                  heightM,
-                  widget.gardenId,
-                );
+            await _resizeElement(element, widthM, heightM, garden.cellSizeCm);
           },
           onDelete: () async {
             Navigator.of(sheetContext, rootNavigator: true).pop();
-            await ref
-                .read(gardenNotifierProvider.notifier)
-                .removeElement(element.id, widget.gardenId);
+            await _deleteElement(element, garden.cellSizeCm);
           },
         ),
       );
     } else {
-      // Pour les zones, utiliser le sheet d'édition simple
       showModalBottomSheet(
         context: context,
         useRootNavigator: true,
@@ -172,34 +516,24 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
           maxHeightM: maxHeightM,
           onUpdate: (widthM, heightM) async {
             Navigator.of(sheetContext, rootNavigator: true).pop();
-            await ref
-                .read(gardenNotifierProvider.notifier)
-                .updateElementSize(
-                  element.id,
-                  widthM,
-                  heightM,
-                  widget.gardenId,
-                );
+            await _resizeElement(element, widthM, heightM, garden.cellSizeCm);
           },
           onDelete: () async {
             Navigator.of(sheetContext, rootNavigator: true).pop();
-            await ref
-                .read(gardenNotifierProvider.notifier)
-                .removeElement(element.id, widget.gardenId);
+            await _deleteElement(element, garden.cellSizeCm);
           },
         ),
       );
     }
   }
 
-  /// Affiche la liste de tous les éléments pour les gérer
   void _showElementsListSheet(
     Garden garden,
     List<GardenPlantWithDetails> elements,
   ) {
     showModalBottomSheet(
       context: context,
-      useRootNavigator: true, // Pour passer au-dessus de la navbar
+      useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) => _ElementsListSheet(
@@ -215,109 +549,15 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
           _showEditElementSheet(element, garden);
         },
         onElementDelete: (element) async {
-          await ref
-              .read(gardenNotifierProvider.notifier)
-              .removeElement(element.id, widget.gardenId);
+          await _deleteElement(element, garden.cellSizeCm);
         },
       ),
     );
   }
 
-  void _onElementMoved(
-    GardenPlantWithDetails element,
-    double xMeters,
-    double yMeters,
-  ) async {
-    if (_isLocked) return;
-    await ref
-        .read(gardenNotifierProvider.notifier)
-        .moveElement(element.id, xMeters, yMeters, widget.gardenId);
-  }
-
-  void _zoomIn() {
-    final newScale = (_currentScale * 1.5).clamp(0.05, 5.0);
-    _applyScale(newScale);
-  }
-
-  void _zoomOut() {
-    final newScale = (_currentScale / 1.5).clamp(0.05, 5.0);
-    _applyScale(newScale);
-  }
-
-  void _applyScale(double newScale) {
-    final matrix = _transformController.value.clone();
-    final currentScale = matrix.getMaxScaleOnAxis();
-    final scaleFactor = newScale / currentScale;
-    matrix.scale(scaleFactor);
-    _transformController.value = matrix;
-    setState(() {
-      _currentScale = newScale;
-      _displayScale = newScale;
-    });
-  }
-
-  /// Mise à jour fluide du scale pendant l'interaction
-  /// Utilise un debounce pour éviter les rebuilds trop fréquents
-  void _onInteractionUpdate(ScaleUpdateDetails details) {
-    final newScale = _transformController.value.getMaxScaleOnAxis();
-
-    // Annule le timer précédent
-    _scaleDebounceTimer?.cancel();
-
-    // Met à jour le scale affiché avec un léger debounce (16ms ≈ 60fps)
-    _scaleDebounceTimer = Timer(const Duration(milliseconds: 16), () {
-      if (mounted && (_displayScale - newScale).abs() > 0.001) {
-        setState(() {
-          _displayScale = newScale;
-        });
-      }
-    });
-  }
-
-  /// Mise à jour finale du scale quand l'interaction est terminée
-  void _onInteractionEnd(ScaleEndDetails details) {
-    _scaleDebounceTimer?.cancel();
-    final newScale = _transformController.value.getMaxScaleOnAxis();
-    setState(() {
-      _currentScale = newScale;
-      _displayScale = newScale;
-    });
-  }
-
-  void _resetView() {
-    _initialized = false;
-    setState(() {});
-  }
-
-  void _toggleLock() {
-    setState(() => _isLocked = !_isLocked);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(
-              _isLocked
-                  ? PhosphorIcons.lock(PhosphorIconsStyle.fill)
-                  : PhosphorIcons.lockOpen(PhosphorIconsStyle.fill),
-              color: Colors.white,
-              size: 18,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              _isLocked
-                  ? 'Éléments verrouillés'
-                  : 'Mode édition - Glissez pour déplacer',
-            ),
-          ],
-        ),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: _isLocked
-            ? AppColors.textSecondary
-            : AppColors.primary,
-      ),
-    );
-  }
+  // ============================================
+  // BUILD
+  // ============================================
 
   @override
   Widget build(BuildContext context) {
@@ -345,7 +585,21 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
           ),
         ),
         actions: [
-          // Bouton pour voir la liste des éléments
+          // Boutons Undo/Redo
+          _UndoRedoButtons(
+            canUndo: _actionHistory.canUndo,
+            canRedo: _actionHistory.canRedo,
+            onUndo: _undo,
+            onRedo: _redo,
+          ),
+          // Séparateur
+          Container(
+            width: 1,
+            height: 24,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            color: AppColors.border,
+          ),
+          // Bouton liste des éléments
           gardenAsync.whenOrNull(
                 data: (garden) => garden != null
                     ? plantsAsync.whenOrNull(
@@ -391,20 +645,11 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
                     : null,
               ) ??
               const SizedBox.shrink(),
-          IconButton(
-            onPressed: _toggleLock,
-            icon: Icon(
-              _isLocked
-                  ? PhosphorIcons.lock(PhosphorIconsStyle.fill)
-                  : PhosphorIcons.lockOpen(PhosphorIconsStyle.fill),
-              color: _isLocked ? AppColors.textSecondary : AppColors.primary,
-            ),
-            tooltip: _isLocked ? 'Déverrouiller' : 'Verrouiller',
-          ),
+          // Bouton réinitialiser vue
           IconButton(
             onPressed: _resetView,
             icon: Icon(PhosphorIcons.arrowsOut(PhosphorIconsStyle.regular)),
-            tooltip: 'Réinitialiser vue',
+            tooltip: 'Réinitialiser la vue',
           ),
         ],
       ),
@@ -419,7 +664,6 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
                     return const Center(child: Text('Potager introuvable'));
                   }
 
-                  // Initialiser la vue au premier rendu
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     _initializeView(garden, constraints);
                   });
@@ -427,20 +671,21 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
                   return plantsAsync.when(
                     data: (elements) => InteractiveViewer(
                       transformationController: _transformController,
-                      minScale: 0.02,
-                      maxScale: 10.0,
+                      minScale: 0.001,
+                      // Zoom quasi illimité
+                      maxScale: 100.0,
+                      // Zoom max très élevé
                       constrained: false,
-                      boundaryMargin: const EdgeInsets.all(1000),
-                      // Utilisation de onInteractionUpdate avec debounce
+                      boundaryMargin: const EdgeInsets.all(5000),
                       onInteractionUpdate: _onInteractionUpdate,
-                      // Mise à jour finale à la fin de l'interaction
                       onInteractionEnd: _onInteractionEnd,
                       child: GardenGrid(
                         garden: garden,
                         elements: elements,
                         isLocked: _isLocked,
                         onElementTap: (e) => _showEditElementSheet(e, garden),
-                        onElementMoved: _onElementMoved,
+                        onElementMoved: (e, xM, yM) =>
+                            _onElementMoved(e, xM, yM, garden.cellSizeCm),
                       ),
                     ),
                     loading: () =>
@@ -452,52 +697,20 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
                 error: (e, _) => Center(child: Text('Erreur: $e')),
               ),
 
-              // Indicateur mode édition
-              if (!_isLocked)
-                Positioned(
-                  top: 8,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            PhosphorIcons.pencilSimple(PhosphorIconsStyle.fill),
-                            size: 14,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Mode édition actif',
-                            style: AppTypography.caption.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+              // Bouton de verrouillage amélioré (en haut, centré)
+              Positioned(
+                top: 8,
+                left: 16,
+                right: 16,
+                child: Center(
+                  child: _LockToggleButton(
+                    isLocked: _isLocked,
+                    onToggle: _toggleLock,
                   ),
                 ),
+              ),
 
-              // Contrôles zoom avec pourcentage fluide
+              // Contrôles zoom
               Positioned(
                 right: 16,
                 bottom: 200,
@@ -506,39 +719,42 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
                     _ControlButton(
                       icon: PhosphorIcons.plus(PhosphorIconsStyle.bold),
                       onTap: _zoomIn,
+                      tooltip: 'Zoom +',
                     ),
                     const SizedBox(height: 8),
-                    // Affichage fluide du pourcentage
                     _ZoomIndicator(scale: _displayScale),
                     const SizedBox(height: 8),
                     _ControlButton(
                       icon: PhosphorIcons.minus(PhosphorIconsStyle.bold),
                       onTap: _zoomOut,
+                      tooltip: 'Zoom -',
                     ),
                   ],
                 ),
               ),
 
-              // Stats
+              // Stats - centrées en bas
               Positioned(
-                left: 16,
-                right: 80,
-                bottom: 100,
-                child:
-                    gardenAsync.whenOrNull(
-                      data: (garden) {
-                        if (garden == null) return null;
-                        return plantsAsync.whenOrNull(
-                          data: (elements) =>
-                              _Stats(garden: garden, elements: elements),
-                        );
-                      },
-                    ) ??
-                    const SizedBox.shrink(),
+                left: 0,
+                right: 0,
+                bottom: 24,
+                child: Center(
+                  child:
+                      gardenAsync.whenOrNull(
+                        data: (garden) {
+                          if (garden == null) return null;
+                          return plantsAsync.whenOrNull(
+                            data: (elements) =>
+                                _Stats(garden: garden, elements: elements),
+                          );
+                        },
+                      ) ??
+                      const SizedBox.shrink(),
+                ),
               ),
 
               // Légende
-              Positioned(left: 16, bottom: 160, child: _Legend()),
+              Positioned(left: 16, bottom: 80, child: _Legend()),
             ],
           );
         },
@@ -560,7 +776,183 @@ class _GardenEditorScreenState extends ConsumerState<GardenEditorScreen> {
   }
 }
 
-/// Widget pour afficher le pourcentage de zoom de façon fluide
+// =============================================================================
+// BOUTONS UNDO/REDO
+// =============================================================================
+
+class _UndoRedoButtons extends StatelessWidget {
+  final bool canUndo;
+  final bool canRedo;
+  final VoidCallback onUndo;
+  final VoidCallback onRedo;
+
+  const _UndoRedoButtons({
+    required this.canUndo,
+    required this.canRedo,
+    required this.onUndo,
+    required this.onRedo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Bouton Annuler
+        Tooltip(
+          message: canUndo ? 'Annuler' : 'Rien à annuler',
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: canUndo ? onUndo : null,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      PhosphorIcons.arrowUUpLeft(PhosphorIconsStyle.bold),
+                      size: 20,
+                      color: canUndo
+                          ? AppColors.textPrimary
+                          : AppColors.textTertiary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        // Bouton Rétablir
+        Tooltip(
+          message: canRedo ? 'Rétablir' : 'Rien à rétablir',
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: canRedo ? onRedo : null,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      PhosphorIcons.arrowUUpRight(PhosphorIconsStyle.bold),
+                      size: 20,
+                      color: canRedo
+                          ? AppColors.textPrimary
+                          : AppColors.textTertiary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// =============================================================================
+// BOUTON DE VERROUILLAGE AMÉLIORÉ
+// =============================================================================
+
+class _LockToggleButton extends StatelessWidget {
+  final bool isLocked;
+  final VoidCallback onToggle;
+
+  const _LockToggleButton({required this.isLocked, required this.onToggle});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onToggle,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: isLocked ? AppColors.surface : AppColors.primary,
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: isLocked ? AppColors.border : AppColors.primary,
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: (isLocked ? Colors.black : AppColors.primary).withValues(
+                alpha: 0.15,
+              ),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Icône animée
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder: (child, animation) =>
+                  ScaleTransition(scale: animation, child: child),
+              child: Icon(
+                isLocked
+                    ? PhosphorIcons.lock(PhosphorIconsStyle.fill)
+                    : PhosphorIcons.pencilSimple(PhosphorIconsStyle.fill),
+                key: ValueKey(isLocked),
+                size: 18,
+                color: isLocked ? AppColors.textSecondary : Colors.white,
+              ),
+            ),
+            const SizedBox(width: 10),
+            // Texte principal
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Text(
+                isLocked ? 'Verrouillé' : 'Mode édition',
+                key: ValueKey(isLocked),
+                style: AppTypography.labelMedium.copyWith(
+                  color: isLocked ? AppColors.textSecondary : Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Badge d'indication
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: isLocked
+                    ? AppColors.textTertiary.withValues(alpha: 0.15)
+                    : Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                isLocked ? 'Appuyer pour éditer' : 'Déplacez les éléments',
+                style: AppTypography.caption.copyWith(
+                  fontSize: 10,
+                  color: isLocked
+                      ? AppColors.textTertiary
+                      : Colors.white.withValues(alpha: 0.95),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// WIDGETS ZOOM ET CONTRÔLES
+// =============================================================================
+
 class _ZoomIndicator extends StatelessWidget {
   final double scale;
 
@@ -568,14 +960,40 @@ class _ZoomIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Formatage intelligent du pourcentage
+    String percentText;
+    final percent = scale * 100;
+    if (percent < 1) {
+      percentText = '${percent.toStringAsFixed(2)}%';
+    } else if (percent < 10) {
+      percentText = '${percent.toStringAsFixed(1)}%';
+    } else if (percent > 1000) {
+      percentText = '${(percent / 1000).toStringAsFixed(1)}k%';
+    } else {
+      percentText = '${percent.round()}%';
+    }
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Text('${(scale * 100).round()}%', style: AppTypography.caption),
+      child: Text(
+        percentText,
+        style: AppTypography.caption.copyWith(
+          fontWeight: FontWeight.w600,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
+      ),
     );
   }
 }
@@ -583,12 +1001,13 @@ class _ZoomIndicator extends StatelessWidget {
 class _ControlButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
+  final String? tooltip;
 
-  const _ControlButton({required this.icon, required this.onTap});
+  const _ControlButton({required this.icon, required this.onTap, this.tooltip});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final button = GestureDetector(
       onTap: onTap,
       child: Container(
         width: 44,
@@ -608,8 +1027,17 @@ class _ControlButton extends StatelessWidget {
         child: Icon(icon, size: 18, color: AppColors.textPrimary),
       ),
     );
+
+    if (tooltip != null) {
+      return Tooltip(message: tooltip!, child: button);
+    }
+    return button;
   }
 }
+
+// =============================================================================
+// STATISTIQUES
+// =============================================================================
 
 class _Stats extends StatelessWidget {
   final Garden garden;
@@ -675,13 +1103,17 @@ class _StatItem extends StatelessWidget {
   }
 }
 
+// =============================================================================
+// LÉGENDE
+// =============================================================================
+
 class _Legend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.9),
+        color: AppColors.surface.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.border),
       ),
@@ -732,10 +1164,6 @@ class _LegendItem extends StatelessWidget {
     );
   }
 }
-
-// =============================================================================
-// WIDGET AMÉLIORÉ POUR LA SAISIE DES DIMENSIONS
-// =============================================================================
 
 /// Widget combinant Slider et TextField pour la saisie des dimensions
 class _DimensionInput extends StatefulWidget {
@@ -1005,21 +1433,6 @@ class _EnhancedAddElementSheetState
 
   String _getZoneTypeLabel(ZoneType type) {
     return type.label;
-  }
-
-  IconData _getZoneTypeIcon(ZoneType type) {
-    switch (type) {
-      case ZoneType.greenhouse:
-        return PhosphorIcons.house(PhosphorIconsStyle.fill);
-      case ZoneType.path:
-        return PhosphorIcons.path(PhosphorIconsStyle.fill);
-      case ZoneType.water:
-        return PhosphorIcons.drop(PhosphorIconsStyle.fill);
-      case ZoneType.compost:
-        return PhosphorIcons.recycle(PhosphorIconsStyle.fill);
-      case ZoneType.storage:
-        return PhosphorIcons.package(PhosphorIconsStyle.fill);
-    }
   }
 
   String _getPlantEmoji(Plant plant) {

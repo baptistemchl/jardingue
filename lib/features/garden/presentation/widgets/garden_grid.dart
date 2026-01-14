@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_colors.dart';
@@ -322,8 +323,10 @@ class _DraggableElementState extends State<_DraggableElement>
     with SingleTickerProviderStateMixin {
   bool _isDragging = false;
   Offset _dragOffset = Offset.zero;
-  late AnimationController _scaleController;
-  late Animation<double> _scaleAnimation;
+
+  // Animation "bump" au lieu du grossissement permanent
+  late AnimationController _bumpController;
+  late Animation<double> _bumpAnimation;
 
   GardenPlantWithDetails get e => widget.element;
 
@@ -332,29 +335,48 @@ class _DraggableElementState extends State<_DraggableElement>
   @override
   void initState() {
     super.initState();
-    _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 150),
+    _bumpController = AnimationController(
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.08,
-    ).animate(CurvedAnimation(parent: _scaleController, curve: Curves.easeOut));
+    // Animation bump : 1.0 -> 1.08 -> 1.0 (rapide)
+    _bumpAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.08,
+        ).chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 1.08,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 60,
+      ),
+    ]).animate(_bumpController);
   }
 
   @override
   void dispose() {
-    _scaleController.dispose();
+    _bumpController.dispose();
     super.dispose();
   }
 
   void _onDragStart(DragStartDetails details) {
     if (widget.isLocked) return;
+
+    // Retour haptique au début du drag
+    HapticFeedback.mediumImpact();
+
     setState(() {
       _isDragging = true;
       _dragOffset = Offset.zero;
     });
-    _scaleController.forward();
+
+    // Lancer l'animation bump (rapide rebond)
+    _bumpController.forward(from: 0);
   }
 
   void _onDragUpdate(DragUpdateDetails details) {
@@ -384,12 +406,13 @@ class _DraggableElementState extends State<_DraggableElement>
       _isDragging = false;
       _dragOffset = Offset.zero;
     });
-    _scaleController.reverse();
 
     final oldXMeters = e.xMeters(cellSizeCm);
     final oldYMeters = e.yMeters(cellSizeCm);
     if ((newXMeters - oldXMeters).abs() > 0.01 ||
         (newYMeters - oldYMeters).abs() > 0.01) {
+      // Petit retour haptique à la fin si position changée
+      HapticFeedback.lightImpact();
       widget.onMoved?.call(newXMeters, newYMeters);
     }
   }
@@ -427,9 +450,9 @@ class _DraggableElementState extends State<_DraggableElement>
         onPanUpdate: widget.isLocked ? null : _onDragUpdate,
         onPanEnd: widget.isLocked ? null : _onDragEnd,
         child: AnimatedBuilder(
-          animation: _scaleAnimation,
+          animation: _bumpAnimation,
           builder: (context, child) =>
-              Transform.scale(scale: _scaleAnimation.value, child: child),
+              Transform.scale(scale: _bumpAnimation.value, child: child),
           child: Container(
             width: displayWidth,
             height: displayHeight,

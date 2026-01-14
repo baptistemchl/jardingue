@@ -1,9 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jardingue/core/services/weather/weather_analysis/garden_analysis.dart';
-import 'package:jardingue/core/services/weather/weather_analysis/garden_analysis_ui.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_colors.dart';
@@ -14,7 +11,7 @@ import '../../../../router/app_router.dart';
 import '../../../weather/presentation/widgets/weather_animations.dart';
 
 // ============================================
-// CARTE MÉTÉO INTELLIGENTE
+// CARTE MÉTÉO SIMPLIFIÉE
 // ============================================
 
 class SmartWeatherCard extends ConsumerWidget {
@@ -24,7 +21,6 @@ class SmartWeatherCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final weatherAsync = ref.watch(weatherDataProvider);
 
-    // Utiliser .when avec skipLoadingOnRefresh pour gérer proprement les états
     return weatherAsync.when(
       skipLoadingOnRefresh: true,
       data: (weather) => _WeatherCardContent(
@@ -33,8 +29,6 @@ class SmartWeatherCard extends ConsumerWidget {
       ),
       loading: () => const _WeatherCardSkeleton(),
       error: (error, stack) {
-        // Vérifier si c'est vraiment une erreur ou juste un état initial
-        // Si l'erreur contient "initial" ou similaire, on affiche le skeleton
         final errorStr = error.toString().toLowerCase();
         final isInitialState =
             errorStr.contains('null') ||
@@ -62,7 +56,6 @@ class _WeatherCardError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Déterminer si c'est une erreur de localisation ou de réseau
     final isLocationError =
         errorMessage.contains('location') ||
         errorMessage.contains('permission') ||
@@ -164,7 +157,6 @@ class _WeatherCardSkeletonState extends State<_WeatherCardSkeleton>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Ligne 1: Température + condition + icône
               Row(
                 children: [
                   _ShimmerBox(
@@ -203,43 +195,39 @@ class _WeatherCardSkeletonState extends State<_WeatherCardSkeleton>
                 ],
               ),
               const SizedBox(height: 16),
-
-              // Ligne 2: Verdict
-              _ShimmerBox(
-                width: double.infinity,
-                height: 38,
-                borderRadius: 12,
-                shimmerValue: _shimmerController.value,
-              ),
-              const SizedBox(height: 14),
-
-              // Ligne 3: 3 indicateurs
               Row(
                 children: [
                   Expanded(
                     child: _ShimmerBox(
-                      height: 46,
-                      borderRadius: 8,
+                      height: 56,
+                      borderRadius: 10,
                       shimmerValue: _shimmerController.value,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: _ShimmerBox(
-                      height: 46,
-                      borderRadius: 8,
+                      height: 56,
+                      borderRadius: 10,
                       shimmerValue: _shimmerController.value,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: _ShimmerBox(
-                      height: 46,
-                      borderRadius: 8,
+                      height: 56,
+                      borderRadius: 10,
                       shimmerValue: _shimmerController.value,
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 12),
+              _ShimmerBox(
+                width: double.infinity,
+                height: 40,
+                borderRadius: 10,
+                shimmerValue: _shimmerController.value,
               ),
             ],
           ),
@@ -284,6 +272,46 @@ class _ShimmerBox extends StatelessWidget {
   }
 }
 
+// ============================================
+// HELPER : Déterminer si le fond est clair
+// ============================================
+
+/// Calcule si une couleur est considérée comme "claire"
+/// Utilise la formule de luminance relative
+bool _isLightColor(Color color) {
+  // Formule de luminance relative (W3C)
+  final luminance =
+      (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255;
+  return luminance > 0.5;
+}
+
+/// Détermine si le fond météo est clair selon le code condition
+bool _isLightBackground(WeatherCondition condition) {
+  final primaryColor = Color(condition.primaryColor);
+  final secondaryColor = Color(condition.secondaryColor);
+
+  // On fait la moyenne des deux couleurs
+  final avgLuminance =
+      (_isLightColor(primaryColor) && _isLightColor(secondaryColor));
+
+  // Cas spécifiques où on sait que c'est clair
+  // Codes : 0 (jour), 1, 2 = ciel clair/peu nuageux
+  // Codes : 45, 48 = brouillard (gris clair)
+  // Codes : 71, 73, 75, 77, 85, 86 = neige (blanc)
+  final lightCodes = [1, 2, 45, 48, 71, 73, 75, 77, 85, 86];
+
+  // Ensoleillé de jour est aussi clair
+  if (condition.code == 0 && condition.animation == 'sunny') {
+    return true;
+  }
+
+  return lightCodes.contains(condition.code) || avgLuminance;
+}
+
+// ============================================
+// CONTENU PRINCIPAL - MÉTÉO SIMPLIFIÉE
+// ============================================
+
 class _WeatherCardContent extends StatelessWidget {
   final WeatherData weather;
   final VoidCallback onTap;
@@ -292,8 +320,23 @@ class _WeatherCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final analysis = GardenAnalysis.fromWeather(weather);
     final condition = weather.current.condition;
+    final isLight = _isLightBackground(condition);
+
+    // Couleurs adaptatives
+    final textColor = isLight ? const Color(0xFF1A1A2E) : Colors.white;
+    final textColorSecondary = isLight
+        ? const Color(0xFF1A1A2E).withValues(alpha: 0.7)
+        : Colors.white.withValues(alpha: 0.8);
+    final textColorTertiary = isLight
+        ? const Color(0xFF1A1A2E).withValues(alpha: 0.5)
+        : Colors.white.withValues(alpha: 0.7);
+    final overlayColor = isLight
+        ? const Color(0xFF1A1A2E).withValues(alpha: 0.08)
+        : Colors.white.withValues(alpha: 0.15);
+    final overlayBorderColor = isLight
+        ? const Color(0xFF1A1A2E).withValues(alpha: 0.15)
+        : Colors.white.withValues(alpha: 0.25);
 
     return GestureDetector(
       onTap: onTap,
@@ -303,8 +346,8 @@ class _WeatherCardContent extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Color(condition.primaryColor).withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
@@ -312,113 +355,135 @@ class _WeatherCardContent extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
+              // Fond animé météo
               Positioned.fill(child: WeatherBackground(condition: condition)),
+
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // === LIGNE 1 : Température + Condition + Icône ===
                     Row(
                       children: [
+                        // Température
                         Text(
                           weather.current.temperatureDisplay,
                           style: AppTypography.displayLarge.copyWith(
-                            fontSize: 44,
+                            fontSize: 48,
                             fontWeight: FontWeight.w300,
-                            color: Colors.white,
+                            color: textColor,
                             height: 1,
                           ),
                         ),
                         const SizedBox(width: 12),
+
+                        // Condition + Ressenti
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 condition.label,
-                                style: AppTypography.labelMedium.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.9),
+                                style: AppTypography.titleSmall.copyWith(
+                                  color: textColor,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
+                              const SizedBox(height: 2),
                               Text(
                                 'Ressenti ${weather.current.feelsLikeDisplay}',
                                 style: AppTypography.caption.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.7),
+                                  color: textColorSecondary,
                                 ),
                               ),
                             ],
                           ),
                         ),
+
+                        // Icône météo
                         Text(
                           condition.icon,
-                          style: const TextStyle(fontSize: 48),
+                          style: const TextStyle(fontSize: 52),
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 16),
 
-                    // Verdict = EXACTEMENT celui de WeatherScreen
+                    // === LIGNE 2 : Indicateurs météo classiques ===
+                    Row(
+                      children: [
+                        _WeatherIndicator(
+                          icon: PhosphorIcons.drop(PhosphorIconsStyle.fill),
+                          label: 'Humidité',
+                          value: weather.current.humidityDisplay,
+                          textColor: textColor,
+                          textColorSecondary: textColorTertiary,
+                          overlayColor: overlayColor,
+                        ),
+                        const SizedBox(width: 8),
+                        _WeatherIndicator(
+                          icon: PhosphorIcons.wind(PhosphorIconsStyle.fill),
+                          label: 'Vent',
+                          value: weather.current.windSpeedDisplay,
+                          textColor: textColor,
+                          textColorSecondary: textColorTertiary,
+                          overlayColor: overlayColor,
+                        ),
+                        const SizedBox(width: 8),
+                        _WeatherIndicator(
+                          icon: PhosphorIcons.thermometer(
+                            PhosphorIconsStyle.fill,
+                          ),
+                          label: 'Min / Max',
+                          value: _getTodayMinMax(),
+                          textColor: textColor,
+                          textColorSecondary: textColorTertiary,
+                          overlayColor: overlayColor,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // === LIGNE 3 : Bouton vers conseils jardinage ===
                     Container(
+                      width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
+                        vertical: 12,
+                        horizontal: 16,
                       ),
                       decoration: BoxDecoration(
-                        color: analysis.severity.color.withValues(alpha: 0.3),
+                        color: overlayColor,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: analysis.severity.color.withValues(alpha: 0.5),
-                        ),
+                        border: Border.all(color: overlayBorderColor),
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            analysis.emoji,
-                            style: const TextStyle(fontSize: 20),
+                          Icon(
+                            PhosphorIcons.plant(PhosphorIconsStyle.fill),
+                            size: 18,
+                            color: textColor,
                           ),
                           const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              analysis.verdict,
-                              style: AppTypography.labelMedium.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          Text(
+                            'Voir les conseils jardinage',
+                            style: AppTypography.labelMedium.copyWith(
+                              color: textColor,
+                              fontWeight: FontWeight.w600,
                             ),
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
+                            size: 16,
+                            color: textColorSecondary,
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-
-                    // Indicateurs = EXACTEMENT les 3 catégories de l’écran
-                    Row(
-                      children: [
-                        _DetailIndicator(
-                          icon: '🌱',
-                          label: analysis.plantingDetail,
-                          status: _toIndicatorStatus(analysis.plantingStatus),
-                        ),
-                        const SizedBox(width: 8),
-                        _DetailIndicator(
-                          icon: '💧',
-                          label: analysis.wateringDetail,
-                          status: _toIndicatorStatus(analysis.wateringStatus),
-                        ),
-                        const SizedBox(width: 8),
-                        _DetailIndicator(
-                          icon: '🧺',
-                          label: analysis.harvestDetail,
-                          status: _toIndicatorStatus(analysis.harvestStatus),
-                        ),
-                      ],
-                    ),
-
-                    // Alertes = mêmes alertes que l’écran
-                    if (analysis.alerts.isNotEmpty) ...[
-                      const SizedBox(height: 14),
-                      _WeatherAlertBanner(alert: analysis.alerts.first),
-                    ],
                   ],
                 ),
               ),
@@ -429,106 +494,62 @@ class _WeatherCardContent extends StatelessWidget {
     );
   }
 
-  _IndicatorStatus _toIndicatorStatus(GardenStatus status) {
-    switch (status) {
-      case GardenStatus.good:
-        return _IndicatorStatus.good;
-      case GardenStatus.warning:
-        return _IndicatorStatus.warning;
-      case GardenStatus.bad:
-        return _IndicatorStatus.bad;
+  String _getTodayMinMax() {
+    if (weather.dailyForecast.isNotEmpty) {
+      final today = weather.dailyForecast.first;
+      return '${today.tempMin.round()}° / ${today.tempMax.round()}°';
     }
+    return '--° / --°';
   }
 }
 
 // ============================================
-// ALERTE MÉTÉO SURTAXÉE (BANNER)
+// INDICATEUR MÉTÉO SIMPLE
 // ============================================
 
-class _WeatherAlertBanner extends StatelessWidget {
-  final String alert;
-
-  const _WeatherAlertBanner({required this.alert});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.amber.shade800,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.amber.shade400, width: 1),
-      ),
-      child: Row(
-        children: [
-          const Text('⚠️', style: TextStyle(fontSize: 16)),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              alert,
-              style: AppTypography.bodySmall.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ============================================
-// INDICATEURS DÉTAILLÉS
-// ============================================
-
-class _DetailIndicator extends StatelessWidget {
-  final String icon;
+class _WeatherIndicator extends StatelessWidget {
+  final IconData icon;
   final String label;
-  final _IndicatorStatus status;
+  final String value;
+  final Color textColor;
+  final Color textColorSecondary;
+  final Color overlayColor;
 
-  const _DetailIndicator({
+  const _WeatherIndicator({
     required this.icon,
     required this.label,
-    required this.status,
+    required this.value,
+    required this.textColor,
+    required this.textColorSecondary,
+    required this.overlayColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor;
-    switch (status) {
-      case _IndicatorStatus.good:
-        bgColor = Colors.green.withValues(alpha: 0.3);
-        break;
-      case _IndicatorStatus.warning:
-        bgColor = Colors.orange.withValues(alpha: 0.3);
-        break;
-      case _IndicatorStatus.bad:
-        bgColor = Colors.red.withValues(alpha: 0.3);
-        break;
-    }
-
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(8),
+          color: overlayColor,
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           children: [
-            Text(icon, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 2),
+            Icon(icon, size: 18, color: textColor.withValues(alpha: 0.85)),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: AppTypography.labelMedium.copyWith(
+                color: textColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             Text(
               label,
               style: AppTypography.caption.copyWith(
-                color: Colors.white,
+                color: textColorSecondary,
                 fontSize: 10,
-                fontWeight: FontWeight.w500,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -536,5 +557,3 @@ class _DetailIndicator extends StatelessWidget {
     );
   }
 }
-
-enum _IndicatorStatus { good, warning, bad }

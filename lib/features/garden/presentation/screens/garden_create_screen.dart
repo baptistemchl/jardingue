@@ -73,19 +73,19 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
         await ref
             .read(gardenNotifierProvider.notifier)
             .updateGarden(
-          id: widget.garden!.id,
-          name: _nameController.text.trim(),
-          widthMeters: _widthMeters,
-          heightMeters: _heightMeters,
-        );
+              id: widget.garden!.id,
+              name: _nameController.text.trim(),
+              widthMeters: _widthMeters,
+              heightMeters: _heightMeters,
+            );
       } else {
         await ref
             .read(gardenNotifierProvider.notifier)
             .createGarden(
-          name: _nameController.text.trim(),
-          widthMeters: _widthMeters,
-          heightMeters: _heightMeters,
-        );
+              name: _nameController.text.trim(),
+              widthMeters: _widthMeters,
+              heightMeters: _heightMeters,
+            );
       }
 
       if (mounted) {
@@ -204,18 +204,19 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                       borderSide: BorderSide.none,
                     ),
                     // Bordure d'erreur si le champ est vide et une erreur est affichée
-                    enabledBorder: _errorMessage != null &&
-                        _nameController.text.trim().isEmpty
+                    enabledBorder:
+                        _errorMessage != null &&
+                            _nameController.text.trim().isEmpty
                         ? OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: AppColors.error.withValues(alpha: 0.5),
-                      ),
-                    )
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: AppColors.error.withValues(alpha: 0.5),
+                            ),
+                          )
                         : OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
                   ),
                   onChanged: (_) {
                     // Effacer l'erreur quand l'utilisateur tape
@@ -284,7 +285,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                         emoji: '📐',
                         label: 'Surface',
                         value:
-                        '${(_widthMeters * _heightMeters).toStringAsFixed(1)} m²',
+                            '${(_widthMeters * _heightMeters).toStringAsFixed(1)} m²',
                       ),
                       _Stat(
                         emoji: '↔️',
@@ -324,13 +325,13 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                 ),
                 child: _isLoading
                     ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
-                )
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
                     : Text(isEditing ? 'Enregistrer' : 'Créer le potager'),
               ),
             ),
@@ -482,7 +483,7 @@ class _GridPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _GridPainter oldDelegate) =>
       oldDelegate.widthMeters != widthMeters ||
-          oldDelegate.heightMeters != heightMeters;
+      oldDelegate.heightMeters != heightMeters;
 }
 
 class _Stat extends StatelessWidget {

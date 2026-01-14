@@ -552,7 +552,7 @@ class _GardensList extends StatelessWidget {
             garden.cellSizeCm *
             garden.heightCells *
             garden.cellSizeCm) /
-            10000;
+        10000;
     return '${surface.toStringAsFixed(1)} m²';
   }
 
@@ -562,7 +562,7 @@ class _GardensList extends StatelessWidget {
       children: [
         // Liste des potagers
         ...gardens.map(
-              (garden) => Column(
+          (garden) => Column(
             children: [
               InkWell(
                 onTap: () => onGardenTap(garden),
