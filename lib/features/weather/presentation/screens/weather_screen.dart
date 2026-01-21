@@ -15,18 +15,41 @@ class WeatherScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locationAsync = ref.watch(effectiveLocationProvider);
     final weatherAsync = ref.watch(weatherDataProvider);
-    ref.watch(effectiveLocationProvider);
+
+    final isLocating = locationAsync.isLoading && !locationAsync.hasValue;
 
     return Scaffold(
-      body: weatherAsync.when(
+      body: isLocating
+          ? const _WeatherLoading(label: 'Localisation en cours...')
+          : weatherAsync.when(
         data: (weather) => _WeatherContent(weather: weather),
-        loading: () => const _WeatherLoading(),
+        loading: () => const _WeatherLoading(
+          label: 'Chargement des données météo...',
+        ),
         error: (error, _) => _WeatherError(
           error: error.toString(),
-          onRetry: () => ref.invalidate(weatherDataProvider),
+          onRetry: () => _retry(ref),
+          onPickLocation: () => _openLocationPicker(context),
         ),
       ),
+    );
+  }
+
+  void _retry(WidgetRef ref) {
+    ref.invalidate(weatherDataProvider);
+    ref.invalidate(currentLocationProvider);
+    ref.invalidate(effectiveLocationProvider);
+  }
+
+  void _openLocationPicker(BuildContext context) {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _LocationPickerSheet(),
     );
   }
 }
@@ -1706,7 +1729,9 @@ class _LocationPickerSheetState extends ConsumerState<_LocationPickerSheet> {
 // ============================================
 
 class _WeatherLoading extends StatelessWidget {
-  const _WeatherLoading();
+  final String label;
+
+  const _WeatherLoading({required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -1721,16 +1746,23 @@ class _WeatherLoading extends StatelessWidget {
           ],
         ),
       ),
-      child: const Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('🌤️', style: TextStyle(fontSize: 64)),
-            SizedBox(height: 16),
-            CircularProgressIndicator(color: AppColors.primary),
-            SizedBox(height: 16),
-            Text('Chargement de la météo...'),
-          ],
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('🌤️', style: TextStyle(fontSize: 64)),
+              const SizedBox(height: 16),
+              const CircularProgressIndicator(color: AppColors.primary),
+              const SizedBox(height: 16),
+              Text(
+                label,
+                style: AppTypography.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1740,18 +1772,33 @@ class _WeatherLoading extends StatelessWidget {
 class _WeatherError extends StatelessWidget {
   final String error;
   final VoidCallback onRetry;
+  final VoidCallback onPickLocation;
 
-  const _WeatherError({required this.error, required this.onRetry});
+  const _WeatherError({
+    required this.error,
+    required this.onRetry,
+    required this.onPickLocation,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isLocationError = _isLocationError(error);
+
+    final title = isLocationError
+        ? 'Localisation requise'
+        : 'Météo indisponible';
+
+    final message = isLocationError
+        ? 'Activez la localisation ou choisissez une ville.'
+        : 'Impossible de récupérer les données météo.';
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.error.withValues(alpha: 0.1),
+            AppColors.error.withValues(alpha: 0.08),
             AppColors.background,
           ],
         ),
@@ -1759,34 +1806,98 @@ class _WeatherError extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('😕', style: TextStyle(fontSize: 64)),
-              const SizedBox(height: 16),
-              Text(
-                'Impossible de charger la météo',
-                style: AppTypography.titleMedium,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.border),
               ),
-              const SizedBox(height: 8),
-              Text(
-                error,
-                textAlign: TextAlign.center,
-                style: AppTypography.bodySmall,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    isLocationError ? '📍' : '😕',
+                    style: const TextStyle(fontSize: 56),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(title, style: AppTypography.titleMedium),
+                  const SizedBox(height: 8),
+                  Text(
+                    message,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      if (isLocationError) ...[
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: onPickLocation,
+                            icon: Icon(
+                              PhosphorIcons.mapPin(
+                                PhosphorIconsStyle.bold,
+                              ),
+                            ),
+                            label: const Text('Choisir une ville'),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: onRetry,
+                          icon: Icon(
+                            PhosphorIcons.arrowClockwise(
+                              PhosphorIconsStyle.bold,
+                            ),
+                          ),
+                          label: const Text('Réessayer'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ExpansionTile(
+                    tilePadding: EdgeInsets.zero,
+                    title: Text(
+                      'Détails',
+                      style: AppTypography.labelMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          error,
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: onRetry,
-                icon: Icon(
-                  PhosphorIcons.arrowClockwise(PhosphorIconsStyle.bold),
-                ),
-                label: const Text('Réessayer'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  bool _isLocationError(String value) {
+    final lower = value.toLowerCase();
+    return lower.contains('location') ||
+        lower.contains('permission') ||
+        lower.contains('denied') ||
+        lower.contains('gps');
   }
 }
 

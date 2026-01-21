@@ -22,42 +22,6 @@ final currentLocationProvider = FutureProvider<LocationResult>((ref) async {
 /// Provider pour la localisation sélectionnée (peut être modifiée par l'utilisateur)
 final selectedLocationProvider = StateProvider<LocationResult?>((ref) => null);
 
-/// Provider pour la localisation effective (sélectionnée ou détectée)
-final effectiveLocationProvider = Provider<AsyncValue<LocationResult>>((ref) {
-  final selected = ref.watch(selectedLocationProvider);
-  if (selected != null) {
-    return AsyncValue.data(selected);
-  }
-  return ref.watch(currentLocationProvider);
-});
-
-/// Provider principal pour les données météo
-final weatherDataProvider = FutureProvider<WeatherData>((ref) async {
-  final locationAsync = ref.watch(effectiveLocationProvider);
-
-  return locationAsync.when(
-    data: (location) async {
-      final weatherService = ref.watch(weatherServiceProvider);
-      return weatherService.getWeather(
-        latitude: location.latitude,
-        longitude: location.longitude,
-        city: location.city,
-        country: location.country,
-      );
-    },
-    loading: () => throw Exception('Localisation en cours...'),
-    error: (e, _) => throw Exception('Erreur localisation: $e'),
-  );
-});
-
-/// Provider pour rafraîchir la météo
-final weatherRefreshProvider = Provider<Future<void> Function()>((ref) {
-  return () async {
-    ref.invalidate(weatherDataProvider);
-    ref.invalidate(currentLocationProvider);
-  };
-});
-
 /// Provider pour rechercher une ville
 final citySearchProvider = FutureProvider.family<List<LocationResult>, String>((
   ref,
@@ -98,4 +62,34 @@ final moonDataProvider = Provider<AsyncValue<MoonData>>((ref) {
 final gardeningAdviceProvider = Provider<AsyncValue<GardeningAdvice>>((ref) {
   final weatherAsync = ref.watch(weatherDataProvider);
   return weatherAsync.whenData((data) => data.gardeningAdvice);
+});
+
+/// Provider pour la localisation effective (sélectionnée ou détectée)
+final effectiveLocationProvider = FutureProvider<LocationResult>((ref) async {
+  final selected = ref.watch(selectedLocationProvider);
+  if (selected != null) return selected;
+
+  return ref.watch(currentLocationProvider.future);
+});
+
+/// Provider principal pour les données météo
+final weatherDataProvider = FutureProvider<WeatherData>((ref) async {
+  final location = await ref.watch(effectiveLocationProvider.future);
+  final weatherService = ref.watch(weatherServiceProvider);
+
+  return weatherService.getWeather(
+    latitude: location.latitude,
+    longitude: location.longitude,
+    city: location.city,
+    country: location.country,
+  );
+});
+
+/// Provider pour rafraîchir la météo
+final weatherRefreshProvider = Provider<Future<void> Function()>((ref) {
+  return () async {
+    ref.invalidate(weatherDataProvider);
+    ref.invalidate(currentLocationProvider);
+    ref.invalidate(effectiveLocationProvider);
+  };
 });

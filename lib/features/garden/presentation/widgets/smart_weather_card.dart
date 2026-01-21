@@ -19,7 +19,16 @@ class SmartWeatherCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locationAsync = ref.watch(effectiveLocationProvider);
     final weatherAsync = ref.watch(weatherDataProvider);
+
+    final isLocating = locationAsync.isLoading && !locationAsync.hasValue;
+
+    if (isLocating) {
+      return const _WeatherCardSkeleton(
+        statusLabel: 'Localisation en cours',
+      );
+    }
 
     return weatherAsync.when(
       skipLoadingOnRefresh: true,
@@ -27,25 +36,19 @@ class SmartWeatherCard extends ConsumerWidget {
         weather: weather,
         onTap: () => context.go(AppRoutes.weather),
       ),
-      loading: () => const _WeatherCardSkeleton(),
-      error: (error, stack) {
-        final errorStr = error.toString().toLowerCase();
-        final isInitialState =
-            errorStr.contains('null') ||
-            errorStr.contains('initial') ||
-            errorStr.contains('no element');
-
-        if (isInitialState) {
-          return const _WeatherCardSkeleton();
-        }
-
-        return _WeatherCardError(
-          onRetry: () => ref.invalidate(weatherDataProvider),
-          errorMessage: error.toString(),
-        );
-      },
+      loading: () => const _WeatherCardSkeleton(
+        statusLabel: 'Chargement des données',
+      ),
+      error: (error, _) => _WeatherCardError(
+        onRetry: () {
+          ref.invalidate(weatherDataProvider);
+          ref.invalidate(currentLocationProvider);
+        },
+        errorMessage: error.toString(),
+      ),
     );
   }
+
 }
 
 class _WeatherCardError extends StatelessWidget {
@@ -116,7 +119,9 @@ class _WeatherCardError extends StatelessWidget {
 // ============================================
 
 class _WeatherCardSkeleton extends StatefulWidget {
-  const _WeatherCardSkeleton();
+  final String? statusLabel;
+
+  const _WeatherCardSkeleton({this.statusLabel});
 
   @override
   State<_WeatherCardSkeleton> createState() => _WeatherCardSkeletonState();
@@ -228,7 +233,30 @@ class _WeatherCardSkeletonState extends State<_WeatherCardSkeleton>
                 height: 40,
                 borderRadius: 10,
                 shimmerValue: _shimmerController.value,
-              ),
+              ),if (widget.statusLabel != null) ...[
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        widget.statusLabel!,
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+
             ],
           ),
         );

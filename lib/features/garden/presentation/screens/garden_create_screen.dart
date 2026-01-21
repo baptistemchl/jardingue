@@ -111,232 +111,239 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: Column(
-        children: [
-          // Handle
-          Padding(
-            padding: const EdgeInsets.only(top: 12, bottom: 8),
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.border,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-
-          // Header
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    isEditing ? 'Modifier le potager' : 'Nouveau potager',
-                    style: AppTypography.titleLarge,
-                  ),
-                ),
-                IconButton(
-                  onPressed: _closeSheet,
-                  icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.bold)),
-                ),
-              ],
-            ),
-          ),
-
-          const Divider(),
-
-          // Message d'erreur intégré
-          if (_errorMessage != null)
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.error.withValues(alpha: 0.3),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.85,
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            // Handle
+            Padding(
+              padding: const EdgeInsets.only(top: 12, bottom: 8),
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
+            ),
+
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  Icon(
-                    PhosphorIcons.warning(PhosphorIconsStyle.fill),
-                    color: AppColors.error,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      _errorMessage!,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.error,
+                      isEditing ? 'Modifier le potager' : 'Nouveau potager',
+                      style: AppTypography.titleLarge,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _closeSheet,
+                    icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.bold)),
+                  ),
+                ],
+              ),
+            ),
+
+            const Divider(),
+
+            // Message d'erreur intégré
+            if (_errorMessage != null)
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.error.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      PhosphorIcons.warning(PhosphorIconsStyle.fill),
+                      color: AppColors.error,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _errorMessage!,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.error,
+                        ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // Contenu
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(20),
+                children: [
+                  // Nom
+                  Text('Nom du potager', style: AppTypography.labelMedium),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      hintText: 'Ex: Potager principal',
+                      filled: true,
+                      fillColor: AppColors.background,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      // Bordure d'erreur si le champ est vide et une erreur est affichée
+                      enabledBorder:
+                          _errorMessage != null &&
+                              _nameController.text.trim().isEmpty
+                          ? OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: AppColors.error.withValues(alpha: 0.5),
+                              ),
+                            )
+                          : OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                    ),
+                    onChanged: (_) {
+                      // Effacer l'erreur quand l'utilisateur tape
+                      if (_errorMessage != null) {
+                        setState(() => _errorMessage = null);
+                      }
+                    },
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Dimensions
+                  Text('Dimensions', style: AppTypography.labelMedium),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Définissez la taille de votre potager en mètres',
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _DimensionSlider(
+                          label: 'Largeur',
+                          value: _widthMeters,
+                          onChanged: (v) => setState(() => _widthMeters = v),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _DimensionSlider(
+                          label: 'Longueur',
+                          value: _heightMeters,
+                          onChanged: (v) => setState(() => _heightMeters = v),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Aperçu
+                  Text('Aperçu', style: AppTypography.labelMedium),
+                  const SizedBox(height: 12),
+                  _GardenPreview(
+                    widthMeters: _widthMeters,
+                    heightMeters: _heightMeters,
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Stats
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _Stat(
+                          emoji: '📐',
+                          label: 'Surface',
+                          value:
+                              '${(_widthMeters * _heightMeters).toStringAsFixed(1)} m²',
+                        ),
+                        _Stat(
+                          emoji: '↔️',
+                          label: 'Largeur',
+                          value: '${_widthMeters.toStringAsFixed(1)} m',
+                        ),
+                        _Stat(
+                          emoji: '↕️',
+                          label: 'Longueur',
+                          value: '${_heightMeters.toStringAsFixed(1)} m',
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
 
-          // Contenu
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                // Nom
-                Text('Nom du potager', style: AppTypography.labelMedium),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    hintText: 'Ex: Potager principal',
-                    filled: true,
-                    fillColor: AppColors.background,
-                    border: OutlineInputBorder(
+            // Bouton
+            Container(
+              padding: EdgeInsets.fromLTRB(20, 16, 20, bottomPadding + 16),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                border: Border(top: BorderSide(color: AppColors.border)),
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _save,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
                     ),
-                    // Bordure d'erreur si le champ est vide et une erreur est affichée
-                    enabledBorder:
-                        _errorMessage != null &&
-                            _nameController.text.trim().isEmpty
-                        ? OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: AppColors.error.withValues(alpha: 0.5),
-                            ),
-                          )
-                        : OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
+                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
                           ),
-                  ),
-                  onChanged: (_) {
-                    // Effacer l'erreur quand l'utilisateur tape
-                    if (_errorMessage != null) {
-                      setState(() => _errorMessage = null);
-                    }
-                  },
+                        )
+                      : Text(isEditing ? 'Enregistrer' : 'Créer le potager'),
                 ),
-
-                const SizedBox(height: 24),
-
-                // Dimensions
-                Text('Dimensions', style: AppTypography.labelMedium),
-                const SizedBox(height: 4),
-                Text(
-                  'Définissez la taille de votre potager en mètres',
-                  style: AppTypography.caption.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: _DimensionSlider(
-                        label: 'Largeur',
-                        value: _widthMeters,
-                        onChanged: (v) => setState(() => _widthMeters = v),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _DimensionSlider(
-                        label: 'Hauteur',
-                        value: _heightMeters,
-                        onChanged: (v) => setState(() => _heightMeters = v),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 32),
-
-                // Aperçu
-                Text('Aperçu', style: AppTypography.labelMedium),
-                const SizedBox(height: 12),
-                _GardenPreview(
-                  widthMeters: _widthMeters,
-                  heightMeters: _heightMeters,
-                ),
-
-                const SizedBox(height: 16),
-
-                // Stats
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryContainer,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _Stat(
-                        emoji: '📐',
-                        label: 'Surface',
-                        value:
-                            '${(_widthMeters * _heightMeters).toStringAsFixed(1)} m²',
-                      ),
-                      _Stat(
-                        emoji: '↔️',
-                        label: 'Largeur',
-                        value: '${_widthMeters.toStringAsFixed(1)} m',
-                      ),
-                      _Stat(
-                        emoji: '↕️',
-                        label: 'Hauteur',
-                        value: '${_heightMeters.toStringAsFixed(1)} m',
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Bouton
-          Container(
-            padding: EdgeInsets.fromLTRB(20, 16, 20, bottomPadding + 16),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              border: Border(top: BorderSide(color: AppColors.border)),
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _save,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(isEditing ? 'Enregistrer' : 'Créer le potager'),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
