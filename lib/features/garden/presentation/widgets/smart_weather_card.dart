@@ -8,7 +8,6 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/weather_providers.dart';
 import '../../../../core/services/weather/weather_models.dart';
 import '../../../../router/app_router.dart';
-import '../../../weather/presentation/widgets/weather_animations.dart';
 
 // ============================================
 // CARTE MÉTÉO SIMPLIFIÉE
@@ -16,6 +15,11 @@ import '../../../weather/presentation/widgets/weather_animations.dart';
 
 class SmartWeatherCard extends ConsumerWidget {
   const SmartWeatherCard({super.key});
+
+  static final _initialStatePattern = RegExp(
+    r'null|initial|no element',
+    caseSensitive: false,
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,19 +33,13 @@ class SmartWeatherCard extends ConsumerWidget {
       ),
       loading: () => const _WeatherCardSkeleton(),
       error: (error, stack) {
-        final errorStr = error.toString().toLowerCase();
-        final isInitialState =
-            errorStr.contains('null') ||
-            errorStr.contains('initial') ||
-            errorStr.contains('no element');
-
-        if (isInitialState) {
+        if (_initialStatePattern.hasMatch('$error')) {
           return const _WeatherCardSkeleton();
         }
-
         return _WeatherCardError(
-          onRetry: () => ref.invalidate(weatherDataProvider),
-          errorMessage: error.toString(),
+          onRetry: () =>
+              ref.invalidate(weatherDataProvider),
+          errorMessage: '$error',
         );
       },
     );
@@ -52,14 +50,35 @@ class _WeatherCardError extends StatelessWidget {
   final VoidCallback onRetry;
   final String errorMessage;
 
-  const _WeatherCardError({required this.onRetry, required this.errorMessage});
+  static final _locationPattern = RegExp(
+    r'location|permission',
+    caseSensitive: false,
+  );
+
+  const _WeatherCardError({
+    required this.onRetry,
+    required this.errorMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isLocationError =
-        errorMessage.contains('location') ||
-        errorMessage.contains('permission') ||
-        errorMessage.contains('Location');
+    final isLocation =
+        _locationPattern.hasMatch(errorMessage);
+    final (icon, title, subtitle) = isLocation
+        ? (
+            PhosphorIcons.mapPinLine(
+              PhosphorIconsStyle.duotone,
+            ),
+            'Localisation requise',
+            'Activez la localisation pour voir la météo',
+          )
+        : (
+            PhosphorIcons.cloudSlash(
+              PhosphorIconsStyle.duotone,
+            ),
+            'Météo indisponible',
+            'Impossible de charger les données météo',
+          );
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -71,25 +90,17 @@ class _WeatherCardError extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            isLocationError
-                ? PhosphorIcons.mapPinLine(PhosphorIconsStyle.duotone)
-                : PhosphorIcons.cloudSlash(PhosphorIconsStyle.duotone),
-            size: 40,
-            color: AppColors.textSecondary,
-          ),
+          Icon(icon, size: 40, color: AppColors.textSecondary),
           const SizedBox(height: 12),
           Text(
-            isLocationError ? 'Localisation requise' : 'Météo indisponible',
+            title,
             style: AppTypography.titleSmall.copyWith(
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            isLocationError
-                ? 'Activez la localisation pour voir la météo'
-                : 'Impossible de charger les données météo',
+            subtitle,
             style: AppTypography.caption.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -99,11 +110,15 @@ class _WeatherCardError extends StatelessWidget {
           TextButton.icon(
             onPressed: onRetry,
             icon: Icon(
-              PhosphorIcons.arrowClockwise(PhosphorIconsStyle.bold),
+              PhosphorIcons.arrowClockwise(
+                PhosphorIconsStyle.bold,
+              ),
               size: 16,
             ),
             label: const Text('Réessayer'),
-            style: TextButton.styleFrom(foregroundColor: AppColors.primary),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.primary,
+            ),
           ),
         ],
       ),
@@ -273,222 +288,184 @@ class _ShimmerBox extends StatelessWidget {
 }
 
 // ============================================
-// HELPER : Déterminer si le fond est clair
-// ============================================
-
-/// Calcule si une couleur est considérée comme "claire"
-/// Utilise la formule de luminance relative
-bool _isLightColor(Color color) {
-  // Formule de luminance relative (W3C)
-  final luminance =
-      (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255;
-  return luminance > 0.5;
-}
-
-/// Détermine si le fond météo est clair selon le code condition
-bool _isLightBackground(WeatherCondition condition) {
-  final primaryColor = Color(condition.primaryColor);
-  final secondaryColor = Color(condition.secondaryColor);
-
-  // On fait la moyenne des deux couleurs
-  final avgLuminance =
-      (_isLightColor(primaryColor) && _isLightColor(secondaryColor));
-
-  // Cas spécifiques où on sait que c'est clair
-  // Codes : 0 (jour), 1, 2 = ciel clair/peu nuageux
-  // Codes : 45, 48 = brouillard (gris clair)
-  // Codes : 71, 73, 75, 77, 85, 86 = neige (blanc)
-  final lightCodes = [1, 2, 45, 48, 71, 73, 75, 77, 85, 86];
-
-  // Ensoleillé de jour est aussi clair
-  if (condition.code == 0 && condition.animation == 'sunny') {
-    return true;
-  }
-
-  return lightCodes.contains(condition.code) || avgLuminance;
-}
-
-// ============================================
-// CONTENU PRINCIPAL - MÉTÉO SIMPLIFIÉE
+// CONTENU PRINCIPAL - MÉTÉO
 // ============================================
 
 class _WeatherCardContent extends StatelessWidget {
   final WeatherData weather;
   final VoidCallback onTap;
 
-  const _WeatherCardContent({required this.weather, required this.onTap});
+  const _WeatherCardContent({
+    required this.weather,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final condition = weather.current.condition;
-    final isLight = _isLightBackground(condition);
-
-    // Couleurs adaptatives
-    final textColor = isLight ? const Color(0xFF1A1A2E) : Colors.white;
-    final textColorSecondary = isLight
-        ? const Color(0xFF1A1A2E).withValues(alpha: 0.7)
-        : Colors.white.withValues(alpha: 0.8);
-    final textColorTertiary = isLight
-        ? const Color(0xFF1A1A2E).withValues(alpha: 0.5)
-        : Colors.white.withValues(alpha: 0.7);
-    final overlayColor = isLight
-        ? const Color(0xFF1A1A2E).withValues(alpha: 0.08)
-        : Colors.white.withValues(alpha: 0.15);
-    final overlayBorderColor = isLight
-        ? const Color(0xFF1A1A2E).withValues(alpha: 0.15)
-        : Colors.white.withValues(alpha: 0.25);
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Color(condition.primaryColor).withValues(alpha: 0.3),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          border: Border.all(color: AppColors.border),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            children: [
-              // Fond animé météo
-              Positioned.fill(child: WeatherBackground(condition: condition)),
+        child: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryContainer,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      PhosphorIcons.sun(PhosphorIconsStyle.duotone),
+                      size: 22,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Météo du jour',
+                          style: AppTypography.titleSmall.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          condition.label,
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
+                    size: 18,
+                    color: AppColors.textTertiary,
+                  ),
+                ],
+              ),
+            ),
 
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            Divider(height: 1, color: AppColors.border),
+
+            // Température + icone
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+              child: Row(
+                children: [
+                  Text(
+                    condition.icon,
+                    style: const TextStyle(fontSize: 44),
+                  ),
+                  const SizedBox(width: 14),
+                  Text(
+                    weather.current.temperatureDisplay,
+                    style: AppTypography.displayLarge.copyWith(
+                      fontSize: 42,
+                      fontWeight: FontWeight.w300,
+                      color: AppColors.textPrimary,
+                      height: 1,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Ressenti ${weather.current.feelsLikeDisplay}',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _getTodayMinMax(),
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Indicateurs
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(
+                children: [
+                  _WeatherChip(
+                    emoji: '💧',
+                    value: weather.current.humidityDisplay,
+                    label: 'Humidité',
+                  ),
+                  const SizedBox(width: 8),
+                  _WeatherChip(
+                    emoji: '💨',
+                    value: weather.current.windSpeedDisplay,
+                    label: 'Vent',
+                  ),
+                  const SizedBox(width: 8),
+                  _WeatherChip(
+                    emoji: '🌡',
+                    value: _getTodayMinMax(),
+                    label: 'Min / Max',
+                  ),
+                ],
+              ),
+            ),
+
+            // Lien conseils
+            Divider(height: 1, color: AppColors.border),
+            InkWell(
+              onTap: onTap,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 14),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // === LIGNE 1 : Température + Condition + Icône ===
-                    Row(
-                      children: [
-                        // Température
-                        Text(
-                          weather.current.temperatureDisplay,
-                          style: AppTypography.displayLarge.copyWith(
-                            fontSize: 48,
-                            fontWeight: FontWeight.w300,
-                            color: textColor,
-                            height: 1,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-
-                        // Condition + Ressenti
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                condition.label,
-                                style: AppTypography.titleSmall.copyWith(
-                                  color: textColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'Ressenti ${weather.current.feelsLikeDisplay}',
-                                style: AppTypography.caption.copyWith(
-                                  color: textColorSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Icône météo
-                        Text(
-                          condition.icon,
-                          style: const TextStyle(fontSize: 52),
-                        ),
-                      ],
+                    Icon(
+                      PhosphorIcons.plant(PhosphorIconsStyle.fill),
+                      size: 16,
+                      color: AppColors.primary,
                     ),
-
-                    const SizedBox(height: 16),
-
-                    // === LIGNE 2 : Indicateurs météo classiques ===
-                    Row(
-                      children: [
-                        _WeatherIndicator(
-                          icon: PhosphorIcons.drop(PhosphorIconsStyle.fill),
-                          label: 'Humidité',
-                          value: weather.current.humidityDisplay,
-                          textColor: textColor,
-                          textColorSecondary: textColorTertiary,
-                          overlayColor: overlayColor,
-                        ),
-                        const SizedBox(width: 8),
-                        _WeatherIndicator(
-                          icon: PhosphorIcons.wind(PhosphorIconsStyle.fill),
-                          label: 'Vent',
-                          value: weather.current.windSpeedDisplay,
-                          textColor: textColor,
-                          textColorSecondary: textColorTertiary,
-                          overlayColor: overlayColor,
-                        ),
-                        const SizedBox(width: 8),
-                        _WeatherIndicator(
-                          icon: PhosphorIcons.thermometer(
-                            PhosphorIconsStyle.fill,
-                          ),
-                          label: 'Min / Max',
-                          value: _getTodayMinMax(),
-                          textColor: textColor,
-                          textColorSecondary: textColorTertiary,
-                          overlayColor: overlayColor,
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    // === LIGNE 3 : Bouton vers conseils jardinage ===
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        color: overlayColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: overlayBorderColor),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            PhosphorIcons.plant(PhosphorIconsStyle.fill),
-                            size: 18,
-                            color: textColor,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Voir les conseils jardinage',
-                            style: AppTypography.labelMedium.copyWith(
-                              color: textColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Icon(
-                            PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
-                            size: 16,
-                            color: textColorSecondary,
-                          ),
-                        ],
+                    const SizedBox(width: 8),
+                    Text(
+                      'Voir les conseils jardinage',
+                      style: AppTypography.labelMedium.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -504,24 +481,18 @@ class _WeatherCardContent extends StatelessWidget {
 }
 
 // ============================================
-// INDICATEUR MÉTÉO SIMPLE
+// CHIP INDICATEUR MÉTÉO
 // ============================================
 
-class _WeatherIndicator extends StatelessWidget {
-  final IconData icon;
-  final String label;
+class _WeatherChip extends StatelessWidget {
+  final String emoji;
   final String value;
-  final Color textColor;
-  final Color textColorSecondary;
-  final Color overlayColor;
+  final String label;
 
-  const _WeatherIndicator({
-    required this.icon,
-    required this.label,
+  const _WeatherChip({
+    required this.emoji,
     required this.value,
-    required this.textColor,
-    required this.textColorSecondary,
-    required this.overlayColor,
+    required this.label,
   });
 
   @override
@@ -530,24 +501,24 @@ class _WeatherIndicator extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
-          color: overlayColor,
+          color: AppColors.surfaceVariant,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           children: [
-            Icon(icon, size: 18, color: textColor.withValues(alpha: 0.85)),
+            Text(emoji, style: const TextStyle(fontSize: 14)),
             const SizedBox(height: 4),
             Text(
               value,
               style: AppTypography.labelMedium.copyWith(
-                color: textColor,
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.w700,
               ),
             ),
             Text(
               label,
               style: AppTypography.caption.copyWith(
-                color: textColorSecondary,
+                color: AppColors.textTertiary,
                 fontSize: 10,
               ),
             ),

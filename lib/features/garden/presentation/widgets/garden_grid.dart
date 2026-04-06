@@ -34,75 +34,79 @@ class GardenGrid extends StatelessWidget {
     this.onElementMoved,
   });
 
+  /// Dimensions en mètres du jardin
+  double get _widthM =>
+      garden.widthCells * garden.cellSizeCm / 100.0;
+  double get _heightM =>
+      garden.heightCells * garden.cellSizeCm / 100.0;
+
+  /// Décoration du conteneur principal
+  BoxDecoration get _gardenDecoration => BoxDecoration(
+    gradient: const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xFFA5D6A7),
+        Color(0xFF81C784),
+      ],
+    ),
+    borderRadius: BorderRadius.circular(12),
+    border: Border.all(
+      color: const Color(0xFF8D6E63),
+      width: 3,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withValues(alpha: 0.12),
+        blurRadius: 16,
+        offset: const Offset(0, 6),
+      ),
+    ],
+  );
+
+  /// Contenu empilé : texture + grille + éléments
+  List<Widget> _buildStackChildren() {
+    return [
+      Positioned.fill(
+        child: CustomPaint(
+          painter: _GardenTexturePainter(
+            _widthM, _heightM,
+          ),
+        ),
+      ),
+      Positioned.fill(
+        child: CustomPaint(
+          painter: _GridPainter(
+            widthMeters: _widthM,
+            heightMeters: _heightM,
+          ),
+        ),
+      ),
+      ...elements.where((e) => !e.isPendingPlacement).map(
+        (e) => _DraggableElement(
+          key: ValueKey(e.id),
+          element: e,
+          garden: garden,
+          isLocked: isLocked,
+          onTap: () => onElementTap?.call(e),
+          onMoved: (xM, yM) =>
+              onElementMoved?.call(e, xM, yM),
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Calcul des dimensions en mètres
-    final widthM = garden.widthCells * garden.cellSizeCm / 100.0;
-    final heightM = garden.heightCells * garden.cellSizeCm / 100.0;
-
-    final gridWidth = widthM * kPixelsPerMeter;
-    final gridHeight = heightM * kPixelsPerMeter;
-
     return Container(
-      width: gridWidth,
-      height: gridHeight,
-      decoration: BoxDecoration(
-        // Vert plus doux et naturel
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFA5D6A7), // Vert pastel clair
-            Color(0xFF81C784), // Vert pastel moyen
-          ],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFF8D6E63),
-          width: 3,
-        ), // Bordure bois plus claire
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
+      width: _widthM * kPixelsPerMeter,
+      height: _heightM * kPixelsPerMeter,
+      decoration: _gardenDecoration,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(9),
         child: Stack(
           clipBehavior: Clip.none,
-          children: [
-            // Texture
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _GardenTexturePainter(widthM, heightM),
-              ),
-            ),
-
-            // Grille
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _GridPainter(
-                  widthMeters: widthM,
-                  heightMeters: heightM,
-                ),
-              ),
-            ),
-
-            // Éléments
-            ...elements.map(
-              (e) => _DraggableElement(
-                key: ValueKey('element-${e.id}'),
-                element: e,
-                garden: garden,
-                isLocked: isLocked,
-                onTap: () => onElementTap?.call(e),
-                onMoved: (xM, yM) => onElementMoved?.call(e, xM, yM),
-              ),
-            ),
-          ],
+          children: _buildStackChildren(),
         ),
       ),
     );
@@ -152,144 +156,146 @@ class _GridPainter extends CustomPainter {
     return 10; // 10m, 20m, 30m...
   }
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Paints pour les différentes lignes
-    final minorPaint = Paint()
+  /// Crée les Paint pour les 3 niveaux de grille
+  List<Paint> _gridPaints() => [
+    Paint()
       ..color = Colors.white.withValues(alpha: 0.15)
-      ..strokeWidth = 0.5;
-
-    final majorPaint = Paint()
+      ..strokeWidth = 0.5, // 10cm
+    Paint()
       ..color = Colors.white.withValues(alpha: 0.30)
-      ..strokeWidth = 1.0;
-
-    final meterPaint = Paint()
+      ..strokeWidth = 1.0, // 50cm
+    Paint()
       ..color = Colors.white.withValues(alpha: 0.50)
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 2.0, // 1m
+  ];
 
-    // Taille des cellules en pixels (avec nouvelle échelle)
-    final cell10cm = kPixelsPerMeter * 0.1; // 20px
-    final cell50cm = kPixelsPerMeter * 0.5; // 100px
-    final cell1m = kPixelsPerMeter; // 200px
+  /// Dessine les lignes de la grille (10cm, 50cm, 1m)
+  void _drawGridLines(Canvas canvas, Size size) {
+    final paints = _gridPaints();
+    final cell10cm = kPixelsPerMeter * 0.1;
+    final cell50cm = kPixelsPerMeter * 0.5;
+    final cell1m = kPixelsPerMeter;
 
-    // === LIGNES VERTICALES ===
-    double x = 0;
-    while (x <= size.width + 1) {
-      final isMeter = (x % cell1m) < 1;
-      final isMajor = (x % cell50cm) < 1;
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        isMeter ? meterPaint : (isMajor ? majorPaint : minorPaint),
-      );
-      x += cell10cm;
+    Paint pick(double pos) {
+      if ((pos % cell1m) < 1) return paints[2];
+      if ((pos % cell50cm) < 1) return paints[1];
+      return paints[0];
     }
 
-    // === LIGNES HORIZONTALES ===
-    double y = 0;
-    while (y <= size.height + 1) {
-      final isMeter = (y % cell1m) < 1;
-      final isMajor = (y % cell50cm) < 1;
+    for (var x = 0.0; x <= size.width + 1; x += cell10cm) {
       canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        isMeter ? meterPaint : (isMajor ? majorPaint : minorPaint),
+        Offset(x, 0), Offset(x, size.height), pick(x),
       );
-      y += cell10cm;
     }
+    for (var y = 0.0; y <= size.height + 1; y += cell10cm) {
+      canvas.drawLine(
+        Offset(0, y), Offset(size.width, y), pick(y),
+      );
+    }
+  }
 
-    // === MARQUEURS MÈTRES (texte) ===
-    final textStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 12,
-      fontWeight: FontWeight.w600,
-      shadows: [
-        Shadow(
-          color: Colors.black.withValues(alpha: 0.5),
-          blurRadius: 2,
-          offset: const Offset(1, 1),
-        ),
-      ],
-    );
+  /// Style de texte pour les marqueurs
+  TextStyle get _markerTextStyle => TextStyle(
+    color: Colors.white,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    shadows: [
+      Shadow(
+        color: Colors.black.withValues(alpha: 0.5),
+        blurRadius: 2,
+        offset: const Offset(1, 1),
+      ),
+    ],
+  );
 
+  /// Paint de fond pour les marqueurs texte
+  Paint get _markerBgPaint => Paint()
+    ..color = Colors.black.withValues(alpha: 0.35)
+    ..style = PaintingStyle.fill;
+
+  /// Marqueurs horizontaux (en haut)
+  void _drawHorizontalMarkers(Canvas canvas, Size size) {
+    final bg = _markerBgPaint;
+    final tp = TextPainter(textDirection: TextDirection.ltr);
+    final style = _markerTextStyle;
+    final interval = _getMarkerInterval(widthMeters);
+    for (int m = interval;
+        m <= widthMeters.floor();
+        m += interval) {
+      final xPos = m * kPixelsPerMeter;
+      if (xPos >= size.width - 20) continue;
+      tp.text = TextSpan(text: '${m}m', style: style);
+      tp.layout();
+      final r = RRect.fromRectAndRadius(
+        Rect.fromLTWH(xPos - tp.width / 2 - 4, 4,
+            tp.width + 8, tp.height + 4),
+        const Radius.circular(4),
+      );
+      canvas.drawRRect(r, bg);
+      tp.paint(canvas, Offset(xPos - tp.width / 2, 6));
+    }
+  }
+
+  /// Marqueurs verticaux (à gauche)
+  void _drawVerticalMarkers(Canvas canvas, Size size) {
+    final bg = _markerBgPaint;
+    final tp = TextPainter(textDirection: TextDirection.ltr);
+    final style = _markerTextStyle;
+    final interval = _getMarkerInterval(heightMeters);
+    for (int m = interval;
+        m <= heightMeters.floor();
+        m += interval) {
+      final yPos = m * kPixelsPerMeter;
+      if (yPos >= size.height - 20) continue;
+      tp.text = TextSpan(text: '${m}m', style: style);
+      tp.layout();
+      final r = RRect.fromRectAndRadius(
+        Rect.fromLTWH(4, yPos - tp.height / 2 - 2,
+            tp.width + 8, tp.height + 4),
+        const Radius.circular(4),
+      );
+      canvas.drawRRect(r, bg);
+      tp.paint(canvas, Offset(8, yPos - tp.height / 2));
+    }
+  }
+
+  /// Dessine les dimensions totales en bas à droite
+  void _drawDimensions(Canvas canvas, Size size) {
     final bgPaint = Paint()
       ..color = Colors.black.withValues(alpha: 0.35)
       ..style = PaintingStyle.fill;
-
-    final textPainter = TextPainter(textDirection: TextDirection.ltr);
-
-    // Intervalle intelligent pour les marqueurs
-    final xInterval = _getMarkerInterval(widthMeters);
-    final yInterval = _getMarkerInterval(heightMeters);
-
-    // Marqueurs horizontaux (en haut)
-    for (int m = xInterval; m <= widthMeters.floor(); m += xInterval) {
-      final xPos = m * kPixelsPerMeter;
-      if (xPos < size.width - 20) {
-        textPainter.text = TextSpan(text: '${m}m', style: textStyle);
-        textPainter.layout();
-
-        final rect = RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-            xPos - textPainter.width / 2 - 4,
-            4,
-            textPainter.width + 8,
-            textPainter.height + 4,
-          ),
-          const Radius.circular(4),
-        );
-        canvas.drawRRect(rect, bgPaint);
-        textPainter.paint(canvas, Offset(xPos - textPainter.width / 2, 6));
-      }
-    }
-
-    // Marqueurs verticaux (à gauche)
-    for (int m = yInterval; m <= heightMeters.floor(); m += yInterval) {
-      final yPos = m * kPixelsPerMeter;
-      if (yPos < size.height - 20) {
-        textPainter.text = TextSpan(text: '${m}m', style: textStyle);
-        textPainter.layout();
-
-        final rect = RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-            4,
-            yPos - textPainter.height / 2 - 2,
-            textPainter.width + 8,
-            textPainter.height + 4,
-          ),
-          const Radius.circular(4),
-        );
-        canvas.drawRRect(rect, bgPaint);
-        textPainter.paint(canvas, Offset(8, yPos - textPainter.height / 2));
-      }
-    }
-
-    // Dimensions totales en bas à droite
-    final dimsText =
-        '${widthMeters.toStringAsFixed(1)} × ${heightMeters.toStringAsFixed(1)} m';
-    textPainter.text = TextSpan(
+    final tp = TextPainter(textDirection: TextDirection.ltr);
+    final dimsText = '${widthMeters.toStringAsFixed(1)}'
+        ' × ${heightMeters.toStringAsFixed(1)} m';
+    tp.text = TextSpan(
       text: dimsText,
-      style: textStyle.copyWith(fontSize: 11),
+      style: _markerTextStyle.copyWith(fontSize: 11),
     );
-    textPainter.layout();
-
-    final dimsRect = RRect.fromRectAndRadius(
+    tp.layout();
+    final rect = RRect.fromRectAndRadius(
       Rect.fromLTWH(
-        size.width - textPainter.width - 14,
-        size.height - textPainter.height - 10,
-        textPainter.width + 10,
-        textPainter.height + 6,
+        size.width - tp.width - 14,
+        size.height - tp.height - 10,
+        tp.width + 10, tp.height + 6,
       ),
       const Radius.circular(6),
     );
-    canvas.drawRRect(dimsRect, bgPaint);
-    textPainter.paint(
+    canvas.drawRRect(rect, bgPaint);
+    tp.paint(
       canvas,
       Offset(
-        size.width - textPainter.width - 9,
-        size.height - textPainter.height - 7,
+        size.width - tp.width - 9,
+        size.height - tp.height - 7,
       ),
     );
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawGridLines(canvas, size);
+    _drawHorizontalMarkers(canvas, size);
+    _drawVerticalMarkers(canvas, size);
+    _drawDimensions(canvas, size);
   }
 
   @override
@@ -332,6 +338,23 @@ class _DraggableElementState extends State<_DraggableElement>
 
   int get cellSizeCm => widget.garden.cellSizeCm;
 
+  /// Animation bump : 1.0 -> 1.08 -> 1.0
+  Animation<double> _createBumpAnimation() {
+    return TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 1.08)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.08, end: 1.0)
+            .chain(CurveTween(
+                curve: Curves.easeInOut)),
+        weight: 60,
+      ),
+    ]).animate(_bumpController);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -339,23 +362,7 @@ class _DraggableElementState extends State<_DraggableElement>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    // Animation bump : 1.0 -> 1.08 -> 1.0 (rapide)
-    _bumpAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 1.0,
-          end: 1.08,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 40,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 1.08,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 60,
-      ),
-    ]).animate(_bumpController);
+    _bumpAnimation = _createBumpAnimation();
   }
 
   @override
@@ -384,197 +391,256 @@ class _DraggableElementState extends State<_DraggableElement>
     setState(() => _dragOffset += details.delta);
   }
 
+  /// Calcule la position clampée après un drag
+  (double x, double y) _clampedPosition() {
+    final xPx = e.xMeters(cellSizeCm) * kPixelsPerMeter
+        + _dragOffset.dx;
+    final yPx = e.yMeters(cellSizeCm) * kPixelsPerMeter
+        + _dragOffset.dy;
+    final maxX = widget.garden.widthCells
+        * cellSizeCm / 100.0
+        - e.widthMeters(cellSizeCm);
+    final maxY = widget.garden.heightCells
+        * cellSizeCm / 100.0
+        - e.heightMeters(cellSizeCm);
+    return (
+      (xPx / kPixelsPerMeter).clamp(0, maxX),
+      (yPx / kPixelsPerMeter).clamp(0, maxY),
+    );
+  }
+
   void _onDragEnd(DragEndDetails details) {
     if (widget.isLocked || !_isDragging) return;
-
-    final currentXPx = e.xMeters(cellSizeCm) * kPixelsPerMeter + _dragOffset.dx;
-    final currentYPx = e.yMeters(cellSizeCm) * kPixelsPerMeter + _dragOffset.dy;
-
-    double newXMeters = currentXPx / kPixelsPerMeter;
-    double newYMeters = currentYPx / kPixelsPerMeter;
-
-    final gardenWidthM = widget.garden.widthCells * cellSizeCm / 100.0;
-    final gardenHeightM = widget.garden.heightCells * cellSizeCm / 100.0;
-
-    final elemWidthM = e.widthMeters(cellSizeCm);
-    final elemHeightM = e.heightMeters(cellSizeCm);
-
-    newXMeters = newXMeters.clamp(0, gardenWidthM - elemWidthM);
-    newYMeters = newYMeters.clamp(0, gardenHeightM - elemHeightM);
+    final (newX, newY) = _clampedPosition();
 
     setState(() {
       _isDragging = false;
       _dragOffset = Offset.zero;
     });
 
-    final oldXMeters = e.xMeters(cellSizeCm);
-    final oldYMeters = e.yMeters(cellSizeCm);
-    if ((newXMeters - oldXMeters).abs() > 0.01 ||
-        (newYMeters - oldYMeters).abs() > 0.01) {
-      // Petit retour haptique à la fin si position changée
+    final oldX = e.xMeters(cellSizeCm);
+    final oldY = e.yMeters(cellSizeCm);
+    if ((newX - oldX).abs() > 0.01 ||
+        (newY - oldY).abs() > 0.01) {
       HapticFeedback.lightImpact();
-      widget.onMoved?.call(newXMeters, newYMeters);
+      widget.onMoved?.call(newX, newY);
     }
+  }
+
+  /// Ombres selon l'état drag
+  List<BoxShadow> _buildShadows(Color color) {
+    if (_isDragging) {
+      return [
+        BoxShadow(
+          color: color.withValues(alpha: 0.5),
+          blurRadius: 16,
+          offset: const Offset(0, 6),
+        ),
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
+        ),
+      ];
+    }
+    return [
+      BoxShadow(
+        color: Colors.black.withValues(alpha: 0.25),
+        blurRadius: 4,
+        offset: const Offset(0, 2),
+      ),
+    ];
+  }
+
+  /// Décoration du conteneur selon l'état drag
+  BoxDecoration _buildDecoration(Color color) {
+    return BoxDecoration(
+      color: color.withValues(
+        alpha: _isDragging ? 0.95 : 0.85,
+      ),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(
+        color: _isDragging
+            ? Colors.white
+            : (widget.isLocked
+                  ? Colors.white.withValues(alpha: 0.7)
+                  : AppColors.primary),
+        width: _isDragging ? 3 : 2,
+      ),
+      boxShadow: _buildShadows(color),
+    );
+  }
+
+  /// Label du nom sous l'emoji
+  Widget _buildNameLabel() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Text(
+        e.name,
+        style: AppTypography.caption.copyWith(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          shadows: [
+            Shadow(
+              color: Colors.black.withValues(
+                alpha: 0.4,
+              ),
+              blurRadius: 2,
+            ),
+          ],
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  /// Emoji + nom de la plante au centre
+  Widget _buildCenterContent(
+    double displayWidth,
+    double displayHeight,
+    double emojiSize,
+  ) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            e.emoji,
+            style: TextStyle(fontSize: emojiSize),
+          ),
+          if (displayWidth > 70 && displayHeight > 70)
+            _buildNameLabel(),
+        ],
+      ),
+    );
+  }
+
+  /// Icône lock / move en haut à droite
+  Widget _buildLockIndicator() {
+    return Positioned(
+      right: 2,
+      top: 2,
+      child: Container(
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          color: widget.isLocked
+              ? Colors.white.withValues(alpha: 0.3)
+              : AppColors.primary.withValues(alpha: 0.9),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Icon(
+          widget.isLocked
+              ? PhosphorIcons.lock(
+                  PhosphorIconsStyle.fill,
+                )
+              : PhosphorIcons.arrowsOutCardinal(
+                  PhosphorIconsStyle.fill,
+                ),
+          size: 12,
+          color: widget.isLocked
+              ? Colors.white.withValues(alpha: 0.8)
+              : Colors.white,
+        ),
+      ),
+    );
+  }
+
+  /// Indicateur "Glisser" en bas
+  Widget _buildDragHint() {
+    return Positioned(
+      bottom: 2,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 6,
+            vertical: 2,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(
+              alpha: 0.9,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            'Glisser',
+            style: AppTypography.caption.copyWith(
+              color: Colors.white,
+              fontSize: 8,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Conteneur principal de l'élément
+  Widget _buildContainer() {
+    final widthPx =
+        e.widthMeters(cellSizeCm) * kPixelsPerMeter;
+    final heightPx =
+        e.heightMeters(cellSizeCm) * kPixelsPerMeter;
+    final color = Color(e.color);
+    final dw = math.max(widthPx, 30.0);
+    final dh = math.max(heightPx, 30.0);
+    final emojiSize =
+        (math.min(dw, dh) * 0.5).clamp(16.0, 50.0);
+
+    return Container(
+      width: dw,
+      height: dh,
+      decoration: _buildDecoration(color),
+      child: Stack(
+        children: [
+          _buildCenterContent(dw, dh, emojiSize),
+          if (dw > 40) _buildLockIndicator(),
+          if (!widget.isLocked &&
+              dw > 60 &&
+              !_isDragging)
+            _buildDragHint(),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Position et taille en pixels
-    final xPx = e.xMeters(cellSizeCm) * kPixelsPerMeter;
-    final yPx = e.yMeters(cellSizeCm) * kPixelsPerMeter;
-    final widthPx = e.widthMeters(cellSizeCm) * kPixelsPerMeter;
-    final heightPx = e.heightMeters(cellSizeCm) * kPixelsPerMeter;
-
-    final left = xPx + (_isDragging ? _dragOffset.dx : 0);
-    final top = yPx + (_isDragging ? _dragOffset.dy : 0);
-    final color = Color(e.color);
-
-    // Taille minimum visible
-    final displayWidth = math.max(widthPx, 30.0);
-    final displayHeight = math.max(heightPx, 30.0);
-
-    // Taille emoji proportionnelle à la taille de l'élément
-    final emojiSize = (math.min(displayWidth, displayHeight) * 0.5).clamp(
-      16.0,
-      50.0,
-    );
+    final xPx =
+        e.xMeters(cellSizeCm) * kPixelsPerMeter;
+    final yPx =
+        e.yMeters(cellSizeCm) * kPixelsPerMeter;
+    final left =
+        xPx + (_isDragging ? _dragOffset.dx : 0);
+    final top =
+        yPx + (_isDragging ? _dragOffset.dy : 0);
 
     return AnimatedPositioned(
-      duration: _isDragging ? Duration.zero : const Duration(milliseconds: 200),
+      duration: _isDragging
+          ? Duration.zero
+          : const Duration(milliseconds: 200),
       curve: Curves.easeOutCubic,
       left: left,
       top: top,
       child: GestureDetector(
         onTap: widget.onTap,
-        onPanStart: widget.isLocked ? null : _onDragStart,
-        onPanUpdate: widget.isLocked ? null : _onDragUpdate,
-        onPanEnd: widget.isLocked ? null : _onDragEnd,
+        onPanStart:
+            widget.isLocked ? null : _onDragStart,
+        onPanUpdate:
+            widget.isLocked ? null : _onDragUpdate,
+        onPanEnd:
+            widget.isLocked ? null : _onDragEnd,
         child: AnimatedBuilder(
           animation: _bumpAnimation,
           builder: (context, child) =>
-              Transform.scale(scale: _bumpAnimation.value, child: child),
-          child: Container(
-            width: displayWidth,
-            height: displayHeight,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: _isDragging ? 0.95 : 0.85),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: _isDragging
-                    ? Colors.white
-                    : (widget.isLocked
-                          ? Colors.white.withValues(alpha: 0.7)
-                          : AppColors.primary),
-                width: _isDragging ? 3 : 2,
-              ),
-              boxShadow: _isDragging
-                  ? [
-                      BoxShadow(
-                        color: color.withValues(alpha: 0.5),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.25),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-            ),
-            child: Stack(
-              children: [
-                // Emoji centré
-                Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(e.emoji, style: TextStyle(fontSize: emojiSize)),
-                      if (displayWidth > 70 && displayHeight > 70)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Text(
-                            e.name,
-                            style: AppTypography.caption.copyWith(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black.withValues(alpha: 0.4),
-                                  blurRadius: 2,
-                                ),
-                              ],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                // Indicateur lock amélioré
-                if (displayWidth > 40)
-                  Positioned(
-                    right: 2,
-                    top: 2,
-                    child: Container(
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: widget.isLocked
-                            ? Colors.white.withValues(alpha: 0.3)
-                            : AppColors.primary.withValues(alpha: 0.9),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Icon(
-                        widget.isLocked
-                            ? PhosphorIcons.lock(PhosphorIconsStyle.fill)
-                            : PhosphorIcons.arrowsOutCardinal(
-                                PhosphorIconsStyle.fill,
-                              ),
-                        size: 12,
-                        color: widget.isLocked
-                            ? Colors.white.withValues(alpha: 0.8)
-                            : Colors.white,
-                      ),
-                    ),
-                  ),
-                // Indicateur de déplacement quand déverrouillé
-                if (!widget.isLocked && displayWidth > 60 && !_isDragging)
-                  Positioned(
-                    bottom: 2,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.9),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'Glisser',
-                          style: AppTypography.caption.copyWith(
-                            color: Colors.white,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+              Transform.scale(
+            scale: _bumpAnimation.value,
+            child: child,
           ),
+          child: _buildContainer(),
         ),
       ),
     );

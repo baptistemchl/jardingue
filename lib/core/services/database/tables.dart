@@ -137,5 +137,29 @@ class GardenPlants extends Table {
 
   TextColumn get notes => text().nullable()();
 
+  DateTimeColumn get sowedAt => dateTime().nullable()();
+
+  IntColumn get wateringFrequencyDays => integer().nullable()();
+
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+/// Table pour les événements du jardin (semis, plantation, arrosage, récolte)
+class GardenEvents extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Lien vers une plante dans un potager (optionnel)
+  IntColumn get gardenPlantId =>
+      integer().nullable().references(GardenPlants, #id)();
+
+  /// Lien direct vers le catalogue de plantes (pour événements sans potager)
+  IntColumn get plantId => integer().nullable().references(Plants, #id)();
+
+  TextColumn get eventType => text()();
+
+  DateTimeColumn get eventDate => dateTime()();
+
+  TextColumn get notes => text().nullable()();
+
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

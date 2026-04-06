@@ -42,12 +42,15 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
 
   void _showError(String message) {
     setState(() => _errorMessage = message);
-    // Effacer l'erreur après 3 secondes
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() => _errorMessage = null);
-      }
-    });
+    // Le SnackBar gère sa propre durée d'affichage
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(seconds: 3),
+        ),
+      );
   }
 
   void _closeSheet() {
@@ -251,7 +254,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _DimensionSlider(
-                        label: 'Hauteur',
+                        label: 'Longueur',
                         value: _heightMeters,
                         onChanged: (v) => setState(() => _heightMeters = v),
                       ),
@@ -294,7 +297,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                       ),
                       _Stat(
                         emoji: '↕️',
-                        label: 'Hauteur',
+                        label: 'Longueur',
                         value: '${_heightMeters.toStringAsFixed(1)} m',
                       ),
                     ],

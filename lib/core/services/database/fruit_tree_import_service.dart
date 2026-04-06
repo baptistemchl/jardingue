@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'app_database.dart';
 
@@ -15,11 +16,11 @@ class FruitTreeImportService {
     // Vérifie si les données existent déjà
     final existingCount = await _db.countFruitTrees();
     if (existingCount > 0 && !forceReimport) {
-      print('🌳 Base arbres fruitiers déjà peuplée ($existingCount arbres)');
+      debugPrint('🌳 Base arbres fruitiers déjà peuplée ($existingCount arbres)');
       return existingCount;
     }
 
-    print('🌳 Début de l\'import des arbres fruitiers...');
+    debugPrint('🌳 Début de l\'import des arbres fruitiers...');
 
     try {
       // Charge le fichier JSON
@@ -32,7 +33,7 @@ class FruitTreeImportService {
       // Nettoie la table si réimport forcé
       if (forceReimport) {
         await _db.deleteAllFruitTrees();
-        print('🗑️ Table arbres fruitiers nettoyée');
+        debugPrint('🗑️ Table arbres fruitiers nettoyée');
       }
 
       int importedCount = 0;
@@ -43,14 +44,14 @@ class FruitTreeImportService {
           await _importTree(treeJson as Map<String, dynamic>);
           importedCount++;
         } catch (e) {
-          print('❌ Erreur import arbre ${treeJson['common_name']}: $e');
+          debugPrint('❌ Erreur import arbre ${treeJson['common_name']}: $e');
         }
       }
 
-      print('✅ Import arbres fruitiers terminé: $importedCount arbres');
+      debugPrint('✅ Import arbres fruitiers terminé: $importedCount arbres');
       return importedCount;
     } catch (e) {
-      print('❌ Erreur lors du chargement du JSON: $e');
+      debugPrint('❌ Erreur lors du chargement du JSON: $e');
       return 0;
     }
   }

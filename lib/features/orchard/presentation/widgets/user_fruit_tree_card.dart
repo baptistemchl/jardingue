@@ -138,16 +138,12 @@ class UserFruitTreeCard extends StatelessWidget {
   }
 
   Color _getHealthColor(String status) {
-    switch (status) {
-      case 'good':
-        return AppColors.success;
-      case 'warning':
-        return AppColors.warning;
-      case 'poor':
-        return AppColors.error;
-      default:
-        return AppColors.success;
-    }
+    return switch (status) {
+      'good' => AppColors.success,
+      'warning' => AppColors.warning,
+      'poor' => AppColors.error,
+      _ => AppColors.success,
+    };
   }
 
   String _formatAge(DateTime plantingDate) {

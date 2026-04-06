@@ -250,16 +250,10 @@ class LocationResult {
     return city ?? country ?? '$latitude, $longitude';
   }
 
-  String get sourceLabel {
-    switch (source) {
-      case LocationSource.gps:
-        return 'GPS';
-      case LocationSource.ip:
-        return 'Approximatif';
-      case LocationSource.search:
-        return 'Recherche';
-      case LocationSource.defaultValue:
-        return 'Par défaut';
-    }
-  }
+  String get sourceLabel => switch (source) {
+    LocationSource.gps => 'GPS',
+    LocationSource.ip => 'Approximatif',
+    LocationSource.search => 'Recherche',
+    LocationSource.defaultValue => 'Par défaut',
+  };
 }

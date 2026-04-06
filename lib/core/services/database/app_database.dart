@@ -17,6 +17,7 @@ part 'app_database.g.dart';
     PlantAntagonists,
     Gardens,
     GardenPlants,
+    GardenEvents,
     FruitTrees,
     UserFruitTrees,
   ],
@@ -28,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -41,6 +42,21 @@ class AppDatabase extends _$AppDatabase {
         if (from < 2) {
           await m.createTable(fruitTrees);
           await m.createTable(userFruitTrees);
+        }
+        // Migration v2 -> v3 : événements jardin + colonnes arrosage
+        if (from < 3) {
+          await m.createTable(gardenEvents);
+          await m.addColumn(gardenPlants, gardenPlants.sowedAt);
+          await m.addColumn(
+              gardenPlants, gardenPlants.wateringFrequencyDays);
+        }
+        // Migration v3 -> v4 : événements sans potager (plantId direct)
+        if (from < 4) {
+          await m.addColumn(gardenEvents, gardenEvents.plantId);
+          // Recréer la table pour rendre gardenPlantId nullable
+          // On drop et recrée car SQLite ne supporte pas ALTER COLUMN
+          await m.deleteTable('garden_events');
+          await m.createTable(gardenEvents);
         }
       },
     );
@@ -194,6 +210,78 @@ class AppDatabase extends _$AppDatabase {
       GardenPlantsCompanion(
         widthCells: Value(widthCells),
         heightCells: Value(heightCells),
+      ),
+    );
+  }
+
+  // ============================================
+  // GARDEN EVENTS QUERIES
+  // ============================================
+
+  Future<List<GardenEvent>> getEventsForGardenPlant(int gardenPlantId) {
+    return (select(gardenEvents)
+          ..where((t) => t.gardenPlantId.equals(gardenPlantId))
+          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)]))
+        .get();
+  }
+
+  Future<List<GardenEvent>> getAllEvents() {
+    return (select(gardenEvents)
+          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)]))
+        .get();
+  }
+
+  Future<List<GardenEvent>> getEventsForMonth(int year, int month) {
+    final start = DateTime(year, month);
+    final end = DateTime(year, month + 1);
+    return (select(gardenEvents)
+          ..where(
+              (t) => t.eventDate.isBiggerOrEqualValue(start) & t.eventDate.isSmallerThanValue(end))
+          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)]))
+        .get();
+  }
+
+  Future<GardenEvent?> getLastEventOfType(
+      int gardenPlantId, String eventType) {
+    return (select(gardenEvents)
+          ..where((t) =>
+              t.gardenPlantId.equals(gardenPlantId) &
+              t.eventType.equals(eventType))
+          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)])
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  /// Retourne les IDs distincts des plantes suivies (via plantId dans les events)
+  Future<List<int>> getTrackedPlantIds() async {
+    final events = await (select(gardenEvents)
+          ..where((t) => t.plantId.isNotNull()))
+        .get();
+    return events.map((e) => e.plantId!).toSet().toList();
+  }
+
+  Future<int> addGardenEvent(GardenEventsCompanion event) {
+    return into(gardenEvents).insert(event);
+  }
+
+  Future<int> deleteGardenEvent(int id) {
+    return (delete(gardenEvents)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<void> updateGardenPlantDetails({
+    required int id,
+    DateTime? sowedAt,
+    DateTime? plantedAt,
+    int? wateringFrequencyDays,
+  }) {
+    return (update(gardenPlants)..where((t) => t.id.equals(id))).write(
+      GardenPlantsCompanion(
+        sowedAt: sowedAt != null ? Value(sowedAt) : const Value.absent(),
+        plantedAt:
+            plantedAt != null ? Value(plantedAt) : const Value.absent(),
+        wateringFrequencyDays: wateringFrequencyDays != null
+            ? Value(wateringFrequencyDays)
+            : const Value.absent(),
       ),
     );
   }

@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'core/services/notifications/notification_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/database_providers.dart';
+import 'core/providers/garden_event_providers.dart';
 import 'router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialiser les locales pour DateFormat
+  await initializeDateFormatting('fr_FR', null);
+
+  // Initialiser les notifications
+  await NotificationService().init();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -41,6 +51,8 @@ class _JardingueAppState extends ConsumerState<JardingueApp> {
           .read(databaseInitProvider.future)
           .then((count) {
             debugPrint('🌱 Base de données prête: $count plantes');
+            // Planifier les notifications d'arrosage
+            ref.read(wateringNotificationSchedulerProvider.future);
           })
           .catchError((e) {
             debugPrint('❌ Erreur DB: $e');
@@ -57,6 +69,15 @@ class _JardingueAppState extends ConsumerState<JardingueApp> {
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.light,
       routerConfig: appRouter,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('fr', 'FR'),
+      ],
+      locale: const Locale('fr', 'FR'),
     );
   }
 }
