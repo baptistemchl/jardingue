@@ -61,18 +61,14 @@ class MonthActivities {
 
   bool get isEmpty => totalActivities == 0;
 
-  List<PlantActivity> getActivitiesByType(GardenActivityType type) {
-    switch (type) {
-      case GardenActivityType.sowingUnderCover:
-        return sowingUnderCover;
-      case GardenActivityType.sowingOpenGround:
-        return sowingOpenGround;
-      case GardenActivityType.planting:
-        return planting;
-      case GardenActivityType.harvest:
-        return harvest;
-    }
-  }
+  List<PlantActivity> getActivitiesByType(
+    GardenActivityType type,
+  ) => switch (type) {
+    GardenActivityType.sowingUnderCover => sowingUnderCover,
+    GardenActivityType.sowingOpenGround => sowingOpenGround,
+    GardenActivityType.planting => planting,
+    GardenActivityType.harvest => harvest,
+  };
 }
 
 // ============================================
@@ -227,7 +223,8 @@ Map<String, dynamic>? _parseCalendar(String? calendarJson) {
   try {
     final data = json.decode(calendarJson) as Map<String, dynamic>;
     return data['monthly_period'] as Map<String, dynamic>?;
-  } catch (_) {
+  } catch (e) {
+    debugPrint('Erreur parsing calendrier JSON: $e');
     return null;
   }
 }

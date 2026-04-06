@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'app_database.dart';
 
@@ -15,11 +16,11 @@ class PlantImportService {
     // Vérifie si les données existent déjà
     final existingCount = await _db.countPlants();
     if (existingCount > 0 && !forceReimport) {
-      print('📦 Base de données déjà peuplée ($existingCount plantes)');
+      debugPrint('Base de donnees deja peuplee ($existingCount plantes)');
       return existingCount;
     }
 
-    print('🌱 Début de l\'import des plantes...');
+    debugPrint('Debut de l\'import des plantes...');
 
     // Charge le fichier JSON
     final jsonString = await rootBundle.loadString('assets/data/plants.json');
@@ -31,7 +32,7 @@ class PlantImportService {
       await _db.deleteAllAntagonists();
       await _db.deleteAllCompanions();
       await _db.deleteAllPlants();
-      print('🗑️ Tables nettoyées');
+      debugPrint('Tables nettoyees');
     }
 
     int importedCount = 0;
@@ -42,7 +43,7 @@ class PlantImportService {
         await _importPlant(plantJson as Map<String, dynamic>);
         importedCount++;
       } catch (e) {
-        print('❌ Erreur import plante ${plantJson['common_name']}: $e');
+        debugPrint('Erreur import plante ${plantJson['common_name']}: $e');
       }
     }
 
@@ -51,11 +52,11 @@ class PlantImportService {
       try {
         await _importRelations(plantJson as Map<String, dynamic>);
       } catch (e) {
-        print('❌ Erreur import relations ${plantJson['common_name']}: $e');
+        debugPrint('Erreur import relations ${plantJson['common_name']}: $e');
       }
     }
 
-    print('✅ Import terminé: $importedCount plantes');
+    debugPrint('Import termine: $importedCount plantes');
     return importedCount;
   }
 

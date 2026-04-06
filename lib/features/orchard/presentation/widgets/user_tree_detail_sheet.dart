@@ -7,15 +7,62 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/orchard_providers.dart';
 
 /// Sheet affichant les détails d'un arbre du verger personnel
-class UserTreeDetailSheet extends ConsumerWidget {
+/// avec édition inline de tous les champs.
+class UserTreeDetailSheet extends ConsumerStatefulWidget {
   final UserFruitTreeWithDetails tree;
 
   const UserTreeDetailSheet({super.key, required this.tree});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final fruitTree = tree.fruitTree;
-    final userTree = tree.userTree;
+  ConsumerState<UserTreeDetailSheet> createState() =>
+      _UserTreeDetailSheetState();
+}
+
+class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
+  late UserFruitTreeWithDetails _tree;
+
+  @override
+  void initState() {
+    super.initState();
+    _tree = widget.tree;
+  }
+
+  /// Met à jour l'arbre et rafraichit l'UI
+  Future<void> _update({
+    String? nickname,
+    String? variety,
+    DateTime? plantingDate,
+    String? location,
+    String? notes,
+    String? healthStatus,
+    DateTime? lastPruningDate,
+    DateTime? lastHarvestDate,
+    double? lastYieldKg,
+  }) async {
+    await ref.read(userFruitTreesNotifierProvider.notifier).updateTree(
+          id: _tree.id,
+          nickname: nickname,
+          variety: variety,
+          plantingDate: plantingDate,
+          location: location,
+          notes: notes,
+          healthStatus: healthStatus,
+          lastPruningDate: lastPruningDate,
+          lastHarvestDate: lastHarvestDate,
+          lastYieldKg: lastYieldKg,
+        );
+    // Recharger les données
+    final updated =
+        await ref.read(userFruitTreeByIdProvider(_tree.id).future);
+    if (updated != null && mounted) {
+      setState(() => _tree = updated);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fruitTree = _tree.fruitTree;
+    final userTree = _tree.userTree;
     final healthColor = _getHealthColor(userTree.healthStatus);
 
     return Container(
@@ -71,7 +118,8 @@ class UserTreeDetailSheet extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: healthColor,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
+                              border:
+                                  Border.all(color: Colors.white, width: 2),
                             ),
                           ),
                         ),
@@ -82,21 +130,67 @@ class UserTreeDetailSheet extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(tree.name, style: AppTypography.titleLarge),
+                          // Nom editable
+                          GestureDetector(
+                            onTap: () => _editText(
+                              title: 'Nom',
+                              currentValue: userTree.nickname,
+                              hint: fruitTree.commonName,
+                              onSave: (v) => _update(nickname: v),
+                            ),
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(_tree.name,
+                                      style: AppTypography.titleLarge),
+                                ),
+                                const SizedBox(width: 6),
+                                Icon(
+                                  PhosphorIcons.pencilSimple(
+                                      PhosphorIconsStyle.regular),
+                                  size: 16,
+                                  color: AppColors.textTertiary,
+                                ),
+                              ],
+                            ),
+                          ),
                           Text(
                             fruitTree.commonName,
                             style: AppTypography.bodySmall.copyWith(
                               color: AppColors.textSecondary,
                             ),
                           ),
-                          if (userTree.variety != null)
-                            Text(
-                              userTree.variety!,
-                              style: AppTypography.caption.copyWith(
-                                fontStyle: FontStyle.italic,
-                                color: AppColors.textTertiary,
-                              ),
+                          // Variete editable
+                          GestureDetector(
+                            onTap: () => _editText(
+                              title: 'Variete',
+                              currentValue: userTree.variety,
+                              hint: 'Ex: Golden, Granny Smith...',
+                              onSave: (v) => _update(variety: v),
                             ),
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    userTree.variety ?? 'Ajouter une variete',
+                                    style: AppTypography.caption.copyWith(
+                                      fontStyle: FontStyle.italic,
+                                      color: userTree.variety != null
+                                          ? AppColors.textTertiary
+                                          : AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  PhosphorIcons.pencilSimple(
+                                      PhosphorIconsStyle.regular),
+                                  size: 12,
+                                  color: AppColors.textTertiary,
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -111,7 +205,7 @@ class UserTreeDetailSheet extends ConsumerWidget {
 
                 // État de santé
                 GestureDetector(
-                  onTap: () => _showHealthDialog(context, ref),
+                  onTap: () => _showHealthDialog(),
                   child: _HealthStatusCard(status: userTree.healthStatus),
                 ),
 
@@ -122,23 +216,35 @@ class UserTreeDetailSheet extends ConsumerWidget {
                   title: 'Informations',
                   icon: PhosphorIcons.info(PhosphorIconsStyle.fill),
                   children: [
-                    if (userTree.plantingDate != null) ...[
-                      _InfoRow(
-                        label: 'Planté le',
-                        value: DateFormat(
-                          'dd MMMM yyyy',
-                          'fr_FR',
-                        ).format(userTree.plantingDate!),
+                    _EditableInfoRow(
+                      label: 'Plante le',
+                      value: userTree.plantingDate != null
+                          ? DateFormat('dd MMMM yyyy', 'fr_FR')
+                              .format(userTree.plantingDate!)
+                          : 'Non renseignee',
+                      onTap: () => _editDate(
+                        title: 'Date de plantation',
+                        currentValue: userTree.plantingDate,
+                        onSave: (d) => _update(plantingDate: d),
                       ),
+                    ),
+                    if (userTree.plantingDate != null)
                       _InfoRow(
-                        label: 'Âge',
+                        label: 'Age',
                         value: _calculateAge(userTree.plantingDate!),
                       ),
-                    ],
-                    if (userTree.location != null)
-                      _InfoRow(label: 'Emplacement', value: userTree.location!),
+                    _EditableInfoRow(
+                      label: 'Emplacement',
+                      value: userTree.location ?? 'Non renseigne',
+                      onTap: () => _editText(
+                        title: 'Emplacement',
+                        currentValue: userTree.location,
+                        hint: 'Ex: Fond du jardin, cote sud...',
+                        onSave: (v) => _update(location: v),
+                      ),
+                    ),
                     _InfoRow(
-                      label: 'Espèce',
+                      label: 'Espece',
                       value: fruitTree.latinName ?? fruitTree.commonName,
                     ),
                   ],
@@ -151,46 +257,55 @@ class UserTreeDetailSheet extends ConsumerWidget {
                   title: 'Suivi',
                   icon: PhosphorIcons.chartLine(PhosphorIconsStyle.fill),
                   children: [
-                    _InfoRow(
-                      label: 'Dernière taille',
+                    _EditableInfoRow(
+                      label: 'Derniere taille',
                       value: userTree.lastPruningDate != null
-                          ? DateFormat(
-                              'dd/MM/yyyy',
-                            ).format(userTree.lastPruningDate!)
-                          : 'Non renseignée',
-                    ),
-                    _InfoRow(
-                      label: 'Dernière récolte',
-                      value: userTree.lastHarvestDate != null
-                          ? DateFormat(
-                              'dd/MM/yyyy',
-                            ).format(userTree.lastHarvestDate!)
-                          : 'Non renseignée',
-                    ),
-                    if (userTree.lastYieldKg != null)
-                      _InfoRow(
-                        label: 'Dernier rendement',
-                        value: '${userTree.lastYieldKg} kg',
+                          ? DateFormat('dd/MM/yyyy')
+                              .format(userTree.lastPruningDate!)
+                          : 'Non renseignee',
+                      onTap: () => _editDate(
+                        title: 'Derniere taille',
+                        currentValue: userTree.lastPruningDate,
+                        onSave: (d) => _update(lastPruningDate: d),
                       ),
+                    ),
+                    _EditableInfoRow(
+                      label: 'Derniere recolte',
+                      value: userTree.lastHarvestDate != null
+                          ? DateFormat('dd/MM/yyyy')
+                              .format(userTree.lastHarvestDate!)
+                          : 'Non renseignee',
+                      onTap: () => _editDate(
+                        title: 'Derniere recolte',
+                        currentValue: userTree.lastHarvestDate,
+                        onSave: (d) => _update(lastHarvestDate: d),
+                      ),
+                    ),
+                    _EditableInfoRow(
+                      label: 'Dernier rendement',
+                      value: userTree.lastYieldKg != null
+                          ? '${userTree.lastYieldKg} kg'
+                          : 'Non renseigne',
+                      onTap: () => _editNumber(
+                        title: 'Dernier rendement (kg)',
+                        currentValue: userTree.lastYieldKg,
+                        onSave: (v) => _update(lastYieldKg: v),
+                      ),
+                    ),
                   ],
                 ),
 
                 // Notes
-                if (userTree.notes != null && userTree.notes!.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  _InfoCard(
+                const SizedBox(height: 12),
+                _NotesCard(
+                  notes: userTree.notes,
+                  onTap: () => _editMultilineText(
                     title: 'Notes',
-                    icon: PhosphorIcons.notepad(PhosphorIconsStyle.fill),
-                    children: [
-                      Text(
-                        userTree.notes!,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
+                    currentValue: userTree.notes,
+                    hint: 'Observations, traitements, remarques...',
+                    onSave: (v) => _update(notes: v),
                   ),
-                ],
+                ),
 
                 const SizedBox(height: 20),
 
@@ -210,25 +325,25 @@ class UserTreeDetailSheet extends ConsumerWidget {
                         icon: PhosphorIcons.scissors(PhosphorIconsStyle.bold),
                         label: 'Taille',
                         color: AppColors.primary,
-                        onTap: () => _recordPruning(context, ref),
+                        onTap: () => _recordPruning(),
                       ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: _ActionButton(
                         icon: PhosphorIcons.basket(PhosphorIconsStyle.bold),
-                        label: 'Récolte',
+                        label: 'Recolte',
                         color: AppColors.secondary,
-                        onTap: () => _recordHarvest(context, ref),
+                        onTap: () => _recordHarvest(),
                       ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: _ActionButton(
                         icon: PhosphorIcons.heartbeat(PhosphorIconsStyle.bold),
-                        label: 'Santé',
+                        label: 'Sante',
                         color: AppColors.warning,
-                        onTap: () => _showHealthDialog(context, ref),
+                        onTap: () => _showHealthDialog(),
                       ),
                     ),
                   ],
@@ -237,13 +352,13 @@ class UserTreeDetailSheet extends ConsumerWidget {
                 const SizedBox(height: 20),
 
                 // Conseil saisonnier
-                _SeasonalAdviceCard(),
+                const _SeasonalAdviceCard(),
 
                 const SizedBox(height: 20),
 
                 // Supprimer
                 OutlinedButton.icon(
-                  onPressed: () => _confirmDelete(context, ref),
+                  onPressed: () => _confirmDelete(),
                   icon: Icon(PhosphorIcons.trash(PhosphorIconsStyle.regular)),
                   label: const Text('Retirer du verger'),
                   style: OutlinedButton.styleFrom(
@@ -260,17 +375,179 @@ class UserTreeDetailSheet extends ConsumerWidget {
     );
   }
 
-  Color _getHealthColor(String status) {
-    switch (status) {
-      case 'good':
-        return AppColors.success;
-      case 'warning':
-        return AppColors.warning;
-      case 'poor':
-        return AppColors.error;
-      default:
-        return AppColors.success;
+  // ============================================
+  // DIALOGUES D'EDITION
+  // ============================================
+
+  /// Attend que le dialog soit completement ferme avant de continuer
+  Future<void> _waitForDialogDismiss() =>
+      WidgetsBinding.instance.endOfFrame;
+
+  Future<void> _editText({
+    required String title,
+    required String? currentValue,
+    required String hint,
+    required Future<void> Function(String) onSave,
+  }) async {
+    String? result;
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        final controller = TextEditingController(text: currentValue);
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: InputDecoration(
+              hintText: hint,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () {
+                result = controller.text;
+                Navigator.pop(ctx);
+              },
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+    if (result != null && result!.isNotEmpty) {
+      await _waitForDialogDismiss();
+      if (mounted) await onSave(result!);
     }
+  }
+
+  Future<void> _editMultilineText({
+    required String title,
+    required String? currentValue,
+    required String hint,
+    required Future<void> Function(String) onSave,
+  }) async {
+    String? result;
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        final controller = TextEditingController(text: currentValue);
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            maxLines: 5,
+            minLines: 3,
+            decoration: InputDecoration(
+              hintText: hint,
+              border: const OutlineInputBorder(),
+              alignLabelWithHint: true,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () {
+                result = controller.text;
+                Navigator.pop(ctx);
+              },
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+    if (result != null) {
+      await _waitForDialogDismiss();
+      if (mounted) await onSave(result!);
+    }
+  }
+
+  Future<void> _editDate({
+    required String title,
+    required DateTime? currentValue,
+    required Future<void> Function(DateTime) onSave,
+  }) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: currentValue ?? DateTime.now(),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+      helpText: title,
+    );
+    if (picked != null) {
+      await _waitForDialogDismiss();
+      if (mounted) await onSave(picked);
+    }
+  }
+
+  Future<void> _editNumber({
+    required String title,
+    required double? currentValue,
+    required Future<void> Function(double) onSave,
+  }) async {
+    double? result;
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        final controller = TextEditingController(
+          text: currentValue?.toString() ?? '',
+        );
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            keyboardType:
+                const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              suffixText: 'kg',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () {
+                result = double.tryParse(
+                    controller.text.replaceAll(',', '.'));
+                Navigator.pop(ctx);
+              },
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+    if (result != null) {
+      await _waitForDialogDismiss();
+      if (mounted) await onSave(result!);
+    }
+  }
+
+  // ============================================
+  // ACTIONS
+  // ============================================
+
+  Color _getHealthColor(String status) {
+    return switch (status) {
+      'good' => AppColors.success,
+      'warning' => AppColors.warning,
+      'poor' => AppColors.error,
+      _ => AppColors.success,
+    };
   }
 
   String _calculateAge(DateTime plantingDate) {
@@ -288,12 +565,13 @@ class UserTreeDetailSheet extends ConsumerWidget {
     }
   }
 
-  Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
+  Future<void> _confirmDelete() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Supprimer ?'),
-        content: Text('Voulez-vous retirer "${tree.name}" de votre verger ?'),
+        content:
+            Text('Voulez-vous retirer "${_tree.name}" de votre verger ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -308,15 +586,15 @@ class UserTreeDetailSheet extends ConsumerWidget {
       ),
     );
 
-    if (confirmed == true && context.mounted) {
+    if (confirmed == true && mounted) {
       await ref
           .read(userFruitTreesNotifierProvider.notifier)
-          .deleteTree(tree.id);
-      if (context.mounted) {
+          .deleteTree(_tree.id);
+      if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${tree.name} retiré du verger'),
+            content: Text('${_tree.name} retire du verger'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -324,7 +602,7 @@ class UserTreeDetailSheet extends ConsumerWidget {
     }
   }
 
-  Future<void> _recordPruning(BuildContext context, WidgetRef ref) async {
+  Future<void> _recordPruning() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -344,14 +622,11 @@ class UserTreeDetailSheet extends ConsumerWidget {
     );
 
     if (confirmed == true) {
-      await ref
-          .read(userFruitTreesNotifierProvider.notifier)
-          .updateTree(id: tree.id, lastPruningDate: DateTime.now());
-      if (context.mounted) {
-        Navigator.pop(context);
+      await _update(lastPruningDate: DateTime.now());
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Taille enregistrée ✂️'),
+            content: Text('Taille enregistree'),
             backgroundColor: AppColors.success,
           ),
         );
@@ -359,29 +634,30 @@ class UserTreeDetailSheet extends ConsumerWidget {
     }
   }
 
-  Future<void> _recordHarvest(BuildContext context, WidgetRef ref) async {
+  Future<void> _recordHarvest() async {
     double? fruitYield;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Enregistrer une récolte'),
+        title: const Text('Enregistrer une recolte'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Combien avez-vous récolté ?'),
+            const Text('Combien avez-vous recolte ?'),
             const SizedBox(height: 16),
             TextField(
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
               decoration: const InputDecoration(
-                labelText: 'Quantité (kg)',
+                labelText: 'Quantite (kg)',
                 border: OutlineInputBorder(),
                 suffixText: 'kg',
               ),
               onChanged: (value) {
-                fruitYield = double.tryParse(value.replaceAll(',', '.'));
+                fruitYield =
+                    double.tryParse(value.replaceAll(',', '.'));
               },
             ),
           ],
@@ -400,19 +676,15 @@ class UserTreeDetailSheet extends ConsumerWidget {
     );
 
     if (confirmed == true) {
-      await ref
-          .read(userFruitTreesNotifierProvider.notifier)
-          .updateTree(
-            id: tree.id,
-            lastHarvestDate: DateTime.now(),
-            lastYieldKg: fruitYield,
-          );
-      if (context.mounted) {
-        Navigator.pop(context);
+      await _update(
+        lastHarvestDate: DateTime.now(),
+        lastYieldKg: fruitYield,
+      );
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Récolte enregistrée 🧺${fruitYield != null ? ' ($fruitYield kg)' : ''}',
+              'Recolte enregistree${fruitYield != null ? ' ($fruitYield kg)' : ''}',
             ),
             backgroundColor: AppColors.success,
           ),
@@ -421,48 +693,45 @@ class UserTreeDetailSheet extends ConsumerWidget {
     }
   }
 
-  Future<void> _showHealthDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> _showHealthDialog() async {
     final status = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('État de santé'),
+        title: const Text('Etat de sante'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _HealthOption(
               emoji: '💚',
-              label: 'Bon état',
+              label: 'Bon etat',
               value: 'good',
-              currentValue: tree.userTree.healthStatus,
+              currentValue: _tree.userTree.healthStatus,
             ),
             const SizedBox(height: 8),
             _HealthOption(
               emoji: '💛',
-              label: 'À surveiller',
+              label: 'A surveiller',
               value: 'warning',
-              currentValue: tree.userTree.healthStatus,
+              currentValue: _tree.userTree.healthStatus,
             ),
             const SizedBox(height: 8),
             _HealthOption(
               emoji: '❤️',
-              label: 'Problème',
+              label: 'Probleme',
               value: 'poor',
-              currentValue: tree.userTree.healthStatus,
+              currentValue: _tree.userTree.healthStatus,
             ),
           ],
         ),
       ),
     );
 
-    if (status != null && status != tree.userTree.healthStatus) {
-      await ref
-          .read(userFruitTreesNotifierProvider.notifier)
-          .updateTree(id: tree.id, healthStatus: status);
-      if (context.mounted) {
-        Navigator.pop(context);
+    if (status != null && status != _tree.userTree.healthStatus) {
+      await _update(healthStatus: status);
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('État de santé mis à jour'),
+            content: Text('Etat de sante mis a jour'),
             backgroundColor: AppColors.success,
           ),
         );
@@ -470,6 +739,10 @@ class UserTreeDetailSheet extends ConsumerWidget {
     }
   }
 }
+
+// ============================================
+// WIDGETS
+// ============================================
 
 class _HealthStatusCard extends StatelessWidget {
   final String status;
@@ -479,10 +752,10 @@ class _HealthStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (emoji, label, color) = switch (status) {
-      'good' => ('💚', 'Bon état', AppColors.success),
-      'warning' => ('💛', 'À surveiller', AppColors.warning),
-      'poor' => ('❤️', 'Problème détecté', AppColors.error),
-      _ => ('💚', 'Bon état', AppColors.success),
+      'good' => ('💚', 'Bon etat', AppColors.success),
+      'warning' => ('💛', 'A surveiller', AppColors.warning),
+      'poor' => ('❤️', 'Probleme detecte', AppColors.error),
+      _ => ('💚', 'Bon etat', AppColors.success),
     };
 
     return Container(
@@ -501,7 +774,7 @@ class _HealthStatusCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'État de santé',
+                  'Etat de sante',
                   style: AppTypography.caption.copyWith(color: color),
                 ),
                 Text(
@@ -656,6 +929,115 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
+/// InfoRow avec un bouton d'edition
+class _EditableInfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final VoidCallback onTap;
+
+  const _EditableInfoRow({
+    required this.label,
+    required this.value,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            Flexible(
+              child: Text(
+                value,
+                style: AppTypography.bodySmall.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Icon(
+              PhosphorIcons.pencilSimple(PhosphorIconsStyle.regular),
+              size: 14,
+              color: AppColors.primary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Card de notes editable
+class _NotesCard extends StatelessWidget {
+  final String? notes;
+  final VoidCallback onTap;
+
+  const _NotesCard({required this.notes, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasNotes = notes != null && notes!.isNotEmpty;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(PhosphorIcons.notepad(PhosphorIconsStyle.fill),
+                    size: 16, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'Notes',
+                  style: AppTypography.labelMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Spacer(),
+                Icon(
+                  PhosphorIcons.pencilSimple(PhosphorIconsStyle.regular),
+                  size: 14,
+                  color: AppColors.primary,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              hasNotes ? notes! : 'Ajouter des notes...',
+              style: AppTypography.bodySmall.copyWith(
+                color: hasNotes
+                    ? AppColors.textSecondary
+                    : AppColors.primary,
+                fontStyle: hasNotes ? FontStyle.normal : FontStyle.italic,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -744,13 +1126,13 @@ class _SeasonalAdviceCard extends StatelessWidget {
 
   (String, String) _getSeasonalAdvice(int month) {
     return switch (month) {
-      1 || 2 => ('✂️', 'Période idéale pour la taille (hors gel).'),
-      3 => ('🌱', 'Préparez le sol. Dernière chance pour tailler.'),
-      4 || 5 => ('🌸', 'Floraison ! Surveillez les gelées tardives.'),
-      6 || 7 => ('🍃', 'Éclaircissez les fruits. Arrosez par temps sec.'),
-      8 || 9 => ('🧺', 'Période de récolte pour beaucoup de fruitiers.'),
-      10 => ('🍂', 'Ramassez feuilles et fruits tombés.'),
-      11 || 12 => ('🌳', 'Période de plantation idéale.'),
+      1 || 2 => ('✂️', 'Periode ideale pour la taille (hors gel).'),
+      3 => ('🌱', 'Preparez le sol. Derniere chance pour tailler.'),
+      4 || 5 => ('🌸', 'Floraison ! Surveillez les gelees tardives.'),
+      6 || 7 => ('🍃', 'Eclaircissez les fruits. Arrosez par temps sec.'),
+      8 || 9 => ('🧺', 'Periode de recolte pour beaucoup de fruitiers.'),
+      10 => ('🍂', 'Ramassez feuilles et fruits tombes.'),
+      11 || 12 => ('🌳', 'Periode de plantation ideale.'),
       _ => ('🌳', 'Observez votre arbre.'),
     };
   }

@@ -33,20 +33,20 @@ final effectiveLocationProvider = Provider<AsyncValue<LocationResult>>((ref) {
 
 /// Provider principal pour les données météo
 final weatherDataProvider = FutureProvider<WeatherData>((ref) async {
-  final locationAsync = ref.watch(effectiveLocationProvider);
+  // Attendre que la localisation soit disponible
+  // (le service gere deja le fallback GPS → IP → defaut)
+  final location = await ref.watch(currentLocationProvider.future);
 
-  return locationAsync.when(
-    data: (location) async {
-      final weatherService = ref.watch(weatherServiceProvider);
-      return weatherService.getWeather(
-        latitude: location.latitude,
-        longitude: location.longitude,
-        city: location.city,
-        country: location.country,
-      );
-    },
-    loading: () => throw Exception('Localisation en cours...'),
-    error: (e, _) => throw Exception('Erreur localisation: $e'),
+  // Utiliser la localisation selectionnee si elle existe
+  final selected = ref.watch(selectedLocationProvider);
+  final effective = selected ?? location;
+
+  final weatherService = ref.watch(weatherServiceProvider);
+  return weatherService.getWeather(
+    latitude: effective.latitude,
+    longitude: effective.longitude,
+    city: effective.city,
+    country: effective.country,
   );
 });
 

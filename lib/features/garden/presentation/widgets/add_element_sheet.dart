@@ -8,11 +8,15 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/database_providers.dart';
 import '../../../../core/providers/garden_providers.dart';
+import '../../../../core/utils/plant_emoji_mapper.dart';
 
 /// Sheet pour ajouter un élément (plante ou zone)
 class AddElementSheet extends ConsumerStatefulWidget {
   final Garden garden;
-  final Function(int plantId, double widthM, double heightM) onPlantAdded;
+  final Function(int plantId, double widthM, double heightM,
+      {DateTime? sowedAt,
+      DateTime? plantedAt,
+      int? wateringFrequencyDays}) onPlantAdded;
   final Function(ZoneType zoneType, double widthM, double heightM) onZoneAdded;
 
   const AddElementSheet({
@@ -266,7 +270,7 @@ class _AddElementSheetState extends ConsumerState<AddElementSheet> {
   Widget _buildConfiguration() {
     final isPlant = _step == 1;
     final emoji = isPlant
-        ? _getPlantEmoji(_selectedPlant!)
+        ? PlantEmojiMapper.fromName(_selectedPlant!.commonName, categoryCode: _selectedPlant!.categoryCode)
         : _selectedZone!.emoji;
     final name = isPlant ? _selectedPlant!.commonName : _selectedZone!.label;
     final color = isPlant ? AppColors.primary : Color(_selectedZone!.color);
@@ -439,35 +443,6 @@ class _AddElementSheetState extends ConsumerState<AddElementSheet> {
     );
   }
 
-  String _getPlantEmoji(Plant plant) {
-    final name = plant.commonName.toLowerCase();
-    const map = {
-      'tomate': '🍅',
-      'carotte': '🥕',
-      'salade': '🥬',
-      'laitue': '🥬',
-      'poivron': '🫑',
-      'aubergine': '🍆',
-      'courgette': '🥒',
-      'concombre': '🥒',
-      'haricot': '🫘',
-      'petit pois': '🫛',
-      'pois': '🫛',
-      'radis': '🔴',
-      'oignon': '🧅',
-      'ail': '🧄',
-      'pomme de terre': '🥔',
-      'chou': '🥬',
-      'brocoli': '🥦',
-      'fraise': '🍓',
-      'basilic': '🌿',
-      'persil': '🌿',
-    };
-    for (final entry in map.entries) {
-      if (name.contains(entry.key)) return entry.value;
-    }
-    return '🌱';
-  }
 }
 
 /// Aperçu adaptatif qui grossit avec la taille
@@ -555,27 +530,6 @@ class _PlantCard extends StatelessWidget {
 
   const _PlantCard({required this.plant, required this.onTap});
 
-  String get _emoji {
-    final name = plant.commonName.toLowerCase();
-    const map = {
-      'tomate': '🍅',
-      'carotte': '🥕',
-      'salade': '🥬',
-      'laitue': '🥬',
-      'poivron': '🫑',
-      'aubergine': '🍆',
-      'courgette': '🥒',
-      'oignon': '🧅',
-      'pomme de terre': '🥔',
-      'fraise': '🍓',
-      'basilic': '🌿',
-    };
-    for (final entry in map.entries) {
-      if (name.contains(entry.key)) return entry.value;
-    }
-    return '🌱';
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -591,7 +545,7 @@ class _PlantCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(_emoji, style: const TextStyle(fontSize: 32)),
+            Text(PlantEmojiMapper.fromName(plant.commonName, categoryCode: plant.categoryCode), style: const TextStyle(fontSize: 32)),
             const SizedBox(height: 4),
             Text(
               plant.commonName,

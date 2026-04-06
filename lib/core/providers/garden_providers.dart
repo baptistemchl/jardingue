@@ -1,45 +1,66 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
 import '../services/database/app_database.dart';
+import '../../features/garden/data/repositories/garden_event_repository.dart';
+import '../../features/garden/domain/models/garden_event.dart';
+import '../../features/garden/domain/models/garden_plant_with_details.dart';
+import '../../features/garden/data/repositories/garden_repository.dart';
 import 'database_providers.dart';
+
+// Re-export des modeles pour retrocompatibilite
+export '../../features/garden/domain/models/garden_plant_with_details.dart';
+export '../../features/garden/domain/models/zone_type.dart';
+export '../../features/garden/domain/models/garden_extension.dart';
+
+// ============================================
+// REPOSITORY PROVIDER
+// ============================================
+
+/// Provider pour le repository des potagers.
+final gardenRepositoryProvider = Provider<GardenRepository>((ref) {
+  final db = ref.watch(databaseProvider);
+  return DriftGardenRepository(db);
+});
 
 // ============================================
 // GARDEN PROVIDERS
 // ============================================
 
-/// Provider pour la liste des potagers
+/// Provider pour la liste des potagers.
 final gardensListProvider = FutureProvider<List<Garden>>((ref) async {
   await ref.watch(databaseInitProvider.future);
-  final db = ref.watch(databaseProvider);
-  return db.getAllGardens();
+  final repo = ref.watch(gardenRepositoryProvider);
+  return repo.getAllGardens();
 });
 
-/// Provider pour un potager par ID
-final gardenByIdProvider = FutureProvider.family<Garden?, int>((ref, id) async {
+/// Provider pour un potager par ID.
+final gardenByIdProvider =
+    FutureProvider.family<Garden?, int>((ref, id) async {
   await ref.watch(databaseInitProvider.future);
-  final db = ref.watch(databaseProvider);
-  return db.getGardenById(id);
+  final repo = ref.watch(gardenRepositoryProvider);
+  return repo.getGardenById(id);
 });
 
-/// Provider pour les plantes d'un potager avec détails
-final gardenPlantsProvider =
-    FutureProvider.family<List<GardenPlantWithDetails>, int>((
-      ref,
-      gardenId,
-    ) async {
-      await ref.watch(databaseInitProvider.future);
-      final db = ref.watch(databaseProvider);
-      final gardenPlants = await db.getGardenPlants(gardenId);
+/// Provider pour les plantes d'un potager avec details.
+final gardenPlantsProvider = FutureProvider.family<
+    List<GardenPlantWithDetails>, int>((ref, gardenId) async {
+  await ref.watch(databaseInitProvider.future);
+  final gardenRepo = ref.watch(gardenRepositoryProvider);
+  final plantRepo = ref.watch(plantRepositoryProvider);
+  final gardenPlants = await gardenRepo.getGardenPlants(gardenId);
 
-      final List<GardenPlantWithDetails> result = [];
-      for (final gp in gardenPlants) {
-        final plant = gp.plantId > 0 ? await db.getPlantById(gp.plantId) : null;
-        result.add(GardenPlantWithDetails(gardenPlant: gp, plant: plant));
-      }
-      return result;
-    });
+  final List<GardenPlantWithDetails> result = [];
+  for (final gp in gardenPlants) {
+    final plant =
+        gp.plantId > 0 ? await plantRepo.getPlantById(gp.plantId) : null;
+    result.add(
+      GardenPlantWithDetails(gardenPlant: gp, plant: plant),
+    );
+  }
+  return result;
+});
 
-/// Provider pour le mode édition
+/// Provider pour le mode edition.
 final gardenEditModeProvider = StateProvider<bool>((ref) => false);
 
 // ============================================
@@ -48,30 +69,31 @@ final gardenEditModeProvider = StateProvider<bool>((ref) => false);
 
 final gardenNotifierProvider =
     StateNotifierProvider<GardenNotifier, AsyncValue<void>>((ref) {
-      final db = ref.watch(databaseProvider);
-      return GardenNotifier(db, ref);
-    });
+  final repo = ref.watch(gardenRepositoryProvider);
+  return GardenNotifier(repo, ref);
+});
 
 class GardenNotifier extends StateNotifier<AsyncValue<void>> {
-  final AppDatabase _db;
+  final GardenRepository _repo;
   final Ref _ref;
 
-  GardenNotifier(this._db, this._ref) : super(const AsyncData(null));
+  GardenNotifier(this._repo, this._ref)
+      : super(const AsyncData(null));
 
-  /// Crée un nouveau potager (dimensions en mètres)
   Future<int> createGarden({
     required String name,
     required double widthMeters,
     required double heightMeters,
-    int cellSizeCm = 10, // Résolution de la grille interne
+    int cellSizeCm = 10,
   }) async {
     state = const AsyncLoading();
     try {
-      // Convertit mètres en cellules (1 cellule = cellSizeCm)
-      final widthCells = (widthMeters * 100 / cellSizeCm).ceil();
-      final heightCells = (heightMeters * 100 / cellSizeCm).ceil();
+      final widthCells =
+          (widthMeters * 100 / cellSizeCm).ceil();
+      final heightCells =
+          (heightMeters * 100 / cellSizeCm).ceil();
 
-      final id = await _db.createGarden(
+      final id = await _repo.createGarden(
         GardensCompanion.insert(
           name: name,
           widthCells: Value(widthCells),
@@ -88,7 +110,6 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  /// Met à jour un potager
   Future<void> updateGarden({
     required int id,
     required String name,
@@ -98,10 +119,12 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
   }) async {
     state = const AsyncLoading();
     try {
-      final widthCells = (widthMeters * 100 / cellSizeCm).ceil();
-      final heightCells = (heightMeters * 100 / cellSizeCm).ceil();
+      final widthCells =
+          (widthMeters * 100 / cellSizeCm).ceil();
+      final heightCells =
+          (heightMeters * 100 / cellSizeCm).ceil();
 
-      await _db.updateGarden(
+      await _repo.updateGarden(
         Garden(
           id: id,
           name: name,
@@ -120,11 +143,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  /// Supprime un potager
   Future<void> deleteGarden(int id) async {
     state = const AsyncLoading();
     try {
-      await _db.deleteGarden(id);
+      await _repo.deleteGarden(id);
       _ref.invalidate(gardensListProvider);
       state = const AsyncData(null);
     } catch (e, st) {
@@ -132,7 +154,6 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  /// Ajoute une plante au potager (position et taille en mètres)
   Future<int> addPlantToGarden({
     required int gardenId,
     required int plantId,
@@ -141,30 +162,58 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     required double widthMeters,
     required double heightMeters,
     String? notes,
+    DateTime? sowedAt,
+    DateTime? plantedAt,
+    int? wateringFrequencyDays,
   }) async {
     state = const AsyncLoading();
     try {
-      final garden = await _db.getGardenById(gardenId);
-      if (garden == null) throw Exception('Potager non trouvé');
+      final garden = await _repo.getGardenById(gardenId);
+      if (garden == null) {
+        throw Exception('Potager non trouve');
+      }
 
       final cellSize = garden.cellSizeCm;
       final gridX = (xMeters * 100 / cellSize).round();
       final gridY = (yMeters * 100 / cellSize).round();
-      final widthCells = (widthMeters * 100 / cellSize).ceil();
-      final heightCells = (heightMeters * 100 / cellSize).ceil();
+      final wCells =
+          (widthMeters * 100 / cellSize).ceil();
+      final hCells =
+          (heightMeters * 100 / cellSize).ceil();
 
-      final id = await _db.addPlantToGarden(
+      final effectivePlantedAt = plantedAt ?? DateTime.now();
+
+      final id = await _repo.addPlantToGarden(
         GardenPlantsCompanion.insert(
           gardenId: gardenId,
           plantId: plantId,
           gridX: gridX,
           gridY: gridY,
-          widthCells: Value(widthCells.clamp(1, 100)),
-          heightCells: Value(heightCells.clamp(1, 100)),
-          plantedAt: Value(DateTime.now()),
+          widthCells: Value(wCells.clamp(1, 100)),
+          heightCells: Value(hCells.clamp(1, 100)),
+          plantedAt: Value(effectivePlantedAt),
+          sowedAt: Value(sowedAt),
+          wateringFrequencyDays: Value(wateringFrequencyDays),
           notes: Value(notes),
         ),
       );
+
+      // Créer les événements correspondants
+      final eventRepo = DriftGardenEventRepository(
+          _ref.read(databaseProvider));
+      if (sowedAt != null) {
+        await eventRepo.addEvent(GardenEventsCompanion.insert(
+          gardenPlantId: Value(id),
+          eventType: GardenEventType.sowing.name,
+          eventDate: sowedAt,
+        ));
+      }
+      await eventRepo.addEvent(GardenEventsCompanion.insert(
+        gardenPlantId: Value(id),
+        eventType: GardenEventType.planting.name,
+        eventDate: effectivePlantedAt,
+      ));
+
       _ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
       return id;
@@ -174,7 +223,71 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  /// Ajoute une zone au potager (serre, compost, allée, etc.)
+  /// Ajoute une plante au potager en attente de placement (gridX=-1, gridY=-1).
+  /// L'utilisateur la placera plus tard dans l'editeur.
+  Future<int> addPlantPendingPlacement({
+    required int gardenId,
+    required int plantId,
+    double? widthMeters,
+    double? heightMeters,
+    DateTime? sowedAt,
+    DateTime? plantedAt,
+    int? wateringFrequencyDays,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final garden = await _repo.getGardenById(gardenId);
+      if (garden == null) throw Exception('Potager non trouve');
+
+      final cellSize = garden.cellSizeCm;
+      final wCells = widthMeters != null
+          ? (widthMeters * 100 / cellSize).ceil().clamp(1, 100)
+          : 1;
+      final hCells = heightMeters != null
+          ? (heightMeters * 100 / cellSize).ceil().clamp(1, 100)
+          : 1;
+
+      final effectivePlantedAt = plantedAt ?? DateTime.now();
+
+      final id = await _repo.addPlantToGarden(
+        GardenPlantsCompanion.insert(
+          gardenId: gardenId,
+          plantId: plantId,
+          gridX: -1, // En attente de placement
+          gridY: -1,
+          widthCells: Value(wCells),
+          heightCells: Value(hCells),
+          plantedAt: Value(effectivePlantedAt),
+          sowedAt: Value(sowedAt),
+          wateringFrequencyDays: Value(wateringFrequencyDays),
+        ),
+      );
+
+      // Créer les événements
+      final eventRepo = DriftGardenEventRepository(
+          _ref.read(databaseProvider));
+      if (sowedAt != null) {
+        await eventRepo.addEvent(GardenEventsCompanion.insert(
+          gardenPlantId: Value(id),
+          eventType: GardenEventType.sowing.name,
+          eventDate: sowedAt,
+        ));
+      }
+      await eventRepo.addEvent(GardenEventsCompanion.insert(
+        gardenPlantId: Value(id),
+        eventType: GardenEventType.planting.name,
+        eventDate: effectivePlantedAt,
+      ));
+
+      _ref.invalidate(gardenPlantsProvider(gardenId));
+      state = const AsyncData(null);
+      return id;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    }
+  }
+
   Future<int> addZoneToGarden({
     required int gardenId,
     required double xMeters,
@@ -186,25 +299,31 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
   }) async {
     state = const AsyncLoading();
     try {
-      final garden = await _db.getGardenById(gardenId);
-      if (garden == null) throw Exception('Potager non trouvé');
+      final garden = await _repo.getGardenById(gardenId);
+      if (garden == null) {
+        throw Exception('Potager non trouve');
+      }
 
       final cellSize = garden.cellSizeCm;
       final gridX = (xMeters * 100 / cellSize).round();
       final gridY = (yMeters * 100 / cellSize).round();
-      final widthCells = (widthMeters * 100 / cellSize).ceil();
-      final heightCells = (heightMeters * 100 / cellSize).ceil();
+      final wCells =
+          (widthMeters * 100 / cellSize).ceil();
+      final hCells =
+          (heightMeters * 100 / cellSize).ceil();
 
-      final id = await _db.addPlantToGarden(
+      final notesStr =
+          zoneType + (notes != null ? '|$notes' : '');
+
+      final id = await _repo.addPlantToGarden(
         GardenPlantsCompanion.insert(
           gardenId: gardenId,
           plantId: 0,
-          // 0 = zone spéciale
           gridX: gridX,
           gridY: gridY,
-          widthCells: Value(widthCells.clamp(1, 100)),
-          heightCells: Value(heightCells.clamp(1, 100)),
-          notes: Value(zoneType + (notes != null ? '|$notes' : '')),
+          widthCells: Value(wCells.clamp(1, 100)),
+          heightCells: Value(hCells.clamp(1, 100)),
+          notes: Value(notesStr),
         ),
       );
       _ref.invalidate(gardenPlantsProvider(gardenId));
@@ -216,7 +335,6 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  /// Déplace un élément (en mètres)
   Future<void> moveElement(
     int gardenPlantId,
     double xMeters,
@@ -225,14 +343,20 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
   ) async {
     state = const AsyncLoading();
     try {
-      final garden = await _db.getGardenById(gardenId);
-      if (garden == null) throw Exception('Potager non trouvé');
+      final garden = await _repo.getGardenById(gardenId);
+      if (garden == null) {
+        throw Exception('Potager non trouve');
+      }
 
       final cellSize = garden.cellSizeCm;
       final gridX = (xMeters * 100 / cellSize).round();
       final gridY = (yMeters * 100 / cellSize).round();
 
-      await _db.updateGardenPlantPosition(gardenPlantId, gridX, gridY);
+      await _repo.updateGardenPlantPosition(
+        gardenPlantId,
+        gridX,
+        gridY,
+      );
       _ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
     } catch (e, st) {
@@ -240,11 +364,13 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  /// Supprime un élément
-  Future<void> removeElement(int gardenPlantId, int gardenId) async {
+  Future<void> removeElement(
+    int gardenPlantId,
+    int gardenId,
+  ) async {
     state = const AsyncLoading();
     try {
-      await _db.removePlantFromGarden(gardenPlantId);
+      await _repo.removePlantFromGarden(gardenPlantId);
       _ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
     } catch (e, st) {
@@ -252,7 +378,6 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  /// Met à jour la taille d'un élément (en mètres)
   Future<void> updateElementSize(
     int gardenPlantId,
     double widthMeters,
@@ -261,168 +386,26 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
   ) async {
     state = const AsyncLoading();
     try {
-      final garden = await _db.getGardenById(gardenId);
-      if (garden == null) throw Exception('Potager non trouvé');
+      final garden = await _repo.getGardenById(gardenId);
+      if (garden == null) {
+        throw Exception('Potager non trouve');
+      }
 
       final cellSize = garden.cellSizeCm;
-      final widthCells = (widthMeters * 100 / cellSize).ceil();
-      final heightCells = (heightMeters * 100 / cellSize).ceil();
+      final wCells =
+          (widthMeters * 100 / cellSize).ceil();
+      final hCells =
+          (heightMeters * 100 / cellSize).ceil();
 
-      await _db.updateGardenPlantSize(gardenPlantId, widthCells, heightCells);
+      await _repo.updateGardenPlantSize(
+        gardenPlantId,
+        wCells,
+        hCells,
+      );
       _ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
     } catch (e, st) {
       state = AsyncError(e, st);
     }
   }
-}
-
-// ============================================
-// MODELS
-// ============================================
-
-/// Types de zones spéciales
-enum ZoneType {
-  greenhouse('Serre', '🏠', 0xFFFF9800),
-  path('Allée', '🚶', 0xFF607D8B),
-  water('Point d\'eau', '💧', 0xFF03A9F4),
-  compost('Compost', '♻️', 0xFF795548),
-  storage('Rangement', '📦', 0xFF9E9E9E);
-
-  final String label;
-  final String emoji;
-  final int color;
-
-  const ZoneType(this.label, this.emoji, this.color);
-
-  static ZoneType? fromName(String? name) {
-    if (name == null) return null;
-    try {
-      return ZoneType.values.firstWhere((t) => t.name == name);
-    } catch (_) {
-      return null;
-    }
-  }
-}
-
-/// Modèle combiné
-class GardenPlantWithDetails {
-  final GardenPlant gardenPlant;
-  final Plant? plant;
-
-  GardenPlantWithDetails({required this.gardenPlant, this.plant});
-
-  int get id => gardenPlant.id;
-
-  int get gridX => gardenPlant.gridX;
-
-  int get gridY => gardenPlant.gridY;
-
-  int get widthCells => gardenPlant.widthCells;
-
-  int get heightCells => gardenPlant.heightCells;
-
-  String? get notes => gardenPlant.notes;
-
-  DateTime? get plantedAt => gardenPlant.plantedAt;
-
-  bool get isZone => gardenPlant.plantId == 0;
-
-  ZoneType? get zoneType {
-    if (!isZone || notes == null) return null;
-    final typeName = notes!.split('|').first;
-    return ZoneType.fromName(typeName);
-  }
-
-  String get emoji {
-    if (isZone) return zoneType?.emoji ?? '⬛';
-    if (plant == null) return '🌱';
-
-    final name = plant!.commonName.toLowerCase();
-    const map = {
-      'tomate': '🍅',
-      'carotte': '🥕',
-      'salade': '🥬',
-      'laitue': '🥬',
-      'poivron': '🫑',
-      'aubergine': '🍆',
-      'courgette': '🥒',
-      'concombre': '🥒',
-      'haricot': '🫘',
-      'petit pois': '🫛',
-      'pois': '🫛',
-      'radis': '🔴',
-      'betterave': '🔴',
-      'oignon': '🧅',
-      'ail': '🧄',
-      'pomme de terre': '🥔',
-      'chou': '🥬',
-      'brocoli': '🥦',
-      'épinard': '🥬',
-      'fraise': '🍓',
-      'basilic': '🌿',
-      'persil': '🌿',
-      'menthe': '🌿',
-      'maïs': '🌽',
-      'citrouille': '\u{1F383}',
-      'courge': '\u{1F383}',
-      'potiron': '\u{1F383}',
-      'potimarron': '\u{1F383}',
-      'butternut': '\u{1F383}',
-      'patisson': '\u{1F383}',
-    };
-    for (final entry in map.entries) {
-      if (name.contains(entry.key)) return entry.value;
-    }
-    return '🌱';
-  }
-
-  String get name {
-    if (isZone) return zoneType?.label ?? 'Zone';
-    return plant?.commonName ?? 'Plante';
-  }
-
-  int get color {
-    if (isZone) return zoneType?.color ?? 0xFF9E9E9E;
-
-    final categoryCode = plant?.categoryCode ?? '';
-    switch (categoryCode) {
-      case 'leafy_green':
-        return 0xFF4CAF50;
-      case 'root':
-        return 0xFFFF9800;
-      case 'fruit_vegetable':
-        return 0xFFF44336;
-      case 'legume':
-        return 0xFF8BC34A;
-      case 'herb':
-        return 0xFF009688;
-      case 'allium':
-        return 0xFF9C27B0;
-      case 'tuber':
-        return 0xFF795548;
-      case 'fruit':
-        return 0xFFE91E63;
-      default:
-        return 0xFF4CAF50;
-    }
-  }
-
-  /// Convertit en mètres
-  double xMeters(int cellSizeCm) => gridX * cellSizeCm / 100;
-
-  double yMeters(int cellSizeCm) => gridY * cellSizeCm / 100;
-
-  double widthMeters(int cellSizeCm) => widthCells * cellSizeCm / 100;
-
-  double heightMeters(int cellSizeCm) => heightCells * cellSizeCm / 100;
-}
-
-/// Extension pour Garden
-extension GardenExtension on Garden {
-  double get widthMeters => widthCells * cellSizeCm / 100;
-
-  double get heightMeters => heightCells * cellSizeCm / 100;
-
-  double get surfaceM2 => widthMeters * heightMeters;
 }
