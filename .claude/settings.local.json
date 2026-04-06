@@ -15,7 +15,10 @@
       "Bash(bash /tmp/validate_unused.sh)",
       "Bash(dart run:*)",
       "Bash(dart analyze:*)",
-      "Bash(flutter pub:*)"
+      "Bash(flutter pub:*)",
+      "Bash(ls C:/Users/bapti/StudioProjects/jardingue/*.sh)",
+      "Bash(chmod +x:*)",
+      "Bash(bash build.sh)"
     ]
   }
 }

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_info.dart';
 import '../theme/app_typography.dart';
 
 /// Bottom sheet "A propos" avec infos de version, copyright
@@ -89,7 +90,7 @@ class AboutSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'Version 1.0.0',
+                    'Version ${AppInfo.version}',
                     style: AppTypography.caption.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w500,

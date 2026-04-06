@@ -1,0 +1,10 @@
+#!/bin/bash
+# Hook pre-commit : regénère app_info.dart si pubspec.yaml a changé.
+
+if git diff --cached --name-only | grep -q 'pubspec.yaml'; then
+  echo "📦 pubspec.yaml modifié — mise à jour de app_info.dart..."
+  dart run tool/update_version.dart
+
+  # Ajoute le fichier regénéré au commit
+  git add lib/core/constants/app_info.dart
+fi
