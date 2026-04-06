@@ -1,7 +1,7 @@
 name: jardingue
 description: "Application de gestion de potager intelligente"
 publish_to: "none"
-version: 1.1.0+4
+version: 1.1.1+5
 
 environment:
   sdk: ^3.9.2
@@ -40,6 +40,12 @@ dependencies:
   # Serialization
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
+
+  # Mise à jour in-app
+  in_app_update: ^4.2.3
+
+  # Préférences locales
+  shared_preferences: ^2.3.4
 
   # Utilitaires
   intl: ^0.20.2

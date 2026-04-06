@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'core/services/notifications/notification_service.dart';
+import 'core/services/update/in_app_update_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/database_providers.dart';
 import 'core/providers/garden_event_providers.dart';
+import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'router/app_router.dart';
 
 void main() async {
@@ -17,6 +20,9 @@ void main() async {
 
   // Initialiser les notifications
   await NotificationService().init();
+
+  // Vérifier si l'onboarding doit être affiché
+  final showOnboarding = await shouldShowOnboarding();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -31,20 +37,30 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const ProviderScope(child: JardingueApp()));
+  runApp(ProviderScope(child: JardingueApp(showOnboarding: showOnboarding)));
 }
 
 class JardingueApp extends ConsumerStatefulWidget {
-  const JardingueApp({super.key});
+  final bool showOnboarding;
+
+  const JardingueApp({super.key, required this.showOnboarding});
 
   @override
   ConsumerState<JardingueApp> createState() => _JardingueAppState();
 }
 
 class _JardingueAppState extends ConsumerState<JardingueApp> {
+  late final GoRouter _router;
+
   @override
   void initState() {
     super.initState();
+
+    _router = buildRouter(showOnboarding: widget.showOnboarding);
+
+    // Vérifie les mises à jour Play Store
+    InAppUpdateService.checkForUpdate();
+
     // Lance l'import en arrière-plan sans bloquer l'UI
     Future.microtask(() {
       ref
@@ -68,7 +84,7 @@ class _JardingueAppState extends ConsumerState<JardingueApp> {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.light,
-      routerConfig: appRouter,
+      routerConfig: _router,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
