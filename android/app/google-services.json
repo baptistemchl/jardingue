@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "498698666696",
+    "project_id": "jardingue-1235f",
+    "storage_bucket": "jardingue-1235f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498698666696:android:5a084d38cceb2b75835bfd",
+        "android_client_info": {
+          "package_name": "com.agenceixp.jardingue"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498698666696-9cf3iidgs1ejbg070oo39p81h2lovra3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.agenceixp.jardingue",
+            "certificate_hash": "f6c0e2ed7e84829100b97116488ab75d83d92f34"
+          }
+        },
+        {
+          "client_id": "498698666696-sgh54kd0kfj5etktmaaagbcsnar74ere.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.agenceixp.jardingue",
+            "certificate_hash": "d14715f7e46a825a9654aadd253767e10db05cd5"
+          }
+        },
+        {
+          "client_id": "498698666696-3r3ep67qgthcm30b9q0q1ld23ts13n9h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMqCmbU_ta8UWg5sGL_DsBvLPfmu4ujvA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498698666696-3r3ep67qgthcm30b9q0q1ld23ts13n9h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

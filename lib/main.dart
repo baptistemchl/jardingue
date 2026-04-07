@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
@@ -44,6 +45,9 @@ class _RateAppTriggerState extends State<_RateAppTrigger> {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialiser Firebase
+  await Firebase.initializeApp();
 
   // Initialiser les locales pour DateFormat
   await initializeDateFormatting('fr_FR', null);

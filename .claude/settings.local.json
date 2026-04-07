@@ -27,7 +27,19 @@
       "Bash(flutter --version)",
       "Bash(sed:*)",
       "Bash(dart doc:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android)",
+      "Bash(keytool -list -v -keystore C:/Users/bapti/.android/debug.keystore -alias androiddebugkey -storepass android)",
+      "Bash(keytool:*)",
+      "WebFetch(domain:firebase.google.com)",
+      "WebFetch(domain:support.google.com)",
+      "Bash(npm list:*)",
+      "Bash(export PATH=\"$PATH:C:/Users/bapti/AppData/Roaming/npm\")",
+      "Bash(firebase --version)",
+      "Read(//c/Users/bapti/AppData/Roaming/npm/**)",
+      "Read(//c/Users/bapti/AppData/Roaming/npm/node_modules/firebase-tools/lib/bin/**)",
+      "Bash(C:/Users/bapti/AppData/Roaming/npm/firebase.cmd:*)",
+      "Bash(flutter build:*)"
     ]
   }
 }

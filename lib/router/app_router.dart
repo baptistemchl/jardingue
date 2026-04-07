@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../features/garden/presentation/screens/garden_screen.dart';
 import '../features/garden/presentation/screens/garden_editor_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../features/premium/presentation/screens/premium_screen.dart';
 import '../features/plants/presentation/screens/plants_screen.dart';
 import '../features/calendar/presentation/screens/calendar_screen.dart';
 import '../features/weather/presentation/screens/weather_screen.dart';
@@ -25,6 +26,7 @@ abstract final class AppRoutes {
   static const String calendar = '/calendar';
   static const String weather = '/weather';
   static const String settings = '/settings';
+  static const String premium = '/premium';
 }
 
 /// Construit le router avec la route initiale selon l'état de l'onboarding.
@@ -56,10 +58,23 @@ GoRouter buildRouter({required bool showOnboarding}) {
       ),
 
       // =========================================
-      // ROUTE HORS SHELL (SANS NAVBAR)
+      // ROUTES HORS SHELL (SANS NAVBAR)
       // =========================================
 
-      // Éditeur de jardin - SANS navbar pour éviter les changements de page accidentels
+      // Écran Premium / Cloud Backup
+      GoRoute(
+        path: AppRoutes.premium,
+        name: 'premium',
+        parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) {
+          return MaterialPage(
+            key: state.pageKey,
+            child: const PremiumScreen(),
+          );
+        },
+      ),
+
+      // Éditeur de jardin
       GoRoute(
         path: '${AppRoutes.garden}/editor/:gardenId',
         name: 'gardenEditor',

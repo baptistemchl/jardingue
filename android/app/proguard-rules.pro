@@ -9,8 +9,17 @@
 ## Geolocator
 -keep class com.baseflow.geolocator.** { *; }
 
-## Play Core (in-app update)
+## Play Core (in-app update + deferred components)
 -keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**
+
+## Google Sign-In
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
+
+## Firebase
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
 
 ## Keep annotations
 -keepattributes *Annotation*

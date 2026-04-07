@@ -11,6 +11,8 @@ class WeatherService {
   /// Cache en mémoire pour éviter le rate-limiting
   static WeatherData? _cache;
   static DateTime? _cacheTime;
+  static double? _cacheLat;
+  static double? _cacheLon;
   static const _cacheDuration = Duration(minutes: 15);
 
   WeatherService({Dio? dio})
@@ -27,8 +29,9 @@ class WeatherService {
     String? city,
     String? country,
   }) async {
-    // Retourne le cache s'il est encore frais
-    if (_cache != null && _cacheTime != null) {
+    // Retourne le cache s'il est encore frais ET même position
+    final sameLocation = _cacheLat == latitude && _cacheLon == longitude;
+    if (_cache != null && _cacheTime != null && sameLocation) {
       final age = DateTime.now().difference(_cacheTime!);
       if (age < _cacheDuration) {
         debugPrint('⛈️ Météo servie depuis le cache (${age.inMinutes}min)');
@@ -189,6 +192,8 @@ class WeatherService {
       // Mettre en cache
       _cache = result;
       _cacheTime = now;
+      _cacheLat = latitude;
+      _cacheLon = longitude;
 
       return result;
     } on DioException catch (e) {
