@@ -14,6 +14,7 @@ import '../widgets/month_list_view.dart';
 import '../widgets/user_events_view.dart';
 import '../widgets/add_event_sheet.dart';
 import '../widgets/calendar_empty_states.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 // ============================================
 // PROVIDER POUR LA VUE SÉLECTIONNÉE
@@ -130,7 +131,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         ),
                         loading: () =>
                             const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Erreur: $e')),
+                        error: (e, _) => Center(child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString()))),
                       ),
                       activitiesAsync.when(
                         data: (activities) => MonthListView(
@@ -139,7 +140,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         ),
                         loading: () =>
                             const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Erreur: $e')),
+                        error: (e, _) => Center(child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString()))),
                       ),
                       // 3ème page : Mes activités
                       UserEventsView(selectedMonth: selectedMonth),
@@ -182,7 +183,7 @@ class _ViewTabBar extends StatelessWidget {
             Expanded(
               child: _TabButton(
                 icon: PhosphorIcons.calendarDots(PhosphorIconsStyle.fill),
-                label: 'Calendrier',
+                label: AppLocalizations.of(context)!.calendarTab,
                 isSelected: currentView == CalendarViewType.calendar,
                 onTap: () => onTabChanged(CalendarViewType.calendar),
               ),
@@ -190,7 +191,7 @@ class _ViewTabBar extends StatelessWidget {
             Expanded(
               child: _TabButton(
                 icon: PhosphorIcons.listBullets(PhosphorIconsStyle.fill),
-                label: 'Liste',
+                label: AppLocalizations.of(context)!.listTab,
                 isSelected: currentView == CalendarViewType.list,
                 onTap: () => onTabChanged(CalendarViewType.list),
               ),
@@ -198,7 +199,7 @@ class _ViewTabBar extends StatelessWidget {
             Expanded(
               child: _TabButton(
                 icon: PhosphorIcons.userCircle(PhosphorIconsStyle.fill),
-                label: 'Mon suivi',
+                label: AppLocalizations.of(context)!.myTracking,
                 isSelected: currentView == CalendarViewType.myActivities,
                 onTap: () => onTabChanged(CalendarViewType.myActivities),
               ),

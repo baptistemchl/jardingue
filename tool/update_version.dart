@@ -22,5 +22,5 @@ void main() {
     "}\n",
   );
 
-  print('✅ app_info.dart → $version');
+  stdout.writeln('✅ app_info.dart → $version');
 }

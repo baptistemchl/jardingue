@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jardingue/features/garden/presentation/widgets/smart_weather_card.dart';
@@ -70,7 +71,7 @@ class GardenScreen extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Jardingue',
+                                    AppLocalizations.of(context)!.appName,
                                     style: AppTypography.titleLarge.copyWith(
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.primary,
@@ -78,7 +79,7 @@ class GardenScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   Text(
-                                    'Mon potager connecte',
+                                    AppLocalizations.of(context)!.appSubtitle,
                                     style: AppTypography.caption.copyWith(
                                       color: AppColors.textSecondary,
                                     ),
@@ -206,12 +207,12 @@ class GardenScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Supprimer le potager ?'),
-        content: Text('Voulez-vous supprimer "${garden.name}" ?'),
+        title: Text(AppLocalizations.of(context)!.deleteGardenTitle),
+        content: Text(AppLocalizations.of(context)!.deleteGardenConfirmation(garden.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () async {
@@ -222,7 +223,7 @@ class GardenScreen extends ConsumerWidget {
               ref.invalidate(gardensListProvider);
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Supprimer'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),
@@ -284,14 +285,14 @@ class _GardenListContainer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Mes potagers',
+                        AppLocalizations.of(context)!.myGardens,
                         style: AppTypography.titleSmall.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        _getSubtitle(),
+                        _getSubtitle(context),
                         style: AppTypography.caption.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -326,7 +327,7 @@ class _GardenListContainer extends StatelessWidget {
             ),
             error: (e, _) => Padding(
               padding: const EdgeInsets.all(32),
-              child: Center(child: Text('Erreur: $e')),
+              child: Center(child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString()))),
             ),
           ),
         ],
@@ -334,14 +335,14 @@ class _GardenListContainer extends StatelessWidget {
     );
   }
 
-  String _getSubtitle() {
+  String _getSubtitle(BuildContext context) {
     return gardensAsync.maybeWhen(
       data: (gardens) {
-        if (gardens.isEmpty) return 'Aucun potager créé';
-        if (gardens.length == 1) return '1 potager';
-        return '${gardens.length} potagers';
+        if (gardens.isEmpty) return AppLocalizations.of(context)!.noGardensCreated;
+        if (gardens.length == 1) return AppLocalizations.of(context)!.gardenCountOne;
+        return AppLocalizations.of(context)!.gardenCount(gardens.length);
       },
-      orElse: () => 'Chargement...',
+      orElse: () => AppLocalizations.of(context)!.loading,
     );
   }
 }
@@ -366,14 +367,14 @@ class _EmptyContent extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucun potager',
+              AppLocalizations.of(context)!.noGarden,
               style: AppTypography.titleSmall.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: 4),
             Text(
-              'Créez votre premier potager pour commencer',
+              AppLocalizations.of(context)!.createFirstGardenHint,
               style: AppTypography.caption.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -520,7 +521,7 @@ class _GardensList extends StatelessWidget {
                                   color: AppColors.textSecondary,
                                 ),
                                 const SizedBox(width: 10),
-                                const Text('Modifier'),
+                                Text(AppLocalizations.of(context)!.edit),
                               ],
                             ),
                           ),
@@ -537,7 +538,7 @@ class _GardensList extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
-                                  'Supprimer',
+                                  AppLocalizations.of(context)!.delete,
                                   style: TextStyle(color: AppColors.error),
                                 ),
                               ],
@@ -580,7 +581,7 @@ class _GardensList extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Créer un potager',
+                  AppLocalizations.of(context)!.createGardenAction,
                   style: AppTypography.labelMedium.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w600,
@@ -650,7 +651,7 @@ class _CreateButton extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              'Créer mon premier potager',
+              AppLocalizations.of(context)!.createFirstGarden,
               style: AppTypography.labelMedium.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,

@@ -3,6 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 /// Clé SharedPreferences pour savoir si l'onboarding a été vu.
 const _kOnboardingCompleteKey = 'onboarding_complete';
@@ -34,55 +35,54 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   final _controller = PageController();
   int _currentPage = 0;
 
-  static final _pages = <_OnboardingPageData>[
-    _OnboardingPageData(
-      icon: PhosphorIcons.plant(PhosphorIconsStyle.fill),
-      color: AppColors.primary,
-      containerColor: AppColors.primaryContainer,
-      title: 'Votre potager',
-      subtitle: 'Concevez votre jardin',
-      description:
-          'Creez et organisez vos parcelles sur mesure. '
-          'Placez vos plantes, visualisez votre potager et '
-          'gerez plusieurs jardins facilement.',
-    ),
-    _OnboardingPageData(
-      icon: PhosphorIcons.leaf(PhosphorIconsStyle.fill),
-      color: AppColors.success,
-      containerColor: const Color(0xFFE8F5E9),
-      title: 'Catalogue de plantes',
-      subtitle: 'Explorez les varietes',
-      description:
-          'Parcourez des dizaines de plantes avec leurs besoins '
-          'en soleil, arrosage et associations. '
-          'Trouvez les meilleurs compagnons pour votre potager.',
-    ),
-    _OnboardingPageData(
-      icon: PhosphorIcons.calendar(PhosphorIconsStyle.fill),
-      color: AppColors.info,
-      containerColor: const Color(0xFFE3F2FD),
-      title: 'Calendrier',
-      subtitle: 'Planifiez vos saisons',
-      description:
-          'Suivez les periodes de semis, plantation et recolte. '
-          'Ne ratez plus jamais le bon moment grace '
-          'aux rappels et au calendrier interactif.',
-    ),
-    _OnboardingPageData(
-      icon: PhosphorIcons.sun(PhosphorIconsStyle.fill),
-      color: AppColors.secondary,
-      containerColor: const Color(0xFFFFF8E1),
-      title: 'Meteo intelligente',
-      subtitle: 'Jardinez au bon moment',
-      description:
-          'Consultez la meteo locale, les phases de lune '
-          'et recevez des conseils adaptes pour savoir '
-          'quand arroser et quand planter.',
-    ),
-  ];
+  static List<_OnboardingPageData> _pages(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      _OnboardingPageData(
+        icon: PhosphorIcons.plant(PhosphorIconsStyle.fill),
+        color: AppColors.primary,
+        containerColor: AppColors.primaryContainer,
+        title: l10n.onboardingGardenTitle,
+        subtitle: l10n.onboardingGardenSubtitle,
+        description: l10n.onboardingGardenDesc,
+      ),
+      _OnboardingPageData(
+        icon: PhosphorIcons.leaf(PhosphorIconsStyle.fill),
+        color: AppColors.success,
+        containerColor: const Color(0xFFE8F5E9),
+        title: l10n.onboardingPlantsTitle,
+        subtitle: l10n.onboardingPlantsSubtitle,
+        description: l10n.onboardingPlantsDesc,
+      ),
+      _OnboardingPageData(
+        icon: PhosphorIcons.calendar(PhosphorIconsStyle.fill),
+        color: AppColors.info,
+        containerColor: const Color(0xFFE3F2FD),
+        title: l10n.onboardingCalendarTitle,
+        subtitle: l10n.onboardingCalendarSubtitle,
+        description: l10n.onboardingCalendarDesc,
+      ),
+      _OnboardingPageData(
+        icon: PhosphorIcons.sun(PhosphorIconsStyle.fill),
+        color: AppColors.secondary,
+        containerColor: const Color(0xFFFFF8E1),
+        title: l10n.onboardingWeatherTitle,
+        subtitle: l10n.onboardingWeatherSubtitle,
+        description: l10n.onboardingWeatherDesc,
+      ),
+      _OnboardingPageData(
+        icon: PhosphorIcons.deviceMobile(PhosphorIconsStyle.fill),
+        color: AppColors.tertiary,
+        containerColor: const Color(0xFFFBE9E7),
+        title: l10n.onboardingDataTitle,
+        subtitle: l10n.onboardingDataSubtitle,
+        description: l10n.onboardingDataDesc,
+      ),
+    ];
+  }
 
-  void _next() {
-    if (_currentPage < _pages.length - 1) {
+  void _next(int pageCount) {
+    if (_currentPage < pageCount - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeOutCubic,
@@ -105,6 +105,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final pages = _pages(context);
+    final l10n = AppLocalizations.of(context)!;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -127,7 +129,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     ),
                   ),
                   child: Text(
-                    'Passer',
+                    l10n.skip,
                     style: AppTypography.labelMedium.copyWith(
                       color: AppColors.textTertiary,
                     ),
@@ -140,9 +142,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             Expanded(
               child: PageView.builder(
                 controller: _controller,
-                itemCount: _pages.length,
+                itemCount: pages.length,
                 onPageChanged: (i) => setState(() => _currentPage = i),
-                itemBuilder: (context, i) => _OnboardingPage(data: _pages[i]),
+                itemBuilder: (context, i) => _OnboardingPage(data: pages[i]),
               ),
             ),
 
@@ -160,7 +162,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
-                      _pages.length,
+                      pages.length,
                       (i) => AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeOutCubic,
@@ -169,7 +171,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         height: 8,
                         decoration: BoxDecoration(
                           color: _currentPage == i
-                              ? _pages[_currentPage].color
+                              ? pages[_currentPage].color
                               : AppColors.border,
                           borderRadius: BorderRadius.circular(4),
                         ),
@@ -186,21 +188,21 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                       duration: const Duration(milliseconds: 200),
                       child: ElevatedButton(
                         key: ValueKey(_currentPage),
-                        onPressed: _next,
+                        onPressed: () => _next(pages.length),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _pages[_currentPage].color,
+                          backgroundColor: pages[_currentPage].color,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                           shadowColor:
-                              _pages[_currentPage].color.withValues(alpha: 0.3),
+                              pages[_currentPage].color.withValues(alpha: 0.3),
                         ),
                         child: Text(
-                          _currentPage == _pages.length - 1
-                              ? 'Commencer'
-                              : 'Suivant',
+                          _currentPage == pages.length - 1
+                              ? l10n.start
+                              : l10n.next,
                           style: AppTypography.labelLarge.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,

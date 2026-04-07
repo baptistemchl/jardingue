@@ -18,8 +18,8 @@ void showPlantDetail(BuildContext context, Plant plant) {
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (context) => ProviderScope(
-      parent: ProviderScope.containerOf(context),
+    builder: (context) => UncontrolledProviderScope(
+      container: ProviderScope.containerOf(context),
       child: PlantDetailSheet(plant: plant),
     ),
   );

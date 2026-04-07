@@ -1,16 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'core/services/notifications/notification_service.dart';
+import 'core/services/rating/rate_app_service.dart';
 import 'core/services/update/in_app_update_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/database_providers.dart';
 import 'core/providers/garden_event_providers.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'router/app_router.dart';
+
+/// Déclenche le rate sheet depuis l'intérieur de MaterialApp.
+class _RateAppTrigger extends StatefulWidget {
+  final Widget child;
+  const _RateAppTrigger({required this.child});
+
+  @override
+  State<_RateAppTrigger> createState() => _RateAppTriggerState();
+}
+
+class _RateAppTriggerState extends State<_RateAppTrigger> {
+  bool _triggered = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_triggered) {
+      _triggered = true;
+      // Attendre que le Navigator (router) soit monté dans l'arbre
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) maybeShowRateSheet();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -86,6 +116,7 @@ class _JardingueAppState extends ConsumerState<JardingueApp> {
       themeMode: ThemeMode.light,
       routerConfig: _router,
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -94,6 +125,7 @@ class _JardingueAppState extends ConsumerState<JardingueApp> {
         Locale('fr', 'FR'),
       ],
       locale: const Locale('fr', 'FR'),
+      builder: (context, child) => _RateAppTrigger(child: child!),
     );
   }
 }

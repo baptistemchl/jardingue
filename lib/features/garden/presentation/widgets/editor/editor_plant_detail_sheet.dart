@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../../core/constants/app_colors.dart';
@@ -9,7 +10,6 @@ import '../../../../../core/providers/garden_event_providers.dart';
 import '../../../../../core/providers/garden_providers.dart';
 import '../../../../../core/utils/plant_emoji_mapper.dart';
 import '../../../domain/models/garden_event.dart';
-import '../../../domain/models/garden_plant_with_details.dart';
 import '../../../domain/models/watering_helpers.dart';
 import 'dimension_input.dart';
 
@@ -189,7 +189,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
 
   Widget _buildPositionCard(Plant plant, int cs) {
     return _InfoCard(
-      title: 'Dans le potager',
+      title: AppLocalizations.of(context)!.inGarden,
       icon: PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
       trailing: IconButton(
         onPressed: () => setState(
@@ -206,18 +206,18 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
           size: 18,
           color: AppColors.primary,
         ),
-        tooltip: 'Modifier les dimensions',
+        tooltip: AppLocalizations.of(context)!.editDimensions,
       ),
       children: [
         _InfoRow(
-          label: 'Position',
+          label: AppLocalizations.of(context)!.position,
           value:
               '${widget.element.xMeters(cs).toStringAsFixed(2)}m '
               '\u{00D7} '
               '${widget.element.yMeters(cs).toStringAsFixed(2)}m',
         ),
         _InfoRow(
-          label: 'Dimensions',
+          label: AppLocalizations.of(context)!.dimensions,
           value:
               '${_width.toStringAsFixed(2)}m '
               '\u{00D7} '
@@ -225,7 +225,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
         ),
         if (widget.element.plantedAt != null)
           _EditableDateRow(
-            label: 'Plante le',
+            label: AppLocalizations.of(context)!.plantedOn,
             date: widget.element.plantedAt!,
             onChanged: (newDate) async {
               final gpId = widget.element.gardenPlant.id;
@@ -241,7 +241,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
           ),
         if (widget.element.gardenPlant.sowedAt != null)
           _EditableDateRow(
-            label: 'Seme le',
+            label: AppLocalizations.of(context)!.sownOn,
             date: widget.element.gardenPlant.sowedAt!,
             onChanged: (newDate) async {
               final gpId = widget.element.gardenPlant.id;
@@ -277,7 +277,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
           const Divider(),
           const SizedBox(height: 12),
           DimensionInput(
-            label: 'Largeur',
+            label: AppLocalizations.of(context)!.width,
             value: _width,
             min: 0.1,
             max: widget.maxWidthM,
@@ -287,7 +287,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
           ),
           const SizedBox(height: 12),
           DimensionInput(
-            label: 'Longueur',
+            label: AppLocalizations.of(context)!.length,
             value: _height,
             min: 0.1,
             max: widget.maxHeightM,
@@ -311,8 +311,8 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
-                'Enregistrer les dimensions',
+              child: Text(
+                AppLocalizations.of(context)!.saveDimensions,
               ),
             ),
           ),
@@ -325,37 +325,37 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
     final rows = <Widget>[];
     if (plant.spacingBetweenPlants != null) {
       rows.add(_InfoRow(
-        label: 'Espacement recommande',
+        label: AppLocalizations.of(context)!.recommendedSpacing,
         value: '${plant.spacingBetweenPlants} cm',
       ));
     }
     if (plant.plantingDepthCm != null) {
       rows.add(_InfoRow(
-        label: 'Profondeur de plantation',
+        label: AppLocalizations.of(context)!.plantingDepth,
         value: '${plant.plantingDepthCm} cm',
       ));
     }
     if (plant.sunExposure != null) {
       rows.add(_InfoRow(
-        label: 'Exposition',
+        label: AppLocalizations.of(context)!.exposureLabel,
         value: plant.sunExposure!,
       ));
     }
     if (plant.watering != null) {
       rows.add(_InfoRow(
-        label: 'Arrosage',
+        label: AppLocalizations.of(context)!.watering,
         value: plant.watering!,
       ));
     }
     if (plant.soilType != null) {
       rows.add(_InfoRow(
-        label: 'Type de sol',
+        label: AppLocalizations.of(context)!.soilType,
         value: plant.soilType!,
       ));
     }
     if (rows.isEmpty) return const SizedBox.shrink();
     return _InfoCard(
-      title: 'Culture',
+      title: AppLocalizations.of(context)!.culture,
       icon: PhosphorIcons.plant(PhosphorIconsStyle.fill),
       children: rows,
     );
@@ -366,7 +366,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
     final lastWateringAsync = ref.watch(lastWateringProvider(gpId));
 
     return _InfoCard(
-      title: 'Actions rapides',
+      title: AppLocalizations.of(context)!.quickActions,
       icon: PhosphorIcons.lightning(PhosphorIconsStyle.fill),
       children: [
         // Indicateur dernier arrosage
@@ -374,15 +374,15 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
           data: (lastDate) {
             final String label;
             if (lastDate == null) {
-              label = 'Jamais arrose';
+              label = AppLocalizations.of(context)!.neverWatered;
             } else {
               final days = DateTime.now().difference(lastDate).inDays;
               if (days == 0) {
-                label = 'Arrose aujourd\'hui';
+                label = AppLocalizations.of(context)!.wateredToday;
               } else if (days == 1) {
-                label = 'Arrose hier';
+                label = AppLocalizations.of(context)!.wateredYesterday;
               } else {
-                label = 'Dernier arrosage il y a $days jours';
+                label = AppLocalizations.of(context)!.lastWateringDaysAgo(days);
               }
             }
             return Padding(
@@ -405,7 +405,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
             Expanded(
               child: _QuickActionButton(
                 emoji: '💧',
-                label: 'Arroser',
+                label: AppLocalizations.of(context)!.waterAction,
                 color: const Color(0xFF03A9F4),
                 onTap: () {
                   ref
@@ -414,9 +414,9 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                   ref.invalidate(lastWateringProvider(gpId));
                   ref.invalidate(gardenPlantEventsProvider(gpId));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Arrosage enregistre !'),
-                      duration: Duration(seconds: 2),
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.wateringRegistered),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
@@ -426,7 +426,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
             Expanded(
               child: _QuickActionButton(
                 emoji: '🧺',
-                label: 'Recolter',
+                label: AppLocalizations.of(context)!.harvestAction,
                 color: const Color(0xFFE91E63),
                 onTap: () {
                   ref
@@ -434,9 +434,9 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                       .quickHarvest(gpId);
                   ref.invalidate(gardenPlantEventsProvider(gpId));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Recolte enregistree !'),
-                      duration: Duration(seconds: 2),
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.harvestRegistered),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
@@ -446,7 +446,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
             Expanded(
               child: _QuickActionButton(
                 emoji: '📝',
-                label: 'Autre',
+                label: AppLocalizations.of(context)!.other,
                 color: AppColors.textSecondary,
                 onTap: () => _showAddEventDialog(gpId),
               ),
@@ -465,15 +465,15 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          title: const Text('Ajouter un evenement'),
+          title: Text(AppLocalizations.of(context)!.addEvent),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<GardenEventType>(
-                value: selectedType,
-                decoration: const InputDecoration(
-                  labelText: 'Type',
-                  border: OutlineInputBorder(),
+                initialValue: selectedType,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.type,
+                  border: const OutlineInputBorder(),
                 ),
                 items: GardenEventType.values
                     .map((t) => DropdownMenuItem(
@@ -515,7 +515,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Annuler'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -532,7 +532,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                 ref.invalidate(
                     lastWateringProvider(gardenPlantId));
               },
-              child: const Text('Ajouter'),
+              child: Text(AppLocalizations.of(context)!.add),
             ),
           ],
         ),
@@ -550,7 +550,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
         // Afficher les 10 derniers
         final recent = events.take(10).toList();
         return _InfoCard(
-          title: 'Historique',
+          title: AppLocalizations.of(context)!.history,
           icon: PhosphorIcons.clockCounterClockwise(
               PhosphorIconsStyle.fill),
           children: recent
@@ -595,19 +595,19 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: _InfoCard(
-        title: 'Calendrier',
+        title: AppLocalizations.of(context)!.calendar,
         icon: PhosphorIcons.calendar(
           PhosphorIconsStyle.fill,
         ),
         children: [
           if (plant.sowingRecommendation != null)
             _InfoRow(
-              label: 'Semis',
+              label: AppLocalizations.of(context)!.sowing,
               value: plant.sowingRecommendation!,
             ),
           if (plant.harvestPeriod != null)
             _InfoRow(
-              label: 'Recolte',
+              label: AppLocalizations.of(context)!.harvest,
               value: plant.harvestPeriod!,
             ),
         ],
@@ -622,7 +622,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
       data: (list) {
         if (list.isEmpty) return const SizedBox.shrink();
         return _CompanionSection(
-          title: 'Bonnes associations',
+          title: AppLocalizations.of(context)!.goodAssociations,
           icon: PhosphorIcons.handshake(
             PhosphorIconsStyle.fill,
           ),
@@ -643,7 +643,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
       data: (list) {
         if (list.isEmpty) return const SizedBox.shrink();
         return _CompanionSection(
-          title: 'A eviter a proximite',
+          title: AppLocalizations.of(context)!.avoidNearby,
           icon: PhosphorIcons.prohibit(
             PhosphorIconsStyle.fill,
           ),
@@ -663,7 +663,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
       return const SizedBox.shrink();
     }
     return _InfoCard(
-      title: 'Notes',
+      title: AppLocalizations.of(context)!.notes,
       icon: PhosphorIcons.notepad(PhosphorIconsStyle.fill),
       children: [Text(notes, style: AppTypography.bodyMedium)],
     );
@@ -675,7 +675,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
       icon: Icon(
         PhosphorIcons.trash(PhosphorIconsStyle.regular),
       ),
-      label: const Text('Retirer du potager'),
+      label: Text(AppLocalizations.of(context)!.removeFromGarden),
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.error,
         side: BorderSide(color: AppColors.error),
@@ -691,15 +691,14 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Retirer cette plante ?'),
+        title: Text(AppLocalizations.of(context)!.removePlantConfirm),
         content: Text(
-          'Voulez-vous retirer '
-          '"${widget.element.name}" du potager ?',
+          AppLocalizations.of(context)!.removePlantMessage(widget.element.name),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -709,7 +708,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
             style: TextButton.styleFrom(
               foregroundColor: AppColors.error,
             ),
-            child: const Text('Retirer'),
+            child: Text(AppLocalizations.of(context)!.remove),
           ),
         ],
       ),
@@ -847,7 +846,7 @@ class _EditableWateringRowState extends State<_EditableWateringRow> {
             Expanded(
               flex: 2,
               child: Text(
-                'Arrosage',
+                AppLocalizations.of(context)!.watering,
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -860,7 +859,7 @@ class _EditableWateringRowState extends State<_EditableWateringRow> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    'Tous les $_freq jours',
+                    AppLocalizations.of(context)!.everyNDays(_freq),
                     style: AppTypography.bodySmall.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -886,7 +885,7 @@ class _EditableWateringRowState extends State<_EditableWateringRow> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          title: const Text('Frequence d\'arrosage'),
+          title: Text(AppLocalizations.of(context)!.wateringFrequency),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -907,7 +906,7 @@ class _EditableWateringRowState extends State<_EditableWateringRow> {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            'Besoin : ${widget.plantWatering}',
+                            AppLocalizations.of(context)!.needWatering(widget.plantWatering!),
                             style: AppTypography.caption.copyWith(
                               color: Colors.blue.shade700,
                             ),
@@ -940,7 +939,7 @@ class _EditableWateringRowState extends State<_EditableWateringRow> {
                         ),
                       ),
                       child: Text(
-                        '$d jours',
+                        AppLocalizations.of(context)!.nDays(d),
                         style: AppTypography.bodySmall.copyWith(
                           color: selected
                               ? Colors.white
@@ -959,7 +958,7 @@ class _EditableWateringRowState extends State<_EditableWateringRow> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Annuler'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -967,7 +966,7 @@ class _EditableWateringRowState extends State<_EditableWateringRow> {
                 setState(() => _freq = tempFreq);
                 widget.onChanged(tempFreq);
               },
-              child: const Text('Valider'),
+              child: Text(AppLocalizations.of(context)!.validate),
             ),
           ],
         ),

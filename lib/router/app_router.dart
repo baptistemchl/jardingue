@@ -12,7 +12,7 @@ import 'scaffold_with_nav_bar.dart';
 /// Utilise go_router pour une navigation déclarative
 
 // Clés de navigation pour les branches
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 /// Routes nommées
@@ -30,7 +30,7 @@ abstract final class AppRoutes {
 /// Construit le router avec la route initiale selon l'état de l'onboarding.
 GoRouter buildRouter({required bool showOnboarding}) {
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation:
         showOnboarding ? AppRoutes.onboarding : AppRoutes.garden,
     debugLogDiagnostics: true,
@@ -41,7 +41,7 @@ GoRouter buildRouter({required bool showOnboarding}) {
       GoRoute(
         path: AppRoutes.onboarding,
         name: 'onboarding',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) {
           return MaterialPage(
             key: state.pageKey,
@@ -63,7 +63,7 @@ GoRouter buildRouter({required bool showOnboarding}) {
       GoRoute(
         path: '${AppRoutes.garden}/editor/:gardenId',
         name: 'gardenEditor',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         // Utilise le navigateur root (pas le shell)
         pageBuilder: (context, state) {
           final gardenId = int.parse(state.pathParameters['gardenId']!);

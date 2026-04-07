@@ -10,7 +10,6 @@ import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/utils/plant_emoji_mapper.dart';
 import 'add_event_sheet.dart';
 import '../../../garden/domain/models/garden_event.dart';
-import '../../../garden/domain/models/garden_plant_with_details.dart';
 import '../../../garden/presentation/widgets/editor/editor_plant_detail_sheet.dart';
 
 /// Vue "Mon suivi" dans le calendrier — affiche tous les événements

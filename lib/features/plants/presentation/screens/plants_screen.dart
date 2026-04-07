@@ -10,6 +10,7 @@ import '../../../../core/theme/glass_decoration.dart';
 import '../../../../core/providers/database_providers.dart';
 import '../../../../core/services/database/database.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 /// Écran de la liste des plantes
 class PlantsScreen extends ConsumerStatefulWidget {
@@ -114,7 +115,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Plantes',
+                                  AppLocalizations.of(context)!.plants,
                                   style: AppTypography.displayMedium,
                                 ),
                               ),
@@ -129,7 +130,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                                     borderRadius: AppSpacing.borderRadiusFull,
                                   ),
                                   child: Text(
-                                    '$count variétés',
+                                    AppLocalizations.of(context)!.varietiesCount(count),
                                     style: AppTypography.labelSmall.copyWith(
                                       color: AppColors.primary,
                                     ),
@@ -142,7 +143,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
-                            'Découvrez et gérez vos variétés',
+                            AppLocalizations.of(context)!.discoverVarieties,
                             style: AppTypography.bodyMedium.copyWith(
                               color: AppColors.textSecondary,
                             ),
@@ -181,7 +182,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                         Padding(
                           padding: AppSpacing.horizontalPadding,
                           child: Text(
-                            'Catégorie',
+                            AppLocalizations.of(context)!.categoryLabel,
                             style: AppTypography.labelSmall.copyWith(
                               color: AppColors.textTertiary,
                             ),
@@ -230,7 +231,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                         Padding(
                           padding: AppSpacing.horizontalPadding,
                           child: Text(
-                            'Exposition',
+                            AppLocalizations.of(context)!.exposureLabel,
                             style: AppTypography.labelSmall.copyWith(
                               color: AppColors.textTertiary,
                             ),
@@ -286,7 +287,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                             child: Row(
                               children: [
                                 Text(
-                                  '${plants.length} résultat${plants.length > 1 ? 's' : ''}',
+                                  AppLocalizations.of(context)!.resultsCount(plants.length),
                                   style: AppTypography.bodySmall.copyWith(
                                     color: AppColors.textSecondary,
                                   ),
@@ -302,7 +303,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                                     _resetPagination();
                                   },
                                   child: Text(
-                                    'Effacer les filtres',
+                                    AppLocalizations.of(context)!.clearFilters,
                                     style: AppTypography.labelSmall.copyWith(
                                       color: AppColors.primary,
                                     ),
@@ -445,7 +446,7 @@ class _SearchBar extends StatelessWidget {
         focusNode: focusNode,
         onChanged: onChanged,
         decoration: InputDecoration(
-          hintText: 'Rechercher une plante...',
+          hintText: AppLocalizations.of(context)!.searchPlant,
           prefixIcon: Icon(
             PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.regular),
             color: AppColors.textTertiary,
@@ -706,14 +707,14 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              hasFilters ? 'Aucun résultat' : 'Aucune plante',
+              hasFilters ? AppLocalizations.of(context)!.noResults : AppLocalizations.of(context)!.noPlants,
               style: AppTypography.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
               hasFilters
-                  ? 'Essayez de modifier vos critères'
-                  : 'La base de données est vide',
+                  ? AppLocalizations.of(context)!.tryModifyingCriteria
+                  : AppLocalizations.of(context)!.databaseEmpty,
               textAlign: TextAlign.center,
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textSecondary,
@@ -723,7 +724,7 @@ class _EmptyState extends StatelessWidget {
               const SizedBox(height: 16),
               TextButton(
                 onPressed: onClearFilters,
-                child: const Text('Effacer les filtres'),
+                child: Text(AppLocalizations.of(context)!.clearFilters),
               ),
             ],
           ],
@@ -749,7 +750,7 @@ class _ErrorState extends StatelessWidget {
           children: [
             const Text('😕', style: TextStyle(fontSize: 48)),
             const SizedBox(height: 16),
-            Text('Erreur de chargement', style: AppTypography.titleMedium),
+            Text(AppLocalizations.of(context)!.loadingError, style: AppTypography.titleMedium),
             const SizedBox(height: 8),
             Text(
               error,
@@ -762,7 +763,7 @@ class _ErrorState extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: Icon(PhosphorIcons.arrowClockwise(PhosphorIconsStyle.bold)),
-              label: const Text('Réessayer'),
+              label: Text(AppLocalizations.of(context)!.retry),
             ),
           ],
         ),
@@ -884,7 +885,7 @@ class _PlantDetailSheet extends ConsumerWidget {
                       label: '≥ ${plant.plantingMinTempC}°C',
                     ),
                   if (plant.watering != null)
-                    _InfoChip(icon: '💧', label: 'Arrosage régulier'),
+                    _InfoChip(icon: '💧', label: AppLocalizations.of(context)!.regularWatering),
                 ],
               ),
               const SizedBox(height: 24),
@@ -893,41 +894,41 @@ class _PlantDetailSheet extends ConsumerWidget {
               if (plant.sowingOpenGroundPeriod != null ||
                   plant.transplantingPeriod != null ||
                   plant.harvestPeriod != null) ...[
-                _SectionTitle(title: '📅 Périodes'),
+                _SectionTitle(title: AppLocalizations.of(context)!.periodsSection),
                 if (plant.sowingOpenGroundPeriod != null)
                   _PeriodRow(
-                    label: 'Semis pleine terre',
+                    label: AppLocalizations.of(context)!.sowingOpenGround,
                     value: plant.sowingOpenGroundPeriod!,
                   ),
                 if (plant.sowingUnderCoverPeriod != null)
                   _PeriodRow(
-                    label: 'Semis sous abri',
+                    label: AppLocalizations.of(context)!.sowingUnderCover,
                     value: plant.sowingUnderCoverPeriod!,
                   ),
                 if (plant.transplantingPeriod != null)
                   _PeriodRow(
-                    label: 'Repiquage',
+                    label: AppLocalizations.of(context)!.transplanting,
                     value: plant.transplantingPeriod!,
                   ),
                 if (plant.harvestPeriod != null)
-                  _PeriodRow(label: 'Récolte', value: plant.harvestPeriod!),
+                  _PeriodRow(label: AppLocalizations.of(context)!.harvestLabel, value: plant.harvestPeriod!),
                 const SizedBox(height: 16),
               ],
 
               if (plant.plantingAdvice != null) ...[
-                _SectionTitle(title: '🌱 Plantation'),
+                _SectionTitle(title: AppLocalizations.of(context)!.plantingSection),
                 Text(plant.plantingAdvice!, style: AppTypography.bodyMedium),
                 const SizedBox(height: 16),
               ],
 
               if (plant.careAdvice != null) ...[
-                _SectionTitle(title: '🧑‍🌾 Entretien'),
+                _SectionTitle(title: AppLocalizations.of(context)!.careSection),
                 Text(plant.careAdvice!, style: AppTypography.bodyMedium),
                 const SizedBox(height: 16),
               ],
 
               if (plant.redFlags != null) ...[
-                _SectionTitle(title: '⚠️ Points d\'attention'),
+                _SectionTitle(title: AppLocalizations.of(context)!.attentionSection),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -949,7 +950,7 @@ class _PlantDetailSheet extends ConsumerWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _SectionTitle(title: '✅ Bonnes associations'),
+                      _SectionTitle(title: AppLocalizations.of(context)!.goodCompanions),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -987,7 +988,7 @@ class _PlantDetailSheet extends ConsumerWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _SectionTitle(title: '❌ À éviter'),
+                      _SectionTitle(title: AppLocalizations.of(context)!.badCompanions),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,

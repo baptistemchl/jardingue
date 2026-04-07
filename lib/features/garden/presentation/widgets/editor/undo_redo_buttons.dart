@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../../core/constants/app_colors.dart';
 
@@ -26,7 +27,7 @@ class UndoRedoButtons extends StatelessWidget {
             PhosphorIconsStyle.bold,
           ),
           enabled: canUndo,
-          tooltip: canUndo ? 'Annuler' : 'Rien a annuler',
+          tooltip: canUndo ? AppLocalizations.of(context)!.cancel : AppLocalizations.of(context)!.undoTooltipDisabled,
           onTap: onUndo,
         ),
         _UndoRedoButton(
@@ -35,7 +36,7 @@ class UndoRedoButtons extends StatelessWidget {
           ),
           enabled: canRedo,
           tooltip:
-              canRedo ? 'Retablir' : 'Rien a retablir',
+              canRedo ? AppLocalizations.of(context)!.redoTooltip : AppLocalizations.of(context)!.redoTooltipDisabled,
           onTap: onRedo,
         ),
       ],

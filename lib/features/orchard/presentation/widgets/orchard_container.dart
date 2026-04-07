@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -45,7 +46,7 @@ class OrchardContainer extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Mon verger',
+                      AppLocalizations.of(context)!.orchardTitle,
                       style: AppTypography.titleSmall.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -53,20 +54,20 @@ class OrchardContainer extends ConsumerWidget {
                     treesAsync.when(
                       data: (trees) => Text(
                         trees.isEmpty
-                            ? 'Aucun arbre'
-                            : '${trees.length} arbre${trees.length > 1 ? 's' : ''}',
+                            ? AppLocalizations.of(context)!.orchardNoTrees
+                            : AppLocalizations.of(context)!.orchardTreeCount(trees.length),
                         style: AppTypography.caption.copyWith(
                           color: AppColors.textSecondary,
                         ),
                       ),
                       loading: () => Text(
-                        'Chargement...',
+                        AppLocalizations.of(context)!.loading,
                         style: AppTypography.caption.copyWith(
                           color: AppColors.textSecondary,
                         ),
                       ),
                       error: (_, __) => Text(
-                        'Erreur',
+                        AppLocalizations.of(context)!.error,
                         style: AppTypography.caption.copyWith(
                           color: AppColors.error,
                         ),
@@ -111,7 +112,7 @@ class OrchardContainer extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        '+$remainingCount autre${remainingCount > 1 ? 's' : ''}',
+                        AppLocalizations.of(context)!.orchardOtherCount(remainingCount),
                         style: AppTypography.caption.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -122,7 +123,7 @@ class OrchardContainer extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: _ActionButton(
-                          label: 'Voir tout',
+                          label: AppLocalizations.of(context)!.orchardViewAll,
                           icon: PhosphorIcons.eye(PhosphorIconsStyle.bold),
                           onTap: () => _navigateToOrchard(context),
                         ),
@@ -130,7 +131,7 @@ class OrchardContainer extends ConsumerWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: _ActionButton(
-                          label: 'Ajouter',
+                          label: AppLocalizations.of(context)!.add,
                           icon: PhosphorIcons.plus(PhosphorIconsStyle.bold),
                           isPrimary: true,
                           onTap: () => _showTreePicker(context),
@@ -151,7 +152,7 @@ class OrchardContainer extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Text(
-                  'Erreur: $e',
+                  AppLocalizations.of(context)!.errorWithMessage(e.toString()),
                   style: AppTypography.caption.copyWith(color: AppColors.error),
                 ),
               ),
@@ -190,7 +191,7 @@ class _EmptyState extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Commencez à gérer vos arbres fruitiers',
+          AppLocalizations.of(context)!.orchardManageHint,
           style: AppTypography.bodySmall.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -200,7 +201,7 @@ class _EmptyState extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: onAddTap,
           icon: Icon(PhosphorIcons.plus(PhosphorIconsStyle.bold), size: 16),
-          label: const Text('Ajouter un arbre'),
+          label: Text(AppLocalizations.of(context)!.orchardAddTree),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,

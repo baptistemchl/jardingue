@@ -43,19 +43,22 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(fruitTrees);
           await m.createTable(userFruitTrees);
         }
-        // Migration v2 -> v3 : événements jardin + colonnes arrosage
+        // Migration v2 -> v3 : colonnes arrosage sur gardenPlants
         if (from < 3) {
-          await m.createTable(gardenEvents);
           await m.addColumn(gardenPlants, gardenPlants.sowedAt);
           await m.addColumn(
               gardenPlants, gardenPlants.wateringFrequencyDays);
         }
-        // Migration v3 -> v4 : événements sans potager (plantId direct)
+        // Migration v3 -> v4 : table gardenEvents avec plantId nullable
+        // Pour les utilisateurs venant de v2 ou v1, la table n'existe pas
+        // encore, donc on la crée directement avec le schéma final.
+        // Pour ceux venant de v3, on drop l'ancienne (gardenPlantId NOT NULL)
+        // et on recrée avec le nouveau schéma (gardenPlantId nullable + plantId).
         if (from < 4) {
-          await m.addColumn(gardenEvents, gardenEvents.plantId);
-          // Recréer la table pour rendre gardenPlantId nullable
-          // On drop et recrée car SQLite ne supporte pas ALTER COLUMN
-          await m.deleteTable('garden_events');
+          if (from >= 3) {
+            // L'ancienne table existe avec gardenPlantId NOT NULL
+            await m.deleteTable('garden_events');
+          }
           await m.createTable(gardenEvents);
         }
       },

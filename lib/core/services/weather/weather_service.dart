@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'weather_models.dart';
 
 /// Service pour récupérer la météo depuis Open-Meteo (gratuit, sans clé API)
@@ -7,7 +8,17 @@ class WeatherService {
 
   static const String _baseUrl = 'https://api.open-meteo.com/v1';
 
-  WeatherService({Dio? dio}) : _dio = dio ?? Dio();
+  /// Cache en mémoire pour éviter le rate-limiting
+  static WeatherData? _cache;
+  static DateTime? _cacheTime;
+  static const _cacheDuration = Duration(minutes: 15);
+
+  WeatherService({Dio? dio})
+      : _dio = dio ??
+            Dio(BaseOptions(
+              connectTimeout: const Duration(seconds: 15),
+              receiveTimeout: const Duration(seconds: 30),
+            ));
 
   /// Récupère toutes les données météo pour une position
   Future<WeatherData> getWeather({
@@ -16,10 +27,17 @@ class WeatherService {
     String? city,
     String? country,
   }) async {
+    // Retourne le cache s'il est encore frais
+    if (_cache != null && _cacheTime != null) {
+      final age = DateTime.now().difference(_cacheTime!);
+      if (age < _cacheDuration) {
+        debugPrint('⛈️ Météo servie depuis le cache (${age.inMinutes}min)');
+        return _cache!;
+      }
+    }
+
     try {
-      final response = await _dio.get(
-        '$_baseUrl/forecast',
-        queryParameters: {
+      final queryParams = {
           'latitude': latitude,
           'longitude': longitude,
           'current': [
@@ -54,7 +72,10 @@ class WeatherService {
           ].join(','),
           'timezone': 'auto',
           'forecast_days': 7,
-        },
+        };
+      final response = await _dio.get(
+        '$_baseUrl/forecast',
+        queryParameters: queryParams,
       );
 
       final data = response.data as Map<String, dynamic>;
@@ -150,7 +171,7 @@ class WeatherService {
         dailyForecast,
       );
 
-      return WeatherData(
+      final result = WeatherData(
         fetchedAt: now,
         location: LocationData(
           latitude: latitude,
@@ -164,12 +185,42 @@ class WeatherService {
         moon: moon,
         gardeningAdvice: gardeningAdvice,
       );
+
+      // Mettre en cache
+      _cache = result;
+      _cacheTime = now;
+
+      return result;
     } on DioException catch (e) {
-      throw WeatherException('Erreur réseau: ${e.message}');
+      final code = e.response?.statusCode;
+      debugPrint('⛈️ WeatherService DioException: $code – ${e.type}');
+
+      // Retourne le cache périmé si disponible
+      if (_cache != null) {
+        debugPrint('⛈️ Erreur réseau, retour du cache périmé');
+        return _cache!;
+      }
+
+      if (code == 429) {
+        throw WeatherException(
+          'Trop de requêtes météo. Réessayez dans quelques minutes.',
+        );
+      }
+      throw WeatherException(
+        'Le service météo est temporairement '
+        'indisponible (${code ?? e.type.name}).',
+      );
     } catch (e) {
-      throw WeatherException('Erreur: $e');
+      debugPrint('⛈️ WeatherService erreur inattendue: $e');
+      if (_cache != null) {
+        return _cache!;
+      }
+      throw WeatherException(
+        'Le service météo a rencontré un problème.',
+      );
     }
   }
+
 }
 
 class WeatherException implements Exception {

@@ -6,7 +6,9 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/weather_providers.dart';
+import '../../../../core/services/weather/location_service.dart';
 import '../../../../core/services/weather/weather_models.dart';
+import '../../../weather/presentation/widgets/weather_location_bar.dart';
 import '../../../../router/app_router.dart';
 
 // ============================================
@@ -50,11 +52,6 @@ class _WeatherCardError extends StatelessWidget {
   final VoidCallback onRetry;
   final String errorMessage;
 
-  static final _locationPattern = RegExp(
-    r'location|permission',
-    caseSensitive: false,
-  );
-
   const _WeatherCardError({
     required this.onRetry,
     required this.errorMessage,
@@ -62,24 +59,6 @@ class _WeatherCardError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLocation =
-        _locationPattern.hasMatch(errorMessage);
-    final (icon, title, subtitle) = isLocation
-        ? (
-            PhosphorIcons.mapPinLine(
-              PhosphorIconsStyle.duotone,
-            ),
-            'Localisation requise',
-            'Activez la localisation pour voir la météo',
-          )
-        : (
-            PhosphorIcons.cloudSlash(
-              PhosphorIconsStyle.duotone,
-            ),
-            'Météo indisponible',
-            'Impossible de charger les données météo',
-          );
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -90,35 +69,99 @@ class _WeatherCardError extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 40, color: AppColors.textSecondary),
-          const SizedBox(height: 12),
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppColors.warning.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(
+              PhosphorIcons.cloudSlash(PhosphorIconsStyle.duotone),
+              size: 24,
+              color: AppColors.warning,
+            ),
+          ),
+          const SizedBox(height: 14),
           Text(
-            title,
+            'Météo indisponible',
             style: AppTypography.titleSmall.copyWith(
               color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            subtitle,
+            errorMessage,
             style: AppTypography.caption.copyWith(
               color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 16),
-          TextButton.icon(
-            onPressed: onRetry,
-            icon: Icon(
-              PhosphorIcons.arrowClockwise(
-                PhosphorIconsStyle.bold,
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 38,
+                  child: OutlinedButton.icon(
+                    onPressed: onRetry,
+                    icon: Icon(
+                      PhosphorIcons.arrowClockwise(PhosphorIconsStyle.bold),
+                      size: 14,
+                    ),
+                    label: Text(
+                      'Réessayer',
+                      style: AppTypography.captionStrong,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textSecondary,
+                      side: const BorderSide(color: AppColors.border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
               ),
-              size: 16,
-            ),
-            label: const Text('Réessayer'),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.primary,
-            ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SizedBox(
+                  height: 38,
+                  child: ElevatedButton.icon(
+                    onPressed: () => showModalBottomSheet(
+                      useRootNavigator: true,
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (_) => const WeatherLocationPickerSheet(),
+                    ),
+                    icon: Icon(
+                      PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.bold),
+                      size: 14,
+                    ),
+                    label: Text(
+                      'Choisir une ville',
+                      style: AppTypography.captionStrong.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -291,7 +334,7 @@ class _ShimmerBox extends StatelessWidget {
 // CONTENU PRINCIPAL - MÉTÉO
 // ============================================
 
-class _WeatherCardContent extends StatelessWidget {
+class _WeatherCardContent extends ConsumerWidget {
   final WeatherData weather;
   final VoidCallback onTap;
 
@@ -301,8 +344,10 @@ class _WeatherCardContent extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final condition = weather.current.condition;
+    final locationAsync = ref.watch(currentLocationProvider);
+    final LocationResult? location = locationAsync.valueOrNull;
 
     return GestureDetector(
       onTap: onTap,
@@ -314,6 +359,10 @@ class _WeatherCardContent extends StatelessWidget {
         ),
         child: Column(
           children: [
+            // Bandeau localisation approximative
+            if (location != null && location.hasFallback)
+              _LocationIssueBanner(location: location, ref: ref),
+
             // Header
             Padding(
               padding: const EdgeInsets.all(16),
@@ -477,6 +526,76 @@ class _WeatherCardContent extends StatelessWidget {
       return '${today.tempMin.round()}° / ${today.tempMax.round()}°';
     }
     return '--° / --°';
+  }
+}
+
+// ============================================
+// BANDEAU LOCALISATION APPROXIMATIVE
+// ============================================
+
+class _LocationIssueBanner extends StatelessWidget {
+  final LocationResult location;
+  final WidgetRef ref;
+
+  const _LocationIssueBanner({
+    required this.location,
+    required this.ref,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.warning.withValues(alpha: 0.1),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            PhosphorIcons.mapPinLine(PhosphorIconsStyle.fill),
+            size: 14,
+            color: AppColors.warning,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Position approximative'
+              '${location.source == LocationSource.defaultValue ? ' (Paris)' : ''}',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.warning,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => showModalBottomSheet(
+              useRootNavigator: true,
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (_) => const WeatherLocationPickerSheet(),
+            ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                'Choisir une ville',
+                style: AppTypography.captionStrong.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

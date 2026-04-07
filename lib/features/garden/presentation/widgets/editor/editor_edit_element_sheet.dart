@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/theme/app_typography.dart';
@@ -70,8 +71,8 @@ class _State extends State<EditorEditElementSheet> {
             const SizedBox(height: 16),
             Text(
               isZone
-                  ? 'Modifier la zone'
-                  : 'Modifier la plante',
+                  ? AppLocalizations.of(context)!.editZone
+                  : AppLocalizations.of(context)!.editPlant,
               style: AppTypography.titleMedium,
               textAlign: TextAlign.center,
             ),
@@ -95,7 +96,7 @@ class _State extends State<EditorEditElementSheet> {
             ),
             const SizedBox(height: 24),
             DimensionInput(
-              label: 'Largeur',
+              label: AppLocalizations.of(context)!.width,
               value: _width,
               min: 0.1,
               max: widget.maxWidthM,
@@ -105,7 +106,7 @@ class _State extends State<EditorEditElementSheet> {
             ),
             const SizedBox(height: 16),
             DimensionInput(
-              label: 'Longueur',
+              label: AppLocalizations.of(context)!.length,
               value: _height,
               min: 0.1,
               max: widget.maxHeightM,
@@ -137,7 +138,7 @@ class _State extends State<EditorEditElementSheet> {
                       ),
                     ),
                     child: Text(
-                      'Enregistrer',
+                      AppLocalizations.of(context)!.save,
                       style: AppTypography.bodyMedium
                           .copyWith(
                         color: Colors.white,
@@ -174,7 +175,7 @@ class _State extends State<EditorEditElementSheet> {
         PhosphorIcons.trash(PhosphorIconsStyle.fill),
         size: 18,
       ),
-      label: const Text('Supprimer'),
+      label: Text(AppLocalizations.of(context)!.delete),
       style: OutlinedButton.styleFrom(
         foregroundColor: Colors.red,
         side: const BorderSide(color: Colors.red),
@@ -194,15 +195,14 @@ class _State extends State<EditorEditElementSheet> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Confirmer la suppression'),
+        title: Text(AppLocalizations.of(context)!.confirmDeletion),
         content: Text(
-          'Voulez-vous vraiment supprimer '
-          '${isZone ? "cette zone" : "cette plante"} ?',
+          isZone ? AppLocalizations.of(context)!.deleteZoneConfirm : AppLocalizations.of(context)!.deletePlantConfirm,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -212,7 +212,7 @@ class _State extends State<EditorEditElementSheet> {
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
             ),
-            child: const Text('Supprimer'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),

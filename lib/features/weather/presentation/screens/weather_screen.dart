@@ -18,6 +18,7 @@ import '../widgets/weather_location_bar.dart';
 import '../widgets/weather_moon_section.dart';
 import '../widgets/weather_planting_analysis.dart';
 import '../widgets/weather_watering_analysis.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 class WeatherScreen extends ConsumerStatefulWidget {
   const WeatherScreen({super.key});
@@ -29,8 +30,6 @@ class WeatherScreen extends ConsumerStatefulWidget {
 class _WeatherScreenState extends ConsumerState<WeatherScreen> {
   /// Garde la derniere donnee meteo valide pour eviter les flashs d'erreur
   WeatherData? _lastData;
-  /// true une fois qu'on a recu des donnees au moins une fois
-  bool _hasReceivedData = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,6 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
       body: weatherAsync.when(
         data: (weather) {
           _lastData = weather;
-          _hasReceivedData = true;
           return _WeatherContent(weather: weather);
         },
         loading: () {
@@ -54,14 +52,12 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
           if (_lastData != null) {
             return _WeatherContent(weather: _lastData!);
           }
-          // Jamais eu de donnees : rester sur le loader
-          // (le fallback GPS → IP est en cours)
-          if (!_hasReceivedData) {
-            return const _WeatherLoading();
-          }
           return _WeatherError(
             error: error.toString(),
-            onRetry: () => ref.invalidate(weatherDataProvider),
+            onRetry: () {
+              ref.invalidate(currentLocationProvider);
+              ref.invalidate(weatherDataProvider);
+            },
           );
         },
       ),
@@ -215,15 +211,15 @@ class _WeatherLoading extends StatelessWidget {
           ],
         ),
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('🌤️', style: TextStyle(fontSize: 64)),
-            SizedBox(height: 16),
-            CircularProgressIndicator(color: AppColors.primary),
-            SizedBox(height: 16),
-            Text('Chargement de la météo...'),
+            const Text('🌤️', style: TextStyle(fontSize: 64)),
+            const SizedBox(height: 16),
+            const CircularProgressIndicator(color: AppColors.primary),
+            const SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.weatherLoading),
           ],
         ),
       ),
@@ -239,47 +235,107 @@ class _WeatherError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColors.error.withValues(alpha: 0.1),
-            AppColors.background,
-          ],
-        ),
-      ),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('😕', style: TextStyle(fontSize: 64)),
-              const SizedBox(height: 16),
-              Text(
-                'Impossible de charger la météo',
-                style: AppTypography.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                error,
-                textAlign: TextAlign.center,
-                style: AppTypography.bodySmall,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: onRetry,
-                icon: Icon(
-                  PhosphorIcons.arrowClockwise(PhosphorIconsStyle.bold),
+    return Stack(
+      children: [
+        const DecorativeBackground(),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Icon(
+                    PhosphorIcons.cloudSlash(PhosphorIconsStyle.duotone),
+                    size: 40,
+                    color: AppColors.warning,
+                  ),
                 ),
-                label: const Text('Réessayer'),
-              ),
-            ],
+                const SizedBox(height: 24),
+                Text(
+                  AppLocalizations.of(context)!.weatherUnavailable,
+                  style: AppTypography.headlineMedium.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  error,
+                  textAlign: TextAlign.center,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () => showModalBottomSheet(
+                      useRootNavigator: true,
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (_) => const WeatherLocationPickerSheet(),
+                    ),
+                    icon: Icon(
+                      PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.bold),
+                      size: 18,
+                    ),
+                    label: Text(
+                      AppLocalizations.of(context)!.chooseCity,
+                      style: AppTypography.labelLarge.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 46,
+                  child: OutlinedButton.icon(
+                    onPressed: onRetry,
+                    icon: Icon(
+                      PhosphorIcons.arrowClockwise(PhosphorIconsStyle.bold),
+                      size: 18,
+                    ),
+                    label: Text(
+                      AppLocalizations.of(context)!.retry,
+                      style: AppTypography.labelMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textSecondary,
+                      side: const BorderSide(color: AppColors.border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

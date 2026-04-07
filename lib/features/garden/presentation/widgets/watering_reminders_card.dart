@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -69,14 +70,14 @@ class _WateringCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Arrosage du jour',
+                        AppLocalizations.of(context)!.wateringToday,
                         style: AppTypography.titleSmall.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        _subtitle(overdueCount),
+                        _subtitle(context, overdueCount),
                         style: AppTypography.caption.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -101,7 +102,7 @@ class _WateringCard extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Center(
                 child: Text(
-                  '+${reminders.length - 5} autres plantes',
+                  AppLocalizations.of(context)!.otherPlantsCount(reminders.length - 5),
                   style: AppTypography.caption.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -114,10 +115,9 @@ class _WateringCard extends ConsumerWidget {
     );
   }
 
-  String _subtitle(int overdueCount) {
-    if (overdueCount == 0) return 'Tout est a jour';
-    if (overdueCount == 1) return '1 plante a arroser';
-    return '$overdueCount plantes a arroser';
+  String _subtitle(BuildContext context, int overdueCount) {
+    if (overdueCount == 0) return AppLocalizations.of(context)!.allUpToDate;
+    return AppLocalizations.of(context)!.plantsToWaterCount(overdueCount);
   }
 }
 
@@ -141,15 +141,15 @@ class _ReminderTile extends ConsumerWidget {
     final Color statusColor;
 
     if (reminder.weatherSaysSkip) {
-      statusText = 'Pluie prevue, reporte';
+      statusText = AppLocalizations.of(context)!.rainExpectedPostponed;
       statusColor = AppColors.info;
     } else if (reminder.isOverdue) {
       final days = reminder.daysSinceLastWatering;
       statusText =
-          days < 0 ? 'Jamais arrose' : 'Il y a $days jour${days > 1 ? 's' : ''}';
+          days < 0 ? AppLocalizations.of(context)!.neverWatered : AppLocalizations.of(context)!.wateredDaysAgo(days);
       statusColor = AppColors.warning;
     } else {
-      statusText = 'Demain';
+      statusText = AppLocalizations.of(context)!.tomorrow;
       statusColor = AppColors.textSecondary;
     }
 
@@ -162,7 +162,7 @@ class _ReminderTile extends ConsumerWidget {
               ref.invalidate(wateringRemindersProvider);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('$name arrose !'),
+                  content: Text(AppLocalizations.of(context)!.nameWatered(name)),
                   duration: const Duration(seconds: 2),
                 ),
               );
@@ -236,7 +236,7 @@ class _ReminderTile extends ConsumerWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'Arroser',
+                      AppLocalizations.of(context)!.waterAction,
                       style: AppTypography.caption.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,

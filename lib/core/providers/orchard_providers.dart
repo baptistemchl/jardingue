@@ -254,13 +254,13 @@ extension FruitTreeHelpers on FruitTree {
 
   String get subcategoryLabel {
     return switch (subcategory) {
-      'pepins' => 'Pepins',
+      'pepins' => 'Pépins',
       'noyaux' => 'Noyaux',
-      'mediterraneen' => 'Mediterraneen',
-      'fruits_a_coque' => 'Fruits a coque',
+      'mediterraneen' => 'Méditerranéen',
+      'fruits_a_coque' => 'Fruits à coque',
       'ronces' => 'Ronces',
       'groseilles' => 'Groseilles',
-      'bruyeres' => 'Bruyeres',
+      'bruyeres' => 'Bruyères',
       'lianes' => 'Lianes',
       'vigne' => 'Vigne',
       'superfruit' => 'Superfruit',

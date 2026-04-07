@@ -18,7 +18,16 @@
       "Bash(flutter pub:*)",
       "Bash(ls C:/Users/bapti/StudioProjects/jardingue/*.sh)",
       "Bash(chmod +x:*)",
-      "Bash(bash build.sh)"
+      "Bash(bash build.sh)",
+      "Bash(git log:*)",
+      "Bash(grep -E \"\\\\.\\(gradle|xml\\)$\")",
+      "WebSearch",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(mkdir:*)",
+      "Bash(flutter --version)",
+      "Bash(sed:*)",
+      "Bash(dart doc:*)",
+      "Bash(curl:*)"
     ]
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/theme/app_typography.dart';
@@ -51,9 +52,9 @@ class LockToggleButton extends StatelessWidget {
           children: [
             _buildIcon(),
             const SizedBox(width: 10),
-            _buildLabel(),
+            _buildLabel(context),
             const SizedBox(width: 8),
-            _buildBadge(),
+            _buildBadge(context),
           ],
         ),
       ),
@@ -80,11 +81,11 @@ class LockToggleButton extends StatelessWidget {
     );
   }
 
-  Widget _buildLabel() {
+  Widget _buildLabel(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       child: Text(
-        isLocked ? 'Verrouille' : 'Mode edition',
+        isLocked ? AppLocalizations.of(context)!.locked : AppLocalizations.of(context)!.editMode,
         key: ValueKey(isLocked),
         style: AppTypography.labelMedium.copyWith(
           color: isLocked
@@ -96,7 +97,7 @@ class LockToggleButton extends StatelessWidget {
     );
   }
 
-  Widget _buildBadge() {
+  Widget _buildBadge(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       padding: const EdgeInsets.symmetric(
@@ -113,8 +114,8 @@ class LockToggleButton extends StatelessWidget {
       ),
       child: Text(
         isLocked
-            ? 'Appuyer pour editer'
-            : 'Deplacez les elements',
+            ? AppLocalizations.of(context)!.tapToEdit
+            : AppLocalizations.of(context)!.moveElements,
         style: AppTypography.caption.copyWith(
           fontSize: 10,
           color: isLocked

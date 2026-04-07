@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/theme/app_typography.dart';
@@ -47,8 +48,8 @@ class EditorElementsListSheet extends StatelessWidget {
           const Divider(),
           Expanded(
             child: elements.isEmpty
-                ? _buildEmpty()
-                : _buildList(plants, zones),
+                ? _buildEmpty(context)
+                : _buildList(context, plants, zones),
           ),
         ],
       ),
@@ -78,7 +79,7 @@ class EditorElementsListSheet extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              'Elements du potager',
+              AppLocalizations.of(context)!.gardenElements,
               style: AppTypography.titleLarge,
             ),
           ),
@@ -98,7 +99,7 @@ class EditorElementsListSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildEmpty() {
+  Widget _buildEmpty(BuildContext context) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -112,14 +113,14 @@ class EditorElementsListSheet extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Aucun element',
+            AppLocalizations.of(context)!.noElement,
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            'Ajoutez des plantes ou des zones',
+            AppLocalizations.of(context)!.addPlantsOrZones,
             style: AppTypography.caption.copyWith(
               color: AppColors.textTertiary,
             ),
@@ -130,6 +131,7 @@ class EditorElementsListSheet extends StatelessWidget {
   }
 
   Widget _buildList(
+    BuildContext context,
     List<GardenPlantWithDetails> plants,
     List<GardenPlantWithDetails> zones,
   ) {
@@ -138,7 +140,7 @@ class EditorElementsListSheet extends StatelessWidget {
       children: [
         if (plants.isNotEmpty) ...[
           _SectionHeader(
-            title: 'Plantes',
+            title: AppLocalizations.of(context)!.plantsSection,
             count: plants.length,
             emoji: '\u{1F331}',
           ),
@@ -155,7 +157,7 @@ class EditorElementsListSheet extends StatelessWidget {
         ],
         if (zones.isNotEmpty) ...[
           _SectionHeader(
-            title: 'Zones',
+            title: AppLocalizations.of(context)!.zonesSection,
             count: zones.length,
             emoji: '\u{1F4E6}',
           ),
@@ -217,7 +219,7 @@ class _LockBadge extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Text(
-              isLocked ? 'Verrouille' : 'Deverrouille',
+              isLocked ? AppLocalizations.of(context)!.locked : AppLocalizations.of(context)!.unlocked,
               style: AppTypography.caption.copyWith(
                 color: color,
                 fontWeight: FontWeight.w600,
@@ -384,14 +386,14 @@ class _DeleteButton extends StatelessWidget {
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Supprimer ?'),
+            title: Text(AppLocalizations.of(context)!.deleteConfirmTitle),
             content: Text(
-              'Voulez-vous supprimer "$name" ?',
+              AppLocalizations.of(context)!.deleteConfirmMessage(name),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Annuler'),
+                child: Text(AppLocalizations.of(context)!.cancel),
               ),
               TextButton(
                 onPressed: () {
@@ -401,7 +403,7 @@ class _DeleteButton extends StatelessWidget {
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.red,
                 ),
-                child: const Text('Supprimer'),
+                child: Text(AppLocalizations.of(context)!.delete),
               ),
             ],
           ),

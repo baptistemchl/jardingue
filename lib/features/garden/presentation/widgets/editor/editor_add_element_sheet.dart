@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../core/services/database/app_database.dart';
@@ -185,10 +186,10 @@ class _State extends ConsumerState<EditorAddElementSheet> {
         Expanded(
           child: Text(
             _step == 0
-                ? 'Ajouter un element'
+                ? AppLocalizations.of(context)!.addElement
                 : (_isAddingZone
-                    ? 'Configurer la zone'
-                    : 'Configurer la plante'),
+                    ? AppLocalizations.of(context)!.configureZone
+                    : AppLocalizations.of(context)!.configurePlant),
             style: AppTypography.titleMedium,
             textAlign:
                 _step == 0 ? TextAlign.center : null,
@@ -238,8 +239,8 @@ class _State extends ConsumerState<EditorAddElementSheet> {
       // Bouton plante
       _SelectionCard(
         icon: PhosphorIcons.plant(PhosphorIconsStyle.fill),
-        title: 'Ajouter une plante',
-        subtitle: 'Choisir parmi 200+ varietes',
+        title: AppLocalizations.of(context)!.addPlantOption,
+        subtitle: AppLocalizations.of(context)!.chooseAmongVarieties,
         color: AppColors.primary,
         onTap: () => setState(() {
           _isAddingZone = false;
@@ -248,7 +249,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
       ),
       const SizedBox(height: 12),
       Text(
-        'Ou ajouter une zone',
+        AppLocalizations.of(context)!.orAddZone,
         style: AppTypography.labelMedium.copyWith(
           color: AppColors.textSecondary,
         ),
@@ -335,14 +336,14 @@ class _State extends ConsumerState<EditorAddElementSheet> {
               onPressed: () => setState(
                 () => _step = _isAddingZone ? 0 : 1,
               ),
-              child: const Text('Changer'),
+              child: Text(AppLocalizations.of(context)!.change),
             ),
           ],
         ),
       ),
       const SizedBox(height: 20),
       DimensionInput(
-        label: 'Largeur',
+        label: AppLocalizations.of(context)!.width,
         value: _width,
         min: 0.1,
         max: widget.maxWidthM,
@@ -351,7 +352,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
       ),
       const SizedBox(height: 16),
       DimensionInput(
-        label: 'Longueur',
+        label: AppLocalizations.of(context)!.length,
         value: _height,
         min: 0.1,
         max: widget.maxHeightM,
@@ -361,22 +362,22 @@ class _State extends ConsumerState<EditorAddElementSheet> {
       // Section dates et arrosage (plantes uniquement)
       if (!_isAddingZone) ...[
         const SizedBox(height: 24),
-        Text('Dates', style: AppTypography.labelMedium),
+        Text(AppLocalizations.of(context)!.dates, style: AppTypography.labelMedium),
         const SizedBox(height: 8),
         _DatePickerRow(
-          label: 'Date de plantation',
+          label: AppLocalizations.of(context)!.plantingDate,
           date: _plantedAt,
           onChanged: (d) => setState(() => _plantedAt = d),
         ),
         const SizedBox(height: 8),
         _OptionalDatePickerRow(
-          label: 'Date de semis',
+          label: AppLocalizations.of(context)!.sowingDate,
           date: _sowedAt,
           onChanged: (d) => setState(() => _sowedAt = d),
           onClear: () => setState(() => _sowedAt = null),
         ),
         const SizedBox(height: 16),
-        Text('Arrosage', style: AppTypography.labelMedium),
+        Text(AppLocalizations.of(context)!.watering, style: AppTypography.labelMedium),
         const SizedBox(height: 8),
         _WateringFrequencyPicker(
           value: _wateringFrequencyDays,
@@ -415,8 +416,8 @@ class _State extends ConsumerState<EditorAddElementSheet> {
         ),
         child: Text(
           _isAddingZone
-              ? 'Ajouter la zone'
-              : 'Ajouter la plante',
+              ? AppLocalizations.of(context)!.addTheZone
+              : AppLocalizations.of(context)!.addThePlant,
           style: AppTypography.bodyMedium.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -449,7 +450,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Choisir une plante',
+                AppLocalizations.of(context)!.choosePlant,
                 style: AppTypography.titleMedium,
               ),
             ),
@@ -460,7 +461,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
           controller: _searchCtrl,
           onChanged: _onSearch,
           decoration: InputDecoration(
-            hintText: 'Rechercher une plante...',
+            hintText: AppLocalizations.of(context)!.searchPlant,
             prefixIcon: Icon(
               PhosphorIcons.magnifyingGlass(
                 PhosphorIconsStyle.regular,
@@ -496,7 +497,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Aucune plante trouvee',
+                        AppLocalizations.of(context)!.noPlantFound,
                         style: AppTypography.bodyMedium
                             .copyWith(
                           color: AppColors.textSecondary,
@@ -523,7 +524,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
               child: CircularProgressIndicator(),
             ),
             error: (e, _) =>
-                Center(child: Text('Erreur: $e')),
+                Center(child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString()))),
           ),
         ),
       ],
@@ -899,7 +900,7 @@ class _OptionalDatePickerRow extends StatelessWidget {
               ),
             ] else
               Text(
-                'Non defini',
+                AppLocalizations.of(context)!.notDefined,
                 style: AppTypography.bodySmall
                     .copyWith(color: AppColors.textTertiary),
               ),
@@ -941,7 +942,7 @@ class _WateringFrequencyPicker extends StatelessWidget {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      'Besoin : $plantWatering',
+                      AppLocalizations.of(context)!.needWatering(plantWatering!),
                       style: AppTypography.caption.copyWith(
                         color: Colors.blue.shade700,
                       ),
@@ -956,22 +957,22 @@ class _WateringFrequencyPicker extends StatelessWidget {
           runSpacing: 8,
           children: [
             _FreqChip(
-                label: '2 jours',
+                label: AppLocalizations.of(context)!.nDays(2),
                 days: 2,
                 selected: value == 2,
                 onTap: () => onChanged(2)),
             _FreqChip(
-                label: '3 jours',
+                label: AppLocalizations.of(context)!.nDays(3),
                 days: 3,
                 selected: value == 3,
                 onTap: () => onChanged(3)),
             _FreqChip(
-                label: '5 jours',
+                label: AppLocalizations.of(context)!.nDays(5),
                 days: 5,
                 selected: value == 5,
                 onTap: () => onChanged(5)),
             _FreqChip(
-                label: '7 jours',
+                label: AppLocalizations.of(context)!.nDays(7),
                 days: 7,
                 selected: value == 7,
                 onTap: () => onChanged(7)),

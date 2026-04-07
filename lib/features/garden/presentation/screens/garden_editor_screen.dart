@@ -18,6 +18,7 @@ import '../widgets/editor/editor_add_element_sheet.dart';
 import '../widgets/editor/editor_edit_element_sheet.dart';
 import '../widgets/editor/editor_elements_list_sheet.dart';
 import '../widgets/editor/editor_plant_detail_sheet.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 class GardenEditorScreen extends ConsumerStatefulWidget {
   final int gardenId;
@@ -95,11 +96,13 @@ class _GardenEditorScreenState
     final dy = (constraints.maxHeight - scaledH) / 2;
 
     _transformController.value = Matrix4.identity()
-      ..translate(
+      ..translateByDouble(
         dx.clamp(0, double.infinity),
         dy.clamp(0, double.infinity),
+        0.0,
+        1.0,
       )
-      ..scale(fitScale);
+      ..scaleByDouble(fitScale, fitScale, fitScale, 1.0);
     setState(() {});
   }
 
@@ -112,7 +115,8 @@ class _GardenEditorScreenState
     final current = matrix.getMaxScaleOnAxis();
     if (current <= 0) return;
 
-    matrix.scale(clamped / current);
+    final factor = clamped / current;
+    matrix.scaleByDouble(factor, factor, factor, 1.0);
     _transformController.value = matrix;
     setState(() {
       _currentScale = clamped;
@@ -165,8 +169,9 @@ class _GardenEditorScreenState
     await action.undo(
       ref.read(gardenNotifierProvider.notifier),
     );
+    if (!mounted) return;
     _showFeedback(
-      '\u{21A9}\u{FE0F} Annule : ${action.description}',
+      AppLocalizations.of(context)!.undoAction(action.description),
     );
   }
 
@@ -176,8 +181,9 @@ class _GardenEditorScreenState
     await action.execute(
       ref.read(gardenNotifierProvider.notifier),
     );
+    if (!mounted) return;
     _showFeedback(
-      '\u{21AA}\u{FE0F} Retabli : ${action.description}',
+      AppLocalizations.of(context)!.redoAction(action.description),
     );
   }
 
@@ -444,7 +450,7 @@ class _GardenEditorScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              garden?.name ?? 'Potager',
+              garden?.name ?? AppLocalizations.of(context)!.gardenDefault,
               style: AppTypography.titleMedium,
             ),
             if (garden != null)
@@ -480,7 +486,7 @@ class _GardenEditorScreenState
               PhosphorIconsStyle.regular,
             ),
           ),
-          tooltip: 'Reinitialiser la vue',
+          tooltip: AppLocalizations.of(context)!.resetView,
         ),
       ],
     );
@@ -534,7 +540,7 @@ class _GardenEditorScreenState
                       ),
                   ],
                 ),
-                tooltip: 'Liste des elements',
+                tooltip: AppLocalizations.of(context)!.elementsList,
               ),
             );
           },
@@ -625,8 +631,8 @@ class _GardenEditorScreenState
     return gardenAsync.when(
       data: (garden) {
         if (garden == null) {
-          return const Center(
-            child: Text('Potager introuvable'),
+          return Center(
+            child: Text(AppLocalizations.of(context)!.gardenNotFound),
           );
         }
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -660,12 +666,12 @@ class _GardenEditorScreenState
             child: CircularProgressIndicator(),
           ),
           error: (e, _) =>
-              Center(child: Text('Erreur: $e')),
+              Center(child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString()))),
         );
       },
       loading: () =>
           const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Erreur: $e')),
+      error: (e, _) => Center(child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString()))),
     );
   }
 
@@ -700,7 +706,7 @@ class _GardenEditorScreenState
                     PhosphorIconsStyle.bold,
                   ),
                 ),
-                label: const Text('Ajouter'),
+                label: Text(AppLocalizations.of(context)!.add),
               )
             : null,
       ),
@@ -741,7 +747,7 @@ class _PendingPlacementBanner extends StatelessWidget {
                   size: 16, color: AppColors.warning),
               const SizedBox(width: 6),
               Text(
-                '${pending.length} plante${pending.length > 1 ? 's' : ''} a placer',
+                AppLocalizations.of(context)!.pendingPlacementCount(pending.length),
                 style: AppTypography.labelMedium.copyWith(
                   color: AppColors.warning,
                   fontWeight: FontWeight.w600,

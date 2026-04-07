@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/weather/weather_service.dart';
 import '../services/weather/weather_models.dart';
@@ -33,21 +34,32 @@ final effectiveLocationProvider = Provider<AsyncValue<LocationResult>>((ref) {
 
 /// Provider principal pour les données météo
 final weatherDataProvider = FutureProvider<WeatherData>((ref) async {
-  // Attendre que la localisation soit disponible
-  // (le service gere deja le fallback GPS → IP → defaut)
-  final location = await ref.watch(currentLocationProvider.future);
-
-  // Utiliser la localisation selectionnee si elle existe
+  // Si l'utilisateur a choisi une ville, on l'utilise directement
+  // sans attendre le GPS (qui peut timeout pendant 15s+)
   final selected = ref.watch(selectedLocationProvider);
-  final effective = selected ?? location;
 
+  final LocationResult effective;
+  if (selected != null) {
+    effective = selected;
+  } else {
+    effective = await ref.watch(currentLocationProvider.future);
+  }
+
+  debugPrint('🌤️ Météo: chargement pour ${effective.displayName} (${effective.source.name})...');
   final weatherService = ref.watch(weatherServiceProvider);
-  return weatherService.getWeather(
-    latitude: effective.latitude,
-    longitude: effective.longitude,
-    city: effective.city,
-    country: effective.country,
-  );
+  try {
+    final weather = await weatherService.getWeather(
+      latitude: effective.latitude,
+      longitude: effective.longitude,
+      city: effective.city,
+      country: effective.country,
+    );
+    debugPrint('🌤️ Météo: données reçues (${weather.current.temperature}°C)');
+    return weather;
+  } catch (e) {
+    debugPrint('🌤️ Météo: ERREUR → $e');
+    rethrow;
+  }
 });
 
 /// Provider pour rafraîchir la météo

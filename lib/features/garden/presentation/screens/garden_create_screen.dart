@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/garden_providers.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 /// Écran de création/édition d'un potager (dimensions en mètres)
 class GardenCreateScreen extends ConsumerStatefulWidget {
@@ -62,7 +63,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
   Future<void> _save() async {
     // Validation
     if (_nameController.text.trim().isEmpty) {
-      _showError('Veuillez entrer un nom pour votre potager');
+      _showError(AppLocalizations.of(context)!.gardenNameRequired);
       return;
     }
 
@@ -104,7 +105,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
       }
     } catch (e) {
       if (mounted) {
-        _showError('Erreur: $e');
+        _showError(AppLocalizations.of(context)!.errorWithMessage(e.toString()));
         setState(() => _isLoading = false);
       }
     }
@@ -142,7 +143,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    isEditing ? 'Modifier le potager' : 'Nouveau potager',
+                    isEditing ? AppLocalizations.of(context)!.editGarden : AppLocalizations.of(context)!.newGarden,
                     style: AppTypography.titleLarge,
                   ),
                 ),
@@ -194,12 +195,12 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
               padding: const EdgeInsets.all(20),
               children: [
                 // Nom
-                Text('Nom du potager', style: AppTypography.labelMedium),
+                Text(AppLocalizations.of(context)!.gardenName, style: AppTypography.labelMedium),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    hintText: 'Ex: Potager principal',
+                    hintText: AppLocalizations.of(context)!.gardenNameHint,
                     filled: true,
                     fillColor: AppColors.background,
                     border: OutlineInputBorder(
@@ -232,10 +233,10 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                 const SizedBox(height: 24),
 
                 // Dimensions
-                Text('Dimensions', style: AppTypography.labelMedium),
+                Text(AppLocalizations.of(context)!.dimensions, style: AppTypography.labelMedium),
                 const SizedBox(height: 4),
                 Text(
-                  'Définissez la taille de votre potager en mètres',
+                  AppLocalizations.of(context)!.dimensionsHint,
                   style: AppTypography.caption.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -246,7 +247,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                   children: [
                     Expanded(
                       child: _DimensionSlider(
-                        label: 'Largeur',
+                        label: AppLocalizations.of(context)!.width,
                         value: _widthMeters,
                         onChanged: (v) => setState(() => _widthMeters = v),
                       ),
@@ -254,7 +255,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _DimensionSlider(
-                        label: 'Longueur',
+                        label: AppLocalizations.of(context)!.length,
                         value: _heightMeters,
                         onChanged: (v) => setState(() => _heightMeters = v),
                       ),
@@ -265,7 +266,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                 const SizedBox(height: 32),
 
                 // Aperçu
-                Text('Aperçu', style: AppTypography.labelMedium),
+                Text(AppLocalizations.of(context)!.preview, style: AppTypography.labelMedium),
                 const SizedBox(height: 12),
                 _GardenPreview(
                   widthMeters: _widthMeters,
@@ -286,18 +287,18 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                     children: [
                       _Stat(
                         emoji: '📐',
-                        label: 'Surface',
+                        label: AppLocalizations.of(context)!.surface,
                         value:
                             '${(_widthMeters * _heightMeters).toStringAsFixed(1)} m²',
                       ),
                       _Stat(
                         emoji: '↔️',
-                        label: 'Largeur',
+                        label: AppLocalizations.of(context)!.width,
                         value: '${_widthMeters.toStringAsFixed(1)} m',
                       ),
                       _Stat(
                         emoji: '↕️',
-                        label: 'Longueur',
+                        label: AppLocalizations.of(context)!.length,
                         value: '${_heightMeters.toStringAsFixed(1)} m',
                       ),
                     ],
@@ -335,7 +336,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                           color: Colors.white,
                         ),
                       )
-                    : Text(isEditing ? 'Enregistrer' : 'Créer le potager'),
+                    : Text(isEditing ? AppLocalizations.of(context)!.save : AppLocalizations.of(context)!.createGarden),
               ),
             ),
           ),
@@ -438,7 +439,7 @@ class _GardenPreview extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Grille: 1 carreau = 50cm',
+            AppLocalizations.of(context)!.gridInfo,
             style: AppTypography.caption.copyWith(
               color: AppColors.textTertiary,
             ),

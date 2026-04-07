@@ -6,7 +6,12 @@ import 'package:geolocator/geolocator.dart';
 class LocationService {
   final Dio _dio;
 
-  LocationService({Dio? dio}) : _dio = dio ?? Dio();
+  LocationService({Dio? dio})
+      : _dio = dio ??
+            Dio(BaseOptions(
+              connectTimeout: const Duration(seconds: 5),
+              receiveTimeout: const Duration(seconds: 5),
+            ));
 
   /// Position par défaut (Paris)
   static const defaultLatitude = 48.8566;
@@ -50,8 +55,15 @@ class LocationService {
       final permissionStatus = await checkAndRequestPermission();
 
       if (permissionStatus != LocationPermissionStatus.granted) {
-        debugPrint('📍 Permission refusée, fallback sur IP');
-        return _getLocationByIP();
+        final issue = switch (permissionStatus) {
+          LocationPermissionStatus.serviceDisabled =>
+            LocationIssue.serviceDisabled,
+          LocationPermissionStatus.deniedForever =>
+            LocationIssue.permissionDeniedForever,
+          _ => LocationIssue.permissionDenied,
+        };
+        debugPrint('📍 Permission refusée ($permissionStatus), fallback sur IP');
+        return _getLocationByIP(issue);
       }
 
       // Récupère la position GPS
@@ -82,37 +94,52 @@ class LocationService {
       );
     } catch (e) {
       debugPrint('📍 Erreur GPS: $e, fallback sur IP');
-      return _getLocationByIP();
+      return _getLocationByIP(LocationIssue.gpsError);
     }
   }
 
-  /// Récupère la position approximative via l'IP (fallback)
-  Future<LocationResult> _getLocationByIP() async {
-    try {
-      final response = await _dio.get(
-        'http://ip-api.com/json/',
-        queryParameters: {'fields': 'status,city,country,lat,lon'},
-      );
+  /// Récupère la position approximative via l'IP (fallback).
+  /// [originalIssue] est le problème initial (permission, GPS...).
+  Future<LocationResult> _getLocationByIP([LocationIssue? originalIssue]) async {
+    // Essaie ipapi.co puis ip-api.com en fallback
+    for (final endpoint in _ipGeoEndpoints) {
+      try {
+        final response = await _dio.get(endpoint.url);
+        final data = response.data as Map<String, dynamic>;
 
-      final data = response.data as Map<String, dynamic>;
+        final lat = data[endpoint.latKey] as num?;
+        final lon = data[endpoint.lonKey] as num?;
 
-      if (data['status'] == 'success') {
-        return LocationResult(
-          latitude: (data['lat'] as num).toDouble(),
-          longitude: (data['lon'] as num).toDouble(),
-          city: data['city'] as String?,
-          country: data['country'] as String?,
-          isApproximate: true,
-          source: LocationSource.ip,
-        );
+        if (lat != null && lon != null) {
+          return LocationResult(
+            latitude: lat.toDouble(),
+            longitude: lon.toDouble(),
+            city: data[endpoint.cityKey] as String?,
+            country: data[endpoint.countryKey] as String?,
+            isApproximate: true,
+            source: LocationSource.ip,
+            issue: originalIssue,
+          );
+        }
+      } catch (e) {
+        debugPrint('📍 Erreur ${endpoint.url}: $e');
       }
-
-      return _defaultLocation();
-    } catch (e) {
-      debugPrint('📍 Erreur IP: $e');
-      return _defaultLocation();
     }
+    return _defaultLocation(originalIssue ?? LocationIssue.networkError);
   }
+
+  static const _ipGeoEndpoints = [
+    _IpGeoEndpoint(
+      url: 'https://ipapi.co/json/',
+      latKey: 'latitude', lonKey: 'longitude',
+      cityKey: 'city', countryKey: 'country_name',
+    ),
+    _IpGeoEndpoint(
+      url: 'http://ip-api.com/json/?fields=lat,lon,city,country',
+      latKey: 'lat', lonKey: 'lon',
+      cityKey: 'city', countryKey: 'country',
+    ),
+  ];
 
   /// Reverse geocoding via Open-Meteo
   Future<_CityInfo?> _reverseGeocode(double lat, double lon) async {
@@ -195,14 +222,15 @@ class LocationService {
     return await Geolocator.openLocationSettings();
   }
 
-  LocationResult _defaultLocation() {
-    return const LocationResult(
+  LocationResult _defaultLocation(LocationIssue issue) {
+    return LocationResult(
       latitude: defaultLatitude,
       longitude: defaultLongitude,
       city: defaultCity,
       country: defaultCountry,
       isApproximate: true,
       source: LocationSource.defaultValue,
+      issue: issue,
     );
   }
 }
@@ -225,6 +253,24 @@ enum LocationPermissionStatus {
 /// Source de la localisation
 enum LocationSource { gps, ip, search, defaultValue }
 
+/// Problème rencontré lors de la géolocalisation
+enum LocationIssue {
+  /// Le service de localisation est désactivé sur le téléphone
+  serviceDisabled,
+
+  /// L'utilisateur a refusé la permission
+  permissionDenied,
+
+  /// L'utilisateur a refusé la permission définitivement
+  permissionDeniedForever,
+
+  /// Erreur GPS (timeout, position indisponible...)
+  gpsError,
+
+  /// Erreur réseau lors du fallback IP
+  networkError,
+}
+
 /// Résultat de géolocalisation
 class LocationResult {
   final double latitude;
@@ -234,6 +280,9 @@ class LocationResult {
   final bool isApproximate;
   final LocationSource source;
 
+  /// Décrit le problème de localisation rencontré (null si tout va bien).
+  final LocationIssue? issue;
+
   const LocationResult({
     required this.latitude,
     required this.longitude,
@@ -241,6 +290,7 @@ class LocationResult {
     this.country,
     this.isApproximate = false,
     this.source = LocationSource.defaultValue,
+    this.issue,
   });
 
   String get displayName {
@@ -256,4 +306,52 @@ class LocationResult {
     LocationSource.search => 'Recherche',
     LocationSource.defaultValue => 'Par défaut',
   };
+
+  /// Message explicatif du problème de localisation.
+  String? get issueMessage => switch (issue) {
+    LocationIssue.serviceDisabled =>
+      'Le service de localisation est désactivé.'
+      'Activez-le dans les paramètres de votre téléphone.',
+    LocationIssue.permissionDenied =>
+      'L\'accès à la localisation a été refusé.'
+      'Autorisez Jardingue dans les paramètres.',
+    LocationIssue.permissionDeniedForever =>
+      'L\'accès à la localisation est bloqué.'
+      'Modifiez les permissions dans les paramètres de l\'application.',
+    LocationIssue.gpsError =>
+      'Impossible d\'obtenir votre position GPS. '
+      'Vérifiez que la localisation est activée.',
+    LocationIssue.networkError =>
+      'Impossible de déterminer votre position.'
+      'Vérifiez votre connexion internet.',
+    null => null,
+  };
+
+  /// true si la localisation a rencontré un problème et utilise un fallback.
+  bool get hasFallback => issue != null;
+
+  /// true si l'utilisateur peut résoudre le problème via les réglages de l'app.
+  bool get canOpenAppSettings =>
+      issue == LocationIssue.permissionDenied ||
+      issue == LocationIssue.permissionDeniedForever;
+
+  /// true si l'utilisateur peut résoudre le problème via les réglages du téléphone.
+  bool get canOpenLocationSettings =>
+      issue == LocationIssue.serviceDisabled;
+}
+
+class _IpGeoEndpoint {
+  final String url;
+  final String latKey;
+  final String lonKey;
+  final String cityKey;
+  final String countryKey;
+
+  const _IpGeoEndpoint({
+    required this.url,
+    required this.latKey,
+    required this.lonKey,
+    required this.cityKey,
+    required this.countryKey,
+  });
 }

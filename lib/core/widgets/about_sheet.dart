@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_info.dart';
@@ -74,7 +75,7 @@ class AboutSheet extends StatelessWidget {
 
                 // Nom + version
                 Text(
-                  'Jardingue',
+                  AppLocalizations.of(context)!.appName,
                   style: AppTypography.displayMedium.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
@@ -90,7 +91,7 @@ class AboutSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'Version ${AppInfo.version}',
+                    AppLocalizations.of(context)!.aboutVersion(AppInfo.version),
                     style: AppTypography.caption.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w500,
@@ -99,7 +100,7 @@ class AboutSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Mon potager connecte',
+                  AppLocalizations.of(context)!.aboutSubtitle,
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -132,7 +133,7 @@ class AboutSheet extends StatelessWidget {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            'Concu avec amour pour les jardiniers',
+                            AppLocalizations.of(context)!.aboutMadeWithLove,
                             style: AppTypography.caption.copyWith(
                               color: AppColors.textSecondary,
                             ),
@@ -141,7 +142,7 @@ class AboutSheet extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        '\u00a9 ${DateTime.now().year} Jardingue. Tous droits reserves.',
+                        AppLocalizations.of(context)!.aboutCopyright(DateTime.now().year.toString()),
                         style: AppTypography.caption.copyWith(
                           color: AppColors.textTertiary,
                           fontSize: 11,
@@ -247,7 +248,7 @@ class _ThanksCardState extends State<_ThanksCard>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Remerciements',
+                        AppLocalizations.of(context)!.aboutThanks,
                         style: AppTypography.titleSmall.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -257,9 +258,7 @@ class _ThanksCardState extends State<_ThanksCard>
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Un immense merci a Ana & Charles\n'
-                    'pour la motivation, les idees folles,\n'
-                    'et les sessions de tests intensives !',
+                    AppLocalizations.of(context)!.aboutThanksMessage,
                     textAlign: TextAlign.center,
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.textSecondary,
@@ -268,7 +267,7 @@ class _ThanksCardState extends State<_ThanksCard>
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Tapez pour celebrer !',
+                    AppLocalizations.of(context)!.aboutTapToCelebrate,
                     style: AppTypography.caption.copyWith(
                       color: AppColors.textTertiary,
                       fontStyle: FontStyle.italic,

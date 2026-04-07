@@ -143,7 +143,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
       return switch (_step) {
         0 => 'Que voulez-vous enregistrer ?',
         1 => 'Quelle plante ?',
-        2 => 'Ajouter a un potager ?',
+        2 => 'Ajouter à un potager ?',
         3 => 'Confirmer',
         _ => '',
       };
@@ -439,7 +439,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
         ),
 
         const SizedBox(height: 16),
-        Text('Ou ajouter a un potager',
+        Text('Ou ajouter à un potager',
             style: AppTypography.labelMedium
                 .copyWith(color: AppColors.textSecondary)),
         const SizedBox(height: 10),
@@ -449,7 +449,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
             if (gardens.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text('Aucun potager cree',
+                child: Text('Aucun potager créé',
                     style: AppTypography.bodySmall
                         .copyWith(color: AppColors.textTertiary)),
               );
@@ -592,7 +592,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
         if (gardens.isEmpty) {
           return _EmptyMessage(
               icon: PhosphorIcons.plant(PhosphorIconsStyle.duotone),
-              text: 'Aucun jardin cree');
+              text: 'Aucun jardin créé');
         }
         return ListView.separated(
           padding: const EdgeInsets.all(20),

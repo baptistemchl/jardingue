@@ -14,7 +14,7 @@ class InAppUpdateService {
 
       if (info.updateAvailability != UpdateAvailability.updateAvailable) return;
 
-      final isUrgent = (info.updatePriority ?? 0) >= 4 ||
+      final isUrgent = (info.updatePriority) >= 4 ||
           (info.clientVersionStalenessDays ?? 0) >= 5;
 
       if (isUrgent && info.immediateUpdateAllowed) {

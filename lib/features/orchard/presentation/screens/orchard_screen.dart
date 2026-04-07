@@ -8,6 +8,7 @@ import '../../../../core/providers/orchard_providers.dart';
 import '../widgets/user_fruit_tree_card.dart';
 import '../widgets/fruit_tree_picker_sheet.dart';
 import '../widgets/user_tree_detail_sheet.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 /// Écran principal du verger - Liste des arbres de l'utilisateur
 class OrchardScreen extends ConsumerWidget {
@@ -67,7 +68,7 @@ class OrchardScreen extends ConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Mon verger',
+                                      AppLocalizations.of(context)!.orchardTitle,
                                       style: AppTypography.titleLarge.copyWith(
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -75,14 +76,14 @@ class OrchardScreen extends ConsumerWidget {
                                     userTreesAsync.when(
                                       data: (trees) => Text(
                                         trees.isEmpty
-                                            ? 'Aucun arbre'
-                                            : '${trees.length} arbre${trees.length > 1 ? 's' : ''}',
+                                            ? AppLocalizations.of(context)!.orchardNoTrees
+                                            : AppLocalizations.of(context)!.orchardTreeCount(trees.length),
                                         style: AppTypography.caption.copyWith(
                                           color: AppColors.textSecondary,
                                         ),
                                       ),
                                       loading: () => Text(
-                                        'Chargement...',
+                                        AppLocalizations.of(context)!.loading,
                                         style: AppTypography.caption.copyWith(
                                           color: AppColors.textSecondary,
                                         ),
@@ -142,7 +143,7 @@ class OrchardScreen extends ConsumerWidget {
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.all(32),
-                          child: Text('Erreur: $e'),
+                          child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString())),
                         ),
                       ),
                     ),
@@ -164,7 +165,7 @@ class OrchardScreen extends ConsumerWidget {
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               icon: Icon(PhosphorIcons.plus(PhosphorIconsStyle.bold)),
-              label: const Text('Ajouter'),
+              label: Text(AppLocalizations.of(context)!.add),
               elevation: 4,
             ),
           ),
@@ -226,14 +227,14 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'Votre verger est vide',
+            AppLocalizations.of(context)!.orchardEmptyTitle,
             style: AppTypography.titleMedium.copyWith(
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Ajoutez vos premiers arbres fruitiers\npour commencer à les suivre',
+            AppLocalizations.of(context)!.orchardEmptySubtitle,
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -243,7 +244,7 @@ class _EmptyState extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: onAddTap,
             icon: Icon(PhosphorIcons.plus(PhosphorIconsStyle.bold), size: 18),
-            label: const Text('Ajouter un arbre'),
+            label: Text(AppLocalizations.of(context)!.orchardAddTree),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
