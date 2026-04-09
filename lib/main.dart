@@ -12,6 +12,8 @@ import 'core/services/update/in_app_update_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/database_providers.dart';
 import 'core/providers/garden_event_providers.dart';
+import 'features/premium/presentation/providers/backup_providers.dart';
+import 'features/premium/presentation/providers/premium_providers.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'router/app_router.dart';
 
@@ -83,12 +85,13 @@ class JardingueApp extends ConsumerStatefulWidget {
   ConsumerState<JardingueApp> createState() => _JardingueAppState();
 }
 
-class _JardingueAppState extends ConsumerState<JardingueApp> {
+class _JardingueAppState extends ConsumerState<JardingueApp>
+    with WidgetsBindingObserver {
   late final GoRouter _router;
-
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _router = buildRouter(showOnboarding: widget.showOnboarding);
 
@@ -108,6 +111,34 @@ class _JardingueAppState extends ConsumerState<JardingueApp> {
             debugPrint('❌ Erreur DB: $e');
           });
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _autoBackupIfPremium();
+    }
+  }
+
+  Future<void> _autoBackupIfPremium() async {
+    final premium = ref.read(premiumNotifierProvider);
+    final user = ref.read(firebaseUserProvider);
+    if (!premium.isPremium || user == null) return;
+
+    try {
+      final repo = ref.read(backupRepositoryProvider);
+      final data = await repo.exportLocalData();
+      await repo.uploadBackup(user.uid, data);
+      debugPrint('Auto-backup cloud effectué.');
+    } catch (e) {
+      debugPrint('Auto-backup échoué : $e');
+    }
   }
 
   @override

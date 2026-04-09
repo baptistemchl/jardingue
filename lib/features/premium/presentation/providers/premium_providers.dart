@@ -80,6 +80,14 @@ class FirebaseUserNotifier extends StateNotifier<User?> {
   }
 }
 
+// ── Product price ──
+
+final premiumProductProvider =
+    FutureProvider<ProductDetails?>((ref) {
+  final ds = ref.watch(purchaseDatasourceProvider);
+  return ds.queryProduct(kPremiumProductId);
+});
+
 // ── Premium State ──
 
 final premiumNotifierProvider = StateNotifierProvider<

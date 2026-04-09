@@ -21,11 +21,33 @@ final backupNotifierProvider =
 
 class BackupNotifier extends StateNotifier<BackupState> {
   final Ref _ref;
+  DateTime? _lastManualBackup;
+
+  /// Cooldown de 15 minutes entre deux backups manuels.
+  static const _cooldown = Duration(minutes: 15);
 
   BackupNotifier(this._ref)
       : super(const BackupState.idle());
 
+  /// Temps restant avant de pouvoir relancer un backup manuel.
+  Duration? get cooldownRemaining {
+    if (_lastManualBackup == null) return null;
+    final elapsed = DateTime.now().difference(_lastManualBackup!);
+    if (elapsed >= _cooldown) return null;
+    return _cooldown - elapsed;
+  }
+
   Future<void> backup() async {
+    if (_lastManualBackup != null &&
+        DateTime.now().difference(_lastManualBackup!) < _cooldown) {
+      final remaining = cooldownRemaining!;
+      state = BackupState.error(
+        'Veuillez patienter ${remaining.inMinutes + 1} min '
+        'avant de relancer une sauvegarde.',
+      );
+      return;
+    }
+
     state = const BackupState.inProgress(
       BackupOperation.backup,
     );
@@ -42,6 +64,7 @@ class BackupNotifier extends StateNotifier<BackupState> {
       final data = await repo.exportLocalData();
       await repo.uploadBackup(user.uid, data);
 
+      _lastManualBackup = DateTime.now();
       _ref.invalidate(cloudMetadataProvider);
       state = const BackupState.success(
         BackupOperation.backup,

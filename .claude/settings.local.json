@@ -43,7 +43,8 @@
       "WebFetch(domain:www.geeksforgeeks.org)",
       "WebFetch(domain:developers.google.com)",
       "WebFetch(domain:docs.fluxbuilder.com)",
-      "WebFetch(domain:dev.adjust.com)"
+      "WebFetch(domain:dev.adjust.com)",
+      "Bash(xargs grep:*)"
     ]
   }
 }

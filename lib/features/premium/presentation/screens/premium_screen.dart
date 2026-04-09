@@ -277,11 +277,28 @@ class _RestorePurchasesButton extends ConsumerWidget {
             }
           }
         },
-        child: Text(
-          'Restaurer mes achats',
-          style: AppTypography.caption.copyWith(
-            color: AppColors.textTertiary,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Restaurer mes achats',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textTertiary,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Vous avez déjà acheté le premium ?\n'
+              'Appuyez ici pour le réactiver après '
+              'une réinstallation ou un changement '
+              'd\'appareil.',
+              textAlign: TextAlign.center,
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textTertiary,
+                fontSize: 11,
+              ),
+            ),
+          ],
         ),
       ),
     );

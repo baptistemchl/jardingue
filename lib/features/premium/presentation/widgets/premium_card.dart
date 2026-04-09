@@ -94,6 +94,12 @@ class PremiumCard extends ConsumerWidget {
   }
 
   Widget _buildLocked(WidgetRef ref) {
+    final productAsync = ref.watch(premiumProductProvider);
+    final priceLabel = productAsync.whenOrNull(
+          data: (p) => p?.price,
+        ) ??
+        '...';
+
     return Column(
       children: [
         Icon(
@@ -146,7 +152,7 @@ class PremiumCard extends ConsumerWidget {
               ),
             ),
             child: Text(
-              'Débloquer pour 5,00 €',
+              'Débloquer pour $priceLabel',
               style: AppTypography.labelLarge.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
