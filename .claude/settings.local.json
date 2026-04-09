@@ -39,7 +39,11 @@
       "Read(//c/Users/bapti/AppData/Roaming/npm/**)",
       "Read(//c/Users/bapti/AppData/Roaming/npm/node_modules/firebase-tools/lib/bin/**)",
       "Bash(C:/Users/bapti/AppData/Roaming/npm/firebase.cmd:*)",
-      "Bash(flutter build:*)"
+      "Bash(flutter build:*)",
+      "WebFetch(domain:www.geeksforgeeks.org)",
+      "WebFetch(domain:developers.google.com)",
+      "WebFetch(domain:docs.fluxbuilder.com)",
+      "WebFetch(domain:dev.adjust.com)"
     ]
   }
 }

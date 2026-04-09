@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "498698666696-2c2uu6j93numlul2dbhsieuttaorfbmd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.agenceixp.jardingue",
+            "certificate_hash": "99beae2f86b30d99230117f4ada02d2f29b8c37e"
+          }
+        },
+        {
           "client_id": "498698666696-9cf3iidgs1ejbg070oo39p81h2lovra3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
