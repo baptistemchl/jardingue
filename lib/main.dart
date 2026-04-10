@@ -12,7 +12,6 @@ import 'core/services/update/in_app_update_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/database_providers.dart';
 import 'core/providers/garden_event_providers.dart';
-import 'features/premium/presentation/providers/backup_providers.dart';
 import 'features/premium/presentation/providers/premium_providers.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'router/app_router.dart';
