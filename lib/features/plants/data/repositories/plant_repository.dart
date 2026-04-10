@@ -8,6 +8,13 @@ abstract interface class PlantRepository {
   Future<int> countPlants();
   Future<List<Plant>> getCompanions(int plantId);
   Future<List<Plant>> getAntagonists(int plantId);
+  Future<List<Plant>> getFilteredPlants({
+    String? searchQuery,
+    String? categoryCode,
+    String? sunExposureContains,
+  });
+  Future<Map<String, int>> getCategoryCounts();
+  Future<List<Plant>> getPlantsByIds(List<int> ids);
 }
 
 /// Drift-backed implementation of [PlantRepository].
@@ -35,4 +42,23 @@ class DriftPlantRepository implements PlantRepository {
   @override
   Future<List<Plant>> getAntagonists(int plantId) =>
       _db.getAntagonists(plantId);
+
+  @override
+  Future<List<Plant>> getFilteredPlants({
+    String? searchQuery,
+    String? categoryCode,
+    String? sunExposureContains,
+  }) =>
+      _db.getFilteredPlants(
+        searchQuery: searchQuery,
+        categoryCode: categoryCode,
+        sunExposureContains: sunExposureContains,
+      );
+
+  @override
+  Future<Map<String, int>> getCategoryCounts() => _db.getCategoryCounts();
+
+  @override
+  Future<List<Plant>> getPlantsByIds(List<int> ids) =>
+      _db.getPlantsByIds(ids);
 }

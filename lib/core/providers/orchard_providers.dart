@@ -90,32 +90,16 @@ final filteredFruitTreesProvider =
   final repo = ref.watch(fruitTreeRepositoryProvider);
   final filters = ref.watch(fruitTreesFilterProvider);
 
-  List<FruitTree> trees;
-  if (filters.searchQuery.isEmpty) {
-    trees = await repo.getAllFruitTreesSorted();
-  } else {
-    trees = await repo.searchFruitTrees(filters.searchQuery);
-  }
-
-  if (filters.category != FruitTreeCategory.all &&
-      filters.category.code != null) {
-    trees = trees
-        .where(
-          (t) => t.category == filters.category.code,
-        )
-        .toList();
-  }
-
-  if (filters.selfFertileOnly == true) {
-    trees = trees.where((t) => t.selfFertile).toList();
-  }
-
-  if (filters.containerSuitableOnly == true) {
-    trees =
-        trees.where((t) => t.containerSuitable).toList();
-  }
-
-  return trees;
+  return repo.getFilteredFruitTrees(
+    searchQuery: filters.searchQuery.isNotEmpty
+        ? filters.searchQuery
+        : null,
+    categoryCode: filters.category != FruitTreeCategory.all
+        ? filters.category.code
+        : null,
+    selfFertileOnly: filters.selfFertileOnly,
+    containerSuitableOnly: filters.containerSuitableOnly,
+  );
 });
 
 final fruitTreeByIdProvider =
@@ -152,9 +136,8 @@ final userFruitTreeByIdProvider = FutureProvider.family<
 class UserFruitTreesNotifier extends StateNotifier<
     AsyncValue<List<UserFruitTreeWithDetails>>> {
   final FruitTreeRepository _repo;
-  final Ref _ref;
 
-  UserFruitTreesNotifier(this._repo, this._ref)
+  UserFruitTreesNotifier(this._repo)
       : super(const AsyncValue.loading()) {
     _loadData();
   }
@@ -190,7 +173,6 @@ class UserFruitTreesNotifier extends StateNotifier<
 
     final id = await _repo.addUserFruitTree(companion);
     await _loadData();
-    _ref.invalidate(userFruitTreesProvider);
     return id;
   }
 
@@ -219,14 +201,11 @@ class UserFruitTreesNotifier extends StateNotifier<
       lastYieldKg: lastYieldKg,
     );
     await _loadData();
-    _ref.invalidate(userFruitTreesProvider);
-    _ref.invalidate(userFruitTreeByIdProvider(id));
   }
 
   Future<void> deleteTree(int id) async {
     await _repo.deleteUserFruitTree(id);
     await _loadData();
-    _ref.invalidate(userFruitTreesProvider);
   }
 }
 
@@ -234,7 +213,7 @@ final userFruitTreesNotifierProvider = StateNotifierProvider<
     UserFruitTreesNotifier,
     AsyncValue<List<UserFruitTreeWithDetails>>>((ref) {
   final repo = ref.watch(fruitTreeRepositoryProvider);
-  return UserFruitTreesNotifier(repo, ref);
+  return UserFruitTreesNotifier(repo);
 });
 
 final userFruitTreesCountProvider =

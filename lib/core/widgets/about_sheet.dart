@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_info.dart';
 import '../theme/app_typography.dart';
@@ -113,7 +114,48 @@ class AboutSheet extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
-                // Copyright
+                // Sources
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            PhosphorIcons.bookOpen(PhosphorIconsStyle.fill),
+                            size: 14,
+                            color: AppColors.primary,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            AppLocalizations.of(context)!.aboutSourcesTitle,
+                            style: AppTypography.labelSmall.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        AppLocalizations.of(context)!.aboutSourcesBody,
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textSecondary,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Copyright & contact
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(14),
@@ -139,6 +181,32 @@ class AboutSheet extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 8),
+                      GestureDetector(
+                        onTap: () => launchUrl(
+                          Uri.parse('mailto:${AppLocalizations.of(context)!.aboutContact}'),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              PhosphorIcons.envelope(
+                                  PhosphorIconsStyle.regular),
+                              size: 13,
+                              color: AppColors.primary,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              AppLocalizations.of(context)!.aboutContact,
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.primary,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 6),
                       Text(

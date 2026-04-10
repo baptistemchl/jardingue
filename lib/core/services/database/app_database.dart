@@ -29,13 +29,14 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
         await m.createAll();
+        await _createIndexes();
       },
       onUpgrade: (Migrator m, int from, int to) async {
         // Migration v1 -> v2 : ajout des tables verger
@@ -61,8 +62,44 @@ class AppDatabase extends _$AppDatabase {
           }
           await m.createTable(gardenEvents);
         }
+        // Migration v4 -> v5 : enrichissement données (climate, toxicity, tips)
+        if (from < 5) {
+          await m.addColumn(plants, plants.climateAdaptation);
+          await m.addColumn(plants, plants.toxicity);
+          await m.addColumn(plants, plants.practicalTips);
+          await m.addColumn(fruitTrees, fruitTrees.climateAdaptation);
+          await m.addColumn(fruitTrees, fruitTrees.toxicity);
+          await m.addColumn(fruitTrees, fruitTrees.practicalTips);
+        }
+        // Migration v5 -> v6 : indexes pour performances
+        if (from < 6) {
+          await _createIndexes();
+        }
       },
     );
+  }
+
+  Future<void> _createIndexes() async {
+    const statements = [
+      // Plants : recherche et filtres
+      'CREATE INDEX IF NOT EXISTS idx_plants_common_name ON plants(common_name)',
+      'CREATE INDEX IF NOT EXISTS idx_plants_category_code ON plants(category_code)',
+      // GardenPlants : FK lookups
+      'CREATE INDEX IF NOT EXISTS idx_garden_plants_garden_id ON garden_plants(garden_id)',
+      'CREATE INDEX IF NOT EXISTS idx_garden_plants_plant_id ON garden_plants(plant_id)',
+      // GardenEvents : requêtes composites fréquentes
+      'CREATE INDEX IF NOT EXISTS idx_garden_events_gp_type_date ON garden_events(garden_plant_id, event_type, event_date)',
+      'CREATE INDEX IF NOT EXISTS idx_garden_events_plant_id ON garden_events(plant_id)',
+      'CREATE INDEX IF NOT EXISTS idx_garden_events_date ON garden_events(event_date)',
+      // FruitTrees : recherche et filtres
+      'CREATE INDEX IF NOT EXISTS idx_fruit_trees_common_name ON fruit_trees(common_name)',
+      'CREATE INDEX IF NOT EXISTS idx_fruit_trees_category ON fruit_trees(category)',
+      // UserFruitTrees : FK
+      'CREATE INDEX IF NOT EXISTS idx_user_fruit_trees_fruit_tree_id ON user_fruit_trees(fruit_tree_id)',
+    ];
+    for (final sql in statements) {
+      await customStatement(sql);
+    }
   }
 
   // ============================================
@@ -119,10 +156,13 @@ class AppDatabase extends _$AppDatabase {
     return results.map((r) => r.companionId).toList();
   }
 
-  Future<List<Plant>> getCompanions(int plantId) async {
-    final companionIds = await getCompanionIds(plantId);
-    if (companionIds.isEmpty) return [];
-    return (select(plants)..where((t) => t.id.isIn(companionIds))).get();
+  Future<List<Plant>> getCompanions(int plantId) {
+    final companion = alias(plants, 'c');
+    return (select(plantCompanions).join([
+      innerJoin(companion, companion.id.equalsExp(plantCompanions.companionId)),
+    ])..where(plantCompanions.plantId.equals(plantId)))
+        .map((row) => row.readTable(companion))
+        .get();
   }
 
   Future<List<int>> getAntagonistIds(int plantId) async {
@@ -132,10 +172,14 @@ class AppDatabase extends _$AppDatabase {
     return results.map((r) => r.antagonistId).toList();
   }
 
-  Future<List<Plant>> getAntagonists(int plantId) async {
-    final antagonistIds = await getAntagonistIds(plantId);
-    if (antagonistIds.isEmpty) return [];
-    return (select(plants)..where((t) => t.id.isIn(antagonistIds))).get();
+  Future<List<Plant>> getAntagonists(int plantId) {
+    final antagonist = alias(plants, 'a');
+    return (select(plantAntagonists).join([
+      innerJoin(
+          antagonist, antagonist.id.equalsExp(plantAntagonists.antagonistId)),
+    ])..where(plantAntagonists.plantId.equals(plantId)))
+        .map((row) => row.readTable(antagonist))
+        .get();
   }
 
   Future<void> insertCompanion(int plantId, int companionId) {
@@ -257,10 +301,11 @@ class AppDatabase extends _$AppDatabase {
 
   /// Retourne les IDs distincts des plantes suivies (via plantId dans les events)
   Future<List<int>> getTrackedPlantIds() async {
-    final events = await (select(gardenEvents)
-          ..where((t) => t.plantId.isNotNull()))
-        .get();
-    return events.map((e) => e.plantId!).toSet().toList();
+    final query = selectOnly(gardenEvents, distinct: true)
+      ..addColumns([gardenEvents.plantId])
+      ..where(gardenEvents.plantId.isNotNull());
+    final results = await query.get();
+    return results.map((row) => row.read(gardenEvents.plantId)!).toList();
   }
 
   Future<int> addGardenEvent(GardenEventsCompanion event) {
@@ -413,6 +458,115 @@ class AppDatabase extends _$AppDatabase {
     final query = selectOnly(userFruitTrees)..addColumns([count]);
     final result = await query.getSingle();
     return result.read(count) ?? 0;
+  }
+
+  // ============================================
+  // OPTIMIZED QUERIES (v6)
+  // ============================================
+
+  /// Requête filtrée côté SQL (évite le chargement + filtrage en mémoire)
+  Future<List<Plant>> getFilteredPlants({
+    String? searchQuery,
+    String? categoryCode,
+    String? sunExposureContains,
+  }) {
+    final q = select(plants);
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      final lq = '%${searchQuery.toLowerCase()}%';
+      q.where(
+        (t) =>
+            t.commonName.lower().like(lq) | t.latinName.lower().like(lq),
+      );
+    }
+    if (categoryCode != null) {
+      q.where((t) => t.categoryCode.equals(categoryCode));
+    }
+    if (sunExposureContains != null) {
+      q.where(
+        (t) => t.sunExposure.lower().like('%$sunExposureContains%'),
+      );
+    }
+    q.orderBy([(t) => OrderingTerm.asc(t.commonName)]);
+    return q.get();
+  }
+
+  /// Comptage par catégorie via SQL GROUP BY
+  Future<Map<String, int>> getCategoryCounts() async {
+    final countExpr = plants.id.count();
+    final query = selectOnly(plants)
+      ..addColumns([plants.categoryCode, countExpr])
+      ..groupBy([plants.categoryCode]);
+    final results = await query.get();
+    return {
+      for (final row in results)
+        (row.read(plants.categoryCode) ?? 'unknown'):
+            (row.read(countExpr) ?? 0),
+    };
+  }
+
+  /// Requête filtrée côté SQL pour les arbres fruitiers
+  Future<List<FruitTree>> getFilteredFruitTrees({
+    String? searchQuery,
+    String? categoryCode,
+    bool? selfFertileOnly,
+    bool? containerSuitableOnly,
+  }) {
+    final q = select(fruitTrees);
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      final lq = '%${searchQuery.toLowerCase()}%';
+      q.where(
+        (t) =>
+            t.commonName.lower().like(lq) | t.latinName.lower().like(lq),
+      );
+    }
+    if (categoryCode != null) {
+      q.where((t) => t.category.equals(categoryCode));
+    }
+    if (selfFertileOnly == true) {
+      q.where((t) => t.selfFertile.equals(true));
+    }
+    if (containerSuitableOnly == true) {
+      q.where((t) => t.containerSuitable.equals(true));
+    }
+    q.orderBy([(t) => OrderingTerm.asc(t.commonName)]);
+    return q.get();
+  }
+
+  /// Garden plants avec détails plante via JOIN (élimine le N+1)
+  Future<List<TypedResult>> getGardenPlantsWithDetails(int gardenId) {
+    return (select(gardenPlants).join([
+      leftOuterJoin(plants, plants.id.equalsExp(gardenPlants.plantId)),
+    ])..where(gardenPlants.gardenId.equals(gardenId)))
+        .get();
+  }
+
+  /// Récupère plusieurs plantes par IDs en une seule requête
+  Future<List<Plant>> getPlantsByIds(List<int> ids) {
+    if (ids.isEmpty) return Future.value([]);
+    return (select(plants)..where((t) => t.id.isIn(ids))).get();
+  }
+
+  /// Toutes les plantes de tous les jardins avec détails (pour watering bulk)
+  Future<List<TypedResult>> getAllGardenPlantsWithPlantAndGarden() {
+    return (select(gardenPlants).join([
+      leftOuterJoin(plants, plants.id.equalsExp(gardenPlants.plantId)),
+      innerJoin(gardens, gardens.id.equalsExp(gardenPlants.gardenId)),
+    ])).get();
+  }
+
+  /// Derniers événements d'arrosage par gardenPlantId (1 query au lieu de N)
+  Future<Map<int, DateTime>> getLastWateringDates() async {
+    final events = await (select(gardenEvents)
+          ..where((t) =>
+              t.eventType.equals('watering') &
+              t.gardenPlantId.isNotNull())
+          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)]))
+        .get();
+    final result = <int, DateTime>{};
+    for (final event in events) {
+      result.putIfAbsent(event.gardenPlantId!, () => event.eventDate);
+    }
+    return result;
   }
 }
 

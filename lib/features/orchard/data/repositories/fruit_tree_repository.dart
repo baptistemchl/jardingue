@@ -8,6 +8,12 @@ abstract interface class FruitTreeRepository {
   Future<FruitTree?> getFruitTreeById(int id);
   Future<int> countFruitTrees();
   Future<List<FruitTree>> getAllFruitTrees();
+  Future<List<FruitTree>> getFilteredFruitTrees({
+    String? searchQuery,
+    String? categoryCode,
+    bool? selfFertileOnly,
+    bool? containerSuitableOnly,
+  });
   Future<List<UserFruitTreeWithDetails>> getAllUserFruitTreesWithDetails();
   Future<UserFruitTreeWithDetails?> getUserFruitTreeWithDetailsById(int id);
   Future<int> addUserFruitTree(UserFruitTreesCompanion tree);
@@ -50,6 +56,20 @@ class DriftFruitTreeRepository implements FruitTreeRepository {
 
   @override
   Future<List<FruitTree>> getAllFruitTrees() => _db.getAllFruitTrees();
+
+  @override
+  Future<List<FruitTree>> getFilteredFruitTrees({
+    String? searchQuery,
+    String? categoryCode,
+    bool? selfFertileOnly,
+    bool? containerSuitableOnly,
+  }) =>
+      _db.getFilteredFruitTrees(
+        searchQuery: searchQuery,
+        categoryCode: categoryCode,
+        selfFertileOnly: selfFertileOnly,
+        containerSuitableOnly: containerSuitableOnly,
+      );
 
   @override
   Future<List<UserFruitTreeWithDetails>>

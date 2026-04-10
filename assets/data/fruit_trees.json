@@ -47,7 +47,14 @@
         "Reine des Reinettes",
         "Gala",
         "Boskoop"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très résistant au froid (-25 °C). Choisissez des variétés tardives (Boskoop, Reinette grise du Canada) pour éviter les gelées de fleurs. Protégez la floraison avec un voile si gel annoncé après mi-avril.",
+        "temperate": "Climat idéal pour la plupart des variétés. Veillez à un bon éclaircissage en juin pour des fruits de calibre régulier. Traitez préventivement contre la tavelure au débourrement.",
+        "hot": "Privilégiez des variétés résistantes à la chaleur (Anna, Dorsett Golden). Paillez généreusement et arrosez régulièrement en été. L'ombre partielle l'après-midi est bénéfique en zone méditerranéenne."
+      },
+      "toxicity": null,
+      "practical_tips": "Plantez au moins deux variétés pour assurer la pollinisation croisée. Taillez chaque hiver en supprimant le bois mort et en aérant le centre de l'arbre. Appliquez un traitement à la bouillie bordelaise à la chute des feuilles pour limiter les maladies."
     },
     {
       "id": 2,
@@ -94,7 +101,14 @@
         "Conférence",
         "Doyenné du Comice",
         "Beurré Hardy"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Bonne rusticité (-20 °C). Attention aux gelées tardives sur la floraison précoce d'avril : utilisez un voile d'hivernage si nécessaire. Choisissez Conférence ou Beurré Hardy, plus résistants.",
+        "temperate": "Excellentes conditions. Assurez un sol profond et frais. Taillez en palmette pour optimiser l'ensoleillement et la fructification contre un mur.",
+        "hot": "Le poirier souffre de la sécheresse estivale : arrosez copieusement et paillez le pied. En zone chaude, préférez des porte-greffes adaptés (BA29) et une exposition est pour éviter le soleil brûlant de l'après-midi."
+      },
+      "toxicity": null,
+      "practical_tips": "Le poirier nécessite un pollinisateur compatible planté à moins de 15 m. Éclaircissez les fruits en juin (gardez 2 poires par bouquet). Surveillez le feu bactérien : coupez et brûlez immédiatement les rameaux noircis."
     },
     {
       "id": 3,
@@ -145,7 +159,14 @@
         "Van",
         "Kordia",
         "Regina"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Attention aux gelées tardives sur la floraison d'avril. Plantez à l'abri du vent du nord. Les variétés Burlat et Summit sont bien adaptées au froid.",
+        "temperate": "Climat idéal. Le cerisier prospère sans soin particulier. Protégez les fruits mûrs des oiseaux avec un filet. Arrosez en cas de sécheresse prolongée.",
+        "hot": "Le cerisier souffre en climat trop chaud : les besoins en froid hivernal (700-900 h < 7 °C) peuvent ne pas être satisfaits. Choisissez des variétés à faible besoin en froid (Royal Lee, Minnie Royal) pour le sud."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Le cerisier déteste la taille sévère : taillez le moins possible et en été après la récolte pour limiter les écoulements de gomme. Protégez les fruits avec un filet anti-oiseaux dès le début de la véraison. Récoltez le matin pour une meilleure conservation."
     },
     {
       "id": 4,
@@ -191,7 +212,14 @@
         "Griotte du Nord",
         "Kelleriis",
         "Morellenfeuer"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-30 °C), parfaitement adapté aux hivers rigoureux. Le griottier est l'un des arbres fruitiers les plus résistants au froid. Idéal pour le nord-est et les zones de montagne.",
+        "temperate": "Très bien adapté. Arbre peu exigeant qui donne des griottes acidulées parfaites pour les confitures et les clafoutis. Plantez en situation ensoleillée.",
+        "hot": "Peut manquer de froid hivernal en zone méditerranéenne. Supporte néanmoins la chaleur estivale. Arrosez régulièrement pour des fruits bien charnus."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Le griottier est souvent autofertile (variété Montmorency). Taillez très peu, uniquement pour aérer la ramure. Les griottes se récoltent bien mûres pour les confitures ou légèrement avant pour les conserves au sirop."
     },
     {
       "id": 5,
@@ -237,7 +265,14 @@
         "Quetsche Blanche de Létricourt",
         "Quetsche d'Italie",
         "Stanley"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-28 °C). Arbre traditionnel d'Alsace et de Lorraine, parfaitement adapté au climat continental. Tolère les hivers longs et rigoureux.",
+        "temperate": "Bonne adaptation. La quetsche apprécie les étés chauds pour bien mûrir. Plantez au soleil dans un sol profond et bien drainé.",
+        "hot": "Peut se cultiver en zone chaude mais perd son caractère typique. Les quetsches ont besoin d'une période de froid hivernal pour bien fructifier."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Le quetschier est autofertile et très productif. Récoltez quand le fruit se détache facilement. Idéal pour les tartes, confitures et eau-de-vie. Taillez en hiver pour maintenir un port aéré et favoriser la lumière au centre de l'arbre."
     },
     {
       "id": 6,
@@ -283,7 +318,14 @@
         "Mirabelle de Metz",
         "Mirabelle Ruby",
         "Mirabelle de Flotow"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Arbre emblématique de Lorraine, parfaitement adapté au climat continental froid. Floraison relativement tardive qui échappe souvent aux gelées.",
+        "temperate": "Excellent en climat tempéré. Plantez au soleil pour des mirabelles sucrées et dorées. Sol profond et frais préféré.",
+        "hot": "Peut se cultiver dans le sud mais les mirabelles sont moins parfumées. Arrosez régulièrement en été et paillez le pied. Préférez la mi-ombre l'après-midi."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Le mirabellier est autofertile et très productif. La récolte s'effectue en août quand les fruits sont bien dorés et se détachent facilement. Secouez l'arbre au-dessus d'un drap pour ramasser les mirabelles. Excellent pour confitures et tartes."
     },
     {
       "id": 7,
@@ -329,7 +371,14 @@
         "Reine-Claude verte",
         "Reine-Claude d'Oullins",
         "Reine-Claude de Bavay"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Bonne rusticité (-22 °C). La floraison peut souffrir des gelées tardives. Plantez en situation abritée et protégez avec un voile si nécessaire.",
+        "temperate": "Climat idéal, surtout dans la vallée de la Loire et le centre de la France. Plantez au soleil pour des fruits bien sucrés et parfumés.",
+        "hot": "Supporte la chaleur estivale. Arrosez régulièrement pour des fruits bien charnus. Les Reines-Claudes sont excellentes dans le sud de la France."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "La Reine-Claude dorée nécessite un pollinisateur (Mirabellier ou autre prunier). Récoltez quand le fruit est translucide et se détache facilement. C'est l'une des meilleures prunes de table. Taillez modérément en hiver."
     },
     {
       "id": 8,
@@ -373,7 +422,14 @@
       "popular_varieties": [
         "Prune d'Ente",
         "Prune d'Agen"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-18 °C). Sensible aux gelées tardives. Réservez-le aux zones où les hivers sont modérés. Protégez les jeunes arbres les premières années.",
+        "temperate": "Bien adapté au sud-ouest et au centre-ouest de la France. Le prunier d'Agen a besoin de chaleur estivale pour mûrir ses pruneaux. Plantez en plein soleil.",
+        "hot": "Excellent en climat chaud. La variété est originaire du sud-ouest et apprécie les étés longs et chauds pour le séchage des pruneaux. Arrosez en cas de sécheresse prolongée."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Le prunier d'Agen (variété Prune d'Ente) est autofertile. Pour faire des pruneaux, récoltez les fruits bien mûrs et séchez-les au four à 70 °C pendant 24 h. Taillez en gobelet aéré pour favoriser l'ensoleillement des fruits."
     },
     {
       "id": 9,
@@ -420,7 +476,14 @@
         "Satsuma",
         "Shiro",
         "Golden Japan"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-18 °C). Floraison très précoce (mars) très sensible aux gelées. Déconseillé en zone de montagne ou continental rude.",
+        "temperate": "Bonne adaptation. Attention aux gelées de mars sur la floraison. Plantez en exposition abritée et ensoleillée. Fruits abondants et précoces.",
+        "hot": "Très bien adapté au climat chaud. Les pruniers japonais sont originaires de régions chaudes et donnent d'excellents résultats dans le sud de la France."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Les pruniers japonais nécessitent un pollinisateur d'une autre variété japonaise. Éclaircissez les fruits en mai pour éviter la surproduction et l'alternance. Les fruits se consomment frais ou en confiture."
     },
     {
       "id": 10,
@@ -466,7 +529,14 @@
         "Sanguine",
         "Téton de Vénus",
         "Pêche de vigne"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-15 °C). Floraison précoce (mars) très sensible aux gelées. Réservez aux zones abritées en climat froid. Cultivez éventuellement en espalier contre un mur au sud.",
+        "temperate": "Bonne adaptation dans les régions à hiver doux. Plantez en situation abritée et ensoleillée. Traitez préventivement contre la cloque avec de la bouillie bordelaise en février.",
+        "hot": "Excellent en climat chaud, c'est son terrain de prédilection. Arrosez régulièrement en été pour des fruits bien juteux. Choisissez des variétés à faible besoin en froid pour le littoral méditerranéen."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Traitez impérativement contre la cloque du pêcher à la bouillie bordelaise au gonflement des bourgeons (février). Éclaircissez les fruits à 10 cm d'intervalle pour de belles pêches. Le pêcher est autofertile mais a une durée de vie courte (15-20 ans)."
     },
     {
       "id": 11,
@@ -511,7 +581,14 @@
         "Fantasia",
         "Morton",
         "Big Top"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-15 °C). Mêmes exigences que le pêcher. Floraison précoce très sensible aux gelées. Réservez aux zones abritées ou cultivez en espalier contre un mur au sud.",
+        "temperate": "Adaptation identique au pêcher. Plantez au soleil, abrité du vent. Le nectarinier est plus sensible aux maladies que le pêcher en climat humide.",
+        "hot": "Excellent en climat chaud et sec. Le nectarinier (peau lisse) est moins sensible à la moniliose qu'en climat humide. Arrosez régulièrement pour des fruits bien calibrés."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Les soins sont identiques au pêcher : traitement anti-cloque obligatoire en février, éclaircissage sévère. La peau lisse du nectarinier le rend plus sensible à l'éclatement en cas de pluie pendant la maturation. Récoltez à maturité, les fruits ne mûrissent plus après cueillette."
     },
     {
       "id": 12,
@@ -557,7 +634,14 @@
         "Rouge du Roussillon",
         "Polonais",
         "Orangered"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Le bois résiste à -20 °C mais la floraison très précoce (février-mars) est détruite par les gelées. Choisissez des variétés tardives (Bergeron, Polonais) et plantez contre un mur au sud en zone froide.",
+        "temperate": "Bonne adaptation dans la moitié sud de la zone tempérée. Protégez la floraison précoce des gelées tardives. La variété Bergeron est la plus cultivée pour sa floraison plus tardive.",
+        "hot": "Climat idéal, originaire d'Asie centrale à climat continental sec. L'abricotier prospère en Provence et dans le sud. Excellente production sans soin particulier."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes (amygdaline), ne pas consommer les amandes amères des noyaux.",
+      "practical_tips": "L'abricotier est généralement autofertile. Plantez-le en exposition plein sud, abritée du vent du nord. Taillez très peu car il cicatrise mal. Récoltez les abricots bien mûrs (ils ne mûrissent plus après cueillette)."
     },
     {
       "id": 13,
@@ -603,7 +687,14 @@
         "Rouge de Bordeaux",
         "Goutte d'Or",
         "Violette de Solliès"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -15 °C en sol drainé. Plantez contre un mur plein sud. Protégez le pied avec un épais paillis et enveloppez le tronc de voile d'hivernage les premières années. Variétés bifères risquent de perdre les figues-fleurs.",
+        "temperate": "Bonne adaptation en zone protégée. Plantez contre un mur ensoleillé pour accumuler la chaleur. Variétés Violette de Solliès, Brown Turkey ou Goutte d'Or sont recommandées.",
+        "hot": "Climat idéal. Le figuier donne deux récoltes (figues-fleurs en juin et figues d'automne). Arrosez à la nouaison pour de gros fruits. Peut devenir très grand : taillez pour contenir."
+      },
+      "toxicity": null,
+      "practical_tips": "Le figuier préfère un sol pauvre et bien drainé : un excès d'azote favorise le feuillage au détriment des fruits. Plantez contre un mur pour bénéficier de la chaleur réfléchie. Taillez en fin d'hiver pour maintenir un port compact."
     },
     {
       "id": 14,
@@ -649,7 +740,14 @@
         "Chasselas doré",
         "Chasselas de Moissac",
         "Chasselas rose"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-20 °C sur bois). Réputé en Suisse et Alsace pour sa résistance. En zone froide, palissez contre un mur plein sud et buttez le point de greffe en hiver.",
+        "temperate": "Climat idéal. Le Chasselas est le raisin de table classique de la France tempérée. Palissez sur un treillage ensoleillé. Récolte de septembre.",
+        "hot": "Bien adapté mais peut manquer d'acidité en zone très chaude. Récoltez avant surmaturité. Arrosez modérément pour des grappes bien formées."
+      },
+      "toxicity": null,
+      "practical_tips": "Le Chasselas est le cépage de table le plus anciennement cultivé en France (Moissac AOC). Taillez court en Guyot simple. Éclaircissez les grappes en juin pour des grains bien dorés. Ensachez les grappes pour les protéger des guêpes."
     },
     {
       "id": 15,
@@ -695,7 +793,14 @@
         "Muscat d'Alexandrie",
         "Muscat blanc",
         "Italia"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-15 °C). En zone froide, palissez contre un mur plein sud et protégez le cep en hiver. Les grains peuvent ne pas mûrir si l'été est trop court.",
+        "temperate": "Bonne adaptation dans les zones les plus chaudes du tempéré. Le Muscat a besoin de chaleur pour développer ses arômes caractéristiques.",
+        "hot": "Excellent en climat chaud. Le Muscat de Hambourg ou Muscat d'Alexandrie prospèrent dans le sud. Raisins dorés ou noirs très parfumés et sucrés."
+      },
+      "toxicity": null,
+      "practical_tips": "Les cépages Muscat ont besoin de chaleur pour développer leur arôme typique. Taillez court en hiver (2-3 yeux). Ensachez les grappes en véraison pour protéger des insectes et des oiseaux. Récoltez bien mûr pour un maximum de sucre."
     },
     {
       "id": 16,
@@ -739,7 +844,14 @@
       "container_min_size_l": 50,
       "popular_varieties": [
         "Cardinal"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Faible rusticité (-12 °C). Déconseillé en zone froide. Si tenté, palissez obligatoirement contre un mur plein sud et protégez le cep en hiver.",
+        "temperate": "Culture possible en zone tempérée chaude. Cardinal est un raisin précoce (août) qui peut mûrir en climat tempéré ensoleillé. Protégez des gelées printanières.",
+        "hot": "Très bien adapté. Le Cardinal est un raisin précoce d'origine californienne qui donne ses meilleurs résultats en climat chaud et sec."
+      },
+      "toxicity": null,
+      "practical_tips": "Le Cardinal est un raisin précoce (début août) à gros grains rouge violacé. Sensible au mildiou et à l'oïdium, traitez préventivement. Éclaircissez les grappes pour un beau calibre. Conservation limitée, consommez rapidement après récolte."
     },
     {
       "id": 17,
@@ -782,7 +894,14 @@
       "container_min_size_l": 60,
       "popular_varieties": [
         "Alphonse Lavallée"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-15 °C). En zone froide, palissez contre un mur plein sud et buttez le cep en hiver. La maturation tardive peut poser problème en cas d'automne frais.",
+        "temperate": "Bonne adaptation. Variété vigoureuse et productive. Taillez bien pour aérer les grappes et réduire les maladies cryptogamiques en climat humide.",
+        "hot": "Excellente adaptation. L'Alphonse Lavallée donne de grosses grappes de raisins noirs charnus, parfaits en raisin de table. Maturité en septembre-octobre."
+      },
+      "toxicity": null,
+      "practical_tips": "L'Alphonse Lavallée produit de très grosses grappes de raisins noirs. Éclaircissez sévèrement pour des grappes aérées et de gros grains. Sensible au mildiou : traitez à la bouillie bordelaise. Variété de mi-saison, récoltez en septembre."
     },
     {
       "id": 18,
@@ -825,7 +944,14 @@
       "popular_varieties": [
         "Dattier de Beyrouth",
         "Regina"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Faible rusticité (-10 °C). Réservez aux zones les plus douces. Culture sous serre recommandée en zone froide.",
+        "temperate": "Culture possible en zone très abritée. Mûrit tardivement (octobre), nécessite un long été chaud. Palissez contre un mur plein sud.",
+        "hot": "Très bien adapté. Le Dattier de Beyrouth produit de magnifiques grappes de gros raisins blancs allongés. Climat de prédilection méditerranéen."
+      },
+      "toxicity": null,
+      "practical_tips": "Le Dattier de Beyrouth est un raisin de table de luxe à très gros grains blancs allongés. Nécessite beaucoup de chaleur pour mûrir correctement. Éclaircissez sévèrement et ensachez les grappes. Sensible au mildiou."
     },
     {
       "id": 19,
@@ -868,7 +994,14 @@
       "popular_varieties": [
         "Italia",
         "Idéal"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Faible rusticité (-12 °C). Culture impossible en zone froide sans serre. Réservez aux zones à hiver très doux.",
+        "temperate": "Culture possible en zone abritée. L'Italia est un muscat tardif qui nécessite un long été chaud. Palissez contre un mur plein sud.",
+        "hot": "Climat idéal. L'Italia donne de magnifiques grappes de gros raisins dorés musqués en climat méditerranéen. Récolte d'octobre."
+      },
+      "toxicity": null,
+      "practical_tips": "L'Italia est un croisement Bicane x Muscat de Hambourg. Gros raisins dorés au goût musqué, excellents en table. Très sensible aux maladies cryptogamiques, traitez préventivement. Éclaircissez et ensachez les grappes."
     },
     {
       "id": 20,
@@ -909,7 +1042,14 @@
       "container_min_size_l": 50,
       "popular_varieties": [
         "Lival"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Bonne rusticité (-18 °C). Variété bien adaptée au nord de la France. Mûrit en août-septembre, suffisamment tôt pour les régions froides.",
+        "temperate": "Très bien adapté. Le Lival est une variété française (INRA) créée pour le climat tempéré. Bonne résistance aux maladies.",
+        "hot": "Bonne adaptation. Le Lival mûrit précocement et supporte bien la chaleur. Raisins noirs de bonne qualité."
+      },
+      "toxicity": null,
+      "practical_tips": "Le Lival est une variété française obtenue par l'INRA, adaptée aux conditions françaises. Gros raisins noirs sucrés, peu de pépins. Bonne résistance au mildiou. Taillez en Guyot simple ou double."
     },
     {
       "id": 21,
@@ -955,7 +1095,14 @@
         "Nero",
         "Phoenix",
         "Perdin"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Les variétés PIWI sont sélectionnées pour résister au froid et aux maladies. Idéales pour les zones continentales.",
+        "temperate": "Parfaitement adapté. Les variétés PIWI (Muscaris, Souvignier gris, Regent) sont spécialement créées pour le climat européen tempéré avec une résistance naturelle aux maladies.",
+        "hot": "Bonne adaptation. Les PIWI réduisent les traitements phytosanitaires même en climat chaud. Choisissez des variétés adaptées à votre zone."
+      },
+      "toxicity": null,
+      "practical_tips": "Les vignes PIWI (Pilzwiderstandsfähig = résistantes aux champignons) réduisent les traitements de 80 %. Variétés recommandées : Muscaris (blanc musqué), Souvignier gris (blanc), Regent (rouge). Taillez et palissez comme une vigne classique."
     },
     {
       "id": 22,
@@ -1001,7 +1148,14 @@
         "Parisienne",
         "Lara",
         "Fernor"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-25 °C) mais les gelées tardives d'avril détruisent la floraison. Choisissez des variétés à débourrement tardif (Franquette, Mayette) pour les zones froides.",
+        "temperate": "Climat idéal. Le noyer prospère dans toute la France tempérée. Plantez-le isolé (pas de jardin potager en dessous) car il produit de la juglone, toxique pour les autres plantes.",
+        "hot": "Bonne adaptation. Le noyer supporte la chaleur mais nécessite un arrosage régulier en été pour remplir les noix. La variété Lara convient bien au sud."
+      },
+      "toxicity": null,
+      "practical_tips": "Le noyer émet de la juglone par ses racines, toxique pour les tomates, pommes de terre et de nombreuses plantes : plantez-le à 15 m minimum du potager. Récoltez les noix quand le brou s'ouvre et que les noix tombent. Séchez-les au grenier 3 semaines."
     },
     {
       "id": 23,
@@ -1046,7 +1200,14 @@
         "Fertile de Coutard",
         "Merveille de Bollwiller",
         "Corabel"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-30 °C). Le noisetier pousse spontanément dans toute la France. Attention : la floraison hivernale (janvier-février) peut être compromise par le gel des chatons.",
+        "temperate": "Parfaitement adapté. Plantez deux variétés pour la pollinisation croisée (ex. Fertile de Coutard + Corabel). Haie fruitière idéale.",
+        "hot": "Supporte la chaleur mais souffre de sécheresse prolongée. Arrosez en été pour un bon remplissage des noisettes. Paillez abondamment."
+      },
+      "toxicity": null,
+      "practical_tips": "Plantez impérativement deux variétés différentes pour la pollinisation croisée (le noisetier est autostérile). Supprimez régulièrement les drageons pour maintenir 6-8 tiges principales. Récoltez quand les noisettes sont brunes et tombent au sol."
     },
     {
       "id": 24,
@@ -1091,7 +1252,14 @@
         "Marigoule",
         "Bouche de Bétizac",
         "Comballe"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-20 °C). Le châtaignier craint les sols calcaires et les hivers humides plus que le froid. Plantez en sol acide et bien drainé.",
+        "temperate": "Bien adapté en sol acide. Le châtaignier est un arbre majestueux qui nécessite beaucoup d'espace. Production de châtaignes après 8-10 ans.",
+        "hot": "Bonne adaptation sur les coteaux méditerranéens en sol acide. Le châtaignier est traditionnellement cultivé en Corse, en Ardèche et dans les Cévennes. Arrosez en été les premières années."
+      },
+      "toxicity": null,
+      "practical_tips": "Le châtaignier exige un sol acide (pH 5-6,5). Plantez deux variétés pour la pollinisation. Récoltez les châtaignes tombées au sol entre octobre et novembre. Surveillez le chancre de l'écorce et le cynips du châtaignier."
     },
     {
       "id": 25,
@@ -1135,7 +1303,14 @@
         "Ferragnes",
         "Lauranne",
         "All-in-One"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Le bois résiste à -15 °C mais la floraison très précoce (février) est détruite par les gelées. Déconseillé en zone froide sauf variétés très tardives (Lauranne, Ferragnès).",
+        "temperate": "Possible en zone tempérée douce. Plantez en exposition plein sud, abritée du vent du nord. Choisissez des variétés à floraison tardive. La production reste aléatoire.",
+        "hot": "Climat idéal. L'amandier est un arbre méditerranéen qui prospère dans le sud de la France. Sol drainé, plein soleil. Excellente production sans entretien particulier."
+      },
+      "toxicity": "Les variétés d'amandier amer produisent des amandes contenant de l'amygdaline, un composé toxique. Ne cultivez que des variétés douces (Ferragnès, Lauranne, Ferraduel) pour la consommation.",
+      "practical_tips": "Plantez deux variétés pour la pollinisation croisée (ex. Ferragnès + Ferraduel). L'amandier déteste l'humidité stagnante : sol très drainé impératif. Récoltez en septembre quand le brou s'ouvre. Séchez les amandes au soleil 2-3 jours."
     },
     {
       "id": 26,
@@ -1181,7 +1356,14 @@
         "Picholine",
         "Lucques",
         "Arbequina"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -12 °C brièvement mais souffre dès -8 °C prolongé. En zone froide, cultivez en pot (rentrez en véranda hors gel l'hiver) ou plantez contre un mur plein sud très abrité. Variétés Aglandau et Bouteillan sont les plus rustiques.",
+        "temperate": "Culture possible dans les régions les plus douces (Loire, sud Bretagne) avec des variétés rustiques. Plantez en sol très drainé et exposition plein sud. La production sera irrégulière.",
+        "hot": "Climat de prédilection. L'olivier prospère en Provence, Languedoc, Corse. Un seul arrosage copieux par mois suffit en été. Taillez après la récolte pour maintenir la forme."
+      },
+      "toxicity": null,
+      "practical_tips": "L'olivier nécessite un sol très bien drainé : évitez absolument les sols lourds et humides en hiver. Plantez au moins deux variétés pour la pollinisation. Récoltez les olives vertes en septembre ou noires en décembre. Traitez contre la mouche de l'olive en été."
     },
     {
       "id": 27,
@@ -1223,7 +1405,14 @@
       "popular_varieties": [
         "Wonderful",
         "Mollar de Elche"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -12 °C brièvement. En zone froide, cultivez exclusivement en pot (50 L) à rentrer en hiver dans un local lumineux hors gel. La fructification est compromise sous climat froid.",
+        "temperate": "Culture possible en zone très abritée. Le grenadier a besoin de chaleur estivale (>30 °C) pour mûrir ses fruits. Palissez contre un mur plein sud. La production est aléatoire.",
+        "hot": "Climat idéal. Le grenadier donne des fruits excellents en Provence, Corse et littoral méditerranéen. Arrosez régulièrement pendant la fructification pour éviter l'éclatement."
+      },
+      "toxicity": null,
+      "practical_tips": "Le grenadier est souvent autofertile mais produit mieux avec pollinisation croisée. Arrosez régulièrement pendant la croissance des fruits pour éviter l'éclatement. Récoltez quand l'écorce commence à se fissurer légèrement. Taillez en fin d'hiver pour aérer la ramure."
     },
     {
       "id": 28,
@@ -1268,7 +1457,14 @@
         "Champion",
         "Vranja",
         "Portugal"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résistant jusqu'à -25 °C mais la floraison tardive le protège naturellement. Plantez en situation abritée pour profiter au maximum de la chaleur estivale nécessaire à la maturation des coings.",
+        "temperate": "Climat parfait. Le cognassier est peu exigeant et très rustique. Offrez-lui un sol profond et un emplacement ensoleillé pour des coings bien parfumés.",
+        "hot": "Supporte bien la chaleur mais a besoin d'eau en été pour grossir les fruits. Paillez abondamment. Les coings mûrissent plus vite et sont plus aromatiques en climat chaud."
+      },
+      "toxicity": null,
+      "practical_tips": "Le cognassier est souvent autofertile mais la production augmente avec un pollinisateur. Récoltez les coings avant les premières gelées, quand ils sont bien jaunes et parfumés. Taillez légèrement en hiver pour maintenir un port aéré."
     },
     {
       "id": 29,
@@ -1311,7 +1507,14 @@
         "Fuyu",
         "Hachiya",
         "Rojo Brillante"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Le bois résiste à -15 °C mais les fruits mûrissent très tard (novembre). En zone froide, choisissez des variétés non astringentes précoces (Fuyu) ou récoltez avant gel et faites mûrir à l'intérieur.",
+        "temperate": "Bonne adaptation. Le kaki est de plus en plus cultivé en France. Plantez au soleil, en sol drainé. Variétés Fuyu (non astringent) ou Muscat (astringent) recommandées.",
+        "hot": "Excellent en climat méditerranéen. Le kaki mûrit parfaitement et les fruits atteignent un brix élevé. Production abondante sans soin particulier."
+      },
+      "toxicity": "Les fruits non mûrs sont très astringents (forte concentration en tanins) et peuvent causer des désagréments digestifs. Attendre la pleine maturité ou le blettissement pour les variétés astringentes.",
+      "practical_tips": "Les variétés astringentes (Hachiya) doivent être consommées blettes (molles et translucides). Les variétés non astringentes (Fuyu) se croquent fermes comme une pomme. Le kaki a très peu de maladies et parasites. Taillez légèrement en hiver."
     },
     {
       "id": 30,
@@ -1353,7 +1556,14 @@
       "popular_varieties": [
         "Monstrueuse d'Evreinoff",
         "Nottingham"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Les nèfles se récoltent après les premières gelées, ce qui convient parfaitement au climat froid. Arbre sans entretien particulier en zone continentale.",
+        "temperate": "Arbre idéal, quasiment sans entretien. Plantez en sol profond et récoltez après les gelées ou faites blettir les fruits au cellier.",
+        "hot": "Pousse bien en climat chaud mais les nèfles doivent blettir artificiellement (au réfrigérateur 2 semaines) en l'absence de gel. Plantez en mi-ombre pour éviter le stress hydrique."
+      },
+      "toxicity": null,
+      "practical_tips": "Le néflier commun nécessite très peu de taille. Les nèfles ne se consomment qu'après blettissement (ramollissement par le gel ou conservation au frais). Arbre ornemental en plus d'être fruitier, il mérite une place de choix au jardin."
     },
     {
       "id": 31,
@@ -1396,7 +1606,14 @@
         "Tanaka",
         "Champagne",
         "Early Red"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -10 °C sur bois mais fleurit en automne-hiver : les fleurs et fruits gèlent dès -2 °C. En zone froide, arbre purement ornemental.",
+        "temperate": "Culture ornementale dans la plupart des régions. La fructification n'est possible qu'en façade maritime douce (sud Bretagne, Pays basque). Plantez à l'abri.",
+        "hot": "Climat idéal. Le néflier du Japon fructifie bien en zone méditerranéenne avec des fruits mûrs dès mai-juin. Arbre ornemental magnifique aux grandes feuilles coriaces."
+      },
+      "toxicity": null,
+      "practical_tips": "Le néflier du Japon fleurit en automne et fructifie au printemps (cycle inversé). Les fruits (bibaces) se consomment frais, bien mûrs. Arbre à feuillage persistant très ornemental. Taillez après la récolte pour maintenir le port."
     },
     {
       "id": 32,
@@ -1439,7 +1656,14 @@
         "Sunflower",
         "Prima",
         "Shenandoah"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Malgré ses fruits tropicaux, l'asiminier est un arbre nord-américain résistant au froid. Parfaitement adapté au climat continental.",
+        "temperate": "Excellente adaptation. L'asiminier donne des fruits exotiques (goût mangue-banane) en plein climat tempéré. Plantez en sol frais et riche. Protégez du vent.",
+        "hot": "Bonne adaptation mais l'asiminier a besoin de fraîcheur au pied. Arrosez régulièrement et paillez abondamment. Évitez les sols secs et calcaires."
+      },
+      "toxicity": null,
+      "practical_tips": "L'asiminier est le plus grand arbre fruitier d'Amérique du Nord. Plantez deux variétés pour la pollinisation (ex. Sunflower + Prima). Les fruits ont une saveur tropicale (mangue-banane) unique. La pollinisation est assurée par les mouches : ne traitez pas pendant la floraison."
     },
     {
       "id": 33,
@@ -1482,7 +1706,14 @@
         "Mammoth",
         "Triumph",
         "Coolidge"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -12 °C brièvement. En zone froide, cultivez en pot (50 L) et hivernez en véranda hors gel. Le feijoa ne fructifie pas sans chaleur estivale.",
+        "temperate": "Culture en pleine terre possible en zone douce (façade atlantique, sud-ouest). Plantez en situation abritée et ensoleillée. Fructification aléatoire certaines années.",
+        "hot": "Très bien adapté. Le feijoa donne des fruits savoureux (goût goyave-ananas) en climat méditerranéen. Arbuste persistant ornemental."
+      },
+      "toxicity": null,
+      "practical_tips": "Le feijoa (goyavier du Brésil) produit des fruits à la saveur unique entre goyave et ananas. Les pétales de fleurs sont comestibles et sucrés. Plantez deux variétés pour la pollinisation (Mammoth + Triumph). Récoltez les fruits tombés au sol."
     },
     {
       "id": 34,
@@ -1526,7 +1757,14 @@
         "Hayward",
         "Tomuri",
         "Solo"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -15 °C sur bois mais les jeunes pousses gèlent dès -1 °C au printemps. En zone froide, plantez contre un mur abrité et protégez les pousses au débourrement (mai).",
+        "temperate": "Bonne adaptation. Le kiwi a besoin de 200 jours sans gel pour mûrir ses fruits. Plantez 1 mâle pour 5-6 femelles. Support solide indispensable (pergola, treillage).",
+        "hot": "Attention au stress hydrique : le kiwi a de grands besoins en eau. Arrosez très régulièrement et paillez épais. Ombrez le feuillage si canicule prolongée."
+      },
+      "toxicity": null,
+      "practical_tips": "Le kiwi est dioïque : plantez impérativement 1 pied mâle pollinisateur pour 5-6 pieds femelles. Installez un support très solide (la liane peut peser plus de 100 kg). Taillez en hiver (janvier) et en été (pincement des pousses). Récoltez avant les premières gelées."
     },
     {
       "id": 35,
@@ -1569,7 +1807,14 @@
         "Issaï",
         "Ken's Red",
         "Geneva"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-30 °C). Bien plus résistant que le kiwi classique. Attention : les jeunes pousses restent sensibles au gel tardif. Parfait pour les zones froides.",
+        "temperate": "Excellente adaptation. Le kiwaï est le kiwi des régions fraîches. Petits fruits lisses à manger sans éplucher. Support solide nécessaire.",
+        "hot": "Supporte la chaleur mais préfère la fraîcheur. Arrosez abondamment et paillez. Les fruits peuvent manquer d'acidité en zone très chaude."
+      },
+      "toxicity": null,
+      "practical_tips": "Le kiwaï (Actinidia arguta) produit des mini-kiwis lisses à croquer entiers. Dioïque : 1 mâle pour 6 femelles (variété Issaï est autofertile). Liane très vigoureuse, taillez sévèrement en hiver. Récoltez les fruits quand ils sont souples au toucher."
     },
     {
       "id": 36,
@@ -1614,7 +1859,14 @@
         "Zeva",
         "Marastar",
         "Meeker"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-30 °C). Le framboisier est originaire des sous-bois frais et supporte sans problème les hivers rigoureux. Protégez les cannes des vents desséchants.",
+        "temperate": "Climat idéal. Le framboisier prospère en sol frais et humifère. Paillez abondamment. Variétés remontantes (Heritage, Autumn Bliss) pour une récolte de juin à octobre.",
+        "hot": "Souffre de la chaleur excessive. Plantez à mi-ombre, en sol frais, et arrosez régulièrement. Paillez épais (10 cm). Les variétés remontantes se comportent mieux en supprimant la récolte de juin."
+      },
+      "toxicity": null,
+      "practical_tips": "Distinguez les variétés remontantes (produisent sur les cannes de l'année, taillez ras en hiver) et non remontantes (produisent sur le bois d'un an, taillez les cannes ayant fructifié). Paillez avec du BRF ou des feuilles mortes. Le framboisier drageonne beaucoup, limitez son extension."
     },
     {
       "id": 37,
@@ -1658,7 +1910,14 @@
         "Triple Crown",
         "Loch Ness",
         "Thornfree"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-20 °C). Les variétés cultivées sans épines (Thornfree, Loch Ness) résistent bien au froid. Protégez les tiges de l'année des vents glacés.",
+        "temperate": "Très bien adapté. Palissez sur un fil de fer le long d'un mur ou d'une clôture. Récolte abondante d'août à octobre. Variétés sans épines très pratiques.",
+        "hot": "Bonne adaptation. Les mûres mûrissent plus tôt et sont très sucrées en climat chaud. Arrosez régulièrement pour de gros fruits juteux. Plantez à mi-ombre si fortes chaleurs."
+      },
+      "toxicity": null,
+      "practical_tips": "Choisissez des variétés sans épines (Thornfree, Loch Ness, Triple Crown) pour le confort de récolte. Palissez sur des fils de fer horizontaux espacés de 40 cm. Taillez les tiges ayant fructifié après la récolte. Le mûrier cultivé est autofertile et très productif."
     },
     {
       "id": 38,
@@ -1703,7 +1962,14 @@
         "Jonkheer van Tets",
         "Rovada",
         "Junifer"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). Le groseillier est parfaitement adapté au froid. Arbre de climat frais par excellence, il donne ses meilleurs résultats en zone froide.",
+        "temperate": "Excellente adaptation. Plantez en mi-ombre ou soleil léger, en sol frais et humifère. Production abondante en grappes rouges brillantes.",
+        "hot": "Souffre de la chaleur excessive. Plantez impérativement à mi-ombre, en sol frais. Paillez et arrosez abondamment. Les fruits peuvent manquer d'acidité en zone très chaude."
+      },
+      "toxicity": null,
+      "practical_tips": "Le groseillier rouge produit sur le bois de 2-3 ans : ne taillez pas tout le vieux bois d'un coup. Renouvelez 1/3 des branches les plus vieilles chaque hiver. Récoltez les grappes entières avec des ciseaux. Excellent pour les gelées et les confitures."
     },
     {
       "id": 39,
@@ -1748,7 +2014,14 @@
         "Noir de Bourgogne",
         "Géant de Boskoop",
         "Titania"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). Le cassis est le fruit des régions froides par excellence (Bourgogne, nord de la France). Parfaitement adapté aux hivers rigoureux.",
+        "temperate": "Très bien adapté. Plantez en mi-ombre à soleil léger. Le cassis a besoin de fraîcheur au pied. Variétés Noir de Bourgogne et Andega recommandées.",
+        "hot": "Mal adapté à la chaleur. Le cassissier souffre dès 30 °C. En zone chaude, plantez à l'ombre claire et arrosez abondamment. La production sera médiocre."
+      },
+      "toxicity": null,
+      "practical_tips": "Le cassis est très riche en vitamine C (3 fois plus que l'orange). Récoltez les grappes entières quand tous les grains sont noirs et brillants. Taillez chaque hiver en supprimant les branches de plus de 3 ans. Excellent en confiture, sirop (crème de cassis) et gelée."
     },
     {
       "id": 40,
@@ -1792,7 +2065,14 @@
         "Invicta",
         "Captivator",
         "Hinnonmaki"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Parfaitement adapté aux climats froids. Production excellente même en zone de montagne.",
+        "temperate": "Très bien adapté. Plantez en mi-ombre pour éviter l'échaudage des fruits. Sol frais et humifère. Variétés sans épines disponibles (Captivator, Invicta).",
+        "hot": "Souffre de la chaleur. Plantez à l'ombre et arrosez régulièrement. Le groseillier à maquereau est une plante de climat frais, la culture est difficile en zone méditerranéenne."
+      },
+      "toxicity": null,
+      "practical_tips": "Les groseilles à maquereau se récoltent vertes (acidulées, pour la cuisine) ou mûres (sucrées, pour le frais). Portez des gants pour la récolte si variété épineuse. Taillez chaque hiver en aérant le centre du buisson. Sensible au mildiou américain."
     },
     {
       "id": 41,
@@ -1837,7 +2117,14 @@
         "Duke",
         "Darrow",
         "Pink Lemonade"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Le myrtillier est parfaitement adapté aux hivers froids. Il a besoin de froid hivernal (>700 h < 7 °C) pour bien fructifier.",
+        "temperate": "Bonne adaptation en sol acide (pH 4,5-5,5). Le myrtillier exige un sol acide : plantez en terre de bruyère ou en bac avec substrat acide. Mi-ombre à soleil léger.",
+        "hot": "Difficile en zone chaude. Le myrtillier souffre de chaleur et de sécheresse. Choisissez des variétés Southern Highbush (Sunshine Blue, O'Neal) à faible besoin en froid."
+      },
+      "toxicity": null,
+      "practical_tips": "Le myrtillier exige impérativement un sol acide (pH 4,5-5,5). Arrosez à l'eau de pluie (pas d'eau calcaire). Paillez avec de l'écorce de pin ou des aiguilles de pin. Plantez deux variétés pour améliorer la pollinisation et étaler la récolte."
     },
     {
       "id": 42,
@@ -1880,7 +2167,14 @@
         "Leikora",
         "Pollmix",
         "Friesdorfer Orange"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-40 °C). L'un des arbustes fruitiers les plus résistants au froid. Supporte les vents violents et les embruns. Parfait en zone de montagne.",
+        "temperate": "Très bien adapté. L'argousier est un arbuste pionnier robuste. Plantez en plein soleil, sol bien drainé, même pauvre et sableux.",
+        "hot": "Supporte la chaleur et la sécheresse. L'argousier est un arbuste côtier qui tolère bien les conditions difficiles. Bien adapté au climat méditerranéen venteux."
+      },
+      "toxicity": null,
+      "practical_tips": "L'argousier est dioïque : plantez 1 mâle pour 4-6 femelles. Les baies sont très riches en vitamine C (30 fois l'orange). Récoltez en coupant les branches fructifères (les épines rendent la cueillette à la main très difficile) ou congelez puis secouez."
     },
     {
       "id": 43,
@@ -1922,7 +2216,14 @@
       "popular_varieties": [
         "Sweet Lifeberry",
         "Big Lifeberry"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Le goji est originaire des hauts plateaux himalayens et supporte bien le froid. Bonne adaptation en zone continentale.",
+        "temperate": "Bien adapté. Le goji est un arbuste vigoureux qui peut devenir envahissant. Plantez en sol drainé, au soleil. Palissez les branches retombantes.",
+        "hot": "Excellent en climat chaud et sec, son milieu d'origine. Le goji supporte la sécheresse et la chaleur. Production abondante de baies rouges."
+      },
+      "toxicity": null,
+      "practical_tips": "Le goji est un arbuste sarmenteux aux branches retombantes : palissez-le sur un support ou taillez régulièrement. Les baies se récoltent bien rouges de août à octobre. Séchez-les au soleil ou au déshydrateur. Attention : l'arbuste peut devenir envahissant par drageons."
     },
     {
       "id": 44,
@@ -1965,7 +2266,14 @@
         "Haschberg",
         "Black Lace",
         "Sampo"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Arbre des haies et lisières, parfaitement adapté au froid. Pousse spontanément dans toute la France jusqu'en montagne.",
+        "temperate": "Climat idéal. Le sureau noir pousse vigoureusement partout. Utilisez les fleurs en beignets et les baies cuites en confiture, sirop ou vin.",
+        "hot": "Bonne adaptation. Le sureau noir supporte la chaleur s'il a les pieds au frais. Plantez en sol frais ou arrosez en été. Production abondante."
+      },
+      "toxicity": "Toutes les parties vertes (feuilles, tiges, écorce) et les baies crues contiennent de la sambunigrine (glycoside cyanogène). Les baies doivent impérativement être cuites avant consommation. Les fleurs sont comestibles crues.",
+      "practical_tips": "Ne consommez jamais les baies de sureau crues : la cuisson détruit la sambunigrine. Les fleurs se récoltent en juin pour les beignets et le sirop. Les baies se récoltent en grappes en septembre et se cuisent en confiture, sirop ou gelée. Taillez sévèrement chaque hiver pour contenir la croissance."
     },
     {
       "id": 45,
@@ -2008,7 +2316,14 @@
         "Viking",
         "Nero",
         "Hugin"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). L'aronia est un arbuste nord-américain qui résiste aux hivers les plus rudes. Parfaitement adapté aux zones froides.",
+        "temperate": "Très bien adapté. Arbuste ornemental et fruitier : beau feuillage automnal rouge vif et baies noires riches en antioxydants.",
+        "hot": "Bonne adaptation. L'aronia supporte la chaleur et une certaine sécheresse. Arrosez néanmoins en été pour une bonne production."
+      },
+      "toxicity": null,
+      "practical_tips": "L'aronia est un superfruit très riche en antioxydants (plus que la myrtille). Les baies sont très astringentes crues, consommez-les en jus, confiture ou séchées. Arbuste sans entretien, résistant aux maladies. Magnifique feuillage automnal rouge."
     },
     {
       "id": 46,
@@ -2051,7 +2366,14 @@
         "Jolico",
         "Kazanlak",
         "Schönbrunner Gourmet"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Arbuste indigène robuste qui pousse spontanément dans l'est de la France. Floraison jaune très précoce (février-mars), résistante au gel.",
+        "temperate": "Parfaitement adapté. Le cornouiller mâle est un arbuste traditionnel des haies champêtres. Pousse en tout sol, même calcaire.",
+        "hot": "Bonne adaptation. Supporte la chaleur et une sécheresse modérée. Les cornouilles mûrissent mieux en climat chaud."
+      },
+      "toxicity": null,
+      "practical_tips": "Les cornouilles se récoltent en août-septembre quand elles sont rouge foncé et ramollies. Excellentes en confiture, gelée ou alcool (ratafia). Arbre à croissance lente mais très longévif. Bois extrêmement dur, utilisé traditionnellement pour les manches d'outils."
     },
     {
       "id": 47,
@@ -2092,7 +2414,14 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Stanley"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Excellente variété pour les régions froides. Autofertile et très productive, elle résiste aux hivers rigoureux sans problème.",
+        "temperate": "Parfaitement adapté. Variété de référence pour les pruneaux en climat tempéré. Très productive et régulière. Plantez au soleil dans un sol bien drainé.",
+        "hot": "Supporte la chaleur. Les prunes mûrissent plus tôt en climat chaud. Arrosez pour éviter la chute des fruits avant maturité."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Stanley est autofertile et très productive, parfois trop : éclaircissez si nécessaire pour éviter l'alternance. Excellente variété polyvalente pour le frais, les confitures et les pruneaux. Récoltez fin août-septembre quand le fruit est violet foncé et souple."
     },
     {
       "id": 48,
@@ -2133,7 +2462,14 @@
       "container_min_size_l": 70,
       "popular_varieties": [
         "Opal"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Variété suédoise parfaitement adaptée aux climats froids. Floraison tardive qui échappe aux gelées.",
+        "temperate": "Excellente adaptation. Prune précoce (fin juillet) très parfumée. Arbre vigoureux et régulier dans sa production.",
+        "hot": "Peut manquer de saveur en climat trop chaud. Préférez d'autres variétés pour le sud de la France."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Opal est partiellement autofertile mais la production augmente avec un pollinisateur (Stanley, Victoria). Variété très précoce, première prune de la saison. Récoltez quand le fruit est bien coloré et légèrement souple."
     },
     {
       "id": 49,
@@ -2174,7 +2510,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Victoria"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Bonne rusticité (-25 °C). Variété anglaise bien adaptée aux hivers froids. Autofertile et productive même en conditions difficiles.",
+        "temperate": "Parfaitement adapté. Victoria est la variété la plus populaire au Royaume-Uni, très productive en climat océanique à tempéré. Idéale pour la cuisson et les confitures.",
+        "hot": "Supporte la chaleur mais peut être sujette aux coups de soleil sur les fruits. Arrosez régulièrement en été."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Victoria est autofertile et très productive. Étayez les branches chargées de fruits pour éviter les cassures. Excellent pour la cuisson, les confitures et les conserves. Sensible au silver leaf, désinfectez les outils de taille."
     },
     {
       "id": 50,
@@ -2215,7 +2558,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Président"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Bonne rusticité (-25 °C). Variété tardive qui bénéficie d'un automne prolongé pour mûrir. En zone froide, les fruits peuvent ne pas mûrir certaines années.",
+        "temperate": "Bien adapté. Variété tardive (octobre) qui nécessite un long été. Très gros fruits de bonne qualité pour le frais et la cuisson.",
+        "hot": "Excellent en climat chaud où la longue saison permet une parfaite maturation. Arrosez en été pour des fruits bien charnus."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Président est partiellement autofertile. Variété tardive à très gros fruits, idéale pour prolonger la saison de récolte jusqu'en octobre. Tuteurez les branches très chargées. Les fruits se conservent bien au réfrigérateur."
     },
     {
       "id": 51,
@@ -2257,7 +2607,14 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Sainte-Catherine"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Bonne rusticité (-25 °C). Variété traditionnelle française bien adaptée aux hivers froids. Originaire de Lorraine, elle est sélectionnée pour les climats continentaux.",
+        "temperate": "Parfaitement adapté. Variété ancienne très appréciée pour les confitures et les pruneaux. Production régulière et abondante.",
+        "hot": "Supporte la chaleur. Les prunes seront plus sucrées mais la variété n'est pas spécifiquement adaptée au climat méditerranéen."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Sainte-Catherine est autofertile. Variété patrimoniale excellente pour les confitures et les pruneaux secs. Récoltez fin septembre quand les prunes sont bien jaunes et ridées. Taillez modérément en hiver."
     },
     {
       "id": 52,
@@ -2298,7 +2655,14 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Black Amber"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-18 °C). Prunier japonais sensible aux gelées printanières. Réservez aux zones à hiver doux.",
+        "temperate": "Bonne adaptation dans les régions à hiver modéré. Belle prune noire à chair ferme. Protégez la floraison précoce des gelées.",
+        "hot": "Très bien adapté au climat chaud. Cette variété américano-japonaise donne ses meilleurs résultats en zone chaude et ensoleillée."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Black Amber nécessite un pollinisateur japonais (Santa Rosa, Shiro). Gros fruits noirs à chair jaune, ferme et croquante. Éclaircissez les fruits pour un bon calibre. Récoltez de mi-juillet à mi-août."
     },
     {
       "id": 53,
@@ -2339,7 +2703,14 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Shiro"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-18 °C). Floraison précoce sensible aux gelées. Réservez aux zones à hiver doux ou plantez en situation très abritée.",
+        "temperate": "Bonne adaptation. Shiro produit de jolies prunes jaunes rondes, douces et juteuses. Protégez la floraison de mars des gelées tardives.",
+        "hot": "Excellent en climat chaud. Shiro est une variété japonaise qui donne ses meilleurs fruits en plein soleil et chaleur estivale."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Shiro est partiellement autofertile mais bénéficie d'un pollinisateur (Santa Rosa, Satsuma). Prune précoce jaune, très douce et juteuse, idéale pour le frais. Arbre très productif, éclaircissez pour éviter la surcharge."
     },
     {
       "id": 54,
@@ -2380,7 +2751,14 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Santa Rosa"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-18 °C). Floraison précoce très sensible aux gelées. Déconseillé en zone continentale rude.",
+        "temperate": "Bonne adaptation en zone à hiver doux. Variété de référence parmi les pruniers japonais. Gros fruits rouges à chair jaune acidulée.",
+        "hot": "Excellente adaptation. Santa Rosa est originaire de Californie et donne ses meilleurs résultats en climat chaud et sec. Production abondante dans le sud de la France."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Santa Rosa est partiellement autofertile. Variété de référence pour les pruniers japonais en France. Gros fruits à peau pourpre et chair jaune parfumée. Récoltez en juillet-août. Excellent pollinisateur pour les autres variétés japonaises."
     },
     {
       "id": 55,
@@ -2421,7 +2799,14 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Satsuma"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rusticité moyenne (-18 °C). Floraison précoce à protéger des gelées. Réservez aux zones abritées en climat froid.",
+        "temperate": "Bonne adaptation. Satsuma est apprécié pour sa chair rouge sang unique. Protégez la floraison des gelées tardives.",
+        "hot": "Très bien adapté. Variété japonaise qui apprécie la chaleur. Les fruits développent une couleur et un goût intenses sous le soleil du sud."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Satsuma nécessite un pollinisateur (Santa Rosa, Shiro). Remarquable par sa chair rouge sang, idéale pour les confitures colorées. Fruit à noyau adhérent, mieux consommé frais ou en confiture. Récoltez en août."
     },
     {
       "id": 56,
@@ -2462,7 +2847,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Myrobolan"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Arbre extrêmement résistant, souvent utilisé comme porte-greffe. Parfait pour les zones froides.",
+        "temperate": "Parfaitement adapté. Le myrobolan est un arbre robuste, ornemental au printemps (floraison blanche abondante) et productif en été avec de petits fruits.",
+        "hot": "Bien adapté, supporte la sécheresse une fois établi. Utilisé comme porte-greffe dans le sud. Les petits fruits sont comestibles en confiture."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Le myrobolan est principalement utilisé comme porte-greffe pour les pruniers et les abricotiers. Ses petits fruits jaunes ou rouges font d'excellentes confitures. Arbre très rustique et sans entretien, bon pollinisateur pour les autres pruniers."
     },
     {
       "id": 57,
@@ -2503,7 +2895,14 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Damassine"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Bonne rusticité (-25 °C). Variété traditionnelle des campagnes de l'est de la France. Bien adaptée au climat continental.",
+        "temperate": "Bien adapté. Petit prunier rustique et productif. Fruits petits mais très parfumés, traditionnellement utilisés pour l'eau-de-vie (damassine du Jura).",
+        "hot": "Peut se cultiver dans le sud mais ce n'est pas son climat de prédilection. Les damassines sont des fruits de terroir frais."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "La Damassine est un prunier rustique autofertile. Petits fruits très aromatiques, traditionnellement distillés en eau-de-vie dans le Jura et la Franche-Comté. Arbre peu exigeant nécessitant très peu de taille."
     },
     {
       "id": 58,
@@ -2545,7 +2944,14 @@
       "popular_varieties": [
         "Lang",
         "Li"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-20 °C) mais nécessite de la chaleur estivale pour fructifier. En zone froide, les fruits mûrissent rarement. Plantez contre un mur plein sud.",
+        "temperate": "Culture possible dans les zones les plus chaudes. Le jujubier a besoin de chaleur pour mûrir ses fruits. Débourrement très tardif (mai), ce qui le protège des gelées.",
+        "hot": "Climat idéal. Le jujubier prospère en Provence et dans le sud. Très résistant à la sécheresse une fois établi. Production de jujubes sucrées en septembre-octobre."
+      },
+      "toxicity": null,
+      "practical_tips": "Le jujubier débourre très tard (mai-juin), ne vous inquiétez pas s'il semble mort au printemps. Très résistant à la sécheresse et aux sols pauvres. Les jujubes se consomment fraîches ou séchées (goût de datte). Attention aux épines acérées sur les rameaux."
     },
     {
       "id": 59,
@@ -2589,7 +2995,14 @@
         "Kosui",
         "Nijisseiki",
         "Hosui"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Bonne rusticité (-20 °C). Protégez la floraison précoce des gelées tardives. Le nashi apprécie un été suffisamment chaud pour bien mûrir, ce qui peut manquer en zone de montagne.",
+        "temperate": "Climat bien adapté. Plantez au soleil et assurez un arrosage régulier en été pour des fruits juteux. Éclaircissez sévèrement pour obtenir de gros fruits.",
+        "hot": "Le nashi supporte la chaleur mais nécessite un arrosage soutenu. Paillez généreusement. Les variétés Hosui et Shinseiki sont bien adaptées au sud de la France."
+      },
+      "toxicity": null,
+      "practical_tips": "Plantez deux variétés pour la pollinisation croisée (Hosui + Shinseiki par exemple). Éclaircissez à un fruit par bouquet en mai-juin. Récoltez quand le fruit se détache facilement à la torsion."
     },
     {
       "id": 60,
@@ -2634,7 +3047,14 @@
         "Douce Moën",
         "Kermerrien",
         "Bedan"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C), parfaitement adapté aux hivers rigoureux. Les variétés cidricoles normandes et bretonnes sont sélectionnées pour les climats frais et humides.",
+        "temperate": "Climat optimal, notamment en Normandie et en Bretagne. Laissez l'arbre en haute tige dans un pré-verger. Peu d'entretien nécessaire une fois établi.",
+        "hot": "Moins adapté au climat chaud et sec. Si cultivé dans le sud, arrosez régulièrement et choisissez des variétés à maturation précoce. Les pommes à cidre ont besoin de fraîcheur pour développer leurs arômes."
+      },
+      "toxicity": null,
+      "practical_tips": "Plantez plusieurs variétés (douces, amères, acidulées) pour un cidre équilibré. Laissez les pommes tomber naturellement avant de les ramasser. Un pommier à cidre adulte en haute tige peut produire 100 kg de fruits."
     },
     {
       "id": 61,
@@ -2677,7 +3097,14 @@
       "popular_varieties": [
         "Plant de Blanc",
         "Fausset"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-20 °C). Arbre vigoureux qui supporte bien les hivers froids. Traditionnellement cultivé dans les régions fraîches de Normandie et du Maine.",
+        "temperate": "Climat idéal, surtout en Normandie et dans les Pays de la Loire. Plantez en haute tige dans un pré-verger. Arbre de grande longévité, très résistant.",
+        "hot": "Peu adapté au climat chaud et sec. Le poirier à poiré est un arbre de climat océanique à frais. En zone chaude, la qualité du poiré sera médiocre."
+      },
+      "toxicity": null,
+      "practical_tips": "Le poirier à poiré est un arbre monumental pouvant atteindre 15 m. Plantez-le dans un grand espace. Les poires à poiré ne sont pas consommables fraîches, elles sont exclusivement destinées à la fermentation. Taillez très peu."
     },
     {
       "id": 62,
@@ -2718,7 +3145,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Morus nigra"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-20 °C). En zone froide, plantez en situation abritée. Le mûrier noir débourre tard, ce qui le protège des gelées printanières.",
+        "temperate": "Bonne adaptation. Le mûrier noir donne des fruits délicieux mais fragiles et tachants. Plantez loin des terrasses et allées. Sol frais et profond.",
+        "hot": "Très bien adapté. Le mûrier noir prospère en climat chaud et donne des fruits particulièrement sucrés et parfumés. Arrosez modérément."
+      },
+      "toxicity": null,
+      "practical_tips": "Les mûres du mûrier noir sont délicieuses mais extrêmement fragiles et tachantes : plantez loin des zones de passage. Récoltez en étalant un drap sous l'arbre et en secouant les branches. Les fruits ne se conservent que 24 h au frais."
     },
     {
       "id": 63,
@@ -2759,7 +3193,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Morus alba"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-25 °C). Plus résistant au froid que le mûrier noir. Débourrement tardif protégeant des gelées. Bonne croissance en zone froide.",
+        "temperate": "Très bien adapté. Le mûrier blanc est un arbre vigoureux et résistant. Ses fruits sont moins savoureux que ceux du mûrier noir mais très sucrés.",
+        "hot": "Excellent en climat chaud. Le mûrier blanc (arbre du ver à soie) prospère en Provence et en Languedoc. Supporte très bien la sécheresse."
+      },
+      "toxicity": null,
+      "practical_tips": "Le mûrier blanc est historiquement l'arbre du ver à soie (sériciculture). Ses fruits blancs ou roses sont très sucrés mais fades. Arbre à croissance rapide, excellent pour l'ombrage. Supporte bien la taille sévère."
     },
     {
       "id": 64,
@@ -2801,7 +3242,14 @@
       "popular_varieties": [
         "Meader",
         "Prok"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Beaucoup plus résistant au froid que le kaki japonais. Excellent choix pour les zones continentales froides.",
+        "temperate": "Très bien adapté. Petits fruits très sucrés après blettissement. Arbre vigoureux et résistant aux maladies.",
+        "hot": "Bonne adaptation. Les fruits mûrissent mieux en climat chaud. Supporte la sécheresse une fois établi."
+      },
+      "toxicity": "Comme le kaki japonais, les fruits non mûrs sont très astringents et peuvent causer des désagréments digestifs. Attendre le blettissement complet avant consommation.",
+      "practical_tips": "Le plaqueminier de Virginie est l'alternative rustique au kaki japonais pour les zones froides. Petits fruits mais très parfumés après blettissement (gel ou conservation au frais). Souvent dioïque : plantez un pied mâle et un femelle. Utilisé comme porte-greffe pour le kaki."
     },
     {
       "id": 65,
@@ -2842,7 +3290,14 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Azerole"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-25 °C). L'azérolier est un petit arbre robuste qui résiste bien au froid. La floraison tardive (mai) échappe aux gelées.",
+        "temperate": "Bien adapté. L'azérolier est un petit arbre ornemental et fruitier, traditionnellement cultivé dans le sud de la France. Pousse en tout sol, même calcaire.",
+        "hot": "Très bien adapté, c'est son climat de prédilection. L'azérolier est un arbre méditerranéen qui donne ses meilleurs fruits en climat chaud et sec."
+      },
+      "toxicity": null,
+      "practical_tips": "L'azérolier (Crataegus azarolus) produit de petits fruits (azéroles) jaunes ou rouges à noyaux, au goût de petite pomme acidulée. Excellentes en confiture et gelée. Arbre peu exigeant et très ornemental. Taillez légèrement après la récolte."
     },
     {
       "id": 66,
@@ -2883,7 +3338,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Sorbier domestique"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-25 °C). Le sorbier domestique résiste bien au froid. Arbre traditionnel des campagnes françaises qui pousse jusqu'en montagne.",
+        "temperate": "Bien adapté. Le sorbier domestique est un bel arbre à la production intéressante pour les confitures. Sol profond et ensoleillé préféré.",
+        "hot": "Bonne adaptation en zone chaude. Le cormier (sorbier domestique) pousse naturellement dans le midi. Supporte la sécheresse une fois établi."
+      },
+      "toxicity": null,
+      "practical_tips": "Les cormes se consomment uniquement blettes (après ramollissement par le gel ou conservation au frais). Elles servent à faire une boisson fermentée (cormé). Arbre majestueux à croissance lente, au bois très précieux (ébénisterie). Protégez les jeunes arbres du gibier."
     },
     {
       "id": 67,
@@ -2924,7 +3386,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Alisier torminal"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-25 °C). L'alisier torminal pousse spontanément dans les forêts de l'est de la France. Bien adapté au froid continental.",
+        "temperate": "Bien adapté. Arbre forestier indigène au beau feuillage automnal. Les alises se récoltent blettes en novembre. Sol profond et frais préféré.",
+        "hot": "Adaptation correcte. L'alisier torminal pousse naturellement dans les forêts du sud de la France en altitude. Supporte la chaleur modérée."
+      },
+      "toxicity": null,
+      "practical_tips": "L'alisier torminal est un arbre forestier indigène dont les fruits (alises) se consomment blettes. Goût de compote de pomme cuite. Arbre à bois précieux (ébénisterie). Croissance lente. Les alises se récoltent après les premières gelées ou se font blettir au cellier."
     },
     {
       "id": 68,
@@ -2967,7 +3436,14 @@
         "Smoky",
         "Thiessen",
         "Honeywood"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). L'amélanchier est un arbuste nord-américain qui résiste aux hivers les plus rigoureux. Parfait en zone de montagne.",
+        "temperate": "Excellente adaptation. Arbuste ornemental et fruitier magnifique : floraison blanche printanière, fruits pourpres en été, feuillage automnal orangé.",
+        "hot": "Bonne adaptation. Supporte la chaleur et une sécheresse modérée. Les amélanches mûrissent dès juin, profitant de la chaleur précoce."
+      },
+      "toxicity": null,
+      "practical_tips": "L'amélanchier est un arbuste 4 saisons : floraison spectaculaire en avril, fruits pourpres en juin, feuillage automnal flamboyant. Les amélanches se consomment fraîches ou en confiture (goût entre myrtille et cerise). Aucun entretien, résistant aux maladies."
     },
     {
       "id": 69,
@@ -3008,7 +3484,14 @@
       "container_min_size_l": 20,
       "popular_varieties": [
         "Vaccinium myrtillus"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). La myrtille sauvage est une plante de montagne et de sous-bois frais. Parfaitement adaptée au froid.",
+        "temperate": "Culture possible en sol acide et frais, à mi-ombre. Croissance lente, production modeste mais fruits très parfumés. Sol forestier humifère idéal.",
+        "hot": "Très mal adaptée à la chaleur. La myrtille sauvage est une plante de montagne qui ne supporte pas les températures élevées."
+      },
+      "toxicity": null,
+      "practical_tips": "La myrtille sauvage (Vaccinium myrtillus) produit de petits fruits bien plus parfumés que la myrtille cultivée. Culture délicate : sol très acide (pH 4-5), frais et humifère. Utilisez comme couvre-sol en sous-bois acide. Récolte fastidieuse mais fruits exceptionnels."
     },
     {
       "id": 70,
@@ -3051,7 +3534,14 @@
         "Red Pearl",
         "Koralle",
         "Ida"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). Plante des montagnes et forêts boréales. Parfaitement adaptée aux hivers rigoureux et aux sols pauvres.",
+        "temperate": "Culture en sol acide et frais. L'airelle rouge est un couvre-sol persistant de sous-bois. Production de petites baies rouges acidulées en fin d'été.",
+        "hot": "Très mal adaptée à la chaleur. L'airelle rouge est strictement une plante de climat froid à frais."
+      },
+      "toxicity": null,
+      "practical_tips": "L'airelle rouge (lingon en scandinave) est le condiment traditionnel des pays nordiques avec la viande. Sol très acide et frais. Couvre-sol persistant de 20-30 cm. Les baies se conservent naturellement longtemps grâce à l'acide benzoïque qu'elles contiennent."
     },
     {
       "id": 71,
@@ -3094,7 +3584,14 @@
         "Stevens",
         "Pilgrim",
         "Early Black"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). Plante des tourbières nord-américaines. Résiste aux hivers les plus froids de France.",
+        "temperate": "Culture en sol acide et constamment humide (pH 4-5). La canneberge est un couvre-sol rampant de milieu humide. Sol tourbeux idéal.",
+        "hot": "Mal adaptée. La canneberge est une plante de climat frais et humide. Culture quasiment impossible en zone chaude et sèche."
+      },
+      "toxicity": null,
+      "practical_tips": "La canneberge (cranberry) a besoin d'un sol acide (pH 4-5) et constamment humide mais pas submergé. Plante rampante de 15 cm, idéale en bord de bassin acide ou tourbière artificielle. Les baies se récoltent en octobre, elles sont très acides et se consomment cuites ou séchées."
     },
     {
       "id": 72,
@@ -3137,7 +3634,14 @@
         "Boreal Beauty",
         "Honeybee",
         "Aurora"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-40 °C). L'arbuste fruitier le plus résistant au froid. Fleurs résistant à -7 °C. Idéal pour les zones de montagne et le nord-est de la France.",
+        "temperate": "Bonne adaptation. Les baies de mai (camerises) sont les premiers fruits de la saison (mai-juin). Plantez en sol frais et humifère, mi-ombre à soleil.",
+        "hot": "Mal adapté au climat chaud. Le camerisier a besoin de froid hivernal intense et d'étés frais. Déconseillé en zone méditerranéenne."
+      },
+      "toxicity": null,
+      "practical_tips": "Le camerisier (chèvrefeuille comestible) produit les premiers fruits de la saison dès mai. Plantez deux variétés différentes pour la pollinisation croisée (ex. Indigo Gem + Borealis). Les baies bleues ont un goût unique entre myrtille et cassis. Aucun entretien particulier."
     },
     {
       "id": 73,
@@ -3179,7 +3683,14 @@
       "popular_varieties": [
         "Eastern Prince",
         "Sadova No. 1"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Originaire de Sibérie orientale. Parfaitement adapté aux hivers rigoureux. La liane a besoin de froid hivernal pour bien fructifier.",
+        "temperate": "Bonne adaptation. Plantez en mi-ombre ou ombre légère, en sol frais et humifère. Support nécessaire (treillage, pergola). Les baies mûrissent en septembre.",
+        "hot": "Souffre de la chaleur et de la sécheresse. Plantez impérativement à l'ombre et arrosez régulièrement. Le schisandra est une plante de sous-bois frais."
+      },
+      "toxicity": null,
+      "practical_tips": "Le schisandra est la baie aux cinq saveurs (sucré, acide, salé, amer, piquant) de la pharmacopée chinoise. Liane dioïque : plantez un pied mâle et un femelle. Sol frais, humifère, acide. Les baies se consomment séchées ou en tisane. Supporte bien l'ombre."
     },
     {
       "id": 74,
@@ -3221,7 +3732,14 @@
       "popular_varieties": [
         "Soreli",
         "Jintao"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Faible rusticité (-12 °C). Plus frileux que le kiwi vert. Réservez aux zones à hiver doux. Protégez contre un mur plein sud en zone limite.",
+        "temperate": "Culture possible en zone douce (sud-ouest, façade atlantique). Nécessite un emplacement chaud et abrité. Les fruits jaunes sont plus sucrés que le kiwi vert.",
+        "hot": "Bonne adaptation en climat chaud. Arrosez abondamment car les besoins en eau sont élevés. Le kiwi jaune (variété Gold) donne des fruits dorés très sucrés."
+      },
+      "toxicity": null,
+      "practical_tips": "Le kiwi jaune est plus sucré et moins acide que le kiwi vert, avec une chair dorée. Culture identique au kiwi classique mais plus frileux. Dioïque : 1 mâle pour 5-6 femelles. Variété Soreli bien adaptée au climat français."
     },
     {
       "id": 75,
@@ -3263,7 +3781,14 @@
       "container_min_size_l": 60,
       "popular_varieties": [
         "Concord"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-30 °C). Variété nord-américaine parfaitement adaptée aux hivers rigoureux. Idéale pour les zones de montagne et le nord-est.",
+        "temperate": "Bonne adaptation. Le raisin Concord a un goût foxé (framboisé) très différent du raisin européen. Saveur typique du jus de raisin américain.",
+        "hot": "Supporte la chaleur mais le goût foxé peut déplaire. Le Concord est avant tout une vigne de climat frais."
+      },
+      "toxicity": null,
+      "practical_tips": "Le Concord est la vigne emblématique d'Amérique du Nord. Son goût foxé caractéristique n'est pas apprécié de tous. Excellent pour le jus de raisin et la gelée. Très résistant aux maladies. Taillez en cordon ou Guyot."
     },
     {
       "id": 76,
@@ -3305,7 +3830,14 @@
       "container_min_size_l": 60,
       "popular_varieties": [
         "Isabelle"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Variété américaine très résistante au froid et aux maladies. Peut se cultiver sans traitement en zone froide.",
+        "temperate": "Bonne adaptation. L'Isabelle est une vigne rustique au goût foxé. Utilisée traditionnellement dans le sud-ouest pour le vin de pays. Résiste bien aux maladies.",
+        "hot": "Supporte bien la chaleur. Attention : la variété Isabelle est interdite à la vinification commerciale en France mais autorisée au jardin."
+      },
+      "toxicity": null,
+      "practical_tips": "L'Isabelle est une vigne hybride américaine très rustique, résistante au mildiou et à l'oïdium sans traitement. Goût foxé prononcé. Interdite à la vinification commerciale en UE mais parfaite pour le jardin familial (jus, raisin de table)."
     },
     {
       "id": 77,
@@ -3349,7 +3881,14 @@
       "popular_varieties": [
         "Blanka",
         "Versaillaise blanche"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). Parfaitement adapté au froid. Mêmes exigences que le groseillier rouge dont il est une variante.",
+        "temperate": "Excellente adaptation. Les groseilles blanches sont plus douces que les rouges. Plantez en mi-ombre, sol frais. Variété Versaillaise blanche recommandée.",
+        "hot": "Même sensibilité à la chaleur que le groseillier rouge. Plantez à mi-ombre et arrosez régulièrement."
+      },
+      "toxicity": null,
+      "practical_tips": "Le groseillier blanc est une variante du groseillier rouge, avec des fruits translucides plus doux et moins acides. Culture et taille identiques au groseillier rouge. Les groseilles blanches sont excellentes en gelée ou à croquer au jardin."
     },
     {
       "id": 78,
@@ -3390,7 +3929,14 @@
       "container_min_size_l": 40,
       "popular_varieties": [
         "Groseille rose"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). Même rusticité que le groseillier rouge. Aucun problème de froid.",
+        "temperate": "Excellente adaptation. Le groseillier rose produit des grappes de fruits rose translucide, les plus doux de tous les groseilliers.",
+        "hot": "Même sensibilité que les autres groseilliers. Mi-ombre et sol frais indispensables en zone chaude."
+      },
+      "toxicity": null,
+      "practical_tips": "Le groseillier rose est le plus doux des groseilliers, ses fruits se croquent nature au jardin. Variété Gloire des Sablons très recommandée. Mêmes soins que le groseillier rouge : taille de renouvellement en hiver, sol frais et paillé."
     },
     {
       "id": 79,
@@ -3431,7 +3977,14 @@
       "container_min_size_l": 40,
       "popular_varieties": [
         "Josta"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). Hybride cassis x groseillier à maquereau, il hérite de la rusticité de ses deux parents. Parfait pour les zones froides.",
+        "temperate": "Très bien adapté. Le caseillier produit des fruits rappelant le cassis mais en plus gros et plus doux. Sol frais, mi-ombre à soleil léger.",
+        "hot": "Même sensibilité à la chaleur que le cassis. Plantez à l'ombre et arrosez abondamment. Production médiocre en zone chaude."
+      },
+      "toxicity": null,
+      "practical_tips": "Le caseillier (Josta) est un hybride cassis x groseillier à maquereau. Gros fruits noirs sans épines, au goût entre cassis et groseille. Buisson vigoureux et productif, peu sensible aux maladies. Taillez comme un cassissier."
     },
     {
       "id": 80,
@@ -3476,7 +4029,14 @@
         "Mara des Bois",
         "Charlotte",
         "Ciflorette"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-20 °C). Protégez les plants d'un paillage épais en hiver. En zone de montagne, privilégiez les variétés de saison courte (Gariguette, Ciflorette).",
+        "temperate": "Climat idéal. Plantez des variétés remontantes (Charlotte, Mara des Bois) pour une récolte de juin à octobre. Sol riche, frais et bien drainé.",
+        "hot": "Le fraisier souffre de la chaleur au-dessus de 30 °C. Plantez à mi-ombre, paillez abondamment et arrosez matin et soir. Récoltez tôt le matin. La variété Ciflorette est bien adaptée au sud."
+      },
+      "toxicity": null,
+      "practical_tips": "Renouvelez la fraisière tous les 3 ans avec de nouveaux plants (stolons ou achat). Paillez avec de la paille ou des copeaux pour garder les fruits propres et limiter les maladies. Supprimez les stolons pour favoriser la fructification. Évitez de mouiller le feuillage lors de l'arrosage."
     },
     {
       "id": 81,
@@ -3517,7 +4077,14 @@
       "container_min_size_l": 40,
       "popular_varieties": [
         "Rosa canina"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Extrêmement rustique (-35 °C). Le rosier sauvage pousse spontanément dans toute la France, y compris en montagne. Aucune protection nécessaire.",
+        "temperate": "Parfaitement adapté. Arbuste des haies champêtres, pousse en tout sol et toute exposition. Aucun entretien.",
+        "hot": "Bonne adaptation. Le rosier sauvage supporte la chaleur et la sécheresse. Produit moins de fruits en zone très chaude."
+      },
+      "toxicity": null,
+      "practical_tips": "Les cynorrhodons (fruits du rosier sauvage) se récoltent après les premières gelées quand ils sont ramollis. Très riches en vitamine C (20 fois l'orange). Préparez en confiture, gelée ou tisane. Attention : retirez les poils urticants (gratte-cul) avant consommation."
     },
     {
       "id": 82,
@@ -3559,7 +4126,14 @@
       "popular_varieties": [
         "Nivalis",
         "Crimson and Gold"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Arbuste parfaitement adapté au froid. La floraison précoce (mars) supporte le gel sans problème.",
+        "temperate": "Excellente adaptation. Arbuste ornemental et fruitier magnifique. Floraison spectaculaire avant les feuilles. Pousse en tout sol, même pauvre.",
+        "hot": "Bonne adaptation. Supporte la chaleur et la sécheresse. Moins de fruits en zone très chaude mais floraison toujours spectaculaire."
+      },
+      "toxicity": null,
+      "practical_tips": "Les fruits du cognassier du Japon sont durs et acides : ils se consomment uniquement cuits, en gelée ou en pâte de fruit (comme le coing). Récoltez après les premières gelées. Arbuste épineux qui fait une excellente haie défensive. Taillez après la floraison."
     },
     {
       "id": 83,
@@ -3601,7 +4175,14 @@
       "popular_varieties": [
         "Tarentina",
         "Compacta"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -10 °C brièvement. En zone froide, cultivez en pot à rentrer en hiver. Le myrte est une plante strictement méditerranéenne.",
+        "temperate": "Culture en pot recommandée. Rentrez en véranda ou serre froide de novembre à mars. Arrosez modérément et offrez un maximum de soleil.",
+        "hot": "Climat naturel. Le myrte pousse spontanément dans le maquis méditerranéen. Sol sec et pauvre, plein soleil. Très résistant à la sécheresse une fois établi."
+      },
+      "toxicity": null,
+      "practical_tips": "Le myrte est un arbuste aromatique dont les baies se récoltent en automne pour des liqueurs et des condiments. Taillez après la floraison pour maintenir une forme compacte. En sol bien drainé et ensoleillé, il ne demande quasiment aucun entretien."
     },
     {
       "id": 84,
@@ -3643,7 +4224,14 @@
       "popular_varieties": [
         "Kerman",
         "Larnaka"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -15 °C sur bois mais a besoin de chaleur estivale intense (>35 °C) pour fructifier. En zone froide, la production est quasi nulle.",
+        "temperate": "Culture ornementale possible mais la production de pistaches est très aléatoire. Le pistachier a besoin de 600 à 1000 heures de chaleur au-dessus de 30 °C.",
+        "hot": "Seul climat permettant la production de pistaches en France. Plantez en sol drainé et calcaire, plein soleil. La fructification commence après 7-10 ans."
+      },
+      "toxicity": null,
+      "practical_tips": "Le pistachier est dioïque : plantez un mâle pour 5-8 femelles. Très lent à entrer en production (7-10 ans). Nécessite un été très chaud et un hiver froid pour fructifier. Sol calcaire, sec et très bien drainé. Greffez sur Pistacia terebinthus pour la rusticité."
     },
     {
       "id": 85,
@@ -3685,7 +4273,14 @@
       "popular_varieties": [
         "Pawnee",
         "Stuart"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -20 °C sur bois mais nécessite une longue saison chaude (>200 jours sans gel) pour mûrir ses noix. Inadapté aux zones froides pour la production.",
+        "temperate": "Culture possible comme arbre d'ornement. La production de noix de pécan est aléatoire en France tempérée. Choisissez des variétés précoces (Colby, Major).",
+        "hot": "Meilleure chance de production en France. Le pacanier a besoin de chaleur et d'humidité estivale. Arrosez abondamment en été. Production possible dans le sud-ouest."
+      },
+      "toxicity": null,
+      "practical_tips": "Le pacanier est un arbre majestueux pouvant atteindre 30 m. Plantez deux variétés pour la pollinisation croisée. La mise à fruit est lente (8-12 ans). Arrosez abondamment en été. Les noix de pécan se récoltent au sol en octobre-novembre."
     },
     {
       "id": 86,
@@ -3726,7 +4321,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Juglans nigra"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Plus résistant que le noyer commun. Bien adapté aux zones froides. Attention au débourrement tardif : les gelées d'avril ne sont pas un problème.",
+        "temperate": "Bonne adaptation. Le noyer noir est un arbre majestueux américain. Les noix sont très difficiles à ouvrir mais excellentes. Émission de juglone encore plus forte que le noyer commun.",
+        "hot": "Supporte la chaleur. Le noyer noir apprécie la chaleur estivale pour bien remplir ses noix. Arrosez en cas de sécheresse prolongée."
+      },
+      "toxicity": null,
+      "practical_tips": "Le noyer noir américain émet encore plus de juglone que le noyer commun : isolez-le à 20 m minimum du potager et des arbres fruitiers sensibles. Les noix sont très dures à casser mais leur goût est intense. Le bois est précieux (ébénisterie)."
     },
     {
       "id": 87,
@@ -3767,7 +4369,14 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Pin parasol"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -15 °C. Croissance très lente en zone froide. La production de pignons est compromise en zone continentale par manque de chaleur.",
+        "temperate": "Culture ornementale. Le pin parasol est un bel arbre mais la production de pignons est très faible en climat tempéré. Réservez à l'ornementation.",
+        "hot": "Climat naturel. Le pin parasol prospère sur le littoral méditerranéen. Production de pignons après 15-20 ans. Sol sableux ou rocheux, plein soleil."
+      },
+      "toxicity": null,
+      "practical_tips": "Le pin parasol met 15 à 20 ans avant de produire des pignons. Les pignes (cônes) mettent 3 ans à mûrir. Récoltez les pignes fermées en hiver et laissez-les sécher au soleil pour les ouvrir. Sol léger et drainé, ne supporte pas l'humidité stagnante."
     },
     {
       "id": 88,
@@ -3809,7 +4418,14 @@
       "popular_varieties": [
         "Sfax",
         "Clifford"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Gèle à -5 °C. Culture impossible en pleine terre en zone froide. Réservez à la culture en pot, en serre ou véranda hors gel.",
+        "temperate": "Culture en pot uniquement, à rentrer en hiver. Le caroubier est un arbre strictement méditerranéen qui ne peut pas fructifier sans chaleur prolongée.",
+        "hot": "Climat idéal. Le caroubier pousse naturellement en Provence, Corse et pourtour méditerranéen. Très résistant à la sécheresse une fois établi. Sol calcaire bien drainé."
+      },
+      "toxicity": null,
+      "practical_tips": "Le caroubier est dioïque : plantez un pied mâle et un pied femelle pour obtenir des caroubes. Croissance très lente mais longévité exceptionnelle (plusieurs siècles). Les gousses se récoltent en automne et se transforment en farine de caroube."
     },
     {
       "id": 89,
@@ -3853,7 +4469,14 @@
         "Eureka",
         "Lisbon",
         "Meyer"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Gèle à -5 °C. Culture en pot obligatoire en zone froide : rentrez en véranda lumineuse (10-15 °C) d'octobre à mai. Ne supporte pas le gel.",
+        "temperate": "Culture en pot, à abriter en hiver. Le citronnier peut passer l'été dehors au soleil. Arrosez régulièrement et fertilisez avec un engrais agrumes tous les 15 jours de mars à octobre.",
+        "hot": "Climat idéal sur le littoral méditerranéen (Côte d'Azur, Menton). En pleine terre, plantez en sol drainé, abrité du vent. Le citronnier produit presque toute l'année en climat doux."
+      },
+      "toxicity": null,
+      "practical_tips": "Le citronnier est remontant : il peut fleurir et fructifier toute l'année. Fertilisez régulièrement avec un engrais spécial agrumes riche en fer et magnésium. Surveillez les cochenilles et les pucerons. Rempotez tous les 2-3 ans."
     },
     {
       "id": 90,
@@ -3896,7 +4519,14 @@
         "Valencia",
         "Navel",
         "Sanguinelli"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Gèle à -5 °C. Culture en pot obligatoire en zone froide : hivernez dans une orangerie lumineuse à 5-10 °C. Tradition des orangeries des châteaux français.",
+        "temperate": "Culture en pot. L'oranger peut passer l'été dehors. Arrosez et fertilisez régulièrement. Les fruits mettent 8-10 mois à mûrir, il faut donc le rentrer avant les gelées avec les fruits sur l'arbre.",
+        "hot": "Excellent en pleine terre sur le littoral méditerranéen et en Corse. Plantez en sol drainé, abrité du Mistral. Arrosez régulièrement en été pour de beaux fruits."
+      },
+      "toxicity": null,
+      "practical_tips": "L'oranger a besoin d'un écart de température jour/nuit pour bien colorer ses fruits. Fertilisez de mars à octobre avec un engrais agrumes. Taillez légèrement après la récolte pour maintenir une silhouette harmonieuse."
     },
     {
       "id": 91,
@@ -3939,7 +4569,14 @@
         "Clémentine",
         "Satsuma",
         "Wilking"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Gèle à -5 °C. Culture en pot obligatoire en zone froide, à hiverner en véranda lumineuse hors gel. Légèrement plus tolérant au froid que l'oranger.",
+        "temperate": "Culture en pot. Sortez-le de mai à octobre. Le mandarinier est compact et se prête bien à la culture en pot. Fertilisez régulièrement.",
+        "hot": "Excellent en pleine terre en zone méditerranéenne. Le mandarinier produit abondamment et les fruits mûrissent de novembre à février. Variété Satsuma très adaptée au climat français."
+      },
+      "toxicity": null,
+      "practical_tips": "La variété Satsuma (mandarine sans pépin) est la plus adaptée au climat français. Le mandarinier produit mieux avec un pollinisateur. Récoltez quand les fruits sont bien colorés. Taillez légèrement pour maintenir un port compact."
     },
     {
       "id": 92,
@@ -3981,7 +4618,14 @@
       "popular_varieties": [
         "Nagami",
         "Marumi"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -10 °C, le plus rustique des agrumes. Peut survivre en pleine terre dans les zones les plus douces du climat océanique avec protection hivernale.",
+        "temperate": "Culture en pot recommandée. Le kumquat est l'agrume le mieux adapté à la culture en pot : compact, décoratif et résistant. Rentrez-le l'hiver à 5-10 °C.",
+        "hot": "Très bien adapté en pleine terre. Le kumquat apprécie la chaleur mais tolère mieux le froid que les autres agrumes. Production abondante de petits fruits à croquer entiers."
+      },
+      "toxicity": null,
+      "practical_tips": "Le kumquat se mange entier, avec la peau (la peau est sucrée, la chair acidulée). Arbre très compact idéal en pot. Fertilisez avec un engrais agrumes de mars à octobre. Le kumquat est autofertile et produit dès la 3e année."
     },
     {
       "id": 93,
@@ -4022,7 +4666,14 @@
       "container_min_size_l": 60,
       "popular_varieties": [
         "Yuzu"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Le plus rustique des agrumes comestibles (-12 °C). Peut se tenter en pleine terre en climat tempéré doux, en situation très abritée. Perd ses feuilles vers -8 °C mais repart.",
+        "temperate": "Culture en pleine terre possible dans l'ouest et le sud-ouest avec protection hivernale. Sinon, excellent en pot (rentrez sous abri hors gel). Le yuzu est très épineux, attention à la manipulation.",
+        "hot": "Très bien adapté. Le yuzu produit abondamment en climat méditerranéen. Les fruits mûrissent en hiver (novembre-janvier). Arrosez régulièrement en été."
+      },
+      "toxicity": null,
+      "practical_tips": "Le yuzu est principalement utilisé pour son zeste et son jus très parfumés (cuisine japonaise). Attention aux longues épines acérées. Le fruit est rarement mangé frais. Greffez sur Poncirus trifoliata pour une meilleure rusticité."
     },
     {
       "id": 94,
@@ -4063,7 +4714,14 @@
       "container_min_size_l": 70,
       "popular_varieties": [
         "Bergamote"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Gèle à -5 °C. Culture en pot uniquement en zone froide. Hivernez en véranda lumineuse à 8-12 °C.",
+        "temperate": "Culture en pot. Le bergamotier est plus vigoureux que les autres agrumes en pot. Sortez de mai à octobre. Fertilisez régulièrement avec un engrais agrumes.",
+        "hot": "Culture en pleine terre possible en Corse et sur le littoral méditerranéen le plus doux. Le bergamotier est cultivé professionnellement en Calabre (Italie), climat similaire."
+      },
+      "toxicity": null,
+      "practical_tips": "La bergamote est principalement utilisée pour son zeste (huile essentielle, thé Earl Grey). Le fruit est rarement consommé frais car très acide. Le bergamotier est autofertile. Attention : l'huile essentielle de bergamote est photosensibilisante."
     },
     {
       "id": 95,
@@ -4104,7 +4762,14 @@
       "container_min_size_l": 30,
       "popular_varieties": [
         "Inermis"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Gèle à -5 °C en partie aérienne. La souche peut survivre à -10 °C en sol très drainé. En zone froide, cultivez en pot ou en serre froide.",
+        "temperate": "Culture en pot ou en situation très abritée (muret en pierre plein sud). Le câprier a besoin de chaleur estivale intense. Sol très drainé, pauvre et calcaire.",
+        "hot": "Climat idéal. Le câprier pousse naturellement dans les murs et rochers du midi. Plein soleil, sol très sec et drainé. Aucun arrosage nécessaire une fois établi."
+      },
+      "toxicity": null,
+      "practical_tips": "Les câpres sont les boutons floraux récoltés avant éclosion, de mai à septembre. Récoltez tous les 2-3 jours pour une production continue. Conservez dans le vinaigre ou le sel. Le câprier a besoin d'un sol extrêmement drainé, plantez-le dans un mur de pierres sèches si possible."
     },
     {
       "id": 96,
@@ -4145,7 +4810,14 @@
       "container_min_size_l": 40,
       "popular_varieties": [
         "Nana"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -10 °C brièvement. Culture en pot à rentrer impérativement en hiver en zone froide. Local lumineux hors gel (5-10 °C) idéal.",
+        "temperate": "Culture en pot facile. Le grenadier nain est très décoratif avec ses fleurs orangées et ses petits fruits. Sortez de mai à octobre au soleil.",
+        "hot": "Très bien adapté en pleine terre. Le grenadier nain est un excellent arbuste ornemental et fruitier pour les petits jardins méditerranéens."
+      },
+      "toxicity": null,
+      "practical_tips": "Le grenadier nain est surtout ornemental : ses petits fruits sont comestibles mais peu charnus. Excellente floraison rouge orangé de juin à septembre. Très facile en pot, taillez après la floraison pour maintenir un port compact."
     },
     {
       "id": 97,
@@ -4188,7 +4860,14 @@
         "Bolero",
         "Flamenco",
         "Waltz"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résistant à -25 °C. Sa forme étroite le rend facile à protéger avec un voile. Idéal en pot sur un balcon abrité en zone froide.",
+        "temperate": "Parfaitement adapté aux petits jardins et balcons. Plantez en pot de 50 L minimum ou en pleine terre espacé de 80 cm pour créer une haie fruitière.",
+        "hot": "En climat chaud, le pot chauffe et sèche vite : privilégiez un pot clair, paillez la surface et arrosez quotidiennement en été. Placez à l'est pour éviter le soleil de l'après-midi."
+      },
+      "toxicity": null,
+      "practical_tips": "Le pommier colonnaire nécessite très peu de taille : supprimez simplement les rameaux latéraux de plus de 20 cm. Fertilisez chaque printemps avec un engrais fruitier. Rempotez tous les 3 ans si cultivé en pot."
     },
     {
       "id": 98,
@@ -4231,7 +4910,14 @@
       "popular_varieties": [
         "Conférence",
         "Williams"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Rustique (-20 °C). En pot, protégez les racines du gel en entourant le contenant de voile d'hivernage. Rentrez si possible contre un mur exposé au sud.",
+        "temperate": "Idéal en pot ou petit jardin. Plantez au soleil dans un terreau riche et bien drainé. Arrosez régulièrement car le système racinaire est limité.",
+        "hot": "Sensible au dessèchement en pot sous climat chaud. Arrosez deux fois par jour en canicule. Préférez un pot en terre cuite (plus frais) et paillez la surface."
+      },
+      "toxicity": null,
+      "practical_tips": "Choisissez un porte-greffe nanisant (Quince C). Le poirier nain nécessite un pollinisateur compatible. Taillez en gobelet pour maintenir un port compact. Fertilisez régulièrement car le porte-greffe nanisant a des besoins importants."
     },
     {
       "id": 99,
@@ -4275,7 +4961,14 @@
       "popular_varieties": [
         "Bergeron",
         "Orangered"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Résiste à -20 °C sur bois. Floraison plus tardive que l'abricotier classique, ce qui réduit le risque de gel. Variété Bergeron ou Tardif de Tain recommandée en zone froide.",
+        "temperate": "Excellente adaptation. La floraison tardive permet d'éviter les gelées dans la plupart des régions tempérées. Production régulière et abondante.",
+        "hot": "Très bien adapté. L'abricotier tardif mûrit en août-septembre, profitant pleinement de la chaleur estivale pour des fruits sucrés et parfumés."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes (amygdaline), ne pas consommer les amandes amères des noyaux.",
+      "practical_tips": "Choisissez des variétés à floraison tardive comme Bergeron ou Tardif de Tain pour les régions sujettes aux gelées. L'abricotier tardif est autofertile. Récoltez quand les fruits sont bien colorés et légèrement souples au toucher."
     },
     {
       "id": 100,
@@ -4317,7 +5010,14 @@
       "container_min_size_l": 120,
       "popular_varieties": [
         "Stella"
-      ]
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Stella est une des meilleures variétés pour les zones froides grâce à sa bonne résistance. Protégez néanmoins la floraison des gelées tardives.",
+        "temperate": "Parfaitement adapté. Stella est la variété autofertile de référence. Un seul arbre suffit pour avoir des cerises. Production régulière et abondante.",
+        "hot": "Adaptation correcte. Stella a des besoins en froid hivernal modérés (600-700 h). En zone très chaude (littoral méditerranéen), les besoins en froid peuvent ne pas être satisfaits certaines années."
+      },
+      "toxicity": "Les noyaux contiennent des glycosides cyanogènes, ne pas les consommer.",
+      "practical_tips": "Stella est le cerisier autofertile le plus populaire : un seul arbre suffit. Gros fruits rouges foncés, sucrés et charnus. Comme tout cerisier, taillez le moins possible et toujours en été. Protégez les fruits des oiseaux avec un filet."
     }
   ]
 }

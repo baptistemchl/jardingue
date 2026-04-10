@@ -244,45 +244,156 @@ class _AccountCard extends ConsumerWidget {
   }
 }
 
-// ── Restaurer les achats ──
+// ── Restaurer les achats / Connexion ──
 
-class _RestorePurchasesButton extends ConsumerWidget {
+class _RestorePurchasesButton extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: TextButton(
-        onPressed: () async {
-          try {
-            await ref
-                .read(premiumNotifierProvider.notifier)
-                .restorePurchases();
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Achats restaurés avec succès.',
+  ConsumerState<_RestorePurchasesButton> createState() =>
+      _RestorePurchasesButtonState();
+}
+
+class _RestorePurchasesButtonState
+    extends ConsumerState<_RestorePurchasesButton> {
+  bool _isSigningIn = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final user = ref.watch(firebaseUserProvider);
+
+    // Utilisateur connecté : bouton classique "Restaurer mes achats"
+    if (user != null) {
+      return Center(
+        child: TextButton(
+          onPressed: () async {
+            try {
+              await ref
+                  .read(premiumNotifierProvider.notifier)
+                  .restorePurchases();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Achats restaurés avec succès.',
+                    ),
                   ),
-                ),
-              );
-            }
-          } catch (_) {
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Impossible de restaurer.',
+                );
+              }
+            } catch (_) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Impossible de restaurer.',
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             }
-          }
-        },
-        child: Text(
-          'Restaurer mes achats',
-          style: AppTypography.caption.copyWith(
-            color: AppColors.textTertiary,
+          },
+          child: Text(
+            'Restaurer mes achats',
+            style: AppTypography.caption.copyWith(
+              color: AppColors.textTertiary,
+            ),
           ),
         ),
+      );
+    }
+
+    // Non connecté : invitation à se connecter
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            PhosphorIcons.cloudCheck(PhosphorIconsStyle.duotone),
+            size: 32,
+            color: AppColors.textTertiary,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Déjà un compte Cloud ?',
+            style: AppTypography.titleSmall.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Connectez-vous avec le compte Google '
+            'lié à votre Play Store pour retrouver '
+            'vos achats et sauvegardes.',
+            textAlign: TextAlign.center,
+            style: AppTypography.caption.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _isSigningIn
+                  ? null
+                  : () async {
+                      setState(() => _isSigningIn = true);
+                      try {
+                        await ref
+                            .read(firebaseUserProvider.notifier)
+                            .signIn();
+                      } catch (_) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Connexion impossible.',
+                              ),
+                            ),
+                          );
+                        }
+                      } finally {
+                        if (context.mounted) {
+                          setState(() => _isSigningIn = false);
+                        }
+                      }
+                    },
+              icon: _isSigningIn
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : Icon(
+                      PhosphorIcons.googleLogo(
+                        PhosphorIconsStyle.bold,
+                      ),
+                      size: 16,
+                    ),
+              label: Text(
+                _isSigningIn
+                    ? 'Connexion...'
+                    : 'Se connecter avec Google',
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.textPrimary,
+                side: const BorderSide(color: AppColors.border),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -16,6 +16,12 @@ class PlantImportService {
     // Vérifie si les données existent déjà
     final existingCount = await _db.countPlants();
     if (existingCount > 0 && !forceReimport) {
+      // Vérifie si les données enrichies (v5+) sont présentes
+      final sample = await _db.getPlantById(1);
+      if (sample != null && sample.climateAdaptation == null) {
+        debugPrint('Donnees obsoletes, reimport force...');
+        return importFromAssets(forceReimport: true);
+      }
       debugPrint('Base de donnees deja peuplee ($existingCount plantes)');
       return existingCount;
     }
@@ -37,24 +43,29 @@ class PlantImportService {
 
     int importedCount = 0;
 
-    // Importe chaque plante
-    for (final plantJson in plantsJson) {
-      try {
-        await _importPlant(plantJson as Map<String, dynamic>);
-        importedCount++;
-      } catch (e) {
-        debugPrint('Erreur import plante ${plantJson['common_name']}: $e');
+    // Importe toutes les plantes dans une seule transaction
+    await _db.transaction(() async {
+      for (final plantJson in plantsJson) {
+        try {
+          await _importPlant(plantJson as Map<String, dynamic>);
+          importedCount++;
+        } catch (e) {
+          debugPrint('Erreur import plante ${plantJson['common_name']}: $e');
+        }
       }
-    }
+    });
 
-    // Importe les relations (compagnons et antagonistes)
-    for (final plantJson in plantsJson) {
-      try {
-        await _importRelations(plantJson as Map<String, dynamic>);
-      } catch (e) {
-        debugPrint('Erreur import relations ${plantJson['common_name']}: $e');
+    // Importe les relations dans une seconde transaction
+    await _db.transaction(() async {
+      for (final plantJson in plantsJson) {
+        try {
+          await _importRelations(plantJson as Map<String, dynamic>);
+        } catch (e) {
+          debugPrint(
+              'Erreur import relations ${plantJson['common_name']}: $e');
+        }
       }
-    }
+    });
 
     debugPrint('Import termine: $importedCount plantes');
     return importedCount;
@@ -116,6 +127,11 @@ class PlantImportService {
       sowingCalendar: Value(_encodeMap(json['sowing_calendar'])),
       plantingCalendar: Value(_encodeMap(json['planting_calendar'])),
       harvestCalendar: Value(_encodeMap(json['harvest_calendar'])),
+
+      // Enrichissement v5
+      climateAdaptation: Value(_encodeMap(json['climate_adaptation'])),
+      toxicity: Value(json['toxicity'] as String?),
+      practicalTips: Value(json['practical_tips'] as String?),
     );
 
     await _db.insertPlant(plant);
@@ -224,6 +240,17 @@ extension PlantJsonExtension on Plant {
         .where((e) => e.value.toString().startsWith('Oui'))
         .map((e) => e.key)
         .toList();
+  }
+
+  /// Décode l'adaptation climatique
+  Map<String, String> get climateAdaptationMap {
+    if (climateAdaptation == null) return {};
+    try {
+      final decoded = json.decode(climateAdaptation!) as Map<String, dynamic>;
+      return decoded.map((k, v) => MapEntry(k, v.toString()));
+    } catch (_) {
+      return {};
+    }
   }
 
   /// Retourne les mois de récolte

@@ -16,6 +16,12 @@ class FruitTreeImportService {
     // Vérifie si les données existent déjà
     final existingCount = await _db.countFruitTrees();
     if (existingCount > 0 && !forceReimport) {
+      // Vérifie si les données enrichies (v5+) sont présentes
+      final sample = await _db.getFruitTreeById(1);
+      if (sample != null && sample.climateAdaptation == null) {
+        debugPrint('🌳 Données obsolètes, réimport forcé...');
+        return importFromAssets(forceReimport: true);
+      }
       debugPrint('🌳 Base arbres fruitiers déjà peuplée ($existingCount arbres)');
       return existingCount;
     }
@@ -38,15 +44,18 @@ class FruitTreeImportService {
 
       int importedCount = 0;
 
-      // Importe chaque arbre
-      for (final treeJson in treesJson) {
-        try {
-          await _importTree(treeJson as Map<String, dynamic>);
-          importedCount++;
-        } catch (e) {
-          debugPrint('❌ Erreur import arbre ${treeJson['common_name']}: $e');
+      // Importe tous les arbres dans une seule transaction
+      await _db.transaction(() async {
+        for (final treeJson in treesJson) {
+          try {
+            await _importTree(treeJson as Map<String, dynamic>);
+            importedCount++;
+          } catch (e) {
+            debugPrint(
+                '❌ Erreur import arbre ${treeJson['common_name']}: $e');
+          }
         }
-      }
+      });
 
       debugPrint('✅ Import arbres fruitiers terminé: $importedCount arbres');
       return importedCount;
@@ -118,6 +127,11 @@ class FruitTreeImportService {
       popularVarieties: Value(
         _encodeList(json['popular_varieties'] as List<dynamic>?),
       ),
+
+      // Enrichissement v5
+      climateAdaptation: Value(_encodeMap(json['climate_adaptation'])),
+      toxicity: Value(json['toxicity'] as String?),
+      practicalTips: Value(json['practical_tips'] as String?),
     );
 
     await _db.insertFruitTree(tree);
@@ -127,6 +141,12 @@ class FruitTreeImportService {
   String? _encodeList(List<dynamic>? list) {
     if (list == null || list.isEmpty) return null;
     return jsonEncode(list);
+  }
+
+  /// Encode une map en JSON string
+  String? _encodeMap(dynamic map) {
+    if (map == null) return null;
+    return jsonEncode(map);
   }
 }
 
@@ -149,6 +169,17 @@ extension FruitTreeJsonExtension on FruitTree {
       return List<String>.from(jsonDecode(pests!));
     } catch (_) {
       return [];
+    }
+  }
+
+  /// Décode l'adaptation climatique
+  Map<String, String> get climateAdaptationMap {
+    if (climateAdaptation == null) return {};
+    try {
+      final decoded = jsonDecode(climateAdaptation!) as Map<String, dynamic>;
+      return decoded.map((k, v) => MapEntry(k, v.toString()));
+    } catch (_) {
+      return {};
     }
   }
 

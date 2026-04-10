@@ -120,12 +120,7 @@ final trackedPlantsProvider = FutureProvider<List<Plant>>((ref) async {
   final db = ref.watch(databaseProvider);
   final plantRepo = ref.watch(plantRepositoryProvider);
   final trackedIds = await db.getTrackedPlantIds();
-  final List<Plant> plants = [];
-  for (final id in trackedIds) {
-    final plant = await plantRepo.getPlantById(id);
-    if (plant != null) plants.add(plant);
-  }
-  return plants;
+  return plantRepo.getPlantsByIds(trackedIds);
 });
 
 /// Dernier arrosage d'une plante
@@ -142,12 +137,11 @@ final lastWateringProvider =
 // ============================================
 
 /// Rappels d'arrosage pour toutes les plantes de tous les jardins
+/// Optimisé : 3 requêtes bulk au lieu de N+1
 final wateringRemindersProvider =
     FutureProvider<List<WateringReminder>>((ref) async {
   await ref.watch(databaseInitProvider.future);
-  final gardenRepo = ref.watch(gardenRepositoryProvider);
-  final plantRepo = ref.watch(plantRepositoryProvider);
-  final eventRepo = ref.watch(gardenEventRepositoryProvider);
+  final db = ref.watch(databaseProvider);
 
   // Données météo (peut échouer si pas de localisation)
   double precipNext24h = 0;
@@ -166,75 +160,74 @@ final wateringRemindersProvider =
     // Pas de données météo, on continue sans
   }
 
-  final gardens = await gardenRepo.getAllGardens();
+  // 1 requête : tous les gardenPlants + plant + garden via JOINs
+  final allRows = await db.getAllGardenPlantsWithPlantAndGarden();
+  // 1 requête : derniers arrosages groupés par gardenPlantId
+  final lastWateringDates = await db.getLastWateringDates();
+
   final List<WateringReminder> reminders = [];
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
 
-  for (final garden in gardens) {
-    final gardenPlants = await gardenRepo.getGardenPlants(garden.id);
+  for (final row in allRows) {
+    final gp = row.readTable(db.gardenPlants);
+    final garden = row.readTable(db.gardens);
 
-    for (final gp in gardenPlants) {
-      // Ignorer les zones (plantId == 0)
-      if (gp.plantId == 0) continue;
+    // Ignorer les zones (plantId == 0)
+    if (gp.plantId == 0) continue;
 
-      final plant = await plantRepo.getPlantById(gp.plantId);
+    final plant = row.readTableOrNull(db.plants);
 
-      // Fréquence d'arrosage
-      final freq =
-          gp.wateringFrequencyDays ?? defaultWateringFrequencyDays(plant?.watering);
+    // Fréquence d'arrosage
+    final freq =
+        gp.wateringFrequencyDays ?? defaultWateringFrequencyDays(plant?.watering);
 
-      // Dernier arrosage
-      final lastWateringEvent =
-          await eventRepo.getLastEventOfType(gp.id, GardenEventType.watering.name);
-      final lastWatered = lastWateringEvent?.eventDate;
+    // Dernier arrosage (depuis le batch)
+    final lastWatered = lastWateringDates[gp.id];
 
-      // Calcul du prochain arrosage
-      DateTime nextDue;
-      if (lastWatered != null) {
-        final lastDay =
-            DateTime(lastWatered.year, lastWatered.month, lastWatered.day);
-        nextDue = lastDay.add(Duration(days: freq));
-      } else if (gp.plantedAt != null) {
-        // Si jamais arrosé, baser sur la date de plantation
-        nextDue = DateTime(
-            gp.plantedAt!.year, gp.plantedAt!.month, gp.plantedAt!.day);
-      } else {
-        // Pas de données, considérer comme dû aujourd'hui
-        nextDue = today;
+    // Calcul du prochain arrosage
+    DateTime nextDue;
+    if (lastWatered != null) {
+      final lastDay =
+          DateTime(lastWatered.year, lastWatered.month, lastWatered.day);
+      nextDue = lastDay.add(Duration(days: freq));
+    } else if (gp.plantedAt != null) {
+      nextDue = DateTime(
+          gp.plantedAt!.year, gp.plantedAt!.month, gp.plantedAt!.day);
+    } else {
+      nextDue = today;
+    }
+
+    final isOverdue = nextDue.isBefore(today) || nextDue.isAtSameMomentAs(today);
+
+    // Conseil météo
+    bool weatherSkip = false;
+    String weatherAdvice = '';
+    if (weatherAvailable) {
+      if (precipNext24h > 5) {
+        weatherSkip = true;
+        weatherAdvice = 'Pluie suffisante prévue, reportez';
+      } else if (maxPrecipProb > 60) {
+        weatherSkip = true;
+        weatherAdvice = 'Forte probabilité de pluie, reportez';
+      } else if (precipNext24h > 0) {
+        weatherAdvice = 'Pluie légère prévue, arrosez si nécessaire';
       }
+    }
 
-      final isOverdue = nextDue.isBefore(today) || nextDue.isAtSameMomentAs(today);
-
-      // Conseil météo
-      bool weatherSkip = false;
-      String weatherAdvice = '';
-      if (weatherAvailable) {
-        if (precipNext24h > 5) {
-          weatherSkip = true;
-          weatherAdvice = 'Pluie suffisante prévue, reportez';
-        } else if (maxPrecipProb > 60) {
-          weatherSkip = true;
-          weatherAdvice = 'Forte probabilité de pluie, reportez';
-        } else if (precipNext24h > 0) {
-          weatherAdvice = 'Pluie légère prévue, arrosez si nécessaire';
-        }
-      }
-
-      // N'ajouter que les plantes à arroser bientôt (aujourd'hui, en retard, ou dans 1 jour)
-      final daysUntil = nextDue.difference(today).inDays;
-      if (daysUntil <= 1) {
-        reminders.add(WateringReminder(
-          gardenPlant: GardenPlantWithDetails(gardenPlant: gp, plant: plant),
-          garden: garden,
-          lastWatered: lastWatered,
-          frequencyDays: freq,
-          nextWateringDue: nextDue,
-          isOverdue: isOverdue,
-          weatherSaysSkip: weatherSkip,
-          weatherAdvice: weatherAdvice,
-        ));
-      }
+    // N'ajouter que les plantes à arroser bientôt
+    final daysUntil = nextDue.difference(today).inDays;
+    if (daysUntil <= 1) {
+      reminders.add(WateringReminder(
+        gardenPlant: GardenPlantWithDetails(gardenPlant: gp, plant: plant),
+        garden: garden,
+        lastWatered: lastWatered,
+        frequencyDays: freq,
+        nextWateringDue: nextDue,
+        isOverdue: isOverdue,
+        weatherSaysSkip: weatherSkip,
+        weatherAdvice: weatherAdvice,
+      ));
     }
   }
 

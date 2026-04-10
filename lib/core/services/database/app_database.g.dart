@@ -323,6 +323,40 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _climateAdaptationMeta = const VerificationMeta(
+    'climateAdaptation',
+  );
+  @override
+  late final GeneratedColumn<String> climateAdaptation =
+      GeneratedColumn<String>(
+        'climate_adaptation',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _toxicityMeta = const VerificationMeta(
+    'toxicity',
+  );
+  @override
+  late final GeneratedColumn<String> toxicity = GeneratedColumn<String>(
+    'toxicity',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _practicalTipsMeta = const VerificationMeta(
+    'practicalTips',
+  );
+  @override
+  late final GeneratedColumn<String> practicalTips = GeneratedColumn<String>(
+    'practical_tips',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isUserModifiedMeta = const VerificationMeta(
     'isUserModified',
   );
@@ -393,6 +427,9 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
     sowingCalendar,
     plantingCalendar,
     harvestCalendar,
+    climateAdaptation,
+    toxicity,
+    practicalTips,
     isUserModified,
     createdAt,
     updatedAt,
@@ -648,6 +685,30 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
         ),
       );
     }
+    if (data.containsKey('climate_adaptation')) {
+      context.handle(
+        _climateAdaptationMeta,
+        climateAdaptation.isAcceptableOrUnknown(
+          data['climate_adaptation']!,
+          _climateAdaptationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('toxicity')) {
+      context.handle(
+        _toxicityMeta,
+        toxicity.isAcceptableOrUnknown(data['toxicity']!, _toxicityMeta),
+      );
+    }
+    if (data.containsKey('practical_tips')) {
+      context.handle(
+        _practicalTipsMeta,
+        practicalTips.isAcceptableOrUnknown(
+          data['practical_tips']!,
+          _practicalTipsMeta,
+        ),
+      );
+    }
     if (data.containsKey('is_user_modified')) {
       context.handle(
         _isUserModifiedMeta,
@@ -794,6 +855,18 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
         DriftSqlType.string,
         data['${effectivePrefix}harvest_calendar'],
       ),
+      climateAdaptation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}climate_adaptation'],
+      ),
+      toxicity: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}toxicity'],
+      ),
+      practicalTips: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}practical_tips'],
+      ),
       isUserModified: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_user_modified'],
@@ -845,6 +918,9 @@ class Plant extends DataClass implements Insertable<Plant> {
   final String? sowingCalendar;
   final String? plantingCalendar;
   final String? harvestCalendar;
+  final String? climateAdaptation;
+  final String? toxicity;
+  final String? practicalTips;
   final bool isUserModified;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -878,6 +954,9 @@ class Plant extends DataClass implements Insertable<Plant> {
     this.sowingCalendar,
     this.plantingCalendar,
     this.harvestCalendar,
+    this.climateAdaptation,
+    this.toxicity,
+    this.practicalTips,
     required this.isUserModified,
     required this.createdAt,
     required this.updatedAt,
@@ -976,6 +1055,15 @@ class Plant extends DataClass implements Insertable<Plant> {
     if (!nullToAbsent || harvestCalendar != null) {
       map['harvest_calendar'] = Variable<String>(harvestCalendar);
     }
+    if (!nullToAbsent || climateAdaptation != null) {
+      map['climate_adaptation'] = Variable<String>(climateAdaptation);
+    }
+    if (!nullToAbsent || toxicity != null) {
+      map['toxicity'] = Variable<String>(toxicity);
+    }
+    if (!nullToAbsent || practicalTips != null) {
+      map['practical_tips'] = Variable<String>(practicalTips);
+    }
     map['is_user_modified'] = Variable<bool>(isUserModified);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1068,6 +1156,15 @@ class Plant extends DataClass implements Insertable<Plant> {
       harvestCalendar: harvestCalendar == null && nullToAbsent
           ? const Value.absent()
           : Value(harvestCalendar),
+      climateAdaptation: climateAdaptation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(climateAdaptation),
+      toxicity: toxicity == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toxicity),
+      practicalTips: practicalTips == null && nullToAbsent
+          ? const Value.absent()
+          : Value(practicalTips),
       isUserModified: Value(isUserModified),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -1127,6 +1224,11 @@ class Plant extends DataClass implements Insertable<Plant> {
       sowingCalendar: serializer.fromJson<String?>(json['sowingCalendar']),
       plantingCalendar: serializer.fromJson<String?>(json['plantingCalendar']),
       harvestCalendar: serializer.fromJson<String?>(json['harvestCalendar']),
+      climateAdaptation: serializer.fromJson<String?>(
+        json['climateAdaptation'],
+      ),
+      toxicity: serializer.fromJson<String?>(json['toxicity']),
+      practicalTips: serializer.fromJson<String?>(json['practicalTips']),
       isUserModified: serializer.fromJson<bool>(json['isUserModified']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -1175,6 +1277,9 @@ class Plant extends DataClass implements Insertable<Plant> {
       'sowingCalendar': serializer.toJson<String?>(sowingCalendar),
       'plantingCalendar': serializer.toJson<String?>(plantingCalendar),
       'harvestCalendar': serializer.toJson<String?>(harvestCalendar),
+      'climateAdaptation': serializer.toJson<String?>(climateAdaptation),
+      'toxicity': serializer.toJson<String?>(toxicity),
+      'practicalTips': serializer.toJson<String?>(practicalTips),
       'isUserModified': serializer.toJson<bool>(isUserModified),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -1211,6 +1316,9 @@ class Plant extends DataClass implements Insertable<Plant> {
     Value<String?> sowingCalendar = const Value.absent(),
     Value<String?> plantingCalendar = const Value.absent(),
     Value<String?> harvestCalendar = const Value.absent(),
+    Value<String?> climateAdaptation = const Value.absent(),
+    Value<String?> toxicity = const Value.absent(),
+    Value<String?> practicalTips = const Value.absent(),
     bool? isUserModified,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -1282,6 +1390,13 @@ class Plant extends DataClass implements Insertable<Plant> {
     harvestCalendar: harvestCalendar.present
         ? harvestCalendar.value
         : this.harvestCalendar,
+    climateAdaptation: climateAdaptation.present
+        ? climateAdaptation.value
+        : this.climateAdaptation,
+    toxicity: toxicity.present ? toxicity.value : this.toxicity,
+    practicalTips: practicalTips.present
+        ? practicalTips.value
+        : this.practicalTips,
     isUserModified: isUserModified ?? this.isUserModified,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -1365,6 +1480,13 @@ class Plant extends DataClass implements Insertable<Plant> {
       harvestCalendar: data.harvestCalendar.present
           ? data.harvestCalendar.value
           : this.harvestCalendar,
+      climateAdaptation: data.climateAdaptation.present
+          ? data.climateAdaptation.value
+          : this.climateAdaptation,
+      toxicity: data.toxicity.present ? data.toxicity.value : this.toxicity,
+      practicalTips: data.practicalTips.present
+          ? data.practicalTips.value
+          : this.practicalTips,
       isUserModified: data.isUserModified.present
           ? data.isUserModified.value
           : this.isUserModified,
@@ -1405,6 +1527,9 @@ class Plant extends DataClass implements Insertable<Plant> {
           ..write('sowingCalendar: $sowingCalendar, ')
           ..write('plantingCalendar: $plantingCalendar, ')
           ..write('harvestCalendar: $harvestCalendar, ')
+          ..write('climateAdaptation: $climateAdaptation, ')
+          ..write('toxicity: $toxicity, ')
+          ..write('practicalTips: $practicalTips, ')
           ..write('isUserModified: $isUserModified, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1443,6 +1568,9 @@ class Plant extends DataClass implements Insertable<Plant> {
     sowingCalendar,
     plantingCalendar,
     harvestCalendar,
+    climateAdaptation,
+    toxicity,
+    practicalTips,
     isUserModified,
     createdAt,
     updatedAt,
@@ -1480,6 +1608,9 @@ class Plant extends DataClass implements Insertable<Plant> {
           other.sowingCalendar == this.sowingCalendar &&
           other.plantingCalendar == this.plantingCalendar &&
           other.harvestCalendar == this.harvestCalendar &&
+          other.climateAdaptation == this.climateAdaptation &&
+          other.toxicity == this.toxicity &&
+          other.practicalTips == this.practicalTips &&
           other.isUserModified == this.isUserModified &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -1515,6 +1646,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
   final Value<String?> sowingCalendar;
   final Value<String?> plantingCalendar;
   final Value<String?> harvestCalendar;
+  final Value<String?> climateAdaptation;
+  final Value<String?> toxicity;
+  final Value<String?> practicalTips;
   final Value<bool> isUserModified;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1548,6 +1682,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     this.sowingCalendar = const Value.absent(),
     this.plantingCalendar = const Value.absent(),
     this.harvestCalendar = const Value.absent(),
+    this.climateAdaptation = const Value.absent(),
+    this.toxicity = const Value.absent(),
+    this.practicalTips = const Value.absent(),
     this.isUserModified = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1582,6 +1719,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     this.sowingCalendar = const Value.absent(),
     this.plantingCalendar = const Value.absent(),
     this.harvestCalendar = const Value.absent(),
+    this.climateAdaptation = const Value.absent(),
+    this.toxicity = const Value.absent(),
+    this.practicalTips = const Value.absent(),
     this.isUserModified = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1616,6 +1756,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     Expression<String>? sowingCalendar,
     Expression<String>? plantingCalendar,
     Expression<String>? harvestCalendar,
+    Expression<String>? climateAdaptation,
+    Expression<String>? toxicity,
+    Expression<String>? practicalTips,
     Expression<bool>? isUserModified,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1660,6 +1803,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
       if (sowingCalendar != null) 'sowing_calendar': sowingCalendar,
       if (plantingCalendar != null) 'planting_calendar': plantingCalendar,
       if (harvestCalendar != null) 'harvest_calendar': harvestCalendar,
+      if (climateAdaptation != null) 'climate_adaptation': climateAdaptation,
+      if (toxicity != null) 'toxicity': toxicity,
+      if (practicalTips != null) 'practical_tips': practicalTips,
       if (isUserModified != null) 'is_user_modified': isUserModified,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1696,6 +1842,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     Value<String?>? sowingCalendar,
     Value<String?>? plantingCalendar,
     Value<String?>? harvestCalendar,
+    Value<String?>? climateAdaptation,
+    Value<String?>? toxicity,
+    Value<String?>? practicalTips,
     Value<bool>? isUserModified,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -1735,6 +1884,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
       sowingCalendar: sowingCalendar ?? this.sowingCalendar,
       plantingCalendar: plantingCalendar ?? this.plantingCalendar,
       harvestCalendar: harvestCalendar ?? this.harvestCalendar,
+      climateAdaptation: climateAdaptation ?? this.climateAdaptation,
+      toxicity: toxicity ?? this.toxicity,
+      practicalTips: practicalTips ?? this.practicalTips,
       isUserModified: isUserModified ?? this.isUserModified,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1845,6 +1997,15 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     if (harvestCalendar.present) {
       map['harvest_calendar'] = Variable<String>(harvestCalendar.value);
     }
+    if (climateAdaptation.present) {
+      map['climate_adaptation'] = Variable<String>(climateAdaptation.value);
+    }
+    if (toxicity.present) {
+      map['toxicity'] = Variable<String>(toxicity.value);
+    }
+    if (practicalTips.present) {
+      map['practical_tips'] = Variable<String>(practicalTips.value);
+    }
     if (isUserModified.present) {
       map['is_user_modified'] = Variable<bool>(isUserModified.value);
     }
@@ -1889,6 +2050,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
           ..write('sowingCalendar: $sowingCalendar, ')
           ..write('plantingCalendar: $plantingCalendar, ')
           ..write('harvestCalendar: $harvestCalendar, ')
+          ..write('climateAdaptation: $climateAdaptation, ')
+          ..write('toxicity: $toxicity, ')
+          ..write('practicalTips: $practicalTips, ')
           ..write('isUserModified: $isUserModified, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -4362,6 +4526,40 @@ class $FruitTreesTable extends FruitTrees
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _climateAdaptationMeta = const VerificationMeta(
+    'climateAdaptation',
+  );
+  @override
+  late final GeneratedColumn<String> climateAdaptation =
+      GeneratedColumn<String>(
+        'climate_adaptation',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _toxicityMeta = const VerificationMeta(
+    'toxicity',
+  );
+  @override
+  late final GeneratedColumn<String> toxicity = GeneratedColumn<String>(
+    'toxicity',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _practicalTipsMeta = const VerificationMeta(
+    'practicalTips',
+  );
+  @override
+  late final GeneratedColumn<String> practicalTips = GeneratedColumn<String>(
+    'practical_tips',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -4421,6 +4619,9 @@ class $FruitTreesTable extends FruitTrees
     containerSuitable,
     containerMinSizeL,
     popularVarieties,
+    climateAdaptation,
+    toxicity,
+    practicalTips,
     createdAt,
     updatedAt,
   ];
@@ -4699,6 +4900,30 @@ class $FruitTreesTable extends FruitTrees
         ),
       );
     }
+    if (data.containsKey('climate_adaptation')) {
+      context.handle(
+        _climateAdaptationMeta,
+        climateAdaptation.isAcceptableOrUnknown(
+          data['climate_adaptation']!,
+          _climateAdaptationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('toxicity')) {
+      context.handle(
+        _toxicityMeta,
+        toxicity.isAcceptableOrUnknown(data['toxicity']!, _toxicityMeta),
+      );
+    }
+    if (data.containsKey('practical_tips')) {
+      context.handle(
+        _practicalTipsMeta,
+        practicalTips.isAcceptableOrUnknown(
+          data['practical_tips']!,
+          _practicalTipsMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -4852,6 +5077,18 @@ class $FruitTreesTable extends FruitTrees
         DriftSqlType.string,
         data['${effectivePrefix}popular_varieties'],
       ),
+      climateAdaptation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}climate_adaptation'],
+      ),
+      toxicity: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}toxicity'],
+      ),
+      practicalTips: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}practical_tips'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -4903,6 +5140,9 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
   final bool containerSuitable;
   final int? containerMinSizeL;
   final String? popularVarieties;
+  final String? climateAdaptation;
+  final String? toxicity;
+  final String? practicalTips;
   final DateTime createdAt;
   final DateTime updatedAt;
   const FruitTree({
@@ -4939,6 +5179,9 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
     required this.containerSuitable,
     this.containerMinSizeL,
     this.popularVarieties,
+    this.climateAdaptation,
+    this.toxicity,
+    this.practicalTips,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -5034,6 +5277,15 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
     if (!nullToAbsent || popularVarieties != null) {
       map['popular_varieties'] = Variable<String>(popularVarieties);
     }
+    if (!nullToAbsent || climateAdaptation != null) {
+      map['climate_adaptation'] = Variable<String>(climateAdaptation);
+    }
+    if (!nullToAbsent || toxicity != null) {
+      map['toxicity'] = Variable<String>(toxicity);
+    }
+    if (!nullToAbsent || practicalTips != null) {
+      map['practical_tips'] = Variable<String>(practicalTips);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -5128,6 +5380,15 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
       popularVarieties: popularVarieties == null && nullToAbsent
           ? const Value.absent()
           : Value(popularVarieties),
+      climateAdaptation: climateAdaptation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(climateAdaptation),
+      toxicity: toxicity == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toxicity),
+      practicalTips: practicalTips == null && nullToAbsent
+          ? const Value.absent()
+          : Value(practicalTips),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -5182,6 +5443,11 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
       containerSuitable: serializer.fromJson<bool>(json['containerSuitable']),
       containerMinSizeL: serializer.fromJson<int?>(json['containerMinSizeL']),
       popularVarieties: serializer.fromJson<String?>(json['popularVarieties']),
+      climateAdaptation: serializer.fromJson<String?>(
+        json['climateAdaptation'],
+      ),
+      toxicity: serializer.fromJson<String?>(json['toxicity']),
+      practicalTips: serializer.fromJson<String?>(json['practicalTips']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -5227,6 +5493,9 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
       'containerSuitable': serializer.toJson<bool>(containerSuitable),
       'containerMinSizeL': serializer.toJson<int?>(containerMinSizeL),
       'popularVarieties': serializer.toJson<String?>(popularVarieties),
+      'climateAdaptation': serializer.toJson<String?>(climateAdaptation),
+      'toxicity': serializer.toJson<String?>(toxicity),
+      'practicalTips': serializer.toJson<String?>(practicalTips),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -5266,6 +5535,9 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
     bool? containerSuitable,
     Value<int?> containerMinSizeL = const Value.absent(),
     Value<String?> popularVarieties = const Value.absent(),
+    Value<String?> climateAdaptation = const Value.absent(),
+    Value<String?> toxicity = const Value.absent(),
+    Value<String?> practicalTips = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => FruitTree(
@@ -5330,6 +5602,13 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
     popularVarieties: popularVarieties.present
         ? popularVarieties.value
         : this.popularVarieties,
+    climateAdaptation: climateAdaptation.present
+        ? climateAdaptation.value
+        : this.climateAdaptation,
+    toxicity: toxicity.present ? toxicity.value : this.toxicity,
+    practicalTips: practicalTips.present
+        ? practicalTips.value
+        : this.practicalTips,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -5418,6 +5697,13 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
       popularVarieties: data.popularVarieties.present
           ? data.popularVarieties.value
           : this.popularVarieties,
+      climateAdaptation: data.climateAdaptation.present
+          ? data.climateAdaptation.value
+          : this.climateAdaptation,
+      toxicity: data.toxicity.present ? data.toxicity.value : this.toxicity,
+      practicalTips: data.practicalTips.present
+          ? data.practicalTips.value
+          : this.practicalTips,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -5459,6 +5745,9 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
           ..write('containerSuitable: $containerSuitable, ')
           ..write('containerMinSizeL: $containerMinSizeL, ')
           ..write('popularVarieties: $popularVarieties, ')
+          ..write('climateAdaptation: $climateAdaptation, ')
+          ..write('toxicity: $toxicity, ')
+          ..write('practicalTips: $practicalTips, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -5500,6 +5789,9 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
     containerSuitable,
     containerMinSizeL,
     popularVarieties,
+    climateAdaptation,
+    toxicity,
+    practicalTips,
     createdAt,
     updatedAt,
   ]);
@@ -5540,6 +5832,9 @@ class FruitTree extends DataClass implements Insertable<FruitTree> {
           other.containerSuitable == this.containerSuitable &&
           other.containerMinSizeL == this.containerMinSizeL &&
           other.popularVarieties == this.popularVarieties &&
+          other.climateAdaptation == this.climateAdaptation &&
+          other.toxicity == this.toxicity &&
+          other.practicalTips == this.practicalTips &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -5578,6 +5873,9 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
   final Value<bool> containerSuitable;
   final Value<int?> containerMinSizeL;
   final Value<String?> popularVarieties;
+  final Value<String?> climateAdaptation;
+  final Value<String?> toxicity;
+  final Value<String?> practicalTips;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const FruitTreesCompanion({
@@ -5614,6 +5912,9 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
     this.containerSuitable = const Value.absent(),
     this.containerMinSizeL = const Value.absent(),
     this.popularVarieties = const Value.absent(),
+    this.climateAdaptation = const Value.absent(),
+    this.toxicity = const Value.absent(),
+    this.practicalTips = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -5651,6 +5952,9 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
     this.containerSuitable = const Value.absent(),
     this.containerMinSizeL = const Value.absent(),
     this.popularVarieties = const Value.absent(),
+    this.climateAdaptation = const Value.absent(),
+    this.toxicity = const Value.absent(),
+    this.practicalTips = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : commonName = Value(commonName);
@@ -5688,6 +5992,9 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
     Expression<bool>? containerSuitable,
     Expression<int>? containerMinSizeL,
     Expression<String>? popularVarieties,
+    Expression<String>? climateAdaptation,
+    Expression<String>? toxicity,
+    Expression<String>? practicalTips,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -5728,6 +6035,9 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
       if (containerSuitable != null) 'container_suitable': containerSuitable,
       if (containerMinSizeL != null) 'container_min_size_l': containerMinSizeL,
       if (popularVarieties != null) 'popular_varieties': popularVarieties,
+      if (climateAdaptation != null) 'climate_adaptation': climateAdaptation,
+      if (toxicity != null) 'toxicity': toxicity,
+      if (practicalTips != null) 'practical_tips': practicalTips,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -5767,6 +6077,9 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
     Value<bool>? containerSuitable,
     Value<int?>? containerMinSizeL,
     Value<String?>? popularVarieties,
+    Value<String?>? climateAdaptation,
+    Value<String?>? toxicity,
+    Value<String?>? practicalTips,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
@@ -5807,6 +6120,9 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
       containerSuitable: containerSuitable ?? this.containerSuitable,
       containerMinSizeL: containerMinSizeL ?? this.containerMinSizeL,
       popularVarieties: popularVarieties ?? this.popularVarieties,
+      climateAdaptation: climateAdaptation ?? this.climateAdaptation,
+      toxicity: toxicity ?? this.toxicity,
+      practicalTips: practicalTips ?? this.practicalTips,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -5920,6 +6236,15 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
     if (popularVarieties.present) {
       map['popular_varieties'] = Variable<String>(popularVarieties.value);
     }
+    if (climateAdaptation.present) {
+      map['climate_adaptation'] = Variable<String>(climateAdaptation.value);
+    }
+    if (toxicity.present) {
+      map['toxicity'] = Variable<String>(toxicity.value);
+    }
+    if (practicalTips.present) {
+      map['practical_tips'] = Variable<String>(practicalTips.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -5965,6 +6290,9 @@ class FruitTreesCompanion extends UpdateCompanion<FruitTree> {
           ..write('containerSuitable: $containerSuitable, ')
           ..write('containerMinSizeL: $containerMinSizeL, ')
           ..write('popularVarieties: $popularVarieties, ')
+          ..write('climateAdaptation: $climateAdaptation, ')
+          ..write('toxicity: $toxicity, ')
+          ..write('practicalTips: $practicalTips, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -6862,6 +7190,9 @@ typedef $$PlantsTableCreateCompanionBuilder =
       Value<String?> sowingCalendar,
       Value<String?> plantingCalendar,
       Value<String?> harvestCalendar,
+      Value<String?> climateAdaptation,
+      Value<String?> toxicity,
+      Value<String?> practicalTips,
       Value<bool> isUserModified,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -6897,6 +7228,9 @@ typedef $$PlantsTableUpdateCompanionBuilder =
       Value<String?> sowingCalendar,
       Value<String?> plantingCalendar,
       Value<String?> harvestCalendar,
+      Value<String?> climateAdaptation,
+      Value<String?> toxicity,
+      Value<String?> practicalTips,
       Value<bool> isUserModified,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -7094,6 +7428,21 @@ class $$PlantsTableFilterComposer
 
   ColumnFilters<String> get harvestCalendar => $composableBuilder(
     column: $table.harvestCalendar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get climateAdaptation => $composableBuilder(
+    column: $table.climateAdaptation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get toxicity => $composableBuilder(
+    column: $table.toxicity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get practicalTips => $composableBuilder(
+    column: $table.practicalTips,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7317,6 +7666,21 @@ class $$PlantsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get climateAdaptation => $composableBuilder(
+    column: $table.climateAdaptation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get toxicity => $composableBuilder(
+    column: $table.toxicity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get practicalTips => $composableBuilder(
+    column: $table.practicalTips,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isUserModified => $composableBuilder(
     column: $table.isUserModified,
     builder: (column) => ColumnOrderings(column),
@@ -7477,6 +7841,19 @@ class $$PlantsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get climateAdaptation => $composableBuilder(
+    column: $table.climateAdaptation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get toxicity =>
+      $composableBuilder(column: $table.toxicity, builder: (column) => column);
+
+  GeneratedColumn<String> get practicalTips => $composableBuilder(
+    column: $table.practicalTips,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isUserModified => $composableBuilder(
     column: $table.isUserModified,
     builder: (column) => column,
@@ -7596,6 +7973,9 @@ class $$PlantsTableTableManager
                 Value<String?> sowingCalendar = const Value.absent(),
                 Value<String?> plantingCalendar = const Value.absent(),
                 Value<String?> harvestCalendar = const Value.absent(),
+                Value<String?> climateAdaptation = const Value.absent(),
+                Value<String?> toxicity = const Value.absent(),
+                Value<String?> practicalTips = const Value.absent(),
                 Value<bool> isUserModified = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -7629,6 +8009,9 @@ class $$PlantsTableTableManager
                 sowingCalendar: sowingCalendar,
                 plantingCalendar: plantingCalendar,
                 harvestCalendar: harvestCalendar,
+                climateAdaptation: climateAdaptation,
+                toxicity: toxicity,
+                practicalTips: practicalTips,
                 isUserModified: isUserModified,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -7664,6 +8047,9 @@ class $$PlantsTableTableManager
                 Value<String?> sowingCalendar = const Value.absent(),
                 Value<String?> plantingCalendar = const Value.absent(),
                 Value<String?> harvestCalendar = const Value.absent(),
+                Value<String?> climateAdaptation = const Value.absent(),
+                Value<String?> toxicity = const Value.absent(),
+                Value<String?> practicalTips = const Value.absent(),
                 Value<bool> isUserModified = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -7697,6 +8083,9 @@ class $$PlantsTableTableManager
                 sowingCalendar: sowingCalendar,
                 plantingCalendar: plantingCalendar,
                 harvestCalendar: harvestCalendar,
+                climateAdaptation: climateAdaptation,
+                toxicity: toxicity,
+                practicalTips: practicalTips,
                 isUserModified: isUserModified,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -9960,6 +10349,9 @@ typedef $$FruitTreesTableCreateCompanionBuilder =
       Value<bool> containerSuitable,
       Value<int?> containerMinSizeL,
       Value<String?> popularVarieties,
+      Value<String?> climateAdaptation,
+      Value<String?> toxicity,
+      Value<String?> practicalTips,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
@@ -9998,6 +10390,9 @@ typedef $$FruitTreesTableUpdateCompanionBuilder =
       Value<bool> containerSuitable,
       Value<int?> containerMinSizeL,
       Value<String?> popularVarieties,
+      Value<String?> climateAdaptation,
+      Value<String?> toxicity,
+      Value<String?> practicalTips,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
@@ -10199,6 +10594,21 @@ class $$FruitTreesTableFilterComposer
 
   ColumnFilters<String> get popularVarieties => $composableBuilder(
     column: $table.popularVarieties,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get climateAdaptation => $composableBuilder(
+    column: $table.climateAdaptation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get toxicity => $composableBuilder(
+    column: $table.toxicity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get practicalTips => $composableBuilder(
+    column: $table.practicalTips,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10412,6 +10822,21 @@ class $$FruitTreesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get climateAdaptation => $composableBuilder(
+    column: $table.climateAdaptation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get toxicity => $composableBuilder(
+    column: $table.toxicity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get practicalTips => $composableBuilder(
+    column: $table.practicalTips,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -10581,6 +11006,19 @@ class $$FruitTreesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get climateAdaptation => $composableBuilder(
+    column: $table.climateAdaptation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get toxicity =>
+      $composableBuilder(column: $table.toxicity, builder: (column) => column);
+
+  GeneratedColumn<String> get practicalTips => $composableBuilder(
+    column: $table.practicalTips,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -10674,6 +11112,9 @@ class $$FruitTreesTableTableManager
                 Value<bool> containerSuitable = const Value.absent(),
                 Value<int?> containerMinSizeL = const Value.absent(),
                 Value<String?> popularVarieties = const Value.absent(),
+                Value<String?> climateAdaptation = const Value.absent(),
+                Value<String?> toxicity = const Value.absent(),
+                Value<String?> practicalTips = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => FruitTreesCompanion(
@@ -10710,6 +11151,9 @@ class $$FruitTreesTableTableManager
                 containerSuitable: containerSuitable,
                 containerMinSizeL: containerMinSizeL,
                 popularVarieties: popularVarieties,
+                climateAdaptation: climateAdaptation,
+                toxicity: toxicity,
+                practicalTips: practicalTips,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -10748,6 +11192,9 @@ class $$FruitTreesTableTableManager
                 Value<bool> containerSuitable = const Value.absent(),
                 Value<int?> containerMinSizeL = const Value.absent(),
                 Value<String?> popularVarieties = const Value.absent(),
+                Value<String?> climateAdaptation = const Value.absent(),
+                Value<String?> toxicity = const Value.absent(),
+                Value<String?> practicalTips = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => FruitTreesCompanion.insert(
@@ -10784,6 +11231,9 @@ class $$FruitTreesTableTableManager
                 containerSuitable: containerSuitable,
                 containerMinSizeL: containerMinSizeL,
                 popularVarieties: popularVarieties,
+                climateAdaptation: climateAdaptation,
+                toxicity: toxicity,
+                practicalTips: practicalTips,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),

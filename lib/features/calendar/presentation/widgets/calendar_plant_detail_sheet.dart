@@ -254,6 +254,15 @@ class PlantDetailSheet extends ConsumerWidget {
                 const SizedBox(height: 16),
               ],
 
+              // Adaptation climatique
+              if (plant.climateAdaptation != null) ...[
+                _DetailSectionTitle(title: '🌍 Adaptation climatique'),
+                _ClimateAdaptationCard(
+                  climateJson: plant.climateAdaptation!,
+                ),
+                const SizedBox(height: 16),
+              ],
+
               // Zone de culture
               if (plant.growingZone != null) ...[
                 _DetailSectionTitle(title: '📍 Zone de culture'),
@@ -271,6 +280,42 @@ class PlantDetailSheet extends ConsumerWidget {
                     style: AppTypography.bodySmall,
                   ),
                 ),
+                const SizedBox(height: 16),
+              ],
+
+              // Toxicité
+              if (plant.toxicity != null) ...[
+                _DetailSectionTitle(title: '☠️ Toxicité'),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.08),
+                    borderRadius: AppSpacing.borderRadiusMd,
+                    border: Border.all(
+                      color: AppColors.error.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('⚠️', style: TextStyle(fontSize: 16)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          plant.toxicity!,
+                          style: AppTypography.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              // Conseils pratiques
+              if (plant.practicalTips != null) ...[
+                _DetailSectionTitle(title: '💡 Conseils pratiques'),
+                Text(plant.practicalTips!, style: AppTypography.bodyMedium),
                 const SizedBox(height: 16),
               ],
 
@@ -702,6 +747,73 @@ class _PlantYearCalendar extends StatelessWidget {
     } catch (_) {
       return null;
     }
+  }
+}
+
+class _ClimateAdaptationCard extends StatelessWidget {
+  final String climateJson;
+
+  const _ClimateAdaptationCard({required this.climateJson});
+
+  @override
+  Widget build(BuildContext context) {
+    Map<String, dynamic> climate = {};
+    try {
+      climate = json.decode(climateJson) as Map<String, dynamic>;
+    } catch (_) {
+      return const SizedBox.shrink();
+    }
+
+    const regions = [
+      ('cold', '❄️', 'Région froide'),
+      ('temperate', '🌤️', 'Région tempérée'),
+      ('hot', '☀️', 'Région chaude'),
+    ];
+
+    return Column(
+      children: [
+        for (final (key, emoji, label) in regions)
+          if (climate[key] != null) ...[
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: AppSpacing.borderRadiusMd,
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(emoji, style: const TextStyle(fontSize: 18)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          label,
+                          style: AppTypography.labelSmall.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          climate[key].toString(),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+      ],
+    );
   }
 }
 

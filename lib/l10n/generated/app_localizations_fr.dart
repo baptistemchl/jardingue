@@ -644,7 +644,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get aboutSubtitle => 'Mon potager connecté';
 
   @override
-  String get aboutMadeWithLove => 'Conçu avec amour pour les jardiniers';
+  String get aboutMadeWithLove => 'Conçu avec amour en Bretagne';
+
+  @override
+  String get aboutContact => 'contact@agence-ixp.fr';
 
   @override
   String aboutCopyright(String year) {
@@ -660,6 +663,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get aboutTapToCelebrate => 'Tapez pour célébrer !';
+
+  @override
+  String get aboutSourcesTitle => 'Sources des données';
+
+  @override
+  String get aboutSourcesBody =>
+      'Les fiches plantes et arbres fruitiers s\'appuient sur des sources horticoles reconnues : INRAE, Vilmorin, Royal Horticultural Society (RHS), Rustica, et les zones de rusticité USDA.';
 
   @override
   String get onboardingGardenTitle => 'Votre potager';

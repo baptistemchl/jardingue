@@ -1201,8 +1201,14 @@ abstract class AppLocalizations {
   /// No description provided for @aboutMadeWithLove.
   ///
   /// In fr, this message translates to:
-  /// **'Conçu avec amour pour les jardiniers'**
+  /// **'Conçu avec amour en Bretagne'**
   String get aboutMadeWithLove;
+
+  /// No description provided for @aboutContact.
+  ///
+  /// In fr, this message translates to:
+  /// **'contact@agence-ixp.fr'**
+  String get aboutContact;
 
   /// No description provided for @aboutCopyright.
   ///
@@ -1227,6 +1233,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Tapez pour célébrer !'**
   String get aboutTapToCelebrate;
+
+  /// No description provided for @aboutSourcesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sources des données'**
+  String get aboutSourcesTitle;
+
+  /// No description provided for @aboutSourcesBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les fiches plantes et arbres fruitiers s\'appuient sur des sources horticoles reconnues : INRAE, Vilmorin, Royal Horticultural Society (RHS), Rustica, et les zones de rusticité USDA.'**
+  String get aboutSourcesBody;
 
   /// No description provided for @onboardingGardenTitle.
   ///

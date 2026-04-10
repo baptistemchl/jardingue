@@ -68,6 +68,15 @@ class Plants extends Table {
 
   TextColumn get harvestCalendar => text().nullable()();
 
+  // Adaptation climatique (JSON: {cold, temperate, hot})
+  TextColumn get climateAdaptation => text().nullable()();
+
+  // Toxicité (null si non toxique)
+  TextColumn get toxicity => text().nullable()();
+
+  // Conseils pratiques complémentaires
+  TextColumn get practicalTips => text().nullable()();
+
   // Métadonnées
   BoolColumn get isUserModified =>
       boolean().withDefault(const Constant(false))();

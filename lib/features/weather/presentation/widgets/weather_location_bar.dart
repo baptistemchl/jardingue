@@ -85,7 +85,7 @@ class WeatherHeader extends ConsumerWidget {
   }
 
   Widget _buildLocationIssueBanner(BuildContext context, WidgetRef ref) {
-    final locationAsync = ref.watch(currentLocationProvider);
+    final locationAsync = ref.watch(effectiveLocationProvider);
     return locationAsync.when(
       data: (location) {
         if (!location.hasFallback) return const SizedBox(height: 0);

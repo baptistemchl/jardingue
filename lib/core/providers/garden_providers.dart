@@ -41,23 +41,12 @@ final gardenByIdProvider =
   return repo.getGardenById(id);
 });
 
-/// Provider pour les plantes d'un potager avec details.
+/// Provider pour les plantes d'un potager avec details (JOIN, 1 requête).
 final gardenPlantsProvider = FutureProvider.family<
     List<GardenPlantWithDetails>, int>((ref, gardenId) async {
   await ref.watch(databaseInitProvider.future);
   final gardenRepo = ref.watch(gardenRepositoryProvider);
-  final plantRepo = ref.watch(plantRepositoryProvider);
-  final gardenPlants = await gardenRepo.getGardenPlants(gardenId);
-
-  final List<GardenPlantWithDetails> result = [];
-  for (final gp in gardenPlants) {
-    final plant =
-        gp.plantId > 0 ? await plantRepo.getPlantById(gp.plantId) : null;
-    result.add(
-      GardenPlantWithDetails(gardenPlant: gp, plant: plant),
-    );
-  }
-  return result;
+  return gardenRepo.getGardenPlantsWithDetails(gardenId);
 });
 
 /// Provider pour le mode edition.

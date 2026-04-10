@@ -1,4 +1,5 @@
 import '../../../../core/services/database/app_database.dart';
+import '../../domain/models/garden_plant_with_details.dart';
 
 /// Abstract interface for garden-related data operations.
 abstract interface class GardenRepository {
@@ -8,6 +9,8 @@ abstract interface class GardenRepository {
   Future<bool> updateGarden(Garden garden);
   Future<int> deleteGarden(int id);
   Future<List<GardenPlant>> getGardenPlants(int gardenId);
+  Future<List<GardenPlantWithDetails>> getGardenPlantsWithDetails(
+      int gardenId);
   Future<int> addPlantToGarden(GardenPlantsCompanion gp);
   Future<int> removePlantFromGarden(int id);
   Future<void> updateGardenPlantPosition(int id, int x, int y);
@@ -45,6 +48,17 @@ class DriftGardenRepository implements GardenRepository {
   @override
   Future<List<GardenPlant>> getGardenPlants(int gardenId) =>
       _db.getGardenPlants(gardenId);
+
+  @override
+  Future<List<GardenPlantWithDetails>> getGardenPlantsWithDetails(
+      int gardenId) async {
+    final results = await _db.getGardenPlantsWithDetails(gardenId);
+    return results.map((row) {
+      final gp = row.readTable(_db.gardenPlants);
+      final plant = row.readTableOrNull(_db.plants);
+      return GardenPlantWithDetails(gardenPlant: gp, plant: plant);
+    }).toList();
+  }
 
   @override
   Future<int> addPlantToGarden(GardenPlantsCompanion gp) =>

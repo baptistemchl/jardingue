@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -525,6 +526,46 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
           ],
         ),
 
+        // Adaptation climatique
+        if (tree.climateAdaptation != null) ...[
+          const SizedBox(height: 12),
+          _ClimateCard(climateJson: tree.climateAdaptation!),
+        ],
+
+        // Toxicité
+        if (tree.toxicity != null) ...[
+          const SizedBox(height: 12),
+          _InfoCard(
+            title: 'Toxicité',
+            icon: PhosphorIcons.warning(PhosphorIconsStyle.fill),
+            iconColor: AppColors.error,
+            children: [
+              Text(
+                tree.toxicity!,
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.error,
+                ),
+              ),
+            ],
+          ),
+        ],
+
+        // Conseils pratiques
+        if (tree.practicalTips != null) ...[
+          const SizedBox(height: 12),
+          _InfoCard(
+            title: 'Conseils pratiques',
+            icon: PhosphorIcons.lightbulb(PhosphorIconsStyle.fill),
+            iconColor: AppColors.secondary,
+            children: [
+              Text(
+                tree.practicalTips!,
+                style: AppTypography.bodySmall.copyWith(height: 1.4),
+              ),
+            ],
+          ),
+        ],
+
         // Variétés populaires
         if (tree.varietiesList.isNotEmpty) ...[
           const SizedBox(height: 12),
@@ -654,6 +695,91 @@ class _InfoRow extends StatelessWidget {
               textAlign: TextAlign.right,
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ClimateCard extends StatelessWidget {
+  final String climateJson;
+
+  const _ClimateCard({required this.climateJson});
+
+  @override
+  Widget build(BuildContext context) {
+    Map<String, dynamic> climate = {};
+    try {
+      climate = json.decode(climateJson) as Map<String, dynamic>;
+    } catch (_) {
+      return const SizedBox.shrink();
+    }
+
+    const regions = [
+      ('cold', '❄️', 'Région froide'),
+      ('temperate', '🌤️', 'Région tempérée'),
+      ('hot', '☀️', 'Région chaude'),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                PhosphorIcons.globe(PhosphorIconsStyle.fill),
+                size: 16,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Adaptation climatique',
+                style: AppTypography.labelMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          for (final (key, emoji, label) in regions)
+            if (climate[key] != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(emoji, style: const TextStyle(fontSize: 16)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label,
+                            style: AppTypography.caption.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            climate[key].toString(),
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.textSecondary,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
         ],
       ),
     );

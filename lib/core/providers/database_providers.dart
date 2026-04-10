@@ -78,7 +78,7 @@ class PlantsFilterNotifier
 // PLANTS LIST PROVIDERS
 // ============================================
 
-/// Provider pour la liste filtree des plantes.
+/// Provider pour la liste filtree des plantes (filtrage SQL).
 final filteredPlantsProvider =
     FutureProvider<List<Plant>>((ref) async {
   await ref.watch(databaseInitProvider.future);
@@ -86,31 +86,17 @@ final filteredPlantsProvider =
   final repo = ref.watch(plantRepositoryProvider);
   final filters = ref.watch(plantsFilterProvider);
 
-  List<Plant> plants;
-  if (filters.searchQuery.isEmpty) {
-    plants = await repo.getAllPlantsSorted();
-  } else {
-    plants = await repo.searchPlants(filters.searchQuery);
-  }
-
-  if (filters.category != PlantCategory.all &&
-      filters.category.code != null) {
-    plants = plants
-        .where(
-          (p) => p.categoryCode == filters.category.code,
-        )
-        .toList();
-  }
-
-  if (filters.sunFilter != PlantSunFilter.all &&
-      filters.sunFilter.value != null) {
-    plants = plants.where((p) {
-      final exposure = p.sunExposure?.toLowerCase() ?? '';
-      return exposure.contains(filters.sunFilter.value!);
-    }).toList();
-  }
-
-  return plants;
+  return repo.getFilteredPlants(
+    searchQuery: filters.searchQuery.isNotEmpty
+        ? filters.searchQuery
+        : null,
+    categoryCode: filters.category != PlantCategory.all
+        ? filters.category.code
+        : null,
+    sunExposureContains: filters.sunFilter != PlantSunFilter.all
+        ? filters.sunFilter.value
+        : null,
+  );
 });
 
 /// Provider pour le nombre total de plantes (sans filtres).
@@ -129,18 +115,12 @@ final filteredPlantsCountProvider =
       .whenData((plants) => plants.length);
 });
 
-/// Provider pour les categories disponibles.
+/// Provider pour les categories disponibles (SQL GROUP BY).
 final availableCategoriesProvider =
     FutureProvider<List<CategoryCount>>((ref) async {
   await ref.watch(databaseInitProvider.future);
   final repo = ref.watch(plantRepositoryProvider);
-  final plants = await repo.getAllPlantsSorted();
-
-  final counts = <String, int>{};
-  for (final plant in plants) {
-    final code = plant.categoryCode ?? 'unknown';
-    counts[code] = (counts[code] ?? 0) + 1;
-  }
+  final counts = await repo.getCategoryCounts();
 
   return counts.entries
       .map(

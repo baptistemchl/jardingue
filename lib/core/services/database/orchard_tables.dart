@@ -81,6 +81,15 @@ class FruitTrees extends Table {
   // Variétés populaires (JSON)
   TextColumn get popularVarieties => text().nullable()();
 
+  // Adaptation climatique (JSON: {cold, temperate, hot})
+  TextColumn get climateAdaptation => text().nullable()();
+
+  // Toxicité (null si non toxique)
+  TextColumn get toxicity => text().nullable()();
+
+  // Conseils pratiques de culture
+  TextColumn get practicalTips => text().nullable()();
+
   // Métadonnées
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 

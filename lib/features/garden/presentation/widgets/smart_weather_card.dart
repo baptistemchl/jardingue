@@ -346,8 +346,8 @@ class _WeatherCardContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final condition = weather.current.condition;
-    final locationAsync = ref.watch(currentLocationProvider);
-    final LocationResult? location = locationAsync.valueOrNull;
+    final effectiveLocation = ref.watch(effectiveLocationProvider);
+    final LocationResult? location = effectiveLocation.valueOrNull;
 
     return GestureDetector(
       onTap: onTap,
@@ -398,6 +398,27 @@ class _WeatherCardContent extends ConsumerWidget {
                           style: AppTypography.caption.copyWith(
                             color: AppColors.textSecondary,
                           ),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            Icon(
+                              PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
+                              size: 11,
+                              color: AppColors.textTertiary,
+                            ),
+                            const SizedBox(width: 3),
+                            Expanded(
+                              child: Text(
+                                weather.location.displayName,
+                                style: AppTypography.caption.copyWith(
+                                  color: AppColors.textTertiary,
+                                  fontSize: 11,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
