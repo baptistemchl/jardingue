@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/app_database.dart';
 import '../services/notifications/notification_service.dart';
 import '../../features/garden/data/repositories/garden_event_repository.dart';
@@ -262,8 +262,10 @@ final wateringNotificationSchedulerProvider =
         plantNames: plantNames,
       );
     }
-  } catch (e) {
-    debugPrint('Erreur scheduling notifications: $e');
+  } catch (e, st) {
+    CrashReportingService.recordError(e, st,
+      reason: 'wateringNotificationSchedulerProvider',
+    );
   }
 });
 
@@ -308,6 +310,14 @@ class GardenEventNotifier extends StateNotifier<AsyncValue<void>> {
       }
       state = const AsyncData(null);
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenEventNotifier.logEvent',
+        extra: {
+          'eventType': eventType.name,
+          'gardenPlantId': gardenPlantId ?? -1,
+          'plantId': plantId ?? -1,
+        },
+      );
       state = AsyncError(e, st);
     }
   }
@@ -343,6 +353,10 @@ class GardenEventNotifier extends StateNotifier<AsyncValue<void>> {
       _invalidateAll(gardenPlantId);
       state = const AsyncData(null);
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenEventNotifier.deleteEvent',
+        extra: {'eventId': eventId, 'gardenPlantId': gardenPlantId},
+      );
       state = AsyncError(e, st);
     }
   }

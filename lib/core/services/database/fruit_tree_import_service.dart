@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import '../crash_reporting/crash_reporting_service.dart';
 import 'app_database.dart';
 
 /// Service pour importer les données JSON des arbres fruitiers
@@ -50,17 +51,21 @@ class FruitTreeImportService {
           try {
             await _importTree(treeJson as Map<String, dynamic>);
             importedCount++;
-          } catch (e) {
-            debugPrint(
-                '❌ Erreur import arbre ${treeJson['common_name']}: $e');
+          } catch (e, st) {
+            CrashReportingService.recordError(e, st,
+              reason: 'FruitTreeImportService._importTree',
+              extra: {'treeName': '${treeJson['common_name']}'},
+            );
           }
         }
       });
 
       debugPrint('✅ Import arbres fruitiers terminé: $importedCount arbres');
       return importedCount;
-    } catch (e) {
-      debugPrint('❌ Erreur lors du chargement du JSON: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'FruitTreeImportService.importFromAssets',
+      );
       return 0;
     }
   }

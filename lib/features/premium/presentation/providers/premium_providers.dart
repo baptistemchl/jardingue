@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
+import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../data/datasources/firestore_backup_datasource.dart';
 import '../../data/datasources/purchase_datasource.dart';
 import '../../data/repositories/backup_repository_impl.dart';
@@ -57,26 +57,46 @@ class FirebaseUserNotifier extends StateNotifier<User?> {
 
   /// Lance Google Sign-In et authentifie sur Firebase.
   Future<User?> signIn() async {
-    final googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) return null; // annulé
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return null; // annulé
 
-    final googleAuth = await googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    final userCred = await FirebaseAuth.instance
-        .signInWithCredential(credential);
-    state = userCred.user;
-    return userCred.user;
+      final userCred = await FirebaseAuth.instance
+          .signInWithCredential(credential);
+      state = userCred.user;
+      if (userCred.user != null) {
+        CrashReportingService.setUser(userCred.user!.uid);
+        CrashReportingService.log('Utilisateur connecté');
+      }
+      return userCred.user;
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'FirebaseUserNotifier.signIn',
+      );
+      rethrow;
+    }
   }
 
   /// Déconnexion.
   Future<void> signOut() async {
-    await GoogleSignIn().signOut();
-    await FirebaseAuth.instance.signOut();
-    state = null;
+    try {
+      await GoogleSignIn().signOut();
+      await FirebaseAuth.instance.signOut();
+      state = null;
+      CrashReportingService.clearUser();
+      CrashReportingService.log('Utilisateur déconnecté');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'FirebaseUserNotifier.signOut',
+      );
+      rethrow;
+    }
   }
 }
 
@@ -113,8 +133,10 @@ class PremiumNotifier
       _ref.read(purchaseDatasourceProvider).listen(
             _onPurchaseUpdate,
           );
-    } catch (e) {
-      debugPrint('PremiumNotifier init: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'PremiumNotifier._init',
+      );
     }
   }
 
@@ -135,24 +157,42 @@ class PremiumNotifier
 
   /// Lance le flow complet : Google Sign-In puis achat.
   Future<void> purchaseWithSignIn() async {
-    // 1. S'assurer que l'utilisateur est connecté
-    final userNotifier = _ref.read(
-      firebaseUserProvider.notifier,
-    );
-    var user = _ref.read(firebaseUserProvider);
-    if (user == null) {
-      user = await userNotifier.signIn();
-      if (user == null) return; // annulé
-    }
+    try {
+      // 1. S'assurer que l'utilisateur est connecté
+      final userNotifier = _ref.read(
+        firebaseUserProvider.notifier,
+      );
+      var user = _ref.read(firebaseUserProvider);
+      if (user == null) {
+        user = await userNotifier.signIn();
+        if (user == null) return; // annulé
+      }
 
-    // 2. Lancer l'achat
-    await _repo.purchase(kPremiumProductId);
+      CrashReportingService.log('Début achat premium');
+      // 2. Lancer l'achat
+      await _repo.purchase(kPremiumProductId);
+      CrashReportingService.log('Achat premium réussi');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'PremiumNotifier.purchaseWithSignIn',
+      );
+      rethrow;
+    }
   }
 
   Future<void> restorePurchases() async {
-    final restored = await _repo.restorePurchases();
-    if (restored.isPremium) {
-      state = restored;
+    try {
+      CrashReportingService.log('Restauration achats en cours');
+      final restored = await _repo.restorePurchases();
+      if (restored.isPremium) {
+        state = restored;
+        CrashReportingService.log('Achats restaurés: premium');
+      }
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'PremiumNotifier.restorePurchases',
+      );
+      rethrow;
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+import '../crash_reporting/crash_reporting_service.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
@@ -117,8 +118,11 @@ class NotificationService {
         matchDateTimeComponents: DateTimeComponents.time,
       );
       debugPrint('Notification d\'arrosage planifiee pour $scheduledDate');
-    } catch (e) {
-      debugPrint('Erreur planification notification: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'NotificationService.scheduleDailyWateringReminder',
+        extra: {'plantCount': plantNames.length},
+      );
     }
   }
 

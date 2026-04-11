@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
+import '../crash_reporting/crash_reporting_service.dart';
 
 /// Service de vérification et déclenchement des mises à jour via le Play Store.
 class InAppUpdateService {
@@ -24,8 +24,10 @@ class InAppUpdateService {
         // Installe la mise à jour téléchargée quand l'utilisateur quitte l'écran
         await InAppUpdate.completeFlexibleUpdate();
       }
-    } catch (e) {
-      debugPrint('In-app update check failed: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'InAppUpdateService.checkForUpdate',
+      );
     }
   }
 }

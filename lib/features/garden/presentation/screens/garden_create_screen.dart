@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/garden_providers.dart';
@@ -103,7 +104,10 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
           }
         });
       }
-    } catch (e) {
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenCreateScreen._save',
+      );
       if (mounted) {
         _showError(AppLocalizations.of(context)!.errorWithMessage(e.toString()));
         setState(() => _isLoading = false);

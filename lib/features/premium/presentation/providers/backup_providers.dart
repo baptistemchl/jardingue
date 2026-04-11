@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../domain/models/backup_metadata.dart';
 import 'premium_providers.dart';
 
@@ -69,8 +69,10 @@ class BackupNotifier extends StateNotifier<BackupState> {
       state = const BackupState.success(
         BackupOperation.backup,
       );
-    } catch (e) {
-      debugPrint('Backup error: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'BackupNotifier.backup',
+      );
       state = BackupState.error(
         'Erreur de sauvegarde : $e',
       );
@@ -104,8 +106,10 @@ class BackupNotifier extends StateNotifier<BackupState> {
       state = const BackupState.success(
         BackupOperation.restore,
       );
-    } catch (e) {
-      debugPrint('Restore error: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'BackupNotifier.restore',
+      );
       state = BackupState.error(
         'Erreur de restauration : $e',
       );

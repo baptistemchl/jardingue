@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import '../crash_reporting/crash_reporting_service.dart';
 import 'weather_models.dart';
 
 /// Service pour récupérer la météo depuis Open-Meteo (gratuit, sans clé API)
@@ -196,13 +197,21 @@ class WeatherService {
       _cacheLon = longitude;
 
       return result;
-    } on DioException catch (e) {
+    } on DioException catch (e, st) {
       final code = e.response?.statusCode;
-      debugPrint('⛈️ WeatherService DioException: $code – ${e.type}');
+      CrashReportingService.recordError(e, st,
+        reason: 'WeatherService.getWeather (DioException)',
+        extra: {
+          'statusCode': code ?? -1,
+          'dioType': e.type.name,
+          'lat': latitude,
+          'lon': longitude,
+        },
+      );
 
       // Retourne le cache périmé si disponible
       if (_cache != null) {
-        debugPrint('⛈️ Erreur réseau, retour du cache périmé');
+        CrashReportingService.log('Météo: retour cache périmé après DioException');
         return _cache!;
       }
 
@@ -215,8 +224,11 @@ class WeatherService {
         'Le service météo est temporairement '
         'indisponible (${code ?? e.type.name}).',
       );
-    } catch (e) {
-      debugPrint('⛈️ WeatherService erreur inattendue: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'WeatherService.getWeather (inattendue)',
+        extra: {'lat': latitude, 'lon': longitude},
+      );
       if (_cache != null) {
         return _cache!;
       }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import '../crash_reporting/crash_reporting_service.dart';
 import 'app_database.dart';
 
 /// Service pour importer les données JSON dans la base de données
@@ -49,8 +50,11 @@ class PlantImportService {
         try {
           await _importPlant(plantJson as Map<String, dynamic>);
           importedCount++;
-        } catch (e) {
-          debugPrint('Erreur import plante ${plantJson['common_name']}: $e');
+        } catch (e, st) {
+          CrashReportingService.recordError(e, st,
+            reason: 'PlantImportService._importPlant',
+            extra: {'plantName': '${plantJson['common_name']}'},
+          );
         }
       }
     });
@@ -60,9 +64,11 @@ class PlantImportService {
       for (final plantJson in plantsJson) {
         try {
           await _importRelations(plantJson as Map<String, dynamic>);
-        } catch (e) {
-          debugPrint(
-              'Erreur import relations ${plantJson['common_name']}: $e');
+        } catch (e, st) {
+          CrashReportingService.recordError(e, st,
+            reason: 'PlantImportService._importRelations',
+            extra: {'plantName': '${plantJson['common_name']}'},
+          );
         }
       }
     });

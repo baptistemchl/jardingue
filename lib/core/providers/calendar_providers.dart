@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/database.dart';
 import 'database_providers.dart';
 
@@ -223,8 +224,11 @@ Map<String, dynamic>? _parseCalendar(String? calendarJson) {
   try {
     final data = json.decode(calendarJson) as Map<String, dynamic>;
     return data['monthly_period'] as Map<String, dynamic>?;
-  } catch (e) {
-    debugPrint('Erreur parsing calendrier JSON: $e');
+  } catch (e, st) {
+    CrashReportingService.recordError(e, st,
+      reason: '_parseCalendar',
+      extra: {'calendarJson_length': calendarJson.length},
+    );
     return null;
   }
 }

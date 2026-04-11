@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
+import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/app_database.dart';
 import '../../features/garden/data/repositories/garden_event_repository.dart';
 import '../../features/garden/domain/models/garden_event.dart';
@@ -94,6 +95,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       state = const AsyncData(null);
       return id;
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.createGarden',
+        extra: {'name': name, 'width': widthMeters, 'height': heightMeters},
+      );
       state = AsyncError(e, st);
       rethrow;
     }
@@ -128,6 +133,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       _ref.invalidate(gardenByIdProvider(id));
       state = const AsyncData(null);
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.updateGarden',
+        extra: {'gardenId': id, 'name': name},
+      );
       state = AsyncError(e, st);
     }
   }
@@ -139,6 +148,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       _ref.invalidate(gardensListProvider);
       state = const AsyncData(null);
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.deleteGarden',
+        extra: {'gardenId': id},
+      );
       state = AsyncError(e, st);
     }
   }
@@ -207,6 +220,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       state = const AsyncData(null);
       return id;
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.addPlantToGarden',
+        extra: {'gardenId': gardenId, 'plantId': plantId},
+      );
       state = AsyncError(e, st);
       rethrow;
     }
@@ -272,6 +289,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       state = const AsyncData(null);
       return id;
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.addPlantPendingPlacement',
+        extra: {'gardenId': gardenId, 'plantId': plantId},
+      );
       state = AsyncError(e, st);
       rethrow;
     }
@@ -319,6 +340,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       state = const AsyncData(null);
       return id;
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.addZoneToGarden',
+        extra: {'gardenId': gardenId, 'zoneType': zoneType},
+      );
       state = AsyncError(e, st);
       rethrow;
     }
@@ -349,6 +374,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       _ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.moveElement',
+        extra: {'gardenPlantId': gardenPlantId, 'gardenId': gardenId},
+      );
       state = AsyncError(e, st);
     }
   }
@@ -363,6 +392,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       _ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.removeElement',
+        extra: {'gardenPlantId': gardenPlantId, 'gardenId': gardenId},
+      );
       state = AsyncError(e, st);
     }
   }
@@ -394,6 +427,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
       _ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.updateElementSize',
+        extra: {'gardenPlantId': gardenPlantId, 'gardenId': gardenId},
+      );
       state = AsyncError(e, st);
     }
   }

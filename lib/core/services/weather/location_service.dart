@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import '../crash_reporting/crash_reporting_service.dart';
 
 /// Service de géolocalisation avec permissions
 class LocationService {
@@ -92,8 +93,10 @@ class LocationService {
         isApproximate: false,
         source: LocationSource.gps,
       );
-    } catch (e) {
-      debugPrint('📍 Erreur GPS: $e, fallback sur IP');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'LocationService.getCurrentLocation (GPS)',
+      );
       return _getLocationByIP(LocationIssue.gpsError);
     }
   }
@@ -121,8 +124,11 @@ class LocationService {
             issue: originalIssue,
           );
         }
-      } catch (e) {
-        debugPrint('📍 Erreur ${endpoint.url}: $e');
+      } catch (e, st) {
+        CrashReportingService.recordError(e, st,
+          reason: 'LocationService._getLocationByIP',
+          extra: {'endpoint': endpoint.url},
+        );
       }
     }
     return _defaultLocation(originalIssue ?? LocationIssue.networkError);
@@ -169,8 +175,11 @@ class LocationService {
         );
       }
       return null;
-    } catch (e) {
-      debugPrint('📍 Erreur reverse geocoding: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'LocationService._reverseGeocode',
+        extra: {'lat': lat, 'lon': lon},
+      );
       return null;
     }
   }
@@ -206,8 +215,11 @@ class LocationService {
           source: LocationSource.search,
         );
       }).toList();
-    } catch (e) {
-      debugPrint('📍 Erreur recherche ville: $e');
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'LocationService.searchCity',
+        extra: {'query': query},
+      );
       return [];
     }
   }

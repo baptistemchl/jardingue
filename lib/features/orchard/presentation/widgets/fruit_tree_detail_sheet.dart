@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/database.dart';
 import '../../../../core/providers/orchard_providers.dart';
@@ -84,7 +85,11 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
           ),
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'FruitTreeDetailSheet._addToOrchard',
+        extra: {'treeId': widget.tree.id, 'treeName': widget.tree.commonName},
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

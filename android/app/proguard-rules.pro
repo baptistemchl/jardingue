@@ -21,6 +21,11 @@
 -keep class com.google.firebase.** { *; }
 -dontwarn com.google.firebase.**
 
+## Firebase Crashlytics
+-keep class com.google.firebase.crashlytics.** { *; }
+-dontwarn com.google.firebase.crashlytics.**
+
 ## Keep annotations
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
+-keepattributes Exceptions

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'core/services/crash_reporting/crash_reporting_service.dart';
+import 'core/services/crash_reporting/crashlytics_provider_observer.dart';
 import 'core/services/notifications/notification_service.dart';
 import 'core/services/rating/rate_app_service.dart';
 import 'core/services/update/in_app_update_service.dart';
@@ -33,7 +37,6 @@ class _RateAppTriggerState extends State<_RateAppTrigger> {
     super.didChangeDependencies();
     if (!_triggered) {
       _triggered = true;
-      // Attendre que le Navigator (router) soit monté dans l'arbre
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) maybeShowRateSheet();
       });
@@ -45,37 +48,70 @@ class _RateAppTriggerState extends State<_RateAppTrigger> {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // Zone gardée : capture toutes les erreurs async non-catchées
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialiser Firebase
-  await Firebase.initializeApp();
+    // Initialiser Firebase
+    await Firebase.initializeApp();
 
-  // Initialiser les locales pour DateFormat
-  await initializeDateFormatting('fr_FR', null);
+    // Initialiser Crashlytics et les handlers d'erreurs globaux
+    await CrashReportingService.initialize();
+    await CrashReportingService.log('App démarrée');
 
-  // Initialiser les notifications
-  await NotificationService().init();
+    // Initialiser les locales pour DateFormat
+    await initializeDateFormatting('fr_FR', null);
 
-  // Vérifier si l'onboarding doit être affiché
-  final showOnboarding = await shouldShowOnboarding();
+    // Initialiser les notifications
+    try {
+      await NotificationService().init();
+    } catch (e, st) {
+      CrashReportingService.recordError(
+        e, st,
+        reason: 'NotificationService.init',
+      );
+    }
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
+    // Vérifier si l'onboarding doit être affiché
+    bool showOnboarding = false;
+    try {
+      showOnboarding = await shouldShowOnboarding();
+    } catch (e, st) {
+      CrashReportingService.recordError(
+        e, st,
+        reason: 'shouldShowOnboarding',
+      );
+    }
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
 
-  runApp(ProviderScope(child: JardingueApp(showOnboarding: showOnboarding)));
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    runApp(
+      ProviderScope(
+        observers: [CrashlyticsProviderObserver()],
+        child: JardingueApp(showOnboarding: showOnboarding),
+      ),
+    );
+  }, (error, stack) {
+    // Dernière ligne de défense : erreurs async échappées de la zone
+    CrashReportingService.recordFatalError(
+      error, stack,
+      reason: 'runZonedGuarded (erreur non capturée dans la zone)',
+    );
+  });
 }
 
 class JardingueApp extends ConsumerStatefulWidget {
@@ -98,19 +134,27 @@ class _JardingueAppState extends ConsumerState<JardingueApp>
     _router = buildRouter(showOnboarding: widget.showOnboarding);
 
     // Vérifie les mises à jour Play Store
-    InAppUpdateService.checkForUpdate();
+    CrashReportingService.guard(
+      action: () async => InAppUpdateService.checkForUpdate(),
+      fallback: null,
+      reason: 'InAppUpdateService.checkForUpdate',
+    );
 
     // Lance l'import en arrière-plan sans bloquer l'UI
     Future.microtask(() {
       ref
           .read(databaseInitProvider.future)
           .then((count) {
-            debugPrint('🌱 Base de données prête: $count plantes');
+            CrashReportingService.log('DB prête: $count plantes');
             // Planifier les notifications d'arrosage
             ref.read(wateringNotificationSchedulerProvider.future);
           })
-          .catchError((e) {
-            debugPrint('❌ Erreur DB: $e');
+          .catchError((Object e, StackTrace st) {
+            CrashReportingService.recordError(
+              e, st,
+              reason: 'databaseInitProvider',
+              extra: {'phase': 'init'},
+            );
           });
     });
   }
@@ -137,9 +181,13 @@ class _JardingueAppState extends ConsumerState<JardingueApp>
       final repo = ref.read(backupRepositoryProvider);
       final data = await repo.exportLocalData();
       await repo.uploadBackup(user.uid, data);
-      debugPrint('Auto-backup cloud effectué.');
-    } catch (e) {
-      debugPrint('Auto-backup échoué : $e');
+      CrashReportingService.log('Auto-backup cloud effectué');
+    } catch (e, st) {
+      CrashReportingService.recordError(
+        e, st,
+        reason: 'autoBackupIfPremium',
+        extra: {'uid': user.uid},
+      );
     }
   }
 

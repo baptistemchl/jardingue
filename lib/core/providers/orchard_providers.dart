@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/database.dart';
 import '../../features/orchard/domain/models/fruit_trees_filter_state.dart';
 import '../../features/orchard/domain/models/user_fruit_tree_with_details.dart';
@@ -148,6 +149,9 @@ class UserFruitTreesNotifier extends StateNotifier<
       final trees = await _repo.getAllUserFruitTreesWithDetails();
       state = AsyncValue.data(trees);
     } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'UserFruitTreesNotifier._loadData',
+      );
       state = AsyncValue.error(e, st);
     }
   }

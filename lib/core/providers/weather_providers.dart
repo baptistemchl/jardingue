@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/weather/weather_service.dart';
 import '../services/weather/weather_models.dart';
 import '../services/weather/location_service.dart';
@@ -45,7 +46,7 @@ final weatherDataProvider = FutureProvider<WeatherData>((ref) async {
     effective = await ref.watch(currentLocationProvider.future);
   }
 
-  debugPrint('🌤️ Météo: chargement pour ${effective.displayName} (${effective.source.name})...');
+  CrashReportingService.log('Météo: chargement pour ${effective.displayName} (${effective.source.name})');
   final weatherService = ref.watch(weatherServiceProvider);
   try {
     final weather = await weatherService.getWeather(
@@ -54,10 +55,19 @@ final weatherDataProvider = FutureProvider<WeatherData>((ref) async {
       city: effective.city,
       country: effective.country,
     );
-    debugPrint('🌤️ Météo: données reçues (${weather.current.temperature}°C)');
+    debugPrint('Météo: ${weather.current.temperature}°C');
     return weather;
-  } catch (e) {
-    debugPrint('🌤️ Météo: ERREUR → $e');
+  } catch (e, st) {
+    CrashReportingService.recordError(
+      e, st,
+      reason: 'weatherDataProvider',
+      extra: {
+        'location': effective.displayName,
+        'source': effective.source.name,
+        'lat': effective.latitude,
+        'lon': effective.longitude,
+      },
+    );
     rethrow;
   }
 });
