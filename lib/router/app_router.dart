@@ -7,6 +7,7 @@ import '../features/premium/presentation/screens/premium_screen.dart';
 import '../features/plants/presentation/screens/plants_screen.dart';
 import '../features/calendar/presentation/screens/calendar_screen.dart';
 import '../features/weather/presentation/screens/weather_screen.dart';
+import '../features/planning/presentation/screens/planning_screen.dart';
 import 'scaffold_with_nav_bar.dart';
 
 /// Configuration du router de l'application
@@ -25,6 +26,7 @@ abstract final class AppRoutes {
   static const String plantDetail = '/plants/:id';
   static const String calendar = '/calendar';
   static const String weather = '/weather';
+  static const String planning = '/planning';
   static const String settings = '/settings';
   static const String premium = '/premium';
 }
@@ -79,14 +81,29 @@ GoRouter buildRouter({required bool showOnboarding}) {
         path: '${AppRoutes.garden}/editor/:gardenId',
         name: 'gardenEditor',
         parentNavigatorKey: rootNavigatorKey,
-        // Utilise le navigateur root (pas le shell)
         pageBuilder: (context, state) {
-          final gardenId = int.parse(state.pathParameters['gardenId']!);
+          final gardenId = int.parse(
+            state.pathParameters['gardenId']!,
+          );
           return MaterialPage(
             key: state.pageKey,
-            child: GardenEditorScreen(gardenId: gardenId),
+            child: GardenEditorScreen(
+              gardenId: gardenId,
+            ),
           );
         },
+      ),
+
+      // Météo dédiée (hors navbar, page push)
+      GoRoute(
+        path: AppRoutes.weather,
+        name: 'weather',
+        parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) =>
+            MaterialPage(
+          key: state.pageKey,
+          child: const WeatherScreen(),
+        ),
       ),
 
       // =========================================
@@ -98,36 +115,37 @@ GoRouter buildRouter({required bool showOnboarding}) {
           return ScaffoldWithNavBar(child: child);
         },
         routes: [
-          // Garden - Plan du potager
           GoRoute(
             path: AppRoutes.garden,
             name: 'garden',
             pageBuilder: (context, state) =>
-                const NoTransitionPage(child: GardenScreen()),
+                const NoTransitionPage(
+              child: GardenScreen(),
+            ),
           ),
-
-          // Plants - Liste des plantes
           GoRoute(
             path: AppRoutes.plants,
             name: 'plants',
             pageBuilder: (context, state) =>
-                const NoTransitionPage(child: PlantsScreen()),
+                const NoTransitionPage(
+              child: PlantsScreen(),
+            ),
           ),
-
-          // Calendar - Calendrier du potager
           GoRoute(
             path: AppRoutes.calendar,
             name: 'calendar',
             pageBuilder: (context, state) =>
-                const NoTransitionPage(child: CalendarScreen()),
+                const NoTransitionPage(
+              child: CalendarScreen(),
+            ),
           ),
-
-          // Weather - Météo
           GoRoute(
-            path: AppRoutes.weather,
-            name: 'weather',
+            path: AppRoutes.planning,
+            name: 'planning',
             pageBuilder: (context, state) =>
-                const NoTransitionPage(child: WeatherScreen()),
+                const NoTransitionPage(
+              child: PlanningScreen(),
+            ),
           ),
         ],
       ),

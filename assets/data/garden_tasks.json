@@ -1,0 +1,451 @@
+{
+  "version": 1,
+  "sources": [
+    "Calendrier Rustica du potager",
+    "Guide Vilmorin du jardinage",
+    "Gerbeaud - Travaux du potager",
+    "INRAE - Fiches techniques maraîchage"
+  ],
+  "categories": {
+    "soil": {
+      "label": "Travail du sol",
+      "emoji": "⛏️"
+    },
+    "fertilization": {
+      "label": "Fumure & Amendement",
+      "emoji": "💩"
+    },
+    "greenhouse": {
+      "label": "Serre & Abris",
+      "emoji": "🏠"
+    },
+    "protection": {
+      "label": "Protection",
+      "emoji": "🛡️"
+    },
+    "maintenance": {
+      "label": "Entretien",
+      "emoji": "🧹"
+    },
+    "watering": {
+      "label": "Arrosage",
+      "emoji": "💧"
+    },
+    "composting": {
+      "label": "Compostage",
+      "emoji": "♻️"
+    },
+    "planning": {
+      "label": "Organisation",
+      "emoji": "📋"
+    },
+    "mulching": {
+      "label": "Paillage",
+      "emoji": "🍂"
+    },
+    "tools": {
+      "label": "Outillage",
+      "emoji": "🔧"
+    }
+  },
+  "tasks": [
+    {
+      "id": "jan_plan_garden",
+      "title": "Planifier le potager",
+      "description": "Commander les graines, dessiner le plan des parcelles, organiser les rotations de cultures pour l'année.",
+      "category": "planning",
+      "months": [1, 2],
+      "priority": "high"
+    },
+    {
+      "id": "jan_clean_tools",
+      "title": "Nettoyer et affûter les outils",
+      "description": "Désinfecter les sécateurs, affûter les lames, huiler les mécanismes. Vérifier l'état des tuteurs et des liens.",
+      "category": "tools",
+      "months": [1, 12],
+      "priority": "medium"
+    },
+    {
+      "id": "jan_check_stocks",
+      "title": "Vérifier les stocks de graines",
+      "description": "Trier les graines restantes, vérifier les dates de péremption, commander les variétés manquantes.",
+      "category": "planning",
+      "months": [1, 2],
+      "priority": "medium"
+    },
+    {
+      "id": "jan_protect_frost",
+      "title": "Protéger du gel",
+      "description": "Vérifier les voiles d'hivernage, pailler les cultures en place (poireaux, mâche, épinards). Protéger les robinets extérieurs.",
+      "category": "protection",
+      "months": [1, 2, 12],
+      "priority": "high",
+      "conditions": {
+        "max_temp": 5
+      }
+    },
+    {
+      "id": "jan_force_chicory",
+      "title": "Forcer les endives",
+      "description": "Placer les racines de chicorée en cave, à l'obscurité, pour obtenir des endives fraîches.",
+      "category": "maintenance",
+      "months": [1, 2, 11, 12],
+      "priority": "low"
+    },
+    {
+      "id": "feb_prepare_greenhouse",
+      "title": "Préparer la serre",
+      "description": "Nettoyer les vitres, désinfecter les tablettes et les pots. Vérifier le chauffage et la ventilation. Préparer les godets pour les premiers semis.",
+      "category": "greenhouse",
+      "months": [2, 3],
+      "priority": "high"
+    },
+    {
+      "id": "feb_soil_lime",
+      "title": "Chauler le sol si nécessaire",
+      "description": "Sur sols acides (pH < 6), épandre de la chaux ou du lithothamne pour remonter le pH. Attendre 3 semaines avant tout semis.",
+      "category": "fertilization",
+      "months": [2, 3],
+      "priority": "medium"
+    },
+    {
+      "id": "feb_spread_compost",
+      "title": "Épandre le compost mûr",
+      "description": "Étaler le compost de l'année précédente sur les parcelles. 3 à 5 kg/m² en couche régulière. Ne pas enfouir, laisser les vers travailler.",
+      "category": "composting",
+      "months": [2, 3],
+      "priority": "high"
+    },
+    {
+      "id": "feb_prepare_hotbed",
+      "title": "Préparer les couches chaudes",
+      "description": "Mélanger du fumier frais de cheval avec de la paille, couvrir de terreau. La fermentation réchauffe les semis précoces.",
+      "category": "greenhouse",
+      "months": [2],
+      "priority": "low"
+    },
+    {
+      "id": "mar_turn_soil",
+      "title": "Retourner le sol",
+      "description": "Bêcher ou grelinetter les parcelles non cultivées. Profondeur 20-30 cm. Éviter par temps de gel ou sol détrempé.",
+      "category": "soil",
+      "months": [3, 10, 11],
+      "priority": "high",
+      "conditions": {
+        "min_temp": 5,
+        "requires_dry": true
+      }
+    },
+    {
+      "id": "mar_refine_soil",
+      "title": "Affiner le sol pour les semis",
+      "description": "Émietter les mottes au croc ou au râteau. Le sol doit être fin et meuble en surface pour les semis directs.",
+      "category": "soil",
+      "months": [3, 4],
+      "priority": "high"
+    },
+    {
+      "id": "mar_amend_soil",
+      "title": "Amender le sol",
+      "description": "Incorporer un amendement organique (fumier composté, corne broyée, sang séché) selon les besoins. 2-3 kg/m² de fumier composté.",
+      "category": "fertilization",
+      "months": [3, 4],
+      "priority": "high"
+    },
+    {
+      "id": "mar_prepare_beds",
+      "title": "Préparer les planches de culture",
+      "description": "Délimiter les planches, installer les bordures si nécessaire. Largeur idéale : 1,20 m pour travailler sans marcher sur la terre.",
+      "category": "soil",
+      "months": [3],
+      "priority": "medium"
+    },
+    {
+      "id": "mar_install_rain_barrel",
+      "title": "Installer les récupérateurs d'eau",
+      "description": "Vérifier et nettoyer les cuves, les raccorder aux gouttières. Préparer l'arrosage de la saison.",
+      "category": "watering",
+      "months": [3],
+      "priority": "medium"
+    },
+    {
+      "id": "mar_setup_compost",
+      "title": "Retourner le compost",
+      "description": "Brasser le compost pour l'aérer et accélérer la décomposition. Vérifier l'humidité (doit être comme une éponge essorée).",
+      "category": "composting",
+      "months": [3, 6, 9],
+      "priority": "medium"
+    },
+    {
+      "id": "apr_install_supports",
+      "title": "Installer les tuteurs et supports",
+      "description": "Poser les rames pour les haricots grimpants, les tuteurs pour les tomates, les filets pour les concombres et cornichons.",
+      "category": "maintenance",
+      "months": [4, 5],
+      "priority": "high"
+    },
+    {
+      "id": "apr_weed_paths",
+      "title": "Désherber les allées et planches",
+      "description": "Désherber manuellement ou à la binette. Profiter du sol humide du printemps pour arracher les adventices avec leurs racines.",
+      "category": "maintenance",
+      "months": [4, 5, 6],
+      "priority": "medium"
+    },
+    {
+      "id": "apr_setup_irrigation",
+      "title": "Installer le système d'arrosage",
+      "description": "Poser les tuyaux goutte-à-goutte, vérifier les raccords, programmer le minuteur si disponible.",
+      "category": "watering",
+      "months": [4, 5],
+      "priority": "medium"
+    },
+    {
+      "id": "apr_remove_frost_covers",
+      "title": "Retirer les protections hivernales",
+      "description": "Enlever progressivement les voiles et paillages d'hiver selon les températures. Attention aux gelées tardives jusqu'aux Saints de Glace (11-13 mai).",
+      "category": "protection",
+      "months": [3, 4],
+      "priority": "medium"
+    },
+    {
+      "id": "may_mulch_beds",
+      "title": "Pailler les cultures",
+      "description": "Étaler 5-10 cm de paillage (paille, BRF, tonte séchée, feuilles) au pied des plants. Limite l'évaporation, les adventices et nourrit le sol.",
+      "category": "mulching",
+      "months": [5, 6],
+      "priority": "high"
+    },
+    {
+      "id": "may_harden_seedlings",
+      "title": "Endurcir les plants",
+      "description": "Sortir progressivement les plants de la serre quelques heures par jour pendant une semaine avant la plantation définitive.",
+      "category": "greenhouse",
+      "months": [4, 5],
+      "priority": "high"
+    },
+    {
+      "id": "may_green_manure_harvest",
+      "title": "Faucher les engrais verts",
+      "description": "Couper les engrais verts (moutarde, phacélie, trèfle) semés à l'automne. Les laisser sécher sur place puis les incorporer superficiellement.",
+      "category": "fertilization",
+      "months": [3, 4, 5],
+      "priority": "medium"
+    },
+    {
+      "id": "jun_water_deeply",
+      "title": "Arroser en profondeur",
+      "description": "Arroser le matin ou le soir, au pied des plants, jamais sur le feuillage. Préférer un arrosage copieux tous les 2-3 jours plutôt que léger chaque jour.",
+      "category": "watering",
+      "months": [6, 7, 8],
+      "priority": "high",
+      "conditions": {
+        "min_temp": 25
+      }
+    },
+    {
+      "id": "jun_pinch_tomatoes",
+      "title": "Ébourgeonner les tomates",
+      "description": "Supprimer les gourmands (tiges secondaires) qui poussent à l'aisselle des feuilles. Favorise la fructification.",
+      "category": "maintenance",
+      "months": [6, 7, 8],
+      "priority": "high"
+    },
+    {
+      "id": "jun_hoe_regularly",
+      "title": "Biner régulièrement",
+      "description": "Casser la croûte de terre en surface pour limiter l'évaporation. 'Un binage vaut deux arrosages.'",
+      "category": "soil",
+      "months": [5, 6, 7, 8],
+      "priority": "medium"
+    },
+    {
+      "id": "jun_feed_heavy_crops",
+      "title": "Nourrir les cultures gourmandes",
+      "description": "Apporter du purin d'ortie ou de consoude dilué (1/10) aux tomates, courgettes, courges, aubergines toutes les 2 semaines.",
+      "category": "fertilization",
+      "months": [6, 7, 8],
+      "priority": "medium"
+    },
+    {
+      "id": "jun_check_pests",
+      "title": "Surveiller les ravageurs",
+      "description": "Inspecter les plants pour détecter pucerons, mildiou, oïdium. Traiter préventivement avec bouillie bordelaise si temps humide et chaud.",
+      "category": "protection",
+      "months": [5, 6, 7, 8],
+      "priority": "high"
+    },
+    {
+      "id": "jul_shade_sensitive",
+      "title": "Ombrager les cultures sensibles",
+      "description": "Installer des voiles d'ombrage sur les salades, épinards et jeunes semis lors des fortes chaleurs (>30°C).",
+      "category": "protection",
+      "months": [7, 8],
+      "priority": "medium",
+      "conditions": {
+        "min_temp": 30
+      }
+    },
+    {
+      "id": "jul_renew_mulch",
+      "title": "Renouveler le paillage",
+      "description": "Rajouter du paillage là où il s'est décomposé. Épaisseur minimale : 5 cm pour être efficace.",
+      "category": "mulching",
+      "months": [7, 8],
+      "priority": "medium"
+    },
+    {
+      "id": "jul_summer_sowing",
+      "title": "Préparer les semis d'automne",
+      "description": "Semer les cultures d'automne-hiver : mâche, épinards, radis d'hiver, navets, carottes courtes.",
+      "category": "planning",
+      "months": [7, 8],
+      "priority": "high"
+    },
+    {
+      "id": "aug_clear_spent_crops",
+      "title": "Arracher les cultures terminées",
+      "description": "Retirer les plants épuisés (fèves, pois, salades montées). Ne pas laisser de sol nu : semer un engrais vert ou pailler.",
+      "category": "maintenance",
+      "months": [7, 8, 9],
+      "priority": "medium"
+    },
+    {
+      "id": "aug_collect_seeds",
+      "title": "Récolter les graines",
+      "description": "Laisser monter en graines quelques beaux plants (tomates, haricots, laitues). Sécher et stocker dans des enveloppes étiquetées.",
+      "category": "planning",
+      "months": [8, 9],
+      "priority": "low"
+    },
+    {
+      "id": "sep_sow_green_manure",
+      "title": "Semer des engrais verts",
+      "description": "Semer moutarde, phacélie ou seigle sur les parcelles libérées. Protège le sol nu, fixe l'azote, structure la terre.",
+      "category": "fertilization",
+      "months": [9, 10],
+      "priority": "high"
+    },
+    {
+      "id": "sep_prepare_compost",
+      "title": "Alimenter le compost",
+      "description": "Ajouter les résidus de récolte au compost. Alterner déchets verts (azote) et bruns (carbone). Mélanger pour aérer.",
+      "category": "composting",
+      "months": [9, 10, 11],
+      "priority": "medium"
+    },
+    {
+      "id": "oct_spread_manure",
+      "title": "Épandre du fumier",
+      "description": "Étaler du fumier bien décomposé (cheval, bovin) sur les parcelles à raison de 3-5 kg/m². Le fumier frais est réservé aux sols lourds en novembre.",
+      "category": "fertilization",
+      "months": [10, 11],
+      "priority": "high",
+      "conditions": {
+        "min_temp": 5
+      }
+    },
+    {
+      "id": "oct_clean_greenhouse",
+      "title": "Nettoyer la serre pour l'hiver",
+      "description": "Laver les vitres (intérieur et extérieur), désinfecter au soufre ou au savon noir. Vérifier les joints et aérations.",
+      "category": "greenhouse",
+      "months": [10],
+      "priority": "medium"
+    },
+    {
+      "id": "oct_protect_late_crops",
+      "title": "Protéger les cultures tardives",
+      "description": "Butter les poireaux, pailler les carottes et betteraves encore en terre. Installer des tunnels sur les salades d'hiver.",
+      "category": "protection",
+      "months": [10, 11],
+      "priority": "high"
+    },
+    {
+      "id": "oct_plant_garlic",
+      "title": "Planter l'ail et l'échalote",
+      "description": "Planter les caïeux d'ail (rose ou violet) et les bulbes d'échalote grise. Sol drainé impératif, pas de fumure fraîche.",
+      "category": "maintenance",
+      "months": [10, 11],
+      "priority": "medium"
+    },
+    {
+      "id": "nov_cover_bare_soil",
+      "title": "Couvrir le sol nu",
+      "description": "Ne jamais laisser le sol à nu en hiver. Pailler, semer un engrais vert, ou étaler des feuilles mortes broyées.",
+      "category": "mulching",
+      "months": [11, 12],
+      "priority": "high"
+    },
+    {
+      "id": "nov_dig_heavy_soil",
+      "title": "Bêcher les sols lourds",
+      "description": "Retourner les sols argileux en grosses mottes. Le gel hivernal les émiette naturellement (effet du gel-dégel).",
+      "category": "soil",
+      "months": [11, 12],
+      "priority": "medium",
+      "conditions": {
+        "requires_dry": true
+      }
+    },
+    {
+      "id": "nov_drain_check",
+      "title": "Vérifier le drainage",
+      "description": "S'assurer que l'eau ne stagne pas sur les parcelles. Creuser des rigoles de drainage si nécessaire.",
+      "category": "soil",
+      "months": [11],
+      "priority": "medium"
+    },
+    {
+      "id": "nov_store_harvest",
+      "title": "Stocker les récoltes",
+      "description": "Rentrer les courges, pommes de terre, oignons dans un local frais, sec et aéré. Vérifier régulièrement l'absence de pourriture.",
+      "category": "maintenance",
+      "months": [10, 11],
+      "priority": "high"
+    },
+    {
+      "id": "dec_rest_observe",
+      "title": "Observer et noter",
+      "description": "Tenir un carnet de jardin : noter les réussites et échecs de l'année, les dates de semis, les variétés testées.",
+      "category": "planning",
+      "months": [12, 1],
+      "priority": "medium"
+    },
+    {
+      "id": "dec_maintain_paths",
+      "title": "Entretenir les allées",
+      "description": "Recharger les allées en BRF ou copeaux de bois. Désherber les bordures. Profiter du repos hivernal pour ces travaux.",
+      "category": "maintenance",
+      "months": [12, 1, 2],
+      "priority": "low"
+    },
+    {
+      "id": "dec_sharpen_prune",
+      "title": "Tailler les arbres fruitiers",
+      "description": "Taille de formation et d'entretien des pommiers, poiriers. Hors gel. Désinfecter les outils entre chaque arbre.",
+      "category": "maintenance",
+      "months": [12, 1, 2],
+      "priority": "medium",
+      "conditions": {
+        "min_temp": 0
+      }
+    },
+    {
+      "id": "year_crop_rotation",
+      "title": "Respecter la rotation des cultures",
+      "description": "Ne pas replanter la même famille au même endroit avant 3-4 ans. Alterner : légumes-fruits, légumes-feuilles, légumes-racines, légumineuses.",
+      "category": "planning",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "priority": "high"
+    },
+    {
+      "id": "year_soil_test",
+      "title": "Analyser le sol",
+      "description": "Faire analyser le sol tous les 2-3 ans (pH, matière organique, NPK). Adapter les amendements en conséquence.",
+      "category": "soil",
+      "months": [2, 3, 9, 10],
+      "priority": "low"
+    }
+  ]
+}

@@ -26,11 +26,20 @@ class _FloatingGlassNavBar extends StatelessWidget {
   const _FloatingGlassNavBar();
 
   int _getCurrentIndex(BuildContext context) {
-    final location = GoRouterState.of(context).uri.path;
-    if (location.startsWith(AppRoutes.garden)) return 0;
-    if (location.startsWith(AppRoutes.plants)) return 1;
-    if (location.startsWith(AppRoutes.calendar)) return 2;
-    if (location.startsWith(AppRoutes.weather)) return 3;
+    final location =
+        GoRouterState.of(context).uri.path;
+    if (location.startsWith(AppRoutes.garden)) {
+      return 0;
+    }
+    if (location.startsWith(AppRoutes.plants)) {
+      return 1;
+    }
+    if (location.startsWith(AppRoutes.calendar)) {
+      return 2;
+    }
+    if (location.startsWith(AppRoutes.planning)) {
+      return 3;
+    }
     return 0;
   }
 
@@ -38,16 +47,12 @@ class _FloatingGlassNavBar extends StatelessWidget {
     switch (index) {
       case 0:
         context.go(AppRoutes.garden);
-        break;
       case 1:
         context.go(AppRoutes.plants);
-        break;
       case 2:
         context.go(AppRoutes.calendar);
-        break;
       case 3:
-        context.go(AppRoutes.weather);
-        break;
+        context.go(AppRoutes.planning);
     }
   }
 
@@ -133,9 +138,13 @@ class _FloatingGlassNavBar extends StatelessWidget {
                         color: AppColors.info,
                       ),
                       _AnimatedNavItem(
-                        icon: PhosphorIcons.sun(PhosphorIconsStyle.regular),
-                        activeIcon: PhosphorIcons.sun(PhosphorIconsStyle.fill),
-                        label: 'Météo',
+                        icon: PhosphorIcons.listChecks(
+                          PhosphorIconsStyle.regular,
+                        ),
+                        activeIcon: PhosphorIcons.listChecks(
+                          PhosphorIconsStyle.fill,
+                        ),
+                        label: 'Planifier',
                         isSelected: currentIndex == 3,
                         onTap: () => _onTap(context, 3),
                         color: AppColors.secondary,

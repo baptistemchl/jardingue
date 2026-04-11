@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/garden_providers.dart';
@@ -445,6 +446,12 @@ class _GardenEditorScreenState
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      leading: const Padding(
+        padding: EdgeInsets.only(left: 8),
+        child: Center(
+          child: AppBackButton.light(),
+        ),
+      ),
       title: gardenAsync.whenOrNull(
         data: (garden) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,

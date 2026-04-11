@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_back_button.dart';
 import '../providers/premium_providers.dart';
 import '../widgets/premium_card.dart';
 import '../widgets/backup_section.dart';
@@ -20,27 +21,26 @@ class PremiumScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(
-            PhosphorIcons.arrowLeft(
-              PhosphorIconsStyle.bold,
-            ),
-            color: AppColors.textPrimary,
-          ),
-        ),
-        title: Text(
-          'Cloud & Premium',
-          style: AppTypography.titleMedium,
-        ),
-      ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
+        child: Stack(
           children: [
+            ListView(
+              padding: const EdgeInsets.only(
+                top: 60,
+                left: 20,
+                right: 20,
+                bottom: 20,
+              ),
+              children: [
+                // Titre
+                Text(
+                  'Cloud & Premium',
+                  style: AppTypography.headlineLarge
+                      .copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 20),
             if (user != null) ...[
               _AccountCard(user: user),
               const SizedBox(height: 20),
@@ -54,6 +54,15 @@ class PremiumScreen extends ConsumerWidget {
             ],
             const SizedBox(height: 32),
             _RestorePurchasesButton(),
+          ],
+        ),
+
+            // Bouton retour
+            Positioned(
+              top: 8,
+              left: 12,
+              child: const AppBackButton.light(),
+            ),
           ],
         ),
       ),

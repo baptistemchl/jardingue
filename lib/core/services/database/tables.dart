@@ -153,6 +153,42 @@ class GardenPlants extends Table {
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
+/// Table des plantes sélectionnées pour la planification
+class SelectedPlantsTable extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get plantId =>
+      integer().references(Plants, #id)();
+
+  DateTimeColumn get addedAt =>
+      dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  String get tableName => 'selected_plants';
+}
+
+/// Table de suivi des tâches de planification complétées
+class CompletedPlanningTasks extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Clé unique de la tâche (ex: "jan_plan_garden" ou "plant_1_sowing_3")
+  TextColumn get taskKey => text()();
+
+  /// Plant associé (null pour les tâches potagères)
+  IntColumn get plantId =>
+      integer().nullable().references(Plants, #id)();
+
+  IntColumn get year => integer()();
+
+  IntColumn get month => integer()();
+
+  DateTimeColumn get completedAt =>
+      dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  String get tableName => 'completed_planning_tasks';
+}
+
 /// Table pour les événements du jardin (semis, plantation, arrosage, récolte)
 class GardenEvents extends Table {
   IntColumn get id => integer().autoIncrement()();

@@ -7128,6 +7128,677 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
   }
 }
 
+class $SelectedPlantsTableTable extends SelectedPlantsTable
+    with TableInfo<$SelectedPlantsTableTable, SelectedPlantsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SelectedPlantsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _plantIdMeta = const VerificationMeta(
+    'plantId',
+  );
+  @override
+  late final GeneratedColumn<int> plantId = GeneratedColumn<int>(
+    'plant_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES plants (id)',
+    ),
+  );
+  static const VerificationMeta _addedAtMeta = const VerificationMeta(
+    'addedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> addedAt = GeneratedColumn<DateTime>(
+    'added_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, plantId, addedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'selected_plants';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SelectedPlantsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('plant_id')) {
+      context.handle(
+        _plantIdMeta,
+        plantId.isAcceptableOrUnknown(data['plant_id']!, _plantIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_plantIdMeta);
+    }
+    if (data.containsKey('added_at')) {
+      context.handle(
+        _addedAtMeta,
+        addedAt.isAcceptableOrUnknown(data['added_at']!, _addedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SelectedPlantsTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SelectedPlantsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      plantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}plant_id'],
+      )!,
+      addedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}added_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SelectedPlantsTableTable createAlias(String alias) {
+    return $SelectedPlantsTableTable(attachedDatabase, alias);
+  }
+}
+
+class SelectedPlantsTableData extends DataClass
+    implements Insertable<SelectedPlantsTableData> {
+  final int id;
+  final int plantId;
+  final DateTime addedAt;
+  const SelectedPlantsTableData({
+    required this.id,
+    required this.plantId,
+    required this.addedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['plant_id'] = Variable<int>(plantId);
+    map['added_at'] = Variable<DateTime>(addedAt);
+    return map;
+  }
+
+  SelectedPlantsTableCompanion toCompanion(bool nullToAbsent) {
+    return SelectedPlantsTableCompanion(
+      id: Value(id),
+      plantId: Value(plantId),
+      addedAt: Value(addedAt),
+    );
+  }
+
+  factory SelectedPlantsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SelectedPlantsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      plantId: serializer.fromJson<int>(json['plantId']),
+      addedAt: serializer.fromJson<DateTime>(json['addedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'plantId': serializer.toJson<int>(plantId),
+      'addedAt': serializer.toJson<DateTime>(addedAt),
+    };
+  }
+
+  SelectedPlantsTableData copyWith({
+    int? id,
+    int? plantId,
+    DateTime? addedAt,
+  }) => SelectedPlantsTableData(
+    id: id ?? this.id,
+    plantId: plantId ?? this.plantId,
+    addedAt: addedAt ?? this.addedAt,
+  );
+  SelectedPlantsTableData copyWithCompanion(SelectedPlantsTableCompanion data) {
+    return SelectedPlantsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      plantId: data.plantId.present ? data.plantId.value : this.plantId,
+      addedAt: data.addedAt.present ? data.addedAt.value : this.addedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SelectedPlantsTableData(')
+          ..write('id: $id, ')
+          ..write('plantId: $plantId, ')
+          ..write('addedAt: $addedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, plantId, addedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SelectedPlantsTableData &&
+          other.id == this.id &&
+          other.plantId == this.plantId &&
+          other.addedAt == this.addedAt);
+}
+
+class SelectedPlantsTableCompanion
+    extends UpdateCompanion<SelectedPlantsTableData> {
+  final Value<int> id;
+  final Value<int> plantId;
+  final Value<DateTime> addedAt;
+  const SelectedPlantsTableCompanion({
+    this.id = const Value.absent(),
+    this.plantId = const Value.absent(),
+    this.addedAt = const Value.absent(),
+  });
+  SelectedPlantsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int plantId,
+    this.addedAt = const Value.absent(),
+  }) : plantId = Value(plantId);
+  static Insertable<SelectedPlantsTableData> custom({
+    Expression<int>? id,
+    Expression<int>? plantId,
+    Expression<DateTime>? addedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (plantId != null) 'plant_id': plantId,
+      if (addedAt != null) 'added_at': addedAt,
+    });
+  }
+
+  SelectedPlantsTableCompanion copyWith({
+    Value<int>? id,
+    Value<int>? plantId,
+    Value<DateTime>? addedAt,
+  }) {
+    return SelectedPlantsTableCompanion(
+      id: id ?? this.id,
+      plantId: plantId ?? this.plantId,
+      addedAt: addedAt ?? this.addedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (plantId.present) {
+      map['plant_id'] = Variable<int>(plantId.value);
+    }
+    if (addedAt.present) {
+      map['added_at'] = Variable<DateTime>(addedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SelectedPlantsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('plantId: $plantId, ')
+          ..write('addedAt: $addedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CompletedPlanningTasksTable extends CompletedPlanningTasks
+    with TableInfo<$CompletedPlanningTasksTable, CompletedPlanningTask> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CompletedPlanningTasksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _taskKeyMeta = const VerificationMeta(
+    'taskKey',
+  );
+  @override
+  late final GeneratedColumn<String> taskKey = GeneratedColumn<String>(
+    'task_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _plantIdMeta = const VerificationMeta(
+    'plantId',
+  );
+  @override
+  late final GeneratedColumn<int> plantId = GeneratedColumn<int>(
+    'plant_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES plants (id)',
+    ),
+  );
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+  @override
+  late final GeneratedColumn<int> year = GeneratedColumn<int>(
+    'year',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _monthMeta = const VerificationMeta('month');
+  @override
+  late final GeneratedColumn<int> month = GeneratedColumn<int>(
+    'month',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    taskKey,
+    plantId,
+    year,
+    month,
+    completedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'completed_planning_tasks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CompletedPlanningTask> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('task_key')) {
+      context.handle(
+        _taskKeyMeta,
+        taskKey.isAcceptableOrUnknown(data['task_key']!, _taskKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taskKeyMeta);
+    }
+    if (data.containsKey('plant_id')) {
+      context.handle(
+        _plantIdMeta,
+        plantId.isAcceptableOrUnknown(data['plant_id']!, _plantIdMeta),
+      );
+    }
+    if (data.containsKey('year')) {
+      context.handle(
+        _yearMeta,
+        year.isAcceptableOrUnknown(data['year']!, _yearMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_yearMeta);
+    }
+    if (data.containsKey('month')) {
+      context.handle(
+        _monthMeta,
+        month.isAcceptableOrUnknown(data['month']!, _monthMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_monthMeta);
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CompletedPlanningTask map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CompletedPlanningTask(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      taskKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}task_key'],
+      )!,
+      plantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}plant_id'],
+      ),
+      year: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}year'],
+      )!,
+      month: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}month'],
+      )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CompletedPlanningTasksTable createAlias(String alias) {
+    return $CompletedPlanningTasksTable(attachedDatabase, alias);
+  }
+}
+
+class CompletedPlanningTask extends DataClass
+    implements Insertable<CompletedPlanningTask> {
+  final int id;
+
+  /// Clé unique de la tâche (ex: "jan_plan_garden" ou "plant_1_sowing_3")
+  final String taskKey;
+
+  /// Plant associé (null pour les tâches potagères)
+  final int? plantId;
+  final int year;
+  final int month;
+  final DateTime completedAt;
+  const CompletedPlanningTask({
+    required this.id,
+    required this.taskKey,
+    this.plantId,
+    required this.year,
+    required this.month,
+    required this.completedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['task_key'] = Variable<String>(taskKey);
+    if (!nullToAbsent || plantId != null) {
+      map['plant_id'] = Variable<int>(plantId);
+    }
+    map['year'] = Variable<int>(year);
+    map['month'] = Variable<int>(month);
+    map['completed_at'] = Variable<DateTime>(completedAt);
+    return map;
+  }
+
+  CompletedPlanningTasksCompanion toCompanion(bool nullToAbsent) {
+    return CompletedPlanningTasksCompanion(
+      id: Value(id),
+      taskKey: Value(taskKey),
+      plantId: plantId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plantId),
+      year: Value(year),
+      month: Value(month),
+      completedAt: Value(completedAt),
+    );
+  }
+
+  factory CompletedPlanningTask.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CompletedPlanningTask(
+      id: serializer.fromJson<int>(json['id']),
+      taskKey: serializer.fromJson<String>(json['taskKey']),
+      plantId: serializer.fromJson<int?>(json['plantId']),
+      year: serializer.fromJson<int>(json['year']),
+      month: serializer.fromJson<int>(json['month']),
+      completedAt: serializer.fromJson<DateTime>(json['completedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'taskKey': serializer.toJson<String>(taskKey),
+      'plantId': serializer.toJson<int?>(plantId),
+      'year': serializer.toJson<int>(year),
+      'month': serializer.toJson<int>(month),
+      'completedAt': serializer.toJson<DateTime>(completedAt),
+    };
+  }
+
+  CompletedPlanningTask copyWith({
+    int? id,
+    String? taskKey,
+    Value<int?> plantId = const Value.absent(),
+    int? year,
+    int? month,
+    DateTime? completedAt,
+  }) => CompletedPlanningTask(
+    id: id ?? this.id,
+    taskKey: taskKey ?? this.taskKey,
+    plantId: plantId.present ? plantId.value : this.plantId,
+    year: year ?? this.year,
+    month: month ?? this.month,
+    completedAt: completedAt ?? this.completedAt,
+  );
+  CompletedPlanningTask copyWithCompanion(
+    CompletedPlanningTasksCompanion data,
+  ) {
+    return CompletedPlanningTask(
+      id: data.id.present ? data.id.value : this.id,
+      taskKey: data.taskKey.present ? data.taskKey.value : this.taskKey,
+      plantId: data.plantId.present ? data.plantId.value : this.plantId,
+      year: data.year.present ? data.year.value : this.year,
+      month: data.month.present ? data.month.value : this.month,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CompletedPlanningTask(')
+          ..write('id: $id, ')
+          ..write('taskKey: $taskKey, ')
+          ..write('plantId: $plantId, ')
+          ..write('year: $year, ')
+          ..write('month: $month, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, taskKey, plantId, year, month, completedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CompletedPlanningTask &&
+          other.id == this.id &&
+          other.taskKey == this.taskKey &&
+          other.plantId == this.plantId &&
+          other.year == this.year &&
+          other.month == this.month &&
+          other.completedAt == this.completedAt);
+}
+
+class CompletedPlanningTasksCompanion
+    extends UpdateCompanion<CompletedPlanningTask> {
+  final Value<int> id;
+  final Value<String> taskKey;
+  final Value<int?> plantId;
+  final Value<int> year;
+  final Value<int> month;
+  final Value<DateTime> completedAt;
+  const CompletedPlanningTasksCompanion({
+    this.id = const Value.absent(),
+    this.taskKey = const Value.absent(),
+    this.plantId = const Value.absent(),
+    this.year = const Value.absent(),
+    this.month = const Value.absent(),
+    this.completedAt = const Value.absent(),
+  });
+  CompletedPlanningTasksCompanion.insert({
+    this.id = const Value.absent(),
+    required String taskKey,
+    this.plantId = const Value.absent(),
+    required int year,
+    required int month,
+    this.completedAt = const Value.absent(),
+  }) : taskKey = Value(taskKey),
+       year = Value(year),
+       month = Value(month);
+  static Insertable<CompletedPlanningTask> custom({
+    Expression<int>? id,
+    Expression<String>? taskKey,
+    Expression<int>? plantId,
+    Expression<int>? year,
+    Expression<int>? month,
+    Expression<DateTime>? completedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (taskKey != null) 'task_key': taskKey,
+      if (plantId != null) 'plant_id': plantId,
+      if (year != null) 'year': year,
+      if (month != null) 'month': month,
+      if (completedAt != null) 'completed_at': completedAt,
+    });
+  }
+
+  CompletedPlanningTasksCompanion copyWith({
+    Value<int>? id,
+    Value<String>? taskKey,
+    Value<int?>? plantId,
+    Value<int>? year,
+    Value<int>? month,
+    Value<DateTime>? completedAt,
+  }) {
+    return CompletedPlanningTasksCompanion(
+      id: id ?? this.id,
+      taskKey: taskKey ?? this.taskKey,
+      plantId: plantId ?? this.plantId,
+      year: year ?? this.year,
+      month: month ?? this.month,
+      completedAt: completedAt ?? this.completedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (taskKey.present) {
+      map['task_key'] = Variable<String>(taskKey.value);
+    }
+    if (plantId.present) {
+      map['plant_id'] = Variable<int>(plantId.value);
+    }
+    if (year.present) {
+      map['year'] = Variable<int>(year.value);
+    }
+    if (month.present) {
+      map['month'] = Variable<int>(month.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CompletedPlanningTasksCompanion(')
+          ..write('id: $id, ')
+          ..write('taskKey: $taskKey, ')
+          ..write('plantId: $plantId, ')
+          ..write('year: $year, ')
+          ..write('month: $month, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7143,6 +7814,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GardenEventsTable gardenEvents = $GardenEventsTable(this);
   late final $FruitTreesTable fruitTrees = $FruitTreesTable(this);
   late final $UserFruitTreesTable userFruitTrees = $UserFruitTreesTable(this);
+  late final $SelectedPlantsTableTable selectedPlantsTable =
+      $SelectedPlantsTableTable(this);
+  late final $CompletedPlanningTasksTable completedPlanningTasks =
+      $CompletedPlanningTasksTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7156,6 +7831,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     gardenEvents,
     fruitTrees,
     userFruitTrees,
+    selectedPlantsTable,
+    completedPlanningTasks,
   ];
 }
 
@@ -7271,6 +7948,61 @@ final class $$PlantsTableReferences
     ).filter((f) => f.plantId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_gardenEventsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $SelectedPlantsTableTable,
+    List<SelectedPlantsTableData>
+  >
+  _selectedPlantsTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.selectedPlantsTable,
+        aliasName: $_aliasNameGenerator(
+          db.plants.id,
+          db.selectedPlantsTable.plantId,
+        ),
+      );
+
+  $$SelectedPlantsTableTableProcessedTableManager get selectedPlantsTableRefs {
+    final manager = $$SelectedPlantsTableTableTableManager(
+      $_db,
+      $_db.selectedPlantsTable,
+    ).filter((f) => f.plantId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _selectedPlantsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $CompletedPlanningTasksTable,
+    List<CompletedPlanningTask>
+  >
+  _completedPlanningTasksRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.completedPlanningTasks,
+        aliasName: $_aliasNameGenerator(
+          db.plants.id,
+          db.completedPlanningTasks.plantId,
+        ),
+      );
+
+  $$CompletedPlanningTasksTableProcessedTableManager
+  get completedPlanningTasksRefs {
+    final manager = $$CompletedPlanningTasksTableTableManager(
+      $_db,
+      $_db.completedPlanningTasks,
+    ).filter((f) => f.plantId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _completedPlanningTasksRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -7508,6 +8240,57 @@ class $$PlantsTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> selectedPlantsTableRefs(
+    Expression<bool> Function($$SelectedPlantsTableTableFilterComposer f) f,
+  ) {
+    final $$SelectedPlantsTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.selectedPlantsTable,
+      getReferencedColumn: (t) => t.plantId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SelectedPlantsTableTableFilterComposer(
+            $db: $db,
+            $table: $db.selectedPlantsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> completedPlanningTasksRefs(
+    Expression<bool> Function($$CompletedPlanningTasksTableFilterComposer f) f,
+  ) {
+    final $$CompletedPlanningTasksTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.completedPlanningTasks,
+          getReferencedColumn: (t) => t.plantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CompletedPlanningTasksTableFilterComposer(
+                $db: $db,
+                $table: $db.completedPlanningTasks,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -7914,6 +8697,58 @@ class $$PlantsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> selectedPlantsTableRefs<T extends Object>(
+    Expression<T> Function($$SelectedPlantsTableTableAnnotationComposer a) f,
+  ) {
+    final $$SelectedPlantsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.selectedPlantsTable,
+          getReferencedColumn: (t) => t.plantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SelectedPlantsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.selectedPlantsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> completedPlanningTasksRefs<T extends Object>(
+    Expression<T> Function($$CompletedPlanningTasksTableAnnotationComposer a) f,
+  ) {
+    final $$CompletedPlanningTasksTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.completedPlanningTasks,
+          getReferencedColumn: (t) => t.plantId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CompletedPlanningTasksTableAnnotationComposer(
+                $db: $db,
+                $table: $db.completedPlanningTasks,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PlantsTableTableManager
@@ -7929,7 +8764,12 @@ class $$PlantsTableTableManager
           $$PlantsTableUpdateCompanionBuilder,
           (Plant, $$PlantsTableReferences),
           Plant,
-          PrefetchHooks Function({bool gardenPlantsRefs, bool gardenEventsRefs})
+          PrefetchHooks Function({
+            bool gardenPlantsRefs,
+            bool gardenEventsRefs,
+            bool selectedPlantsTableRefs,
+            bool completedPlanningTasksRefs,
+          })
         > {
   $$PlantsTableTableManager(_$AppDatabase db, $PlantsTable table)
     : super(
@@ -8097,12 +8937,19 @@ class $$PlantsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({gardenPlantsRefs = false, gardenEventsRefs = false}) {
+              ({
+                gardenPlantsRefs = false,
+                gardenEventsRefs = false,
+                selectedPlantsTableRefs = false,
+                completedPlanningTasksRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (gardenPlantsRefs) db.gardenPlants,
                     if (gardenEventsRefs) db.gardenEvents,
+                    if (selectedPlantsTableRefs) db.selectedPlantsTable,
+                    if (completedPlanningTasksRefs) db.completedPlanningTasks,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -8149,6 +8996,48 @@ class $$PlantsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (selectedPlantsTableRefs)
+                        await $_getPrefetchedData<
+                          Plant,
+                          $PlantsTable,
+                          SelectedPlantsTableData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PlantsTableReferences
+                              ._selectedPlantsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PlantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).selectedPlantsTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.plantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (completedPlanningTasksRefs)
+                        await $_getPrefetchedData<
+                          Plant,
+                          $PlantsTable,
+                          CompletedPlanningTask
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PlantsTableReferences
+                              ._completedPlanningTasksRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PlantsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).completedPlanningTasksRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.plantId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -8169,7 +9058,12 @@ typedef $$PlantsTableProcessedTableManager =
       $$PlantsTableUpdateCompanionBuilder,
       (Plant, $$PlantsTableReferences),
       Plant,
-      PrefetchHooks Function({bool gardenPlantsRefs, bool gardenEventsRefs})
+      PrefetchHooks Function({
+        bool gardenPlantsRefs,
+        bool gardenEventsRefs,
+        bool selectedPlantsTableRefs,
+        bool completedPlanningTasksRefs,
+      })
     >;
 typedef $$PlantCompanionsTableCreateCompanionBuilder =
     PlantCompanionsCompanion Function({
@@ -11798,6 +12692,654 @@ typedef $$UserFruitTreesTableProcessedTableManager =
       UserFruitTree,
       PrefetchHooks Function({bool fruitTreeId})
     >;
+typedef $$SelectedPlantsTableTableCreateCompanionBuilder =
+    SelectedPlantsTableCompanion Function({
+      Value<int> id,
+      required int plantId,
+      Value<DateTime> addedAt,
+    });
+typedef $$SelectedPlantsTableTableUpdateCompanionBuilder =
+    SelectedPlantsTableCompanion Function({
+      Value<int> id,
+      Value<int> plantId,
+      Value<DateTime> addedAt,
+    });
+
+final class $$SelectedPlantsTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $SelectedPlantsTableTable,
+          SelectedPlantsTableData
+        > {
+  $$SelectedPlantsTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PlantsTable _plantIdTable(_$AppDatabase db) => db.plants.createAlias(
+    $_aliasNameGenerator(db.selectedPlantsTable.plantId, db.plants.id),
+  );
+
+  $$PlantsTableProcessedTableManager get plantId {
+    final $_column = $_itemColumn<int>('plant_id')!;
+
+    final manager = $$PlantsTableTableManager(
+      $_db,
+      $_db.plants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_plantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SelectedPlantsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SelectedPlantsTableTable> {
+  $$SelectedPlantsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get addedAt => $composableBuilder(
+    column: $table.addedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PlantsTableFilterComposer get plantId {
+    final $$PlantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.plantId,
+      referencedTable: $db.plants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlantsTableFilterComposer(
+            $db: $db,
+            $table: $db.plants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SelectedPlantsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SelectedPlantsTableTable> {
+  $$SelectedPlantsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get addedAt => $composableBuilder(
+    column: $table.addedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PlantsTableOrderingComposer get plantId {
+    final $$PlantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.plantId,
+      referencedTable: $db.plants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.plants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SelectedPlantsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SelectedPlantsTableTable> {
+  $$SelectedPlantsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get addedAt =>
+      $composableBuilder(column: $table.addedAt, builder: (column) => column);
+
+  $$PlantsTableAnnotationComposer get plantId {
+    final $$PlantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.plantId,
+      referencedTable: $db.plants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.plants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SelectedPlantsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SelectedPlantsTableTable,
+          SelectedPlantsTableData,
+          $$SelectedPlantsTableTableFilterComposer,
+          $$SelectedPlantsTableTableOrderingComposer,
+          $$SelectedPlantsTableTableAnnotationComposer,
+          $$SelectedPlantsTableTableCreateCompanionBuilder,
+          $$SelectedPlantsTableTableUpdateCompanionBuilder,
+          (SelectedPlantsTableData, $$SelectedPlantsTableTableReferences),
+          SelectedPlantsTableData,
+          PrefetchHooks Function({bool plantId})
+        > {
+  $$SelectedPlantsTableTableTableManager(
+    _$AppDatabase db,
+    $SelectedPlantsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SelectedPlantsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SelectedPlantsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SelectedPlantsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> plantId = const Value.absent(),
+                Value<DateTime> addedAt = const Value.absent(),
+              }) => SelectedPlantsTableCompanion(
+                id: id,
+                plantId: plantId,
+                addedAt: addedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int plantId,
+                Value<DateTime> addedAt = const Value.absent(),
+              }) => SelectedPlantsTableCompanion.insert(
+                id: id,
+                plantId: plantId,
+                addedAt: addedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SelectedPlantsTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({plantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (plantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.plantId,
+                                referencedTable:
+                                    $$SelectedPlantsTableTableReferences
+                                        ._plantIdTable(db),
+                                referencedColumn:
+                                    $$SelectedPlantsTableTableReferences
+                                        ._plantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SelectedPlantsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SelectedPlantsTableTable,
+      SelectedPlantsTableData,
+      $$SelectedPlantsTableTableFilterComposer,
+      $$SelectedPlantsTableTableOrderingComposer,
+      $$SelectedPlantsTableTableAnnotationComposer,
+      $$SelectedPlantsTableTableCreateCompanionBuilder,
+      $$SelectedPlantsTableTableUpdateCompanionBuilder,
+      (SelectedPlantsTableData, $$SelectedPlantsTableTableReferences),
+      SelectedPlantsTableData,
+      PrefetchHooks Function({bool plantId})
+    >;
+typedef $$CompletedPlanningTasksTableCreateCompanionBuilder =
+    CompletedPlanningTasksCompanion Function({
+      Value<int> id,
+      required String taskKey,
+      Value<int?> plantId,
+      required int year,
+      required int month,
+      Value<DateTime> completedAt,
+    });
+typedef $$CompletedPlanningTasksTableUpdateCompanionBuilder =
+    CompletedPlanningTasksCompanion Function({
+      Value<int> id,
+      Value<String> taskKey,
+      Value<int?> plantId,
+      Value<int> year,
+      Value<int> month,
+      Value<DateTime> completedAt,
+    });
+
+final class $$CompletedPlanningTasksTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $CompletedPlanningTasksTable,
+          CompletedPlanningTask
+        > {
+  $$CompletedPlanningTasksTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PlantsTable _plantIdTable(_$AppDatabase db) => db.plants.createAlias(
+    $_aliasNameGenerator(db.completedPlanningTasks.plantId, db.plants.id),
+  );
+
+  $$PlantsTableProcessedTableManager? get plantId {
+    final $_column = $_itemColumn<int>('plant_id');
+    if ($_column == null) return null;
+    final manager = $$PlantsTableTableManager(
+      $_db,
+      $_db.plants,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_plantIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CompletedPlanningTasksTableFilterComposer
+    extends Composer<_$AppDatabase, $CompletedPlanningTasksTable> {
+  $$CompletedPlanningTasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get taskKey => $composableBuilder(
+    column: $table.taskKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get month => $composableBuilder(
+    column: $table.month,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PlantsTableFilterComposer get plantId {
+    final $$PlantsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.plantId,
+      referencedTable: $db.plants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlantsTableFilterComposer(
+            $db: $db,
+            $table: $db.plants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CompletedPlanningTasksTableOrderingComposer
+    extends Composer<_$AppDatabase, $CompletedPlanningTasksTable> {
+  $$CompletedPlanningTasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get taskKey => $composableBuilder(
+    column: $table.taskKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get month => $composableBuilder(
+    column: $table.month,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PlantsTableOrderingComposer get plantId {
+    final $$PlantsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.plantId,
+      referencedTable: $db.plants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlantsTableOrderingComposer(
+            $db: $db,
+            $table: $db.plants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CompletedPlanningTasksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CompletedPlanningTasksTable> {
+  $$CompletedPlanningTasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get taskKey =>
+      $composableBuilder(column: $table.taskKey, builder: (column) => column);
+
+  GeneratedColumn<int> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => column);
+
+  GeneratedColumn<int> get month =>
+      $composableBuilder(column: $table.month, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  $$PlantsTableAnnotationComposer get plantId {
+    final $$PlantsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.plantId,
+      referencedTable: $db.plants,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlantsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.plants,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CompletedPlanningTasksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CompletedPlanningTasksTable,
+          CompletedPlanningTask,
+          $$CompletedPlanningTasksTableFilterComposer,
+          $$CompletedPlanningTasksTableOrderingComposer,
+          $$CompletedPlanningTasksTableAnnotationComposer,
+          $$CompletedPlanningTasksTableCreateCompanionBuilder,
+          $$CompletedPlanningTasksTableUpdateCompanionBuilder,
+          (CompletedPlanningTask, $$CompletedPlanningTasksTableReferences),
+          CompletedPlanningTask,
+          PrefetchHooks Function({bool plantId})
+        > {
+  $$CompletedPlanningTasksTableTableManager(
+    _$AppDatabase db,
+    $CompletedPlanningTasksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CompletedPlanningTasksTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CompletedPlanningTasksTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CompletedPlanningTasksTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> taskKey = const Value.absent(),
+                Value<int?> plantId = const Value.absent(),
+                Value<int> year = const Value.absent(),
+                Value<int> month = const Value.absent(),
+                Value<DateTime> completedAt = const Value.absent(),
+              }) => CompletedPlanningTasksCompanion(
+                id: id,
+                taskKey: taskKey,
+                plantId: plantId,
+                year: year,
+                month: month,
+                completedAt: completedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String taskKey,
+                Value<int?> plantId = const Value.absent(),
+                required int year,
+                required int month,
+                Value<DateTime> completedAt = const Value.absent(),
+              }) => CompletedPlanningTasksCompanion.insert(
+                id: id,
+                taskKey: taskKey,
+                plantId: plantId,
+                year: year,
+                month: month,
+                completedAt: completedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$CompletedPlanningTasksTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({plantId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (plantId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.plantId,
+                                referencedTable:
+                                    $$CompletedPlanningTasksTableReferences
+                                        ._plantIdTable(db),
+                                referencedColumn:
+                                    $$CompletedPlanningTasksTableReferences
+                                        ._plantIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CompletedPlanningTasksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CompletedPlanningTasksTable,
+      CompletedPlanningTask,
+      $$CompletedPlanningTasksTableFilterComposer,
+      $$CompletedPlanningTasksTableOrderingComposer,
+      $$CompletedPlanningTasksTableAnnotationComposer,
+      $$CompletedPlanningTasksTableCreateCompanionBuilder,
+      $$CompletedPlanningTasksTableUpdateCompanionBuilder,
+      (CompletedPlanningTask, $$CompletedPlanningTasksTableReferences),
+      CompletedPlanningTask,
+      PrefetchHooks Function({bool plantId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -11818,4 +13360,11 @@ class $AppDatabaseManager {
       $$FruitTreesTableTableManager(_db, _db.fruitTrees);
   $$UserFruitTreesTableTableManager get userFruitTrees =>
       $$UserFruitTreesTableTableManager(_db, _db.userFruitTrees);
+  $$SelectedPlantsTableTableTableManager get selectedPlantsTable =>
+      $$SelectedPlantsTableTableTableManager(_db, _db.selectedPlantsTable);
+  $$CompletedPlanningTasksTableTableManager get completedPlanningTasks =>
+      $$CompletedPlanningTasksTableTableManager(
+        _db,
+        _db.completedPlanningTasks,
+      );
 }

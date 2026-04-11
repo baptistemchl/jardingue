@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/providers/weather_providers.dart';
 import '../../../../core/services/weather/weather_models.dart';
+import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../widgets/weather_animations.dart';
 import '../widgets/weather_current_card.dart';
@@ -36,30 +37,54 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
     final weatherAsync = ref.watch(weatherDataProvider);
 
     return Scaffold(
-      body: weatherAsync.when(
-        data: (weather) {
-          _lastData = weather;
-          return _WeatherContent(weather: weather);
-        },
-        loading: () {
-          if (_lastData != null) {
-            return _WeatherContent(weather: _lastData!);
-          }
-          return const _WeatherLoading();
-        },
-        error: (error, _) {
-          // Si on a deja des donnees, les garder
-          if (_lastData != null) {
-            return _WeatherContent(weather: _lastData!);
-          }
-          return _WeatherError(
-            error: error.toString(),
-            onRetry: () {
-              ref.invalidate(currentLocationProvider);
-              ref.invalidate(weatherDataProvider);
+      body: Stack(
+        children: [
+          // Contenu météo
+          weatherAsync.when(
+            data: (weather) {
+              _lastData = weather;
+              return _WeatherContent(
+                weather: weather,
+              );
             },
-          );
-        },
+            loading: () {
+              if (_lastData != null) {
+                return _WeatherContent(
+                  weather: _lastData!,
+                );
+              }
+              return const _WeatherLoading();
+            },
+            error: (error, _) {
+              if (_lastData != null) {
+                return _WeatherContent(
+                  weather: _lastData!,
+                );
+              }
+              return _WeatherError(
+                error: error.toString(),
+                onRetry: () {
+                  ref.invalidate(
+                    currentLocationProvider,
+                  );
+                  ref.invalidate(
+                    weatherDataProvider,
+                  );
+                },
+              );
+            },
+          ),
+
+          // Bouton retour toujours visible
+          Positioned(
+            top: MediaQuery.of(context)
+                    .padding
+                    .top +
+                8,
+            left: 12,
+            child: const AppBackButton.dark(),
+          ),
+        ],
       ),
     );
   }
@@ -87,6 +112,11 @@ class _WeatherContent extends StatelessWidget {
           bottom: false,
           child: CustomScrollView(
             slivers: [
+              // Espace pour le bouton retour
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 48),
+              ),
+
               // Header
               SliverToBoxAdapter(child: WeatherHeader(weather: weather)),
 
@@ -182,7 +212,10 @@ class _WeatherContent extends StatelessWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 120)),
+              // Padding bas (pas de navbar)
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 40),
+              ),
             ],
           ),
         ),

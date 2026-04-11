@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/providers/garden_event_providers.dart';
+import '../../../../core/providers/garden_providers.dart';
+import '../../../../core/providers/orchard_providers.dart';
 import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../domain/models/backup_metadata.dart';
 import 'premium_providers.dart';
@@ -103,6 +106,16 @@ class BackupNotifier extends StateNotifier<BackupState> {
       }
 
       await repo.importToLocal(data);
+
+      // Invalider tous les providers qui lisent la DB
+      // pour que l'UI se mette à jour après la restauration
+      _ref.invalidate(gardensListProvider);
+      _ref.invalidate(wateringRemindersProvider);
+      _ref.invalidate(allUserEventsProvider);
+      _ref.invalidate(trackedPlantsProvider);
+      _ref.invalidate(userFruitTreesProvider);
+      _ref.invalidate(cloudMetadataProvider);
+
       state = const BackupState.success(
         BackupOperation.restore,
       );

@@ -14,6 +14,9 @@ import '../widgets/month_list_view.dart';
 import '../widgets/user_events_view.dart';
 import '../widgets/add_event_sheet.dart';
 import '../widgets/calendar_empty_states.dart';
+import '../widgets/calendar_filter_chips.dart'
+    show CalendarFilterPanel;
+import '../widgets/calendar_onboarding.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 // ============================================
@@ -34,13 +37,21 @@ class CalendarScreen extends ConsumerStatefulWidget {
   ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _CalendarScreenState extends ConsumerState<CalendarScreen> {
+class _CalendarScreenState
+    extends ConsumerState<CalendarScreen> {
   late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(
+      initialPage: 0,
+    );
+    // Popup d'aide au premier lancement
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) {
+      maybeShowCalendarOnboarding(context);
+    });
   }
 
   @override
@@ -68,6 +79,79 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  /// Applique les filtres globaux (type + plant)
+  /// aux activités du mois.
+  MonthActivities _applyFilters(
+    WidgetRef ref,
+    MonthActivities src,
+  ) {
+    final typeFilter = ref.watch(
+      activityFilterProvider,
+    );
+    final plantFilter = ref.watch(
+      calendarPlantFilterProvider,
+    );
+
+    var result = src;
+
+    // Filtre par plant
+    if (plantFilter != null) {
+      bool match(PlantActivity a) =>
+          a.plant.id == plantFilter;
+      result = MonthActivities(
+        month: result.month,
+        year: result.year,
+        sowingUnderCover: result
+            .sowingUnderCover
+            .where(match)
+            .toList(),
+        sowingOpenGround: result
+            .sowingOpenGround
+            .where(match)
+            .toList(),
+        planting: result.planting
+            .where(match)
+            .toList(),
+        harvest: result.harvest
+            .where(match)
+            .toList(),
+      );
+    }
+
+    // Filtre par type : on vide les listes
+    // qui ne correspondent pas
+    if (typeFilter != null) {
+      result = MonthActivities(
+        month: result.month,
+        year: result.year,
+        sowingUnderCover:
+            typeFilter ==
+                    GardenActivityType
+                        .sowingUnderCover
+                ? result.sowingUnderCover
+                : [],
+        sowingOpenGround:
+            typeFilter ==
+                    GardenActivityType
+                        .sowingOpenGround
+                ? result.sowingOpenGround
+                : [],
+        planting:
+            typeFilter ==
+                    GardenActivityType.planting
+                ? result.planting
+                : [],
+        harvest:
+            typeFilter ==
+                    GardenActivityType.harvest
+                ? result.harvest
+                : [],
+      );
+    }
+
+    return result;
   }
 
   void _onDayTap(DateTime date) {
@@ -104,47 +188,124 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             bottom: false,
             child: Column(
               children: [
-                CalendarHeader(
-                  selectedMonth: selectedMonth,
-                  showMonthNav: currentView != CalendarViewType.myActivities,
+                // Header + bouton aide
+                Row(
+                  children: [
+                    Expanded(
+                      child: CalendarHeader(
+                        selectedMonth:
+                            selectedMonth,
+                        showMonthNav: currentView !=
+                            CalendarViewType
+                                .myActivities,
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(
+                        right: 16,
+                        top: 8,
+                      ),
+                      child: GestureDetector(
+                        onTap: () =>
+                            showCalendarOnboarding(
+                          context,
+                        ),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration:
+                              BoxDecoration(
+                            color: AppColors.info
+                                .withValues(
+                              alpha: 0.1,
+                            ),
+                            borderRadius:
+                                BorderRadius
+                                    .circular(
+                              10,
+                            ),
+                          ),
+                          child: Icon(
+                            PhosphorIcons
+                                .question(
+                              PhosphorIconsStyle
+                                  .bold,
+                            ),
+                            size: 16,
+                            color: AppColors.info,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(
+                  height: AppSpacing.sm,
+                ),
 
-                // TabBar pour choisir la vue
+                // TabBar
                 _ViewTabBar(
                   currentView: currentView,
                   onTabChanged: _onTabChanged,
                 ),
-                const SizedBox(height: AppSpacing.md),
+                const SizedBox(
+                  height: AppSpacing.sm,
+                ),
 
-                // Contenu avec PageView pour le swipe
+                // Filtres collapsibles
+                const CalendarFilterPanel(),
+                const SizedBox(
+                  height: AppSpacing.sm,
+                ),
+
+                // Contenu avec PageView
                 Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: _onPageChanged,
-                    children: [
-                      activitiesAsync.when(
-                        data: (activities) => _CalendarView(
-                          selectedMonth: selectedMonth,
-                          activities: activities,
-                          onDayTap: _onDayTap,
+                  child: activitiesAsync.when(
+                    data: (activities) {
+                      final filtered =
+                          _applyFilters(
+                        ref,
+                        activities,
+                      );
+                      return PageView(
+                        controller:
+                            _pageController,
+                        onPageChanged:
+                            _onPageChanged,
+                        children: [
+                          _CalendarView(
+                            selectedMonth:
+                                selectedMonth,
+                            activities: filtered,
+                            onDayTap: _onDayTap,
+                          ),
+                          MonthListView(
+                            selectedMonth:
+                                selectedMonth,
+                            activities: filtered,
+                          ),
+                          UserEventsView(
+                            selectedMonth:
+                                selectedMonth,
+                          ),
+                        ],
+                      );
+                    },
+                    loading: () => const Center(
+                      child:
+                          CircularProgressIndicator(),
+                    ),
+                    error: (e, _) => Center(
+                      child: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!
+                            .errorWithMessage(
+                          e.toString(),
                         ),
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString()))),
                       ),
-                      activitiesAsync.when(
-                        data: (activities) => MonthListView(
-                          selectedMonth: selectedMonth,
-                          activities: activities,
-                        ),
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text(AppLocalizations.of(context)!.errorWithMessage(e.toString()))),
-                      ),
-                      // 3ème page : Mes activités
-                      UserEventsView(selectedMonth: selectedMonth),
-                    ],
+                    ),
                   ),
                 ),
               ],
@@ -275,30 +436,47 @@ class _CalendarView extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final filter = ref.watch(activityFilterProvider);
-    final userEventsAsync = ref.watch(monthUserEventsProvider(selectedMonth));
-    final userEvents = userEventsAsync.valueOrNull ?? [];
+  Widget build(
+    BuildContext context,
+    WidgetRef ref, // Gardé pour monthUserEventsProvider
+  ) {
+    final userEventsAsync = ref.watch(
+      monthUserEventsProvider(selectedMonth),
+    );
+    final userEvents =
+        userEventsAsync.valueOrNull ?? [];
 
+    // Les filtres sont déjà appliqués en amont
+    // par _applyFilters dans le parent.
     if (activities.isEmpty) {
-      return Column(
-        children: [
-          CompactMonthCalendar(
-            selectedMonth: selectedMonth,
-            activities: activities,
-            userEvents: userEvents,
-            onDayTap: onDayTap,
+      return CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: CompactMonthCalendar(
+              selectedMonth: selectedMonth,
+              activities: activities,
+              userEvents: userEvents,
+              onDayTap: onDayTap,
+            ),
           ),
-          const SizedBox(height: AppSpacing.md),
-          const ActivityFilters(),
-          const Expanded(child: EmptyState()),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: AppSpacing.md,
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: ActivityFilters(),
+          ),
+          const SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyState(),
+          ),
         ],
       );
     }
 
     return CustomScrollView(
       slivers: [
-        // Calendrier compact
         SliverToBoxAdapter(
           child: CompactMonthCalendar(
             selectedMonth: selectedMonth,
@@ -308,73 +486,65 @@ class _CalendarView extends ConsumerWidget {
           ),
         ),
 
-        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: AppSpacing.md,
+          ),
+        ),
 
-        // Filtres
-        const SliverToBoxAdapter(child: ActivityFilters()),
+        const SliverToBoxAdapter(
+          child: ActivityFilters(),
+        ),
 
-        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: AppSpacing.md,
+          ),
+        ),
 
-        // Sections d'activités
-        if (filter != null) ...[
-          ..._buildFilteredSections(activities, filter),
-        ] else ...[
-          if (activities.sowingUnderCover.isNotEmpty)
-            SliverToBoxAdapter(
-              child: ActivitySectionScrollable(
-                type: GardenActivityType.sowingUnderCover,
-                activities: activities.sowingUnderCover,
-              ),
+        if (activities
+            .sowingUnderCover.isNotEmpty)
+          SliverToBoxAdapter(
+            child: ActivitySectionScrollable(
+              type: GardenActivityType
+                  .sowingUnderCover,
+              activities:
+                  activities.sowingUnderCover,
             ),
-          if (activities.sowingOpenGround.isNotEmpty)
-            SliverToBoxAdapter(
-              child: ActivitySectionScrollable(
-                type: GardenActivityType.sowingOpenGround,
-                activities: activities.sowingOpenGround,
-              ),
+          ),
+        if (activities
+            .sowingOpenGround.isNotEmpty)
+          SliverToBoxAdapter(
+            child: ActivitySectionScrollable(
+              type: GardenActivityType
+                  .sowingOpenGround,
+              activities:
+                  activities.sowingOpenGround,
             ),
-          if (activities.planting.isNotEmpty)
-            SliverToBoxAdapter(
-              child: ActivitySectionScrollable(
-                type: GardenActivityType.planting,
-                activities: activities.planting,
-              ),
+          ),
+        if (activities.planting.isNotEmpty)
+          SliverToBoxAdapter(
+            child: ActivitySectionScrollable(
+              type:
+                  GardenActivityType.planting,
+              activities:
+                  activities.planting,
             ),
-          if (activities.harvest.isNotEmpty)
-            SliverToBoxAdapter(
-              child: ActivitySectionScrollable(
-                type: GardenActivityType.harvest,
-                activities: activities.harvest,
-              ),
+          ),
+        if (activities.harvest.isNotEmpty)
+          SliverToBoxAdapter(
+            child: ActivitySectionScrollable(
+              type:
+                  GardenActivityType.harvest,
+              activities:
+                  activities.harvest,
             ),
-        ],
+          ),
 
-        // Padding en bas pour la navigation
-        const SliverToBoxAdapter(child: SizedBox(height: 120)),
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 120),
+        ),
       ],
     );
-  }
-
-  List<Widget> _buildFilteredSections(
-    MonthActivities activities,
-    GardenActivityType filter,
-  ) {
-    final filteredActivities = activities.getActivitiesByType(filter);
-    if (filteredActivities.isEmpty) {
-      return [
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: EmptyStateForType(type: filter),
-        ),
-      ];
-    }
-    return [
-      SliverToBoxAdapter(
-        child: ActivitySectionScrollable(
-          type: filter,
-          activities: filteredActivities,
-        ),
-      ),
-    ];
   }
 }

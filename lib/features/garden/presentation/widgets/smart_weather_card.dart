@@ -31,7 +31,7 @@ class SmartWeatherCard extends ConsumerWidget {
       skipLoadingOnRefresh: true,
       data: (weather) => _WeatherCardContent(
         weather: weather,
-        onTap: () => context.go(AppRoutes.weather),
+        onTap: () => context.push(AppRoutes.weather),
       ),
       loading: () => const _WeatherCardSkeleton(),
       error: (error, stack) {

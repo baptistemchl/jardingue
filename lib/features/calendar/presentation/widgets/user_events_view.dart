@@ -29,7 +29,12 @@ class _UserEventsViewState extends ConsumerState<UserEventsView> {
 
   @override
   Widget build(BuildContext context) {
-    final allEventsAsync = ref.watch(allUserEventsProvider);
+    final allEventsAsync = ref.watch(
+      allUserEventsProvider,
+    );
+    final plantFilter = ref.watch(
+      calendarPlantFilterProvider,
+    );
 
     return Stack(
       children: [
@@ -39,23 +44,47 @@ class _UserEventsViewState extends ConsumerState<UserEventsView> {
               return const _EmptyUserEvents();
             }
 
-            // Extraire les mois disponibles pour les chips de filtre
-            final availableMonths = <DateTime>{};
-            for (final e in allEvents) {
-              final d = e.event.eventDate;
-              availableMonths.add(DateTime(d.year, d.month));
+            // Filtre par plant global
+            var events = allEvents;
+            if (plantFilter != null) {
+              events = events
+                  .where(
+                    (e) =>
+                        e.event.plantId ==
+                        plantFilter,
+                  )
+                  .toList();
             }
-            final sortedMonths = availableMonths.toList()
-              ..sort((a, b) => b.compareTo(a));
 
-            // Filtrer si un mois est sélectionné
-            final filtered = _filterMonth == null
-                ? allEvents
-                : allEvents.where((e) {
-                    final d = e.event.eventDate;
-                    return d.year == _filterMonth!.year &&
-                        d.month == _filterMonth!.month;
-                  }).toList();
+            // Mois disponibles
+            final availableMonths =
+                <DateTime>{};
+            for (final e in events) {
+              final d = e.event.eventDate;
+              availableMonths.add(
+                DateTime(d.year, d.month),
+              );
+            }
+            final sortedMonths =
+                availableMonths.toList()
+                  ..sort(
+                    (a, b) => b.compareTo(a),
+                  );
+
+            // Filtre mois local
+            final filtered =
+                _filterMonth == null
+                    ? events
+                    : events.where((e) {
+                        final d =
+                            e.event.eventDate;
+                        return d.year ==
+                                _filterMonth!
+                                    .year &&
+                            d.month ==
+                                _filterMonth!
+                                    .month;
+                      }).toList();
 
             // Grouper par date
             final grouped = <DateTime, List<GardenEventWithDetails>>{};

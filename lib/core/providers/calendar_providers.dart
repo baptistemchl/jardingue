@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../features/planning/domain/models/planning_task.dart';
+import '../../features/planning/domain/models/soil_task.dart';
 import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/database.dart';
 import 'database_providers.dart';
@@ -277,7 +279,145 @@ String? _extractDetail(String value) {
 
 /// Extension pour obtenir le nom du mois en français
 extension DateTimeCalendarExtension on DateTime {
-  String get frenchMonthName => _getFrenchMonthName(month);
+  String get frenchMonthName =>
+      _getFrenchMonthName(month);
 
-  String get frenchMonthYear => '${_getFrenchMonthName(month)} $year';
+  String get frenchMonthYear =>
+      '${_getFrenchMonthName(month)} $year';
+}
+
+// ============================================
+// CALENDAR ITEM UNIFIE (planification + events)
+// ============================================
+
+enum CalendarItemType {
+  planningTask(
+    'Planification',
+    '🌱',
+    Color(0xFF4CAF50),
+  ),
+  userEvent(
+    'Mes activités',
+    '📝',
+    Color(0xFF2196F3),
+  ),
+  weatherAlert(
+    'Météo',
+    '⛈️',
+    Color(0xFFFF9800),
+  ),
+  soilPreparation(
+    'Sol',
+    '🪴',
+    Color(0xFF795548),
+  ),
+  reminder(
+    'Rappel',
+    '🔔',
+    Color(0xFF9C27B0),
+  );
+
+  final String label;
+  final String emoji;
+  final Color color;
+
+  const CalendarItemType(
+    this.label,
+    this.emoji,
+    this.color,
+  );
+}
+
+class CalendarItem {
+  final CalendarItemType type;
+  final String title;
+  final String? subtitle;
+  final DateTime date;
+  final int? plantId;
+  final String? plantName;
+  final Color color;
+  final String emoji;
+
+  const CalendarItem({
+    required this.type,
+    required this.title,
+    this.subtitle,
+    required this.date,
+    this.plantId,
+    this.plantName,
+    required this.color,
+    required this.emoji,
+  });
+}
+
+class CalendarFilter {
+  final Set<CalendarItemType> activeTypes;
+
+  const CalendarFilter({
+    this.activeTypes = const {},
+  });
+
+  bool get showAll => activeTypes.isEmpty;
+
+  bool accepts(CalendarItemType type) {
+    return showAll || activeTypes.contains(type);
+  }
+
+  CalendarFilter toggle(CalendarItemType type) {
+    final next = Set<CalendarItemType>.from(
+      activeTypes,
+    );
+    if (next.contains(type)) {
+      next.remove(type);
+    } else {
+      next.add(type);
+    }
+    return CalendarFilter(activeTypes: next);
+  }
+}
+
+final calendarFilterProvider =
+    StateProvider<CalendarFilter>(
+  (ref) => const CalendarFilter(),
+);
+
+/// Filtre par plant dans le calendrier (null = tous).
+final calendarPlantFilterProvider =
+    StateProvider<int?>((ref) => null);
+
+// ============================================
+// MAPPING PLANNING -> CALENDAR ITEMS
+// ============================================
+
+List<CalendarItem> mapPlanningToCalendar({
+  required List<PlanningTask> tasks,
+  required List<SoilTask> soilTasks,
+  required DateTime month,
+}) {
+  final items = <CalendarItem>[];
+
+  for (final task in tasks) {
+    items.add(CalendarItem(
+      type: CalendarItemType.planningTask,
+      title: task.message,
+      subtitle: task.plantName,
+      date: DateTime(month.year, month.month),
+      plantId: task.plantId,
+      plantName: task.plantName,
+      color: task.actionType.color,
+      emoji: task.plantEmoji,
+    ));
+  }
+
+  for (final soil in soilTasks) {
+    items.add(CalendarItem(
+      type: CalendarItemType.soilPreparation,
+      title: soil.message,
+      date: DateTime(month.year, month.month),
+      color: const Color(0xFF795548),
+      emoji: soil.type.emoji,
+    ));
+  }
+
+  return items;
 }

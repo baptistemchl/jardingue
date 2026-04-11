@@ -20,6 +20,8 @@ part 'app_database.g.dart';
     GardenEvents,
     FruitTrees,
     UserFruitTrees,
+    SelectedPlantsTable,
+    CompletedPlanningTasks,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -29,7 +31,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration {
@@ -74,6 +76,14 @@ class AppDatabase extends _$AppDatabase {
         // Migration v5 -> v6 : indexes pour performances
         if (from < 6) {
           await _createIndexes();
+        }
+        // Migration v6 -> v7 : table selected_plants (planification)
+        if (from < 7) {
+          await m.createTable(selectedPlantsTable);
+        }
+        // Migration v7 -> v8 : table completed_planning_tasks
+        if (from < 8) {
+          await m.createTable(completedPlanningTasks);
         }
       },
     );
@@ -332,6 +342,104 @@ class AppDatabase extends _$AppDatabase {
             : const Value.absent(),
       ),
     );
+  }
+
+  // ============================================
+  // SELECTED PLANTS QUERIES (PLANNING)
+  // ============================================
+
+  Future<List<TypedResult>> getSelectedPlants() {
+    return (select(selectedPlantsTable).join([
+      innerJoin(
+        plants,
+        plants.id.equalsExp(
+          selectedPlantsTable.plantId,
+        ),
+      ),
+    ])..orderBy([
+        OrderingTerm.desc(
+          selectedPlantsTable.addedAt,
+        ),
+      ]))
+        .get();
+  }
+
+  Future<int> insertSelectedPlant(int plantId) {
+    return into(selectedPlantsTable).insert(
+      SelectedPlantsTableCompanion(
+        plantId: Value(plantId),
+      ),
+      mode: InsertMode.insertOrIgnore,
+    );
+  }
+
+  Future<int> deleteSelectedPlant(int plantId) {
+    return (delete(selectedPlantsTable)
+          ..where(
+            (t) => t.plantId.equals(plantId),
+          ))
+        .go();
+  }
+
+  Future<List<int>> getSelectedPlantIds() async {
+    final rows = await (select(selectedPlantsTable)
+          ..orderBy([
+            (t) => OrderingTerm.desc(t.addedAt),
+          ]))
+        .get();
+    return rows
+        .map((r) => r.plantId)
+        .toList();
+  }
+
+  // ============================================
+  // COMPLETED PLANNING TASKS QUERIES
+  // ============================================
+
+  Future<Set<String>> getCompletedTaskKeys({
+    required int year,
+  }) async {
+    final rows = await (select(
+      completedPlanningTasks,
+    )..where((t) => t.year.equals(year)))
+        .get();
+    return rows
+        .map((r) => '${r.taskKey}_${r.month}')
+        .toSet();
+  }
+
+  Future<void> togglePlanningTask({
+    required String taskKey,
+    required int year,
+    required int month,
+    int? plantId,
+  }) async {
+    final existing = await (select(
+      completedPlanningTasks,
+    )..where(
+            (t) =>
+                t.taskKey.equals(taskKey) &
+                t.year.equals(year) &
+                t.month.equals(month),
+          ))
+        .getSingleOrNull();
+
+    if (existing != null) {
+      await (delete(completedPlanningTasks)
+            ..where(
+              (t) => t.id.equals(existing.id),
+            ))
+          .go();
+    } else {
+      await into(completedPlanningTasks).insert(
+        CompletedPlanningTasksCompanion(
+          taskKey: Value(taskKey),
+          plantId: Value(plantId),
+          year: Value(year),
+          month: Value(month),
+        ),
+      );
+    }
   }
 
   // ============================================
