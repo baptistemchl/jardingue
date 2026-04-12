@@ -212,7 +212,8 @@ class _WeatherLocationPickerSheetState
   @override
   Widget build(BuildContext context) {
     final searchResults = ref.watch(citySearchProvider(_searchQuery));
-    final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    final bottomPadding = MediaQuery.of(context).viewInsets.bottom +
+        MediaQuery.of(context).padding.bottom;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,

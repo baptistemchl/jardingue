@@ -136,7 +136,10 @@ class EditorElementsListSheet extends StatelessWidget {
     List<GardenPlantWithDetails> zones,
   ) {
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.fromLTRB(
+        20, 20, 20,
+        MediaQuery.of(context).padding.bottom + 20,
+      ),
       children: [
         if (plants.isNotEmpty) ...[
           _SectionHeader(

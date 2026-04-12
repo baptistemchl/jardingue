@@ -132,7 +132,10 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
           // Contenu scrollable
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              padding: EdgeInsets.fromLTRB(
+                20, 0, 20,
+                MediaQuery.of(context).padding.bottom + 20,
+              ),
               children: [
                 // Header
                 Row(

@@ -60,7 +60,9 @@ class _State extends State<EditorEditElementSheet> {
         right: 20,
         top: 20,
         bottom:
-            MediaQuery.of(context).viewInsets.bottom + 20,
+            MediaQuery.of(context).viewInsets.bottom +
+            MediaQuery.of(context).padding.bottom +
+            20,
       ),
       child: SingleChildScrollView(
         child: Column(

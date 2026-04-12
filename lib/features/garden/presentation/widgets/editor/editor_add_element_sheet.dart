@@ -128,8 +128,9 @@ class _State extends ConsumerState<EditorAddElementSheet> {
         right: 20,
         top: 20,
         bottom: _step == 1
-            ? 20
+            ? MediaQuery.of(context).padding.bottom + 20
             : MediaQuery.of(context).viewInsets.bottom +
+                MediaQuery.of(context).padding.bottom +
                 20,
       ),
       child: _step == 1

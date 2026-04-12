@@ -80,7 +80,10 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
               Expanded(
                 child: ListView(
                   controller: scrollController,
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.fromLTRB(
+                    20, 20, 20,
+                    MediaQuery.of(context).padding.bottom + 20,
+                  ),
                   children: [
                     _buildHeader(plant),
                     const SizedBox(height: 24),
