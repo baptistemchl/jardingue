@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../core/widgets/about_screen.dart';
 import '../features/garden/presentation/screens/garden_screen.dart';
 import '../features/garden/presentation/screens/garden_editor_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -29,6 +30,7 @@ abstract final class AppRoutes {
   static const String planning = '/planning';
   static const String settings = '/settings';
   static const String premium = '/premium';
+  static const String about = '/about';
 }
 
 /// Construit le router avec la route initiale selon l'état de l'onboarding.
@@ -92,6 +94,17 @@ GoRouter buildRouter({required bool showOnboarding}) {
             ),
           );
         },
+      ),
+
+      // À propos
+      GoRoute(
+        path: AppRoutes.about,
+        name: 'about',
+        parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const AboutScreen(),
+        ),
       ),
 
       // Météo dédiée (hors navbar, page push)

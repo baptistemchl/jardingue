@@ -212,9 +212,13 @@ class _WeatherContent extends StatelessWidget {
                 ),
               ),
 
-              // Padding bas (pas de navbar)
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 40),
+              // Padding bas (pas de navbar mais système)
+              SliverToBoxAdapter(
+                child: Builder(
+                  builder: (context) => SizedBox(
+                    height: MediaQuery.of(context).padding.bottom + 24,
+                  ),
+                ),
               ),
             ],
           ),

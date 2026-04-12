@@ -13,10 +13,8 @@ import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/widgets/decorative_background.dart';
 import '../../../../router/app_router.dart';
-import '../../../../core/widgets/about_sheet.dart';
 import 'garden_create_screen.dart';
 
-const double kNavBarHeight = 100.0;
 
 class GardenScreen extends ConsumerWidget {
   const GardenScreen({super.key});
@@ -110,7 +108,7 @@ class GardenScreen extends ConsumerWidget {
 
                             // Bouton A propos
                             GestureDetector(
-                              onTap: () => AboutSheet.show(context),
+                              onTap: () => context.push(AppRoutes.about),
                               child: Container(
                                 width: 36,
                                 height: 36,
@@ -176,7 +174,7 @@ class GardenScreen extends ConsumerWidget {
                   sliver: SliverToBoxAdapter(child: OrchardContainer()),
                 ),
 
-                SliverToBoxAdapter(child: SizedBox(height: kNavBarHeight)),
+                AppSpacing.bottomSpacer(context),
               ],
             ),
           ),
@@ -486,8 +484,6 @@ class _GardensList extends StatelessWidget {
                               style: AppTypography.bodyMedium.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 4),
 
@@ -495,15 +491,19 @@ class _GardensList extends StatelessWidget {
                             Row(
                               children: [
                                 // Dimensions
-                                _GardenInfoChip(
-                                  emoji: '📐',
-                                  label: _formatDimensions(garden),
+                                Flexible(
+                                  child: _GardenInfoChip(
+                                    emoji: '📐',
+                                    label: _formatDimensions(garden),
+                                  ),
                                 ),
                                 const SizedBox(width: 10),
                                 // Surface
-                                _GardenInfoChip(
-                                  emoji: '📏',
-                                  label: _formatSurface(garden),
+                                Flexible(
+                                  child: _GardenInfoChip(
+                                    emoji: '📏',
+                                    label: _formatSurface(garden),
+                                  ),
                                 ),
                               ],
                             ),
@@ -630,11 +630,13 @@ class _GardenInfoChip extends StatelessWidget {
       children: [
         Text(emoji, style: const TextStyle(fontSize: 12)),
         const SizedBox(width: 4),
-        Text(
-          label,
-          style: AppTypography.caption.copyWith(
-            color: AppColors.textSecondary,
-            fontSize: 11,
+        Flexible(
+          child: Text(
+            label,
+            style: AppTypography.caption.copyWith(
+              color: AppColors.textSecondary,
+              fontSize: 11,
+            ),
           ),
         ),
       ],

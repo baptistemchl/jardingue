@@ -249,8 +249,6 @@ class _MiniTreeCard extends StatelessWidget {
                   style: AppTypography.labelSmall.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
                 if (tree.variety != null)
                   Text(
@@ -259,8 +257,6 @@ class _MiniTreeCard extends StatelessWidget {
                       color: AppColors.textTertiary,
                       fontSize: 10,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
               ],
             ),

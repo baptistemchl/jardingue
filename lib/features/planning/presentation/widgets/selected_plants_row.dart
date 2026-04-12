@@ -122,7 +122,7 @@ class SelectedPlantsRow extends ConsumerWidget {
         else ...[
           const SizedBox(height: 10),
           SizedBox(
-            height: 68,
+            height: 80,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding:
@@ -181,7 +181,7 @@ class _PlantChip extends StatelessWidget {
         duration: const Duration(
           milliseconds: 200,
         ),
-        width: 58,
+        width: 64,
         margin: const EdgeInsets.only(right: 10),
         child: Column(
           children: [
@@ -224,8 +224,6 @@ class _PlantChip extends StatelessWidget {
                     ? AppColors.primary
                     : AppColors.textSecondary,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
             ),
           ],
@@ -245,7 +243,7 @@ class _AddButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 58,
+        width: 64,
         child: Column(
           children: [
             Container(

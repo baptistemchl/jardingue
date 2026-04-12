@@ -435,7 +435,6 @@ class _GardenEditorScreenState
       backgroundColor: const Color(0xFFE8F5E9),
       appBar: _buildAppBar(gardenAsync, plantsAsync),
       body: _buildBody(gardenAsync, plantsAsync),
-      floatingActionButton: _buildFab(gardenAsync),
     );
   }
 
@@ -559,6 +558,9 @@ class _GardenEditorScreenState
     AsyncValue<Garden?> gardenAsync,
     AsyncValue<List<GardenPlantWithDetails>> plantsAsync,
   ) {
+    final bottomInset =
+        MediaQuery.of(context).padding.bottom;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return Stack(
@@ -601,17 +603,23 @@ class _GardenEditorScreenState
             ),
             Positioned(
               right: 16,
-              bottom: 200,
+              bottom: bottomInset + 200,
               child: ZoomControls(
                 scale: _displayScale,
                 onZoomIn: _zoomIn,
                 onZoomOut: _zoomOut,
               ),
             ),
+            // Bouton ajouter
+            Positioned(
+              right: 16,
+              bottom: bottomInset + 80,
+              child: _buildAddButton(gardenAsync),
+            ),
             Positioned(
               left: 0,
               right: 0,
-              bottom: 24,
+              bottom: bottomInset + 24,
               child: Center(
                 child: _buildStats(
                   gardenAsync,
@@ -619,10 +627,10 @@ class _GardenEditorScreenState
                 ),
               ),
             ),
-            const Positioned(
+            Positioned(
               left: 16,
-              bottom: 80,
-              child: EditorLegend(),
+              bottom: bottomInset + 80,
+              child: const EditorLegend(),
             ),
           ],
         );
@@ -700,24 +708,59 @@ class _GardenEditorScreenState
         const SizedBox.shrink();
   }
 
-  Widget? _buildFab(AsyncValue<Garden?> gardenAsync) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 80),
-      child: gardenAsync.whenOrNull(
-        data: (garden) => garden != null
-            ? FloatingActionButton.extended(
-                onPressed: () => _showAddSheet(garden),
-                backgroundColor: AppColors.primary,
-                icon: Icon(
-                  PhosphorIcons.plus(
-                    PhosphorIconsStyle.bold,
+  Widget _buildAddButton(
+    AsyncValue<Garden?> gardenAsync,
+  ) {
+    return gardenAsync.whenOrNull(
+          data: (garden) => garden != null
+              ? GestureDetector(
+                  onTap: () => _showAddSheet(garden),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius:
+                          BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary
+                              .withValues(alpha: 0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          PhosphorIcons.plus(
+                            PhosphorIconsStyle.bold,
+                          ),
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!
+                              .add,
+                          style: AppTypography
+                              .labelMedium
+                              .copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                label: Text(AppLocalizations.of(context)!.add),
-              )
-            : null,
-      ),
-    );
+                )
+              : null,
+        ) ??
+        const SizedBox.shrink();
   }
 }
 

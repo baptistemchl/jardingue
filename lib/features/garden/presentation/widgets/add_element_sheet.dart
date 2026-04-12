@@ -550,8 +550,6 @@ class _PlantCard extends StatelessWidget {
             Text(
               plant.commonName,
               style: AppTypography.caption,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
             ),
           ],

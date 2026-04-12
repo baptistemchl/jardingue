@@ -697,8 +697,6 @@ class _PlantListItem extends StatelessWidget {
                   Text(
                     plant.commonName,
                     style: AppTypography.titleSmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   if (plant.latinName != null)
                     Text(
@@ -708,8 +706,6 @@ class _PlantListItem extends StatelessWidget {
                         fontStyle: FontStyle.italic,
                         color: AppColors.textSecondary,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   if (plant.categoryLabel != null ||
                       plant.spacingBetweenPlants != null)

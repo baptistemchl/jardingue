@@ -665,6 +665,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get aboutTapToCelebrate => 'Tapez pour célébrer !';
 
   @override
+  String get aboutFamilyTitle => 'Ma famille';
+
+  @override
+  String get aboutFamilyMessage =>
+      'Un merci tout particulier à ma femme et mes enfants,\nqui me donnent chaque jour la détermination\net l\'énergie de construire ce projet.';
+
+  @override
   String get aboutSourcesTitle => 'Sources des données';
 
   @override

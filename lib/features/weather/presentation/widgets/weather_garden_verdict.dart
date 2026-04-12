@@ -199,7 +199,6 @@ class _VerdictIndicator extends StatelessWidget {
               fontSize: 9,
             ),
             textAlign: TextAlign.center,
-            maxLines: 2,
           ),
         ],
       ),

@@ -86,16 +86,24 @@ class _Tab extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
-          child: Text(
-            label,
-            style: AppTypography.labelSmall
-                .copyWith(
-              color: isSelected
-                  ? Colors.white
-                  : AppColors.textSecondary,
-              fontWeight: isSelected
-                  ? FontWeight.w600
-                  : FontWeight.normal,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 4,
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                style: AppTypography.labelSmall
+                    .copyWith(
+                  color: isSelected
+                      ? Colors.white
+                      : AppColors.textSecondary,
+                  fontWeight: isSelected
+                      ? FontWeight.w600
+                      : FontWeight.normal,
+                ),
+              ),
             ),
           ),
         ),

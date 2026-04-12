@@ -127,7 +127,9 @@ class _UserEventsViewState extends ConsumerState<UserEventsView> {
                           itemCount: sortedDays.length + 1,
                           itemBuilder: (context, index) {
                             if (index == sortedDays.length) {
-                              return const SizedBox(height: 120);
+                              return SizedBox(
+                                height: MediaQuery.of(context).padding.bottom + 80,
+                              );
                             }
                             final day = sortedDays[index];
                             final dayEvents = grouped[day]!;
@@ -427,8 +429,6 @@ class _UserEventTile extends ConsumerWidget {
                   Text(
                     event.plantName,
                     style: AppTypography.titleSmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
                   Row(
@@ -459,10 +459,12 @@ class _UserEventTile extends ConsumerWidget {
                       ),
                       if (event.gardenName.isNotEmpty) ...[
                         const SizedBox(width: 6),
-                        Text(
-                          event.gardenName,
-                          style: AppTypography.caption.copyWith(
-                            color: AppColors.textSecondary,
+                        Flexible(
+                          child: Text(
+                            event.gardenName,
+                            style: AppTypography.caption.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                         ),
                       ],

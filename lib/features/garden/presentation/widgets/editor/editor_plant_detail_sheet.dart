@@ -1041,8 +1041,6 @@ class _InfoRow extends StatelessWidget {
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
           ),
           const SizedBox(width: 12),

@@ -171,7 +171,7 @@ class ActivitySectionScrollable extends StatelessWidget {
 
           // Cards horizontales
           SizedBox(
-            height: 105,
+            height: 115,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               clipBehavior: Clip.none,
@@ -224,8 +224,6 @@ class PlantActivityCardImproved extends StatelessWidget {
                   height: 1.2,
                 ),
                 textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],

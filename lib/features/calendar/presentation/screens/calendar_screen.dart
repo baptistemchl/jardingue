@@ -541,9 +541,7 @@ class _CalendarView extends ConsumerWidget {
             ),
           ),
 
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 120),
-        ),
+        AppSpacing.bottomSpacer(context),
       ],
     );
   }

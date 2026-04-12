@@ -396,7 +396,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                     ),
                   ),
 
-                  const SliverToBoxAdapter(child: SizedBox(height: 120)),
+                  AppSpacing.bottomSpacer(context),
                 ],
               ),
             ),
@@ -597,11 +597,12 @@ class _PlantCard extends StatelessWidget {
                 Text(
                   plant.commonName,
                   style: AppTypography.titleMedium,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
-                Row(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -620,14 +621,18 @@ class _PlantCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Text(plant.sunIcon, style: const TextStyle(fontSize: 12)),
-                    const SizedBox(width: 4),
-                    Text(
-                      plant.sunLabel,
-                      style: AppTypography.caption.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(plant.sunIcon, style: const TextStyle(fontSize: 12)),
+                        const SizedBox(width: 4),
+                        Text(
+                          plant.sunLabel,
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

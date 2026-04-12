@@ -255,8 +255,6 @@ class _TreeListItem extends StatelessWidget {
                   Text(
                     tree.commonName,
                     style: AppTypography.titleSmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   if (tree.latinName != null)
                     Text(
@@ -265,8 +263,6 @@ class _TreeListItem extends StatelessWidget {
                         fontStyle: FontStyle.italic,
                         color: AppColors.textSecondary,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   const SizedBox(height: 4),
                   Row(

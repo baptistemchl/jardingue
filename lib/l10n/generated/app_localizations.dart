@@ -1234,6 +1234,18 @@ abstract class AppLocalizations {
   /// **'Tapez pour célébrer !'**
   String get aboutTapToCelebrate;
 
+  /// No description provided for @aboutFamilyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma famille'**
+  String get aboutFamilyTitle;
+
+  /// No description provided for @aboutFamilyMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un merci tout particulier à ma femme et mes enfants,\nqui me donnent chaque jour la détermination\net l\'énergie de construire ce projet.'**
+  String get aboutFamilyMessage;
+
   /// No description provided for @aboutSourcesTitle.
   ///
   /// In fr, this message translates to:

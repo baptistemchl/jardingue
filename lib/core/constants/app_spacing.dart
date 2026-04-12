@@ -156,6 +156,15 @@ abstract final class AppSpacing {
   static const EdgeInsets horizontalPadding = EdgeInsets.symmetric(
     horizontal: screenPaddingH,
   );
+
+  /// Spacer en fin de scroll pour degager la nav bar flottante.
+  /// A utiliser comme dernier element d'un CustomScrollView ou ListView.
+  static SliverToBoxAdapter bottomSpacer(BuildContext context) {
+    final bottom = MediaQuery.of(context).padding.bottom;
+    return SliverToBoxAdapter(
+      child: SizedBox(height: bottom + 80),
+    );
+  }
 }
 
 /// Durées d'animation

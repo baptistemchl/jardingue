@@ -336,8 +336,6 @@ class _ElementItem extends StatelessWidget {
                           AppTypography.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(

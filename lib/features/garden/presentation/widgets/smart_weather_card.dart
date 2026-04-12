@@ -97,8 +97,6 @@ class _WeatherCardError extends StatelessWidget {
               color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 16),
           Row(
@@ -415,7 +413,6 @@ class _WeatherCardContent extends ConsumerWidget {
                                   color: AppColors.textTertiary,
                                   fontSize: 11,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],

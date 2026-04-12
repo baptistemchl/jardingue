@@ -248,47 +248,85 @@ class _OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Icône avec cercles décoratifs
-          _AnimatedIcon(data: data),
-          const SizedBox(height: 48),
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSmallScreen = screenHeight < 700;
+    final iconSize = isSmallScreen ? 120.0 : 180.0;
 
-          // Titre
-          Text(
-            data.title,
-            style: AppTypography.displayMedium.copyWith(
-              color: data.color,
-              fontWeight: FontWeight.w700,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
             ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 32,
+              ),
+              child: Column(
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
+                children: [
+                  // Icône avec cercles décoratifs
+                  _AnimatedIcon(
+                    data: data,
+                    size: iconSize,
+                  ),
+                  SizedBox(
+                    height: isSmallScreen ? 24 : 48,
+                  ),
 
-          // Sous-titre
-          Text(
-            data.subtitle,
-            style: AppTypography.titleMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
+                  // Titre
+                  Text(
+                    data.title,
+                    style: isSmallScreen
+                        ? AppTypography.displaySmall
+                            .copyWith(
+                            color: data.color,
+                            fontWeight: FontWeight.w700,
+                          )
+                        : AppTypography.displayMedium
+                            .copyWith(
+                            color: data.color,
+                            fontWeight: FontWeight.w700,
+                          ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
 
-          // Description
-          Text(
-            data.description,
-            style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-              height: 1.6,
+                  // Sous-titre
+                  Text(
+                    data.subtitle,
+                    style:
+                        AppTypography.titleMedium
+                            .copyWith(
+                      color:
+                          AppColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: isSmallScreen ? 12 : 20,
+                  ),
+
+                  // Description
+                  Text(
+                    data.description,
+                    style:
+                        AppTypography.bodyMedium
+                            .copyWith(
+                      color:
+                          AppColors.textSecondary,
+                      height: 1.6,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-            textAlign: TextAlign.center,
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -296,8 +334,12 @@ class _OnboardingPage extends StatelessWidget {
 /// Icône animée avec cercles décoratifs en fond.
 class _AnimatedIcon extends StatefulWidget {
   final _OnboardingPageData data;
+  final double size;
 
-  const _AnimatedIcon({required this.data});
+  const _AnimatedIcon({
+    required this.data,
+    this.size = 180,
+  });
 
   @override
   State<_AnimatedIcon> createState() => _AnimatedIconState();
@@ -334,36 +376,38 @@ class _AnimatedIconState extends State<_AnimatedIcon>
         );
       },
       child: SizedBox(
-        width: 180,
-        height: 180,
+        width: widget.size,
+        height: widget.size,
         child: Stack(
           alignment: Alignment.center,
           children: [
             // Cercle extérieur flou
             Container(
-              width: 180,
-              height: 180,
+              width: widget.size,
+              height: widget.size,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: widget.data.color.withValues(alpha: 0.08),
+                color: widget.data.color
+                    .withValues(alpha: 0.08),
               ),
             ),
             // Cercle intermédiaire
             Container(
-              width: 130,
-              height: 130,
+              width: widget.size * 0.72,
+              height: widget.size * 0.72,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: widget.data.containerColor,
                 border: Border.all(
-                  color: widget.data.color.withValues(alpha: 0.15),
+                  color: widget.data.color
+                      .withValues(alpha: 0.15),
                 ),
               ),
             ),
             // Icône
             Icon(
               widget.data.icon,
-              size: 56,
+              size: widget.size * 0.31,
               color: widget.data.color,
             ),
           ],

@@ -84,7 +84,9 @@ class MonthListView extends StatelessWidget {
             itemCount: allActivities.length + 1, // +1 pour le padding final
             itemBuilder: (context, index) {
               if (index == allActivities.length) {
-                return const SizedBox(height: 120);
+                return SizedBox(
+                  height: MediaQuery.of(context).padding.bottom + 80,
+                );
               }
               return _ActivityListTile(item: allActivities[index]);
             },
@@ -305,8 +307,6 @@ class _ActivityListTile extends StatelessWidget {
                             style: AppTypography.caption.copyWith(
                               color: AppColors.textSecondary,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],

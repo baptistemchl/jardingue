@@ -147,9 +147,7 @@ class _Content extends ConsumerWidget {
             ),
           ),
 
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 120),
-        ),
+        AppSpacing.bottomSpacer(context),
       ],
     );
   }

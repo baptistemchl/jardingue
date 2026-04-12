@@ -94,9 +94,6 @@ class GardenTaskTile extends StatelessWidget {
                             : null,
                         height: 1.3,
                       ),
-                      maxLines: 2,
-                      overflow:
-                          TextOverflow.ellipsis,
                     ),
                   ],
                 ),

@@ -139,8 +139,6 @@ class _AccountCard extends ConsumerWidget {
                           AppTypography.caption.copyWith(
                         color: AppColors.textSecondary,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

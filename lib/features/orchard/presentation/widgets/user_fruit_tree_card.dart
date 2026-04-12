@@ -78,8 +78,6 @@ class UserFruitTreeCard extends StatelessWidget {
                     style: AppTypography.titleSmall.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     tree.fruitTree.commonName,
@@ -182,8 +180,6 @@ class _InfoChip extends StatelessWidget {
               color: AppColors.textTertiary,
               fontSize: 11,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
