@@ -29,7 +29,7 @@ class ActivityFilters extends ConsumerWidget {
             emoji: '📋',
             color: AppColors.primary,
             isSelected: currentFilter == null,
-            onTap: () => ref.read(activityFilterProvider.notifier).state = null,
+            onTap: () => ref.read(activityFilterProvider.notifier).set(null),
           ),
           const SizedBox(width: 8),
           ...GardenActivityType.values.map(
@@ -41,7 +41,7 @@ class ActivityFilters extends ConsumerWidget {
                 color: type.color,
                 isSelected: currentFilter == type,
                 onTap: () =>
-                    ref.read(activityFilterProvider.notifier).state = type,
+                    ref.read(activityFilterProvider.notifier).set(type),
               ),
             ),
           ),

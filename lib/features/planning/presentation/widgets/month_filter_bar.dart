@@ -22,7 +22,7 @@ class MonthFilterBar extends ConsumerWidget {
   ) {
     final currentFilter = ref.watch(
       planningStateProvider.select(
-        (s) => s.valueOrNull?.monthFilter,
+        (s) => s.value?.monthFilter,
       ),
     );
     final now = DateTime.now().month;

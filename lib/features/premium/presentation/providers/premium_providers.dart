@@ -47,23 +47,28 @@ final backupRepositoryProvider =
 // ── Firebase Auth via Google Sign-In ──
 
 final firebaseUserProvider =
-    StateNotifierProvider<FirebaseUserNotifier, User?>(
-  (ref) => FirebaseUserNotifier(),
-);
+    NotifierProvider<FirebaseUserNotifier, User?>(FirebaseUserNotifier.new);
 
-class FirebaseUserNotifier extends StateNotifier<User?> {
-  FirebaseUserNotifier()
-      : super(FirebaseAuth.instance.currentUser);
+class FirebaseUserNotifier extends Notifier<User?> {
+  @override
+  User? build() => FirebaseAuth.instance.currentUser;
+
+  bool _googleInitialized = false;
+
+  Future<void> _ensureGoogleInit() async {
+    if (!_googleInitialized) {
+      await GoogleSignIn.instance.initialize();
+      _googleInitialized = true;
+    }
+  }
 
   /// Lance Google Sign-In et authentifie sur Firebase.
   Future<User?> signIn() async {
     try {
-      final googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return null; // annulé
-
-      final googleAuth = await googleUser.authentication;
+      await _ensureGoogleInit();
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      final googleAuth = googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -75,6 +80,8 @@ class FirebaseUserNotifier extends StateNotifier<User?> {
         CrashReportingService.log('Utilisateur connecté');
       }
       return userCred.user;
+    } on GoogleSignInException {
+      return null; // annulé par l'utilisateur
     } catch (e, st) {
       CrashReportingService.recordError(e, st,
         reason: 'FirebaseUserNotifier.signIn',
@@ -86,7 +93,8 @@ class FirebaseUserNotifier extends StateNotifier<User?> {
   /// Déconnexion.
   Future<void> signOut() async {
     try {
-      await GoogleSignIn().signOut();
+      await _ensureGoogleInit();
+      await GoogleSignIn.instance.signOut();
       await FirebaseAuth.instance.signOut();
       state = null;
       CrashReportingService.clearUser();
@@ -110,27 +118,23 @@ final premiumProductProvider =
 
 // ── Premium State ──
 
-final premiumNotifierProvider = StateNotifierProvider<
-    PremiumNotifier, PremiumState>(
-  (ref) => PremiumNotifier(ref),
-);
+final premiumNotifierProvider = NotifierProvider<
+    PremiumNotifier, PremiumState>(PremiumNotifier.new);
 
-class PremiumNotifier
-    extends StateNotifier<PremiumState> {
-  final Ref _ref;
-
-  PremiumNotifier(this._ref)
-      : super(const PremiumState.free()) {
+class PremiumNotifier extends Notifier<PremiumState> {
+  @override
+  PremiumState build() {
     _init();
+    return const PremiumState.free();
   }
 
   PremiumRepository get _repo =>
-      _ref.read(premiumRepositoryProvider);
+      ref.read(premiumRepositoryProvider);
 
   Future<void> _init() async {
     try {
       state = await _repo.loadState();
-      _ref.read(purchaseDatasourceProvider).listen(
+      ref.read(purchaseDatasourceProvider).listen(
             _onPurchaseUpdate,
           );
     } catch (e, st) {
@@ -159,10 +163,10 @@ class PremiumNotifier
   Future<void> purchaseWithSignIn() async {
     try {
       // 1. S'assurer que l'utilisateur est connecté
-      final userNotifier = _ref.read(
+      final userNotifier = ref.read(
         firebaseUserProvider.notifier,
       );
-      var user = _ref.read(firebaseUserProvider);
+      var user = ref.read(firebaseUserProvider);
       if (user == null) {
         user = await userNotifier.signIn();
         if (user == null) return; // annulé

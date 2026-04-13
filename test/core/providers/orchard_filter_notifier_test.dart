@@ -1,21 +1,28 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jardingue/core/providers/orchard_providers.dart';
 
 void main() {
   group('FruitTreesFilterNotifier', () {
+    late ProviderContainer container;
     late FruitTreesFilterNotifier notifier;
 
-    setUp(() => notifier = FruitTreesFilterNotifier());
-    tearDown(() => notifier.dispose());
+    setUp(() {
+      container = ProviderContainer();
+      notifier = container.read(fruitTreesFilterProvider.notifier);
+    });
+    tearDown(() => container.dispose());
 
     test('initial state has no filters', () {
-      expect(notifier.state.hasActiveFilters, isFalse);
+      final state = container.read(fruitTreesFilterProvider);
+      expect(state.hasActiveFilters, isFalse);
     });
 
     test('setSearchQuery updates state', () {
       notifier.setSearchQuery('pommier');
-      expect(notifier.state.searchQuery, 'pommier');
-      expect(notifier.state.hasActiveFilters, isTrue);
+      final state = container.read(fruitTreesFilterProvider);
+      expect(state.searchQuery, 'pommier');
+      expect(state.hasActiveFilters, isTrue);
     });
 
     test('setCategory updates state', () {
@@ -23,24 +30,22 @@ void main() {
         FruitTreeCategory.arbreFruitier,
       );
       expect(
-        notifier.state.category,
+        container.read(fruitTreesFilterProvider).category,
         FruitTreeCategory.arbreFruitier,
       );
     });
 
     test('setSelfFertileOnly updates state', () {
       notifier.setSelfFertileOnly(true);
-      expect(
-        notifier.state.selfFertileOnly,
-        isTrue,
-      );
-      expect(notifier.state.hasActiveFilters, isTrue);
+      final state = container.read(fruitTreesFilterProvider);
+      expect(state.selfFertileOnly, isTrue);
+      expect(state.hasActiveFilters, isTrue);
     });
 
     test('setContainerSuitableOnly updates state', () {
       notifier.setContainerSuitableOnly(true);
       expect(
-        notifier.state.containerSuitableOnly,
+        container.read(fruitTreesFilterProvider).containerSuitableOnly,
         isTrue,
       );
     });
@@ -54,13 +59,11 @@ void main() {
 
       notifier.clearFilters();
 
-      expect(notifier.state.hasActiveFilters, isFalse);
-      expect(notifier.state.searchQuery, isEmpty);
-      expect(
-        notifier.state.category,
-        FruitTreeCategory.all,
-      );
-      expect(notifier.state.selfFertileOnly, isNull);
+      final state = container.read(fruitTreesFilterProvider);
+      expect(state.hasActiveFilters, isFalse);
+      expect(state.searchQuery, isEmpty);
+      expect(state.category, FruitTreeCategory.all);
+      expect(state.selfFertileOnly, isNull);
     });
   });
 }

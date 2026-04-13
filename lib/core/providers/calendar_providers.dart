@@ -79,15 +79,27 @@ class MonthActivities {
 // ============================================
 
 /// Mois actuellement sélectionné
-final selectedMonthProvider = StateProvider<DateTime>((ref) {
-  final now = DateTime.now();
-  return DateTime(now.year, now.month);
-});
+final selectedMonthProvider = NotifierProvider<SelectedMonthNotifier, DateTime>(SelectedMonthNotifier.new);
+
+class SelectedMonthNotifier extends Notifier<DateTime> {
+  @override
+  DateTime build() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month);
+  }
+
+  void set(DateTime value) => state = value;
+}
 
 /// Filtre d'activité (null = toutes)
-final activityFilterProvider = StateProvider<GardenActivityType?>(
-  (ref) => null,
-);
+final activityFilterProvider = NotifierProvider<ActivityFilterNotifier, GardenActivityType?>(ActivityFilterNotifier.new);
+
+class ActivityFilterNotifier extends Notifier<GardenActivityType?> {
+  @override
+  GardenActivityType? build() => null;
+
+  void set(GardenActivityType? value) => state = value;
+}
 
 /// Provider pour les activités d'un mois donné
 final monthActivitiesProvider =
@@ -376,14 +388,25 @@ class CalendarFilter {
   }
 }
 
-final calendarFilterProvider =
-    StateProvider<CalendarFilter>(
-  (ref) => const CalendarFilter(),
-);
+final calendarFilterProvider = NotifierProvider<CalendarFilterNotifier, CalendarFilter>(CalendarFilterNotifier.new);
+
+class CalendarFilterNotifier extends Notifier<CalendarFilter> {
+  @override
+  CalendarFilter build() => const CalendarFilter();
+
+  void set(CalendarFilter value) => state = value;
+  void toggle(CalendarItemType type) => state = state.toggle(type);
+}
 
 /// Filtre par plant dans le calendrier (null = tous).
-final calendarPlantFilterProvider =
-    StateProvider<int?>((ref) => null);
+final calendarPlantFilterProvider = NotifierProvider<CalendarPlantFilterNotifier, int?>(CalendarPlantFilterNotifier.new);
+
+class CalendarPlantFilterNotifier extends Notifier<int?> {
+  @override
+  int? build() => null;
+
+  void set(int? value) => state = value;
+}
 
 // ============================================
 // MAPPING PLANNING -> CALENDAR ITEMS

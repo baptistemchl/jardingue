@@ -143,7 +143,7 @@ class PlanningStateNotifier
         ComputePlanningTasks.executeAll(
       plants: plantDataList,
       currentMonth: currentMonth,
-      weather: weather.valueOrNull,
+      weather: weather.value,
     );
 
     return PlanningState(
@@ -166,7 +166,7 @@ class PlanningStateNotifier
   }
 
   void setViewMode(PlanningViewMode mode) {
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) return;
     // Changer de mode reset le filtre plant
     state = AsyncData(current.copyWith(
@@ -176,7 +176,7 @@ class PlanningStateNotifier
   }
 
   void setPlantFilter(int? plantId) {
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) return;
 
     if (plantId == null
@@ -195,7 +195,7 @@ class PlanningStateNotifier
   }
 
   void setMonthFilter(int? month) {
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) return;
 
     if (month == null) {
@@ -228,7 +228,7 @@ class PlanningStateNotifier
         plantId: plantId,
       );
       final keys = await _loadCompletedKeys();
-      final current = state.valueOrNull;
+      final current = state.value;
       if (current != null) {
         state = AsyncData(
           current.copyWith(completedKeys: keys),

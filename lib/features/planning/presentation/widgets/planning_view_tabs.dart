@@ -20,7 +20,7 @@ class PlanningViewTabs extends ConsumerWidget {
     final currentMode = ref.watch(
       planningStateProvider.select(
         (s) =>
-            s.valueOrNull?.viewMode ??
+            s.value?.viewMode ??
             PlanningViewMode.all,
       ),
     );

@@ -15,7 +15,7 @@ class PlanningWeatherBanner extends ConsumerWidget {
   ) {
     final weather = ref.watch(
       weatherDataProvider.select(
-        (v) => v.valueOrNull,
+        (v) => v.value,
       ),
     );
 

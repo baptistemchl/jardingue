@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -240,6 +242,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                     plantedAt: newDate,
                   );
               ref.invalidate(gardenPlantsProvider(gardenId));
+              ref.invalidate(gardenPlantEventsProvider(gpId));
             },
           ),
         if (widget.element.gardenPlant.sowedAt != null)
@@ -256,6 +259,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                     sowedAt: newDate,
                   );
               ref.invalidate(gardenPlantsProvider(gardenId));
+              ref.invalidate(gardenPlantEventsProvider(gpId));
             },
           ),
         _EditableWateringRow(
@@ -591,31 +595,149 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
   }
 
   Widget _buildCalendarCard(Plant plant) {
-    if (plant.sowingRecommendation == null &&
-        plant.harvestPeriod == null) {
+    final sowing = _parseSowingCalendar(plant.sowingCalendar);
+    final plantingMonths = _extractActiveMonths(plant.plantingCalendar);
+    final harvestMonths = _extractActiveMonths(plant.harvestCalendar);
+
+    final hasCalendar = sowing.underCover.isNotEmpty ||
+        sowing.openGround.isNotEmpty ||
+        plantingMonths.isNotEmpty ||
+        harvestMonths.isNotEmpty;
+    final hasSowing = sowing.underCover.isNotEmpty || sowing.openGround.isNotEmpty;
+    final hasPlanting = plantingMonths.isNotEmpty;
+
+    // N'afficher un conseil que s'il y a des mois correspondants
+    // (ex: pas de conseil "Plantation" pour l'ail qui n'a que du semis)
+    final showSowingAdvice = plant.sowingRecommendation != null && hasSowing;
+    final showPlantingAdvice = plant.plantingAdvice != null && hasPlanting;
+    final hasAdvice = showSowingAdvice ||
+        showPlantingAdvice ||
+        plant.careAdvice != null;
+
+    if (!hasCalendar && !hasAdvice) {
       return const SizedBox.shrink();
     }
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: _InfoCard(
-        title: AppLocalizations.of(context)!.calendar,
-        icon: PhosphorIcons.calendar(
-          PhosphorIconsStyle.fill,
-        ),
-        children: [
-          if (plant.sowingRecommendation != null)
-            _InfoRow(
-              label: AppLocalizations.of(context)!.sowing,
-              value: plant.sowingRecommendation!,
+
+    return Column(
+      children: [
+        if (hasCalendar)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: _InfoCard(
+              title: AppLocalizations.of(context)!.calendar,
+              icon: PhosphorIcons.calendar(PhosphorIconsStyle.fill),
+              children: [
+                if (sowing.underCover.isNotEmpty)
+                  _InfoRow(
+                    label: 'Semis sous abri',
+                    value: sowing.underCover.join(', '),
+                  ),
+                if (sowing.openGround.isNotEmpty)
+                  _InfoRow(
+                    label: 'Semis pleine terre',
+                    value: sowing.openGround.join(', '),
+                  ),
+                if (plantingMonths.isNotEmpty)
+                  _InfoRow(
+                    label: 'Plantation',
+                    value: plantingMonths.join(', '),
+                  ),
+                if (harvestMonths.isNotEmpty)
+                  _InfoRow(
+                    label: AppLocalizations.of(context)!.harvest,
+                    value: harvestMonths.join(', '),
+                  ),
+              ],
             ),
-          if (plant.harvestPeriod != null)
-            _InfoRow(
-              label: AppLocalizations.of(context)!.harvest,
-              value: plant.harvestPeriod!,
+          ),
+        if (hasAdvice)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: _InfoCard(
+              title: 'Conseils',
+              icon: PhosphorIcons.lightbulb(PhosphorIconsStyle.fill),
+              children: [
+                if (showSowingAdvice)
+                  _InfoRow(
+                    label: AppLocalizations.of(context)!.sowing,
+                    value: plant.sowingRecommendation!,
+                  ),
+                if (showPlantingAdvice)
+                  _InfoRow(
+                    label: 'Plantation',
+                    value: plant.plantingAdvice!,
+                  ),
+                if (plant.careAdvice != null)
+                  _InfoRow(
+                    label: 'Entretien',
+                    value: plant.careAdvice!,
+                  ),
+              ],
             ),
-        ],
-      ),
+          ),
+      ],
     );
+  }
+
+  static const _frenchMonths = [
+    'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
+    'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc',
+  ];
+
+  static const _englishMonths = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+
+  /// Parse le calendrier de semis en distinguant sous abri / pleine terre.
+  ({List<String> underCover, List<String> openGround}) _parseSowingCalendar(
+      String? calendarJson) {
+    if (calendarJson == null) {
+      return (underCover: <String>[], openGround: <String>[]);
+    }
+    try {
+      final data = json.decode(calendarJson) as Map<String, dynamic>;
+      final monthly = data['monthly_period'] as Map<String, dynamic>?;
+      if (monthly == null) {
+        return (underCover: <String>[], openGround: <String>[]);
+      }
+
+      final underCover = <String>[];
+      final openGround = <String>[];
+      for (var i = 0; i < _englishMonths.length; i++) {
+        final value = monthly[_englishMonths[i]];
+        if (value != null && value.toString().startsWith('Oui')) {
+          if (value.toString().contains('sous abri')) {
+            underCover.add(_frenchMonths[i]);
+          } else {
+            openGround.add(_frenchMonths[i]);
+          }
+        }
+      }
+      return (underCover: underCover, openGround: openGround);
+    } catch (_) {
+      return (underCover: <String>[], openGround: <String>[]);
+    }
+  }
+
+  List<String> _extractActiveMonths(String? calendarJson) {
+    if (calendarJson == null) return [];
+    try {
+      final data = json.decode(calendarJson) as Map<String, dynamic>;
+      final monthly = data['monthly_period'] as Map<String, dynamic>?;
+      if (monthly == null) return [];
+
+      final active = <String>[];
+      for (var i = 0; i < _englishMonths.length; i++) {
+        final value = monthly[_englishMonths[i]];
+        if (value != null && value.toString().startsWith('Oui')) {
+          active.add(_frenchMonths[i]);
+        }
+      }
+      return active;
+    } catch (_) {
+      return [];
+    }
   }
 
   Widget _buildCompanions(
@@ -761,6 +883,7 @@ class _EditableDateRowState extends State<_EditableDateRow> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () async {
           final picked = await showDatePicker(
             context: context,

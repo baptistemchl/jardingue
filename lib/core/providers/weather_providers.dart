@@ -22,7 +22,14 @@ final currentLocationProvider = FutureProvider<LocationResult>((ref) async {
 });
 
 /// Provider pour la localisation sélectionnée (peut être modifiée par l'utilisateur)
-final selectedLocationProvider = StateProvider<LocationResult?>((ref) => null);
+final selectedLocationProvider = NotifierProvider<SelectedLocationNotifier, LocationResult?>(SelectedLocationNotifier.new);
+
+class SelectedLocationNotifier extends Notifier<LocationResult?> {
+  @override
+  LocationResult? build() => null;
+
+  void set(LocationResult? value) => state = value;
+}
 
 /// Provider pour la localisation effective (sélectionnée ou détectée)
 final effectiveLocationProvider = Provider<AsyncValue<LocationResult>>((ref) {

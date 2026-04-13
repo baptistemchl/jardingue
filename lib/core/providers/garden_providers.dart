@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/app_database.dart';
 import '../../features/garden/data/repositories/garden_event_repository.dart';
+import 'garden_event_providers.dart';
 import '../../features/garden/domain/models/garden_event.dart';
 import '../../features/garden/domain/models/garden_plant_with_details.dart';
 import '../../features/garden/data/repositories/garden_repository.dart';
@@ -51,24 +52,27 @@ final gardenPlantsProvider = FutureProvider.family<
 });
 
 /// Provider pour le mode edition.
-final gardenEditModeProvider = StateProvider<bool>((ref) => false);
+final gardenEditModeProvider = NotifierProvider<GardenEditModeNotifier, bool>(GardenEditModeNotifier.new);
+
+class GardenEditModeNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool value) => state = value;
+}
 
 // ============================================
 // GARDEN NOTIFIER
 // ============================================
 
 final gardenNotifierProvider =
-    StateNotifierProvider<GardenNotifier, AsyncValue<void>>((ref) {
-  final repo = ref.watch(gardenRepositoryProvider);
-  return GardenNotifier(repo, ref);
-});
+    NotifierProvider<GardenNotifier, AsyncValue<void>>(GardenNotifier.new);
 
-class GardenNotifier extends StateNotifier<AsyncValue<void>> {
-  final GardenRepository _repo;
-  final Ref _ref;
+class GardenNotifier extends Notifier<AsyncValue<void>> {
+  @override
+  AsyncValue<void> build() => const AsyncData(null);
 
-  GardenNotifier(this._repo, this._ref)
-      : super(const AsyncData(null));
+  GardenRepository get _repo => ref.read(gardenRepositoryProvider);
 
   Future<int> createGarden({
     required String name,
@@ -91,7 +95,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
           cellSizeCm: Value(cellSizeCm),
         ),
       );
-      _ref.invalidate(gardensListProvider);
+      ref.invalidate(gardensListProvider);
       state = const AsyncData(null);
       return id;
     } catch (e, st) {
@@ -129,8 +133,8 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
           updatedAt: DateTime.now(),
         ),
       );
-      _ref.invalidate(gardensListProvider);
-      _ref.invalidate(gardenByIdProvider(id));
+      ref.invalidate(gardensListProvider);
+      ref.invalidate(gardenByIdProvider(id));
       state = const AsyncData(null);
     } catch (e, st) {
       CrashReportingService.recordError(e, st,
@@ -145,7 +149,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     state = const AsyncLoading();
     try {
       await _repo.deleteGarden(id);
-      _ref.invalidate(gardensListProvider);
+      ref.invalidate(gardensListProvider);
       state = const AsyncData(null);
     } catch (e, st) {
       CrashReportingService.recordError(e, st,
@@ -202,7 +206,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
 
       // Créer les événements correspondants
       final eventRepo = DriftGardenEventRepository(
-          _ref.read(databaseProvider));
+          ref.read(databaseProvider));
       if (sowedAt != null) {
         await eventRepo.addEvent(GardenEventsCompanion.insert(
           gardenPlantId: Value(id),
@@ -216,7 +220,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
         eventDate: effectivePlantedAt,
       ));
 
-      _ref.invalidate(gardenPlantsProvider(gardenId));
+      ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
       return id;
     } catch (e, st) {
@@ -271,7 +275,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
 
       // Créer les événements
       final eventRepo = DriftGardenEventRepository(
-          _ref.read(databaseProvider));
+          ref.read(databaseProvider));
       if (sowedAt != null) {
         await eventRepo.addEvent(GardenEventsCompanion.insert(
           gardenPlantId: Value(id),
@@ -285,7 +289,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
         eventDate: effectivePlantedAt,
       ));
 
-      _ref.invalidate(gardenPlantsProvider(gardenId));
+      ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
       return id;
     } catch (e, st) {
@@ -336,7 +340,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
           notes: Value(notesStr),
         ),
       );
-      _ref.invalidate(gardenPlantsProvider(gardenId));
+      ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
       return id;
     } catch (e, st) {
@@ -371,7 +375,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
         gridX,
         gridY,
       );
-      _ref.invalidate(gardenPlantsProvider(gardenId));
+      ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
     } catch (e, st) {
       CrashReportingService.recordError(e, st,
@@ -389,7 +393,10 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
     state = const AsyncLoading();
     try {
       await _repo.removePlantFromGarden(gardenPlantId);
-      _ref.invalidate(gardenPlantsProvider(gardenId));
+      ref.invalidate(gardenPlantsProvider(gardenId));
+      ref.invalidate(allUserEventsProvider);
+      ref.invalidate(wateringRemindersProvider);
+      ref.invalidate(trackedPlantsProvider);
       state = const AsyncData(null);
     } catch (e, st) {
       CrashReportingService.recordError(e, st,
@@ -424,7 +431,7 @@ class GardenNotifier extends StateNotifier<AsyncValue<void>> {
         wCells,
         hCells,
       );
-      _ref.invalidate(gardenPlantsProvider(gardenId));
+      ref.invalidate(gardenPlantsProvider(gardenId));
       state = const AsyncData(null);
     } catch (e, st) {
       CrashReportingService.recordError(e, st,

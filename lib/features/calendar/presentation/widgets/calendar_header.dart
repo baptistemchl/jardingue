@@ -48,10 +48,10 @@ class CalendarHeader extends ConsumerWidget {
               TodayButton(
                 onTap: () {
                   final now = DateTime.now();
-                  ref.read(selectedMonthProvider.notifier).state = DateTime(
+                  ref.read(selectedMonthProvider.notifier).set(DateTime(
                     now.year,
                     now.month,
-                  );
+                  ));
                 },
                 isCurrentMonth:
                     selectedMonth.year == DateTime.now().year &&
@@ -67,10 +67,10 @@ class CalendarHeader extends ConsumerWidget {
                 MonthNavButton(
                   icon: PhosphorIcons.caretLeft(PhosphorIconsStyle.bold),
                   onTap: () {
-                    ref.read(selectedMonthProvider.notifier).state = DateTime(
+                    ref.read(selectedMonthProvider.notifier).set(DateTime(
                       selectedMonth.year,
                       selectedMonth.month - 1,
-                    );
+                    ));
                   },
                 ),
                 GestureDetector(
@@ -95,10 +95,10 @@ class CalendarHeader extends ConsumerWidget {
                 MonthNavButton(
                   icon: PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
                   onTap: () {
-                    ref.read(selectedMonthProvider.notifier).state = DateTime(
+                    ref.read(selectedMonthProvider.notifier).set(DateTime(
                       selectedMonth.year,
                       selectedMonth.month + 1,
-                    );
+                    ));
                   },
                 ),
               ],
@@ -117,7 +117,7 @@ class CalendarHeader extends ConsumerWidget {
       builder: (context) => MonthPickerSheet(
         currentMonth: current,
         onMonthSelected: (month) {
-          ref.read(selectedMonthProvider.notifier).state = month;
+          ref.read(selectedMonthProvider.notifier).set(month);
           Navigator.pop(context);
         },
       ),

@@ -345,7 +345,7 @@ class _WeatherCardContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final condition = weather.current.condition;
     final effectiveLocation = ref.watch(effectiveLocationProvider);
-    final LocationResult? location = effectiveLocation.valueOrNull;
+    final LocationResult? location = effectiveLocation.value;
 
     return GestureDetector(
       onTap: onTap,

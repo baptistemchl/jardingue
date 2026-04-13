@@ -48,14 +48,12 @@ final plantRepositoryProvider = Provider<PlantRepository>((ref) {
 // ============================================
 
 /// Provider pour l'etat des filtres.
-final plantsFilterProvider = StateNotifierProvider<
-    PlantsFilterNotifier, PlantsFilterState>((ref) {
-  return PlantsFilterNotifier();
-});
+final plantsFilterProvider = NotifierProvider<
+    PlantsFilterNotifier, PlantsFilterState>(PlantsFilterNotifier.new);
 
-class PlantsFilterNotifier
-    extends StateNotifier<PlantsFilterState> {
-  PlantsFilterNotifier() : super(const PlantsFilterState());
+class PlantsFilterNotifier extends Notifier<PlantsFilterState> {
+  @override
+  PlantsFilterState build() => const PlantsFilterState();
 
   void setSearchQuery(String query) {
     state = state.copyWith(searchQuery: query);

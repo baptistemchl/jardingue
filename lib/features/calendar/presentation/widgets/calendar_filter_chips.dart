@@ -180,8 +180,8 @@ class _FilterContent extends ConsumerWidget {
     );
 
     final plantList = _mergedPlants(
-      planningPlants.valueOrNull ?? [],
-      trackedPlants.valueOrNull ?? [],
+      planningPlants.value ?? [],
+      trackedPlants.value ?? [],
     );
 
     return Padding(
@@ -222,7 +222,7 @@ class _FilterContent extends ConsumerWidget {
                         activityFilterProvider
                             .notifier,
                       )
-                      .state = null,
+                      .set(null),
                 ),
                 for (final type
                     in GardenActivityType
@@ -239,7 +239,7 @@ class _FilterContent extends ConsumerWidget {
                           activityFilterProvider
                               .notifier,
                         )
-                        .state = type,
+                        .set(type),
                   ),
                 ],
               ],
@@ -282,7 +282,7 @@ class _FilterContent extends ConsumerWidget {
                           calendarPlantFilterProvider
                               .notifier,
                         )
-                        .state = null,
+                        .set(null),
                   ),
                   for (final p
                       in plantList) ...[
@@ -308,10 +308,9 @@ class _FilterContent extends ConsumerWidget {
                               calendarPlantFilterProvider
                                   .notifier,
                             )
-                            .state =
-                            cur == p.id
+                            .set(cur == p.id
                                 ? null
-                                : p.id;
+                                : p.id);
                       },
                     ),
                   ],

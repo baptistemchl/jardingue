@@ -274,17 +274,13 @@ final wateringNotificationSchedulerProvider =
 // ============================================
 
 final gardenEventNotifierProvider =
-    StateNotifierProvider<GardenEventNotifier, AsyncValue<void>>((ref) {
-  final repo = ref.watch(gardenEventRepositoryProvider);
-  return GardenEventNotifier(repo, ref);
-});
+    NotifierProvider<GardenEventNotifier, AsyncValue<void>>(GardenEventNotifier.new);
 
-class GardenEventNotifier extends StateNotifier<AsyncValue<void>> {
-  final GardenEventRepository _repo;
-  final Ref _ref;
+class GardenEventNotifier extends Notifier<AsyncValue<void>> {
+  @override
+  AsyncValue<void> build() => const AsyncData(null);
 
-  GardenEventNotifier(this._repo, this._ref)
-      : super(const AsyncData(null));
+  GardenEventRepository get _repo => ref.read(gardenEventRepositoryProvider);
 
   Future<void> logEvent({
     int? gardenPlantId,
@@ -339,8 +335,8 @@ class GardenEventNotifier extends StateNotifier<AsyncValue<void>> {
   }
 
   void _invalidateMonth() {
-    _ref.invalidate(allUserEventsProvider);
-    _ref.invalidate(monthUserEventsProvider(DateTime(
+    ref.invalidate(allUserEventsProvider);
+    ref.invalidate(monthUserEventsProvider(DateTime(
       DateTime.now().year,
       DateTime.now().month,
     )));
@@ -362,11 +358,11 @@ class GardenEventNotifier extends StateNotifier<AsyncValue<void>> {
   }
 
   void _invalidateAll(int gardenPlantId) {
-    _ref.invalidate(gardenPlantEventsProvider(gardenPlantId));
-    _ref.invalidate(lastWateringProvider(gardenPlantId));
-    _ref.invalidate(wateringRemindersProvider);
-    _ref.invalidate(allUserEventsProvider);
-    _ref.invalidate(monthUserEventsProvider(DateTime(
+    ref.invalidate(gardenPlantEventsProvider(gardenPlantId));
+    ref.invalidate(lastWateringProvider(gardenPlantId));
+    ref.invalidate(wateringRemindersProvider);
+    ref.invalidate(allUserEventsProvider);
+    ref.invalidate(monthUserEventsProvider(DateTime(
       DateTime.now().year,
       DateTime.now().month,
     )));

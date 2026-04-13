@@ -20,7 +20,14 @@ class PlantImportService {
       // Vérifie si les données enrichies (v5+) sont présentes
       final sample = await _db.getPlantById(1);
       if (sample != null && sample.climateAdaptation == null) {
-        debugPrint('Donnees obsoletes, reimport force...');
+        debugPrint('Donnees obsoletes (v5), reimport force...');
+        return importFromAssets(forceReimport: true);
+      }
+      // Vérifie si les calendriers semis/plantation sont corrigés (v9+)
+      // L'Ail (id=8) ne doit plus avoir de mois de semis (c'est une plantation)
+      final ail = await _db.getPlantById(8);
+      if (ail != null && ail.sowingMonths.isNotEmpty) {
+        debugPrint('Calendriers obsoletes (v9), reimport force...');
         return importFromAssets(forceReimport: true);
       }
       debugPrint('Base de donnees deja peuplee ($existingCount plantes)');

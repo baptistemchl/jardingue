@@ -25,9 +25,14 @@ import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 enum CalendarViewType { calendar, list, myActivities }
 
-final calendarViewProvider = StateProvider<CalendarViewType>(
-  (ref) => CalendarViewType.calendar,
-);
+final calendarViewProvider = NotifierProvider<CalendarViewNotifier, CalendarViewType>(CalendarViewNotifier.new);
+
+class CalendarViewNotifier extends Notifier<CalendarViewType> {
+  @override
+  CalendarViewType build() => CalendarViewType.calendar;
+
+  void set(CalendarViewType value) => state = value;
+}
 
 /// Écran calendrier du potager
 class CalendarScreen extends ConsumerStatefulWidget {
@@ -61,11 +66,11 @@ class _CalendarScreenState
   }
 
   void _onPageChanged(int index) {
-    ref.read(calendarViewProvider.notifier).state = switch (index) {
+    ref.read(calendarViewProvider.notifier).set(switch (index) {
       0 => CalendarViewType.calendar,
       1 => CalendarViewType.list,
       _ => CalendarViewType.myActivities,
-    };
+    });
   }
 
   void _onTabChanged(CalendarViewType view) {
@@ -444,7 +449,7 @@ class _CalendarView extends ConsumerWidget {
       monthUserEventsProvider(selectedMonth),
     );
     final userEvents =
-        userEventsAsync.valueOrNull ?? [];
+        userEventsAsync.value ?? [];
 
     // Les filtres sont déjà appliqués en amont
     // par _applyFilters dans le parent.

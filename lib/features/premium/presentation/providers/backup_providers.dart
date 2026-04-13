@@ -18,19 +18,16 @@ final cloudMetadataProvider =
 
 /// Backup/restore operations notifier.
 final backupNotifierProvider =
-    StateNotifierProvider<BackupNotifier, BackupState>(
-  (ref) => BackupNotifier(ref),
-);
+    NotifierProvider<BackupNotifier, BackupState>(BackupNotifier.new);
 
-class BackupNotifier extends StateNotifier<BackupState> {
-  final Ref _ref;
+class BackupNotifier extends Notifier<BackupState> {
   DateTime? _lastManualBackup;
 
   /// Cooldown de 15 minutes entre deux backups manuels.
   static const _cooldown = Duration(minutes: 15);
 
-  BackupNotifier(this._ref)
-      : super(const BackupState.idle());
+  @override
+  BackupState build() => const BackupState.idle();
 
   /// Temps restant avant de pouvoir relancer un backup manuel.
   Duration? get cooldownRemaining {
@@ -55,7 +52,7 @@ class BackupNotifier extends StateNotifier<BackupState> {
       BackupOperation.backup,
     );
     try {
-      final user = _ref.read(firebaseUserProvider);
+      final user = ref.read(firebaseUserProvider);
       if (user == null) {
         state = const BackupState.error(
           'Connexion impossible.',
@@ -63,12 +60,12 @@ class BackupNotifier extends StateNotifier<BackupState> {
         return;
       }
 
-      final repo = _ref.read(backupRepositoryProvider);
+      final repo = ref.read(backupRepositoryProvider);
       final data = await repo.exportLocalData();
       await repo.uploadBackup(user.uid, data);
 
       _lastManualBackup = DateTime.now();
-      _ref.invalidate(cloudMetadataProvider);
+      ref.invalidate(cloudMetadataProvider);
       state = const BackupState.success(
         BackupOperation.backup,
       );
@@ -87,7 +84,7 @@ class BackupNotifier extends StateNotifier<BackupState> {
       BackupOperation.restore,
     );
     try {
-      final user = _ref.read(firebaseUserProvider);
+      final user = ref.read(firebaseUserProvider);
       if (user == null) {
         state = const BackupState.error(
           'Connexion impossible.',
@@ -95,7 +92,7 @@ class BackupNotifier extends StateNotifier<BackupState> {
         return;
       }
 
-      final repo = _ref.read(backupRepositoryProvider);
+      final repo = ref.read(backupRepositoryProvider);
       final data = await repo.downloadBackup(user.uid);
 
       if (data == null) {
@@ -109,12 +106,12 @@ class BackupNotifier extends StateNotifier<BackupState> {
 
       // Invalider tous les providers qui lisent la DB
       // pour que l'UI se mette à jour après la restauration
-      _ref.invalidate(gardensListProvider);
-      _ref.invalidate(wateringRemindersProvider);
-      _ref.invalidate(allUserEventsProvider);
-      _ref.invalidate(trackedPlantsProvider);
-      _ref.invalidate(userFruitTreesProvider);
-      _ref.invalidate(cloudMetadataProvider);
+      ref.invalidate(gardensListProvider);
+      ref.invalidate(wateringRemindersProvider);
+      ref.invalidate(allUserEventsProvider);
+      ref.invalidate(trackedPlantsProvider);
+      ref.invalidate(userFruitTreesProvider);
+      ref.invalidate(cloudMetadataProvider);
 
       state = const BackupState.success(
         BackupOperation.restore,

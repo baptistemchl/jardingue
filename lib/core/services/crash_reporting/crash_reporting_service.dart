@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
@@ -10,6 +11,15 @@ import 'package:flutter/foundation.dart';
 /// tout en garantissant que l'utilisateur n'est jamais bloqué.
 class CrashReportingService {
   CrashReportingService._();
+
+  static bool get _isFirebaseReady {
+    try {
+      Firebase.app();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 
   static FirebaseCrashlytics get _crashlytics =>
       FirebaseCrashlytics.instance;
@@ -62,11 +72,13 @@ class CrashReportingService {
 
   /// Associe un utilisateur Firebase aux crash reports.
   static Future<void> setUser(String uid) async {
+    if (!_isFirebaseReady) return;
     await _crashlytics.setUserIdentifier(uid);
   }
 
   /// Supprime l'identifiant utilisateur (déconnexion).
   static Future<void> clearUser() async {
+    if (!_isFirebaseReady) return;
     await _crashlytics.setUserIdentifier('');
   }
 
@@ -76,6 +88,7 @@ class CrashReportingService {
 
   /// Ajoute une clé contextuelle visible dans le dashboard Crashlytics.
   static Future<void> setKey(String key, Object value) async {
+    if (!_isFirebaseReady) return;
     await _crashlytics.setCustomKey(key, value);
   }
 
@@ -87,6 +100,7 @@ class CrashReportingService {
   /// Utile pour tracer le parcours utilisateur avant un crash.
   static Future<void> log(String message) async {
     if (kDebugMode) debugPrint('[Crashlytics] $message');
+    if (!_isFirebaseReady) return;
     await _crashlytics.log(message);
   }
 
@@ -110,6 +124,8 @@ class CrashReportingService {
       debugPrint('[$reason] $error');
       if (stack != null) debugPrint('$stack');
     }
+
+    if (!_isFirebaseReady) return;
 
     // Ajouter les custom keys temporaires pour cette erreur
     if (extra != null) {
@@ -139,6 +155,8 @@ class CrashReportingService {
       debugPrint('[FATAL][$reason] $error');
       if (stack != null) debugPrint('$stack');
     }
+
+    if (!_isFirebaseReady) return;
 
     await _crashlytics.recordError(
       error,

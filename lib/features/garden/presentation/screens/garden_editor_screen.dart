@@ -1,9 +1,14 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:printing/printing.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -39,6 +44,7 @@ class _GardenEditorScreenState
   final _transformController =
       TransformationController();
   final _actionHistory = ActionHistory();
+  final _gardenGridKey = GlobalKey();
 
   double _currentScale = 1.0;
   double _displayScale = 1.0;
@@ -155,6 +161,110 @@ class _GardenEditorScreenState
     setState(() {});
   }
 
+  // ========== Export PDF ==========
+
+  Future<void> _exportGardenPlan(AsyncValue<Garden?> gardenAsync) async {
+    final garden = gardenAsync.value;
+    if (garden == null) return;
+
+    final boundary = _gardenGridKey.currentContext?.findRenderObject()
+        as RenderRepaintBoundary?;
+    if (boundary == null) return;
+
+    // Afficher le loader
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: AppColors.primary),
+                SizedBox(height: 16),
+                Text('Génération du PDF...'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Capturer le widget en image haute résolution
+    final image = await boundary.toImage(pixelRatio: 3.0);
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    if (byteData == null) return;
+    final pngBytes = byteData.buffer.asUint8List();
+
+    final gardenName = garden.name;
+    final widthM = (garden.widthCells * garden.cellSizeCm / 100).toStringAsFixed(1);
+    final heightM = (garden.heightCells * garden.cellSizeCm / 100).toStringAsFixed(1);
+
+    // Générer le PDF pleine page
+    final pdf = pw.Document();
+    final pdfImage = pw.MemoryImage(pngBytes);
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(24),
+        build: (context) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              gardenName,
+              style: pw.TextStyle(
+                fontSize: 22,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 4),
+            pw.Text(
+              '$widthM m \u{00D7} $heightM m',
+              style: const pw.TextStyle(
+                fontSize: 12,
+                color: PdfColors.grey700,
+              ),
+            ),
+            pw.SizedBox(height: 16),
+            pw.Expanded(
+              child: pw.Center(
+                child: pw.Image(pdfImage, fit: pw.BoxFit.contain),
+              ),
+            ),
+            pw.SizedBox(height: 8),
+            pw.Text(
+              'Jardingue \u{2022} ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+              style: const pw.TextStyle(
+                fontSize: 9,
+                color: PdfColors.grey500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final pdfBytes = await pdf.save();
+
+    if (!mounted) return;
+
+    // Fermer le loader
+    Navigator.of(context).pop();
+
+    // Ouvrir l'aperçu pleine page
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _PdfPreviewScreen(
+          pdfBytes: pdfBytes,
+          title: 'Plan - $gardenName',
+        ),
+      ),
+    );
+  }
+
   // ========== Lock ==========
 
   void _toggleLock() {
@@ -237,7 +347,7 @@ class _GardenEditorScreenState
       elementId: element.id,
       gardenId: widget.gardenId,
       isZone: element.isZone,
-      plantId: element.id,
+      plantId: element.gardenPlant.plantId,
       zoneType: element.zoneType.toString(),
       xMeters: element.xMeters(cellSizeCm),
       yMeters: element.yMeters(cellSizeCm),
@@ -380,7 +490,7 @@ class _GardenEditorScreenState
     GardenPlantWithDetails element,
     AsyncValue<Garden?> gardenAsync,
   ) async {
-    final garden = gardenAsync.valueOrNull;
+    final garden = gardenAsync.value;
     if (garden == null) return;
 
     // Placer au centre du potager en position (0,0)
@@ -493,6 +603,15 @@ class _GardenEditorScreenState
             ),
           ),
           tooltip: AppLocalizations.of(context)!.resetView,
+        ),
+        IconButton(
+          onPressed: () => _exportGardenPlan(gardenAsync),
+          icon: Icon(
+            PhosphorIcons.printer(
+              PhosphorIconsStyle.regular,
+            ),
+          ),
+          tooltip: 'Exporter le plan',
         ),
       ],
     );
@@ -662,18 +781,21 @@ class _GardenEditorScreenState
             boundaryMargin: const EdgeInsets.all(5000),
             onInteractionUpdate: _onInteractionUpdate,
             onInteractionEnd: _onInteractionEnd,
-            child: GardenGrid(
-              garden: garden,
-              elements: elements,
-              isLocked: _isLocked,
-              onElementTap: (e) =>
-                  _showEditSheet(e, garden),
-              onElementMoved: (e, xM, yM) =>
-                  _onElementMoved(
-                e,
-                xM,
-                yM,
-                garden.cellSizeCm,
+            child: RepaintBoundary(
+              key: _gardenGridKey,
+              child: GardenGrid(
+                garden: garden,
+                elements: elements,
+                isLocked: _isLocked,
+                onElementTap: (e) =>
+                    _showEditSheet(e, garden),
+                onElementMoved: (e, xM, yM) =>
+                    _onElementMoved(
+                  e,
+                  xM,
+                  yM,
+                  garden.cellSizeCm,
+                ),
               ),
             ),
           ),
@@ -847,6 +969,58 @@ class _PendingPlacementBanner extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ============================================
+// PDF PREVIEW SCREEN
+// ============================================
+
+class _PdfPreviewScreen extends StatelessWidget {
+  final Uint8List pdfBytes;
+  final String title;
+
+  const _PdfPreviewScreen({
+    required this.pdfBytes,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title, style: AppTypography.titleMedium),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        actions: [
+          IconButton(
+            onPressed: () => Printing.sharePdf(
+              bytes: pdfBytes,
+              filename: '$title.pdf',
+            ),
+            icon: Icon(PhosphorIcons.shareNetwork(PhosphorIconsStyle.regular)),
+            tooltip: 'Partager',
+          ),
+          IconButton(
+            onPressed: () => Printing.layoutPdf(
+              onLayout: (_) async => pdfBytes,
+              name: title,
+            ),
+            icon: Icon(PhosphorIcons.printer(PhosphorIconsStyle.regular)),
+            tooltip: 'Imprimer',
+          ),
+        ],
+      ),
+      body: PdfPreview(
+        build: (_) async => pdfBytes,
+        canChangeOrientation: false,
+        canChangePageFormat: false,
+        canDebug: false,
+        allowPrinting: false,
+        allowSharing: false,
+        pdfFileName: '$title.pdf',
       ),
     );
   }

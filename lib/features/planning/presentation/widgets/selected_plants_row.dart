@@ -26,7 +26,7 @@ class SelectedPlantsRow extends ConsumerWidget {
   ) {
     final activeFilter = ref.watch(
       planningStateProvider.select(
-        (s) => s.valueOrNull?.plantIdFilter,
+        (s) => s.value?.plantIdFilter,
       ),
     );
 

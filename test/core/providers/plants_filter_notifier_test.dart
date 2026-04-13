@@ -1,40 +1,43 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jardingue/core/providers/database_providers.dart';
 
 void main() {
   group('PlantsFilterNotifier', () {
+    late ProviderContainer container;
     late PlantsFilterNotifier notifier;
 
-    setUp(() => notifier = PlantsFilterNotifier());
-    tearDown(() => notifier.dispose());
+    setUp(() {
+      container = ProviderContainer();
+      notifier = container.read(plantsFilterProvider.notifier);
+    });
+    tearDown(() => container.dispose());
 
     test('initial state has no filters', () {
-      expect(notifier.state.hasActiveFilters, isFalse);
-      expect(notifier.state.searchQuery, isEmpty);
+      final state = container.read(plantsFilterProvider);
+      expect(state.hasActiveFilters, isFalse);
+      expect(state.searchQuery, isEmpty);
     });
 
     test('setSearchQuery updates state', () {
       notifier.setSearchQuery('tomate');
-      expect(notifier.state.searchQuery, 'tomate');
-      expect(notifier.state.hasActiveFilters, isTrue);
+      final state = container.read(plantsFilterProvider);
+      expect(state.searchQuery, 'tomate');
+      expect(state.hasActiveFilters, isTrue);
     });
 
     test('setCategory updates state', () {
       notifier.setCategory(PlantCategory.herb);
-      expect(
-        notifier.state.category,
-        PlantCategory.herb,
-      );
-      expect(notifier.state.hasActiveFilters, isTrue);
+      final state = container.read(plantsFilterProvider);
+      expect(state.category, PlantCategory.herb);
+      expect(state.hasActiveFilters, isTrue);
     });
 
     test('setSunFilter updates state', () {
       notifier.setSunFilter(PlantSunFilter.shade);
-      expect(
-        notifier.state.sunFilter,
-        PlantSunFilter.shade,
-      );
-      expect(notifier.state.hasActiveFilters, isTrue);
+      final state = container.read(plantsFilterProvider);
+      expect(state.sunFilter, PlantSunFilter.shade);
+      expect(state.hasActiveFilters, isTrue);
     });
 
     test('clearFilters resets to default', () {
@@ -44,16 +47,11 @@ void main() {
 
       notifier.clearFilters();
 
-      expect(notifier.state.hasActiveFilters, isFalse);
-      expect(notifier.state.searchQuery, isEmpty);
-      expect(
-        notifier.state.category,
-        PlantCategory.all,
-      );
-      expect(
-        notifier.state.sunFilter,
-        PlantSunFilter.all,
-      );
+      final state = container.read(plantsFilterProvider);
+      expect(state.hasActiveFilters, isFalse);
+      expect(state.searchQuery, isEmpty);
+      expect(state.category, PlantCategory.all);
+      expect(state.sunFilter, PlantSunFilter.all);
     });
 
     test('preserves other filters when setting one', () {
@@ -62,15 +60,10 @@ void main() {
 
       notifier.setSunFilter(PlantSunFilter.fullSun);
 
-      expect(notifier.state.searchQuery, 'tomate');
-      expect(
-        notifier.state.category,
-        PlantCategory.herb,
-      );
-      expect(
-        notifier.state.sunFilter,
-        PlantSunFilter.fullSun,
-      );
+      final state = container.read(plantsFilterProvider);
+      expect(state.searchQuery, 'tomate');
+      expect(state.category, PlantCategory.herb);
+      expect(state.sunFilter, PlantSunFilter.fullSun);
     });
   });
 }

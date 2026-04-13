@@ -31,7 +31,7 @@ class _PlantSelectorSheetState
       _initialized = true;
       final current = ref
           .read(selectedPlantsProvider)
-          .valueOrNull;
+          .value;
       if (current != null) {
         _selectedIds.addAll(
           current.map((p) => p.plantId),
@@ -303,7 +303,7 @@ class _PlantSelectorSheetState
     );
     final current = ref
             .read(selectedPlantsProvider)
-            .valueOrNull ??
+            .value ??
         [];
 
     final currentIds = current

@@ -31,7 +31,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration {
@@ -85,6 +85,9 @@ class AppDatabase extends _$AppDatabase {
         if (from < 8) {
           await m.createTable(completedPlanningTasks);
         }
+        // Migration v8 -> v9 : correction calendriers semis/plantation
+        // Pas de changement de schéma, mais le flag schemaVersion=9
+        // déclenche le réimport des données JSON dans PlantImportService.
       },
     );
   }
@@ -252,7 +255,10 @@ class AppDatabase extends _$AppDatabase {
     return into(gardenPlants).insert(gardenPlant);
   }
 
-  Future<int> removePlantFromGarden(int id) {
+  Future<int> removePlantFromGarden(int id) async {
+    // Supprimer les événements liés à ce gardenPlant pour éviter les orphelins
+    // (visible dans "Mon suivi" sinon)
+    await (delete(gardenEvents)..where((t) => t.gardenPlantId.equals(id))).go();
     return (delete(gardenPlants)..where((t) => t.id.equals(id))).go();
   }
 
@@ -331,8 +337,8 @@ class AppDatabase extends _$AppDatabase {
     DateTime? sowedAt,
     DateTime? plantedAt,
     int? wateringFrequencyDays,
-  }) {
-    return (update(gardenPlants)..where((t) => t.id.equals(id))).write(
+  }) async {
+    await (update(gardenPlants)..where((t) => t.id.equals(id))).write(
       GardenPlantsCompanion(
         sowedAt: sowedAt != null ? Value(sowedAt) : const Value.absent(),
         plantedAt:
@@ -342,6 +348,22 @@ class AppDatabase extends _$AppDatabase {
             : const Value.absent(),
       ),
     );
+
+    // Synchroniser la date de l'événement correspondant dans l'historique
+    if (plantedAt != null) {
+      await (update(gardenEvents)
+            ..where((t) =>
+                t.gardenPlantId.equals(id) &
+                t.eventType.equals('planting')))
+          .write(GardenEventsCompanion(eventDate: Value(plantedAt)));
+    }
+    if (sowedAt != null) {
+      await (update(gardenEvents)
+            ..where((t) =>
+                t.gardenPlantId.equals(id) &
+                t.eventType.equals('sowing')))
+          .write(GardenEventsCompanion(eventDate: Value(sowedAt)));
+    }
   }
 
   // ============================================

@@ -4,15 +4,14 @@ import 'crash_reporting_service.dart';
 
 /// Observer Riverpod qui log automatiquement les erreurs de providers
 /// vers Firebase Crashlytics avec le nom du provider en contexte.
-class CrashlyticsProviderObserver extends ProviderObserver {
+base class CrashlyticsProviderObserver extends ProviderObserver {
   @override
   void providerDidFail(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object error,
     StackTrace stackTrace,
-    ProviderContainer container,
   ) {
-    final name = provider.name ?? provider.runtimeType.toString();
+    final name = context.provider.name ?? context.provider.runtimeType.toString();
 
     CrashReportingService.recordError(
       error,
@@ -20,7 +19,7 @@ class CrashlyticsProviderObserver extends ProviderObserver {
       reason: 'Provider error: $name',
       extra: {
         'provider_name': name,
-        'provider_type': provider.runtimeType.toString(),
+        'provider_type': context.provider.runtimeType.toString(),
       },
     );
 

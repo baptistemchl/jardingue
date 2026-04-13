@@ -1039,30 +1039,6 @@
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Oui (pleine terre)",
-          "March": "Oui (pleine terre)",
-          "April": "Non",
-          "May": "Non",
-          "June": "Non",
-          "July": "Non",
-          "August": "Non",
-          "September": "Non",
-          "October": "Oui (pleine terre)",
-          "November": "Oui (pleine terre)",
-          "December": "Non"
-        },
-        "weather_conditions": {
-          "soil_temp_min_celsius": 5,
-          "soil_temp_max_celsius": 18,
-          "light": "Élevée",
-          "humidity": "Faible",
-          "frost_risk": "Oui (éviter les périodes de gel pour la levée)",
-          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
-        }
-      },
-      "planting_calendar": {
-        "monthly_period": {
-          "January": "Non",
           "February": "Non",
           "March": "Non",
           "April": "Non",
@@ -1077,11 +1053,35 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 5,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 18,
           "light": "Élevée",
           "humidity": "Faible",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (éviter les périodes de gel pour la levée)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Oui",
+          "March": "Oui",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Oui",
+          "November": "Oui",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 18,
+          "light": "Élevée",
+          "humidity": "Faible",
+          "frost_risk": "Oui (éviter les périodes de gel pour la levée)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -4435,8 +4435,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -4459,8 +4459,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -4472,11 +4472,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Élevée",
           "humidity": "Faible",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -4557,8 +4557,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -4581,8 +4581,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -4594,11 +4594,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Élevée",
           "humidity": "Faible",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -4684,8 +4684,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -4708,8 +4708,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -4720,12 +4720,12 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 5,
-          "soil_temp_max_celsius": null,
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": 22,
           "light": "Moyenne",
           "humidity": "Élevée",
-          "frost_risk": "Oui (planter uniquement après tout risque de gel)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -5884,15 +5884,15 @@
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Oui (sous abri)",
-          "March": "Oui (pleine terre)",
-          "April": "Oui (sous abri + pleine terre)",
-          "May": "Oui (sous abri)",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
           "June": "Non",
           "July": "Non",
           "August": "Non",
           "September": "Non",
-          "October": "Oui (pleine terre)",
+          "October": "Non",
           "November": "Non",
           "December": "Non"
         },
@@ -5908,25 +5908,25 @@
       "planting_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Non",
-          "March": "Non",
-          "April": "Non",
-          "May": "Non",
+          "February": "Oui",
+          "March": "Oui",
+          "April": "Oui",
+          "May": "Oui",
           "June": "Non",
           "July": "Non",
           "August": "Non",
           "September": "Non",
-          "October": "Non",
+          "October": "Oui",
           "November": "Non",
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 18,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (éviter les périodes de gel pour la levée)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -6000,15 +6000,15 @@
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Oui (sous abri)",
-          "March": "Oui (pleine terre)",
-          "April": "Oui (sous abri + pleine terre)",
-          "May": "Oui (sous abri)",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
           "June": "Non",
           "July": "Non",
           "August": "Non",
           "September": "Non",
-          "October": "Oui (pleine terre)",
+          "October": "Non",
           "November": "Non",
           "December": "Non"
         },
@@ -6024,25 +6024,25 @@
       "planting_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Non",
-          "March": "Non",
-          "April": "Non",
-          "May": "Non",
+          "February": "Oui",
+          "March": "Oui",
+          "April": "Oui",
+          "May": "Oui",
           "June": "Non",
           "July": "Non",
           "August": "Non",
           "September": "Non",
-          "October": "Non",
+          "October": "Oui",
           "November": "Non",
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 18,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (éviter les périodes de gel pour la levée)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -7422,8 +7422,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -7446,8 +7446,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -7459,11 +7459,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -7549,8 +7549,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -7573,8 +7573,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -7586,11 +7586,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -7671,8 +7671,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -7695,8 +7695,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -7708,11 +7708,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -8047,8 +8047,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -8071,8 +8071,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -8084,11 +8084,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -8169,8 +8169,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -8193,8 +8193,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -8206,11 +8206,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -8632,11 +8632,11 @@
       "sowing_open_ground_period": "mars-juin",
       "transplanting_period": "",
       "harvest_period": "juin-novembre selon la date de semis",
-      "sowing_recommendation": "Semer en place en lignes, puis éclaircir pour laisser l’espace aux racines.",
+      "sowing_recommendation": null,
       "cultivation_greenhouse": "Semis précoces possibles sous abri, mais culture principale en pleine terre.",
       "planting_min_temp_c": 8,
       "planting_weather_conditions": "Sol ressuyé, non gelé, températures douces.",
-      "planting_advice": "Affiner le sol en profondeur, éviter les apports de fumier frais juste avant.",
+      "planting_advice": "Planter les tubercules en place, en lignes espacées de 60-80 cm.",
       "care_advice": "Éclaircir, biner, arroser en période sèche pour limiter les racines creuses.",
       "id": 67,
       "main_destroyers": [
@@ -8651,11 +8651,11 @@
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Oui (sous abri)",
-          "March": "Oui (sous abri + pleine terre)",
+          "February": "Non",
+          "March": "Non",
           "April": "Non",
           "May": "Non",
-          "June": "Oui (pleine terre)",
+          "June": "Non",
           "July": "Non",
           "August": "Non",
           "September": "Non",
@@ -8675,11 +8675,11 @@
       "planting_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Non",
-          "March": "Non",
+          "February": "Oui",
+          "March": "Oui",
           "April": "Non",
           "May": "Non",
-          "June": "Non",
+          "June": "Oui",
           "July": "Non",
           "August": "Non",
           "September": "Non",
@@ -8688,12 +8688,12 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 18,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (éviter les périodes de gel pour la levée)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -9027,15 +9027,15 @@
       "sowing_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Oui (sous abri)",
-          "March": "Oui (pleine terre)",
-          "April": "Oui (sous abri + pleine terre)",
-          "May": "Oui (sous abri)",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
           "June": "Non",
           "July": "Non",
           "August": "Non",
           "September": "Non",
-          "October": "Oui (pleine terre)",
+          "October": "Non",
           "November": "Non",
           "December": "Non"
         },
@@ -9051,25 +9051,25 @@
       "planting_calendar": {
         "monthly_period": {
           "January": "Non",
-          "February": "Non",
-          "March": "Non",
-          "April": "Non",
-          "May": "Non",
+          "February": "Oui",
+          "March": "Oui",
+          "April": "Oui",
+          "May": "Oui",
           "June": "Non",
           "July": "Non",
           "August": "Non",
           "September": "Non",
-          "October": "Non",
+          "October": "Oui",
           "November": "Non",
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 18,
           "light": "Moyenne",
           "humidity": "Modérée",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (éviter les périodes de gel pour la levée)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -10431,8 +10431,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (pleine terre)",
-          "April": "Oui (pleine terre)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -10455,8 +10455,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -10468,11 +10468,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 15,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 22,
           "light": "Élevée",
           "humidity": "Élevée",
-          "frost_risk": "Oui (planter uniquement après tout risque de gel)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (éviter les périodes de gel pour la levée)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -13608,8 +13608,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -13632,8 +13632,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -13645,11 +13645,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Élevée",
           "humidity": "Faible",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -13730,8 +13730,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -13754,8 +13754,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -13767,11 +13767,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Élevée",
           "humidity": "Faible",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -32353,8 +32353,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32377,8 +32377,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32389,12 +32389,12 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 5,
-          "soil_temp_max_celsius": null,
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": 22,
           "light": "Moyenne",
           "humidity": "Élevée",
-          "frost_risk": "Oui (planter uniquement après tout risque de gel)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -32485,8 +32485,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32509,8 +32509,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32521,12 +32521,12 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 5,
-          "soil_temp_max_celsius": null,
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": 22,
           "light": "Moyenne",
           "humidity": "Élevée",
-          "frost_risk": "Oui (planter uniquement après tout risque de gel)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -32617,8 +32617,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32641,8 +32641,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32653,12 +32653,12 @@
           "December": "Non"
         },
         "weather_conditions": {
-          "soil_temp_min_celsius": 5,
-          "soil_temp_max_celsius": null,
+          "soil_temp_min_celsius": 15,
+          "soil_temp_max_celsius": 22,
           "light": "Moyenne",
           "humidity": "Élevée",
-          "frost_risk": "Oui (planter uniquement après tout risque de gel)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -32749,8 +32749,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32773,8 +32773,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32786,11 +32786,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Élevée",
           "humidity": "Faible",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {
@@ -32871,8 +32871,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Oui (sous abri)",
-          "April": "Oui (sous abri)",
+          "March": "Non",
+          "April": "Non",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32895,8 +32895,8 @@
         "monthly_period": {
           "January": "Non",
           "February": "Non",
-          "March": "Non",
-          "April": "Non",
+          "March": "Oui",
+          "April": "Oui",
           "May": "Non",
           "June": "Non",
           "July": "Non",
@@ -32908,11 +32908,11 @@
         },
         "weather_conditions": {
           "soil_temp_min_celsius": 8,
-          "soil_temp_max_celsius": null,
+          "soil_temp_max_celsius": 20,
           "light": "Élevée",
           "humidity": "Faible",
-          "frost_risk": "Faible (plante assez rustique, éviter toutefois les fortes gelées)",
-          "note": "Planter quand le sol est ressuyé et que les températures sont stables."
+          "frost_risk": "Oui (semis sous abri tant que le gel reste possible)",
+          "note": "Adapter les dates de semis au climat local ; protéger ou décaler en cas de risques de gelées tardives."
         }
       },
       "harvest_calendar": {

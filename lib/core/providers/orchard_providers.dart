@@ -42,15 +42,12 @@ final fruitTreesInitProvider =
 // FILTRES
 // ============================================
 
-final fruitTreesFilterProvider = StateNotifierProvider<
-    FruitTreesFilterNotifier, FruitTreesFilterState>((ref) {
-  return FruitTreesFilterNotifier();
-});
+final fruitTreesFilterProvider = NotifierProvider<
+    FruitTreesFilterNotifier, FruitTreesFilterState>(FruitTreesFilterNotifier.new);
 
-class FruitTreesFilterNotifier
-    extends StateNotifier<FruitTreesFilterState> {
-  FruitTreesFilterNotifier()
-      : super(const FruitTreesFilterState());
+class FruitTreesFilterNotifier extends Notifier<FruitTreesFilterState> {
+  @override
+  FruitTreesFilterState build() => const FruitTreesFilterState();
 
   void setSearchQuery(String query) {
     state = state.copyWith(searchQuery: query);
@@ -134,14 +131,15 @@ final userFruitTreeByIdProvider = FutureProvider.family<
   return repo.getUserFruitTreeWithDetailsById(id);
 });
 
-class UserFruitTreesNotifier extends StateNotifier<
+class UserFruitTreesNotifier extends Notifier<
     AsyncValue<List<UserFruitTreeWithDetails>>> {
-  final FruitTreeRepository _repo;
-
-  UserFruitTreesNotifier(this._repo)
-      : super(const AsyncValue.loading()) {
+  @override
+  AsyncValue<List<UserFruitTreeWithDetails>> build() {
     _loadData();
+    return const AsyncValue.loading();
   }
+
+  FruitTreeRepository get _repo => ref.read(fruitTreeRepositoryProvider);
 
   Future<void> _loadData() async {
     state = const AsyncValue.loading();
@@ -213,12 +211,9 @@ class UserFruitTreesNotifier extends StateNotifier<
   }
 }
 
-final userFruitTreesNotifierProvider = StateNotifierProvider<
+final userFruitTreesNotifierProvider = NotifierProvider<
     UserFruitTreesNotifier,
-    AsyncValue<List<UserFruitTreeWithDetails>>>((ref) {
-  final repo = ref.watch(fruitTreeRepositoryProvider);
-  return UserFruitTreesNotifier(repo);
-});
+    AsyncValue<List<UserFruitTreeWithDetails>>>(UserFruitTreesNotifier.new);
 
 final userFruitTreesCountProvider =
     FutureProvider<int>((ref) async {

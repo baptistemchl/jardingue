@@ -275,8 +275,7 @@ class _WeatherLocationPickerSheetState
                       title: Text(location.city ?? ''),
                       subtitle: Text(location.country ?? ''),
                       onTap: () {
-                        ref.read(selectedLocationProvider.notifier).state =
-                            location;
+                        ref.read(selectedLocationProvider.notifier).set(location);
                         Navigator.pop(context);
                       },
                     );
