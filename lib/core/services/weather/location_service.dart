@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
@@ -94,9 +96,14 @@ class LocationService {
         source: LocationSource.gps,
       );
     } catch (e, st) {
-      CrashReportingService.recordError(e, st,
-        reason: 'LocationService.getCurrentLocation (GPS)',
-      );
+      // GPS timeout is expected (indoors, weak signal) — just log.
+      if (e is TimeoutException) {
+        CrashReportingService.log('GPS timeout, fallback sur IP');
+      } else {
+        CrashReportingService.recordError(e, st,
+          reason: 'LocationService.getCurrentLocation (GPS)',
+        );
+      }
       return _getLocationByIP(LocationIssue.gpsError);
     }
   }
@@ -125,10 +132,15 @@ class LocationService {
           );
         }
       } catch (e, st) {
-        CrashReportingService.recordError(e, st,
-          reason: 'LocationService._getLocationByIP',
-          extra: {'endpoint': endpoint.url},
-        );
+        // 429 rate-limit is expected with free APIs — next endpoint takes over.
+        final isRateLimit = e is DioException &&
+            e.response?.statusCode == 429;
+        if (!isRateLimit) {
+          CrashReportingService.recordError(e, st,
+            reason: 'LocationService._getLocationByIP',
+            extra: {'endpoint': endpoint.url},
+          );
+        }
       }
     }
     return _defaultLocation(originalIssue ?? LocationIssue.networkError);

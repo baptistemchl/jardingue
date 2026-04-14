@@ -199,15 +199,23 @@ class WeatherService {
       return result;
     } on DioException catch (e, st) {
       final code = e.response?.statusCode;
-      CrashReportingService.recordError(e, st,
-        reason: 'WeatherService.getWeather (DioException)',
-        extra: {
-          'statusCode': code ?? -1,
-          'dioType': e.type.name,
-          'lat': latitude,
-          'lon': longitude,
-        },
-      );
+      // 429 (rate-limit) et 5xx (serveur) sont transitoires et non actionnables.
+      final isTransient = code != null && (code == 429 || code >= 500);
+      if (isTransient) {
+        CrashReportingService.log(
+          'Météo: erreur serveur transitoire ($code)',
+        );
+      } else {
+        CrashReportingService.recordError(e, st,
+          reason: 'WeatherService.getWeather (DioException)',
+          extra: {
+            'statusCode': code ?? -1,
+            'dioType': e.type.name,
+            'lat': latitude,
+            'lon': longitude,
+          },
+        );
+      }
 
       // Retourne le cache périmé si disponible
       if (_cache != null) {

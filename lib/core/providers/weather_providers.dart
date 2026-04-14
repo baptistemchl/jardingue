@@ -55,28 +55,14 @@ final weatherDataProvider = FutureProvider<WeatherData>((ref) async {
 
   CrashReportingService.log('Météo: chargement pour ${effective.displayName} (${effective.source.name})');
   final weatherService = ref.watch(weatherServiceProvider);
-  try {
-    final weather = await weatherService.getWeather(
-      latitude: effective.latitude,
-      longitude: effective.longitude,
-      city: effective.city,
-      country: effective.country,
-    );
-    debugPrint('Météo: ${weather.current.temperature}°C');
-    return weather;
-  } catch (e, st) {
-    CrashReportingService.recordError(
-      e, st,
-      reason: 'weatherDataProvider',
-      extra: {
-        'location': effective.displayName,
-        'source': effective.source.name,
-        'lat': effective.latitude,
-        'lon': effective.longitude,
-      },
-    );
-    rethrow;
-  }
+  final weather = await weatherService.getWeather(
+    latitude: effective.latitude,
+    longitude: effective.longitude,
+    city: effective.city,
+    country: effective.country,
+  );
+  debugPrint('Météo: ${weather.current.temperature}°C');
+  return weather;
 });
 
 /// Provider pour rafraîchir la météo

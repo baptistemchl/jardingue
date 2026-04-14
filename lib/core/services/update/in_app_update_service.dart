@@ -25,9 +25,18 @@ class InAppUpdateService {
         await InAppUpdate.completeFlexibleUpdate();
       }
     } catch (e, st) {
-      CrashReportingService.recordError(e, st,
-        reason: 'InAppUpdateService.checkForUpdate',
-      );
+      // Error -6 = device state prevents install (low battery, low disk space)
+      // This is expected and not actionable — just log, don't report.
+      final isDeviceState = e.toString().contains('-6');
+      if (isDeviceState) {
+        CrashReportingService.log(
+          'Update skipped: device state prevents install',
+        );
+      } else {
+        CrashReportingService.recordError(e, st,
+          reason: 'InAppUpdateService.checkForUpdate',
+        );
+      }
     }
   }
 }
