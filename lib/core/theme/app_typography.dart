@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 
 /// Typographie Jardingue
@@ -9,7 +8,7 @@ abstract final class AppTypography {
   // BASE FONT
   // ============================================
 
-  static String get _fontFamily => GoogleFonts.inter().fontFamily!;
+  static const String _fontFamily = 'Inter';
 
   // ============================================
   // DISPLAY - Titres très grands

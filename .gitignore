@@ -27,7 +27,6 @@ migrate_working_dir/
 #.vscode/
 
 # FVM (Flutter Version Management)
-.fvm/versions/
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -49,3 +48,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# FVM Version Cache
+.fvm/

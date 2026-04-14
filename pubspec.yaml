@@ -13,7 +13,6 @@ dependencies:
   # UI & Design
   cupertino_icons: ^1.0.8
   phosphor_flutter: ^2.1.0
-  google_fonts: ^8.0.2
   flutter_animate: ^4.5.2
   shimmer: ^3.0.0
 
@@ -118,3 +117,15 @@ flutter:
     - assets/images/
     - assets/icon/
     - assets/splash/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/inter/Inter-Bold.ttf
+          weight: 700

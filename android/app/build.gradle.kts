@@ -74,6 +74,9 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.activity:activity-ktx:1.9.3")
+    // Force latest BillingClient — fixes ProxyBillingActivity NPE
+    // on null PendingIntent when Play Store is unavailable/updating
+    implementation("com.android.billingclient:billing-ktx:7.1.1")
 }
 
 flutter {

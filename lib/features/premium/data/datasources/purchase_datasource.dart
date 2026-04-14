@@ -47,6 +47,13 @@ class PurchaseDatasource {
   Future<PurchaseDetails> buy(
     ProductDetails product,
   ) async {
+    if (!await _iap.isAvailable()) {
+      throw PurchaseException(
+        'Le service d\'achat n\'est pas disponible. '
+        'Vérifiez que le Play Store est à jour.',
+      );
+    }
+
     final param = PurchaseParam(productDetails: product);
     final completer = Completer<PurchaseDetails>();
     _purchaseCompleter[product.id] = completer;
