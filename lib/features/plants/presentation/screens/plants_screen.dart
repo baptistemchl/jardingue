@@ -145,7 +145,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                                   ),
                                 ),
                                 loading: () => const SizedBox.shrink(),
-                                error: (_, __) => const SizedBox.shrink(),
+                                error: (_, _) => const SizedBox.shrink(),
                               ),
                             ],
                           ),
@@ -203,7 +203,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                             scrollDirection: Axis.horizontal,
                             padding: AppSpacing.horizontalPadding,
                             itemCount: PlantCategory.values.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (_, _) =>
                                 const SizedBox(width: 8),
                             itemBuilder: (context, index) {
                               final category = PlantCategory.values[index];
@@ -252,7 +252,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                             scrollDirection: Axis.horizontal,
                             padding: AppSpacing.horizontalPadding,
                             itemCount: PlantSunFilter.values.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (_, _) =>
                                 const SizedBox(width: 8),
                             itemBuilder: (context, index) {
                               final filter = PlantSunFilter.values[index];
@@ -322,7 +322,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                           );
                         },
                         loading: () => const SizedBox.shrink(),
-                        error: (_, __) => const SizedBox.shrink(),
+                        error: (_, _) => const SizedBox.shrink(),
                       ),
                     ),
                   ),
@@ -1036,7 +1036,7 @@ class _PlantDetailSheet extends ConsumerWidget {
                     ),
                   ),
                 ),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               ),
 
               // Antagonistes
@@ -1065,7 +1065,7 @@ class _PlantDetailSheet extends ConsumerWidget {
                   );
                 },
                 loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (_, _) => const SizedBox.shrink(),
               ),
 
               const SizedBox(height: 80),

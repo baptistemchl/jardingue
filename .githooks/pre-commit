@@ -3,7 +3,15 @@
 
 if git diff --cached --name-only | grep -q 'pubspec.yaml'; then
   echo "📦 pubspec.yaml modifié — mise à jour de app_info.dart..."
-  dart run tool/update_version.dart
+
+  # Préfère le Dart pinné par FVM (sinon faux positifs ou SDK trop vieux).
+  if [ -x .fvm/flutter_sdk/bin/dart ]; then
+    DART=.fvm/flutter_sdk/bin/dart
+  else
+    DART=dart
+  fi
+
+  "$DART" run tool/update_version.dart
 
   # Ajoute le fichier regénéré au commit
   git add lib/core/constants/app_info.dart

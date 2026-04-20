@@ -77,7 +77,7 @@ class BackupSection extends ConsumerWidget {
                 color: AppColors.textTertiary,
               ),
             ),
-            error: (_, __) => Text(
+            error: (_, _) => Text(
               'Impossible de vérifier le cloud',
               style: AppTypography.caption.copyWith(
                 color: AppColors.error,

@@ -22,7 +22,7 @@ class WateringRemindersCard extends ConsumerWidget {
         return _WateringCard(reminders: reminders);
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }

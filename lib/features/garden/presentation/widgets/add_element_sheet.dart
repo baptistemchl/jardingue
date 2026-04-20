@@ -251,7 +251,7 @@ class _AddElementSheetState extends ConsumerState<AddElementSheet> {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: plants.length.clamp(0, 20),
-                separatorBuilder: (_, __) => const SizedBox(width: 10),
+                separatorBuilder: (_, _) => const SizedBox(width: 10),
                 itemBuilder: (context, index) {
                   final plant = plants[index];
                   return _PlantCard(

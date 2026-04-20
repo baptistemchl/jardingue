@@ -325,7 +325,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
         return ListView.separated(
           padding: const EdgeInsets.all(20),
           itemCount: plants.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          separatorBuilder: (_, _) => const SizedBox(height: 8),
           itemBuilder: (_, i) {
             final plant = plants[i];
             return _SelectionTile(
@@ -393,7 +393,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
               return ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 itemCount: plants.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                separatorBuilder: (_, _) => const SizedBox(height: 8),
                 itemBuilder: (_, i) {
                   final plant = plants[i];
                   return _SelectionTile(
@@ -599,7 +599,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
         return ListView.separated(
           padding: const EdgeInsets.all(20),
           itemCount: gardens.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          separatorBuilder: (_, _) => const SizedBox(height: 8),
           itemBuilder: (_, i) {
             final garden = gardens[i];
             return _SelectionTile(
@@ -635,7 +635,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
         return ListView.separated(
           padding: const EdgeInsets.all(20),
           itemCount: real.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          separatorBuilder: (_, _) => const SizedBox(height: 8),
           itemBuilder: (_, i) {
             final gp = real[i];
             return _SelectionTile(

@@ -24,7 +24,7 @@ void main() {
     db.close();
   });
 
-  Future<int> _createGarden() async {
+  Future<int> createGarden() async {
     return db.createGarden(GardensCompanion.insert(
       name: 'Potager test',
       widthCells: Value(10),
@@ -33,7 +33,7 @@ void main() {
     ));
   }
 
-  Future<int> _addPlant(int gardenId) async {
+  Future<int> addPlant(int gardenId) async {
     return db.addPlantToGarden(GardenPlantsCompanion.insert(
       gardenId: gardenId,
       plantId: 1,
@@ -47,8 +47,8 @@ void main() {
 
   group('GardenNotifier.removeElement', () {
     test('removes plant from database', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId);
 
       // Verify plant exists
       final before = await db.getGardenPlants(gardenId);
@@ -64,8 +64,8 @@ void main() {
     });
 
     test('state returns to AsyncData after successful removal', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId);
 
       final notifier = container.read(gardenNotifierProvider.notifier);
       await notifier.removeElement(gpId, gardenId);
@@ -75,7 +75,7 @@ void main() {
     });
 
     test('handles non-existent id gracefully', () async {
-      final gardenId = await _createGarden();
+      final gardenId = await createGarden();
 
       final notifier = container.read(gardenNotifierProvider.notifier);
       // Should not throw — DELETE with no match just affects 0 rows
@@ -86,8 +86,8 @@ void main() {
     });
 
     test('only removes targeted plant, not others', () async {
-      final gardenId = await _createGarden();
-      final gpId1 = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId1 = await addPlant(gardenId);
       final gpId2 = await db.addPlantToGarden(GardenPlantsCompanion.insert(
         gardenId: gardenId,
         plantId: 2,
@@ -125,8 +125,8 @@ void main() {
 
   group('updateGardenPlantDetails via repository', () {
     test('updates plantedAt through provider', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId);
 
       final repo = container.read(gardenRepositoryProvider);
       final newDate = DateTime(2026, 4, 1);
@@ -137,7 +137,7 @@ void main() {
     });
 
     test('preserves sowedAt when updating plantedAt', () async {
-      final gardenId = await _createGarden();
+      final gardenId = await createGarden();
       final sowDate = DateTime(2025, 3, 1);
       final gpId = await db.addPlantToGarden(GardenPlantsCompanion.insert(
         gardenId: gardenId,

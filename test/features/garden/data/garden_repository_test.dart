@@ -22,7 +22,7 @@ void main() {
 
   // ── Helpers ──
 
-  Future<int> _createGarden() async {
+  Future<int> createGarden() async {
     return repo.createGarden(GardensCompanion.insert(
       name: 'Test Garden',
       widthCells: Value(10),
@@ -31,7 +31,7 @@ void main() {
     ));
   }
 
-  Future<int> _addPlant(int gardenId, {DateTime? plantedAt, DateTime? sowedAt}) async {
+  Future<int> addPlant(int gardenId, {DateTime? plantedAt, DateTime? sowedAt}) async {
     return db.addPlantToGarden(GardenPlantsCompanion.insert(
       gardenId: gardenId,
       plantId: 1,
@@ -50,8 +50,8 @@ void main() {
 
   group('removePlantFromGarden', () {
     test('deletes the garden plant row', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId);
 
       final before = await repo.getGardenPlants(gardenId);
       expect(before, hasLength(1));
@@ -69,8 +69,8 @@ void main() {
     });
 
     test('only deletes the targeted plant', () async {
-      final gardenId = await _createGarden();
-      final gpId1 = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId1 = await addPlant(gardenId);
       final gpId2 = await db.addPlantToGarden(GardenPlantsCompanion.insert(
         gardenId: gardenId,
         plantId: 2,
@@ -94,8 +94,8 @@ void main() {
 
   group('updateGardenPlantDetails', () {
     test('updates plantedAt date', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId, plantedAt: DateTime(2025, 6, 15));
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId, plantedAt: DateTime(2025, 6, 15));
 
       final newDate = DateTime(2026, 3, 20);
       await repo.updateGardenPlantDetails(id: gpId, plantedAt: newDate);
@@ -105,8 +105,8 @@ void main() {
     });
 
     test('updates sowedAt date', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId, sowedAt: DateTime(2025, 3, 1));
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId, sowedAt: DateTime(2025, 3, 1));
 
       final newDate = DateTime(2026, 2, 10);
       await repo.updateGardenPlantDetails(id: gpId, sowedAt: newDate);
@@ -116,10 +116,10 @@ void main() {
     });
 
     test('does not overwrite other fields when updating one', () async {
-      final gardenId = await _createGarden();
+      final gardenId = await createGarden();
       final originalPlanted = DateTime(2025, 6, 15);
       final originalSowed = DateTime(2025, 3, 1);
-      final gpId = await _addPlant(
+      final gpId = await addPlant(
         gardenId,
         plantedAt: originalPlanted,
         sowedAt: originalSowed,
@@ -138,8 +138,8 @@ void main() {
     });
 
     test('updates wateringFrequencyDays', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId);
 
       await repo.updateGardenPlantDetails(id: gpId, wateringFrequencyDays: 3);
 
@@ -148,9 +148,9 @@ void main() {
     });
 
     test('no-op when all parameters are null', () async {
-      final gardenId = await _createGarden();
+      final gardenId = await createGarden();
       final originalDate = DateTime(2025, 6, 15);
-      final gpId = await _addPlant(gardenId, plantedAt: originalDate);
+      final gpId = await addPlant(gardenId, plantedAt: originalDate);
 
       // Call with no actual updates
       await repo.updateGardenPlantDetails(id: gpId);
@@ -160,9 +160,9 @@ void main() {
     });
 
     test('syncs planting event date in history', () async {
-      final gardenId = await _createGarden();
+      final gardenId = await createGarden();
       final originalDate = DateTime(2025, 6, 15);
-      final gpId = await _addPlant(gardenId, plantedAt: originalDate);
+      final gpId = await addPlant(gardenId, plantedAt: originalDate);
 
       // Create a planting event (like addPlantToGarden does)
       await db.addGardenEvent(GardenEventsCompanion.insert(
@@ -182,9 +182,9 @@ void main() {
     });
 
     test('syncs sowing event date in history', () async {
-      final gardenId = await _createGarden();
+      final gardenId = await createGarden();
       final originalSow = DateTime(2025, 3, 1);
-      final gpId = await _addPlant(gardenId, sowedAt: originalSow);
+      final gpId = await addPlant(gardenId, sowedAt: originalSow);
 
       await db.addGardenEvent(GardenEventsCompanion.insert(
         gardenPlantId: Value(gpId),
@@ -201,8 +201,8 @@ void main() {
     });
 
     test('does not affect other event types when updating plantedAt', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId, plantedAt: DateTime(2025, 6, 15));
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId, plantedAt: DateTime(2025, 6, 15));
 
       final wateringDate = DateTime(2025, 7, 1);
       await db.addGardenEvent(GardenEventsCompanion.insert(
@@ -233,8 +233,8 @@ void main() {
 
   group('getGardenPlantsWithDetails', () {
     test('returns plants with join data', () async {
-      final gardenId = await _createGarden();
-      await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      await addPlant(gardenId);
 
       final details = await repo.getGardenPlantsWithDetails(gardenId);
       expect(details, hasLength(1));
@@ -242,8 +242,8 @@ void main() {
     });
 
     test('returns empty list after all plants removed', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId);
 
       await repo.removePlantFromGarden(gpId);
 
@@ -258,8 +258,8 @@ void main() {
 
   group('removePlantFromGarden cascade', () {
     test('deletes associated garden events', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId);
 
       // Add events linked to this garden plant
       await db.addGardenEvent(GardenEventsCompanion.insert(
@@ -286,8 +286,8 @@ void main() {
     });
 
     test('does not delete events of other plants', () async {
-      final gardenId = await _createGarden();
-      final gpId1 = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId1 = await addPlant(gardenId);
       final gpId2 = await db.addPlantToGarden(GardenPlantsCompanion.insert(
         gardenId: gardenId,
         plantId: 2,
@@ -316,8 +316,8 @@ void main() {
     });
 
     test('events without gardenPlantId are not affected', () async {
-      final gardenId = await _createGarden();
-      final gpId = await _addPlant(gardenId);
+      final gardenId = await createGarden();
+      final gpId = await addPlant(gardenId);
 
       // Add event linked to gardenPlant
       await db.addGardenEvent(GardenEventsCompanion.insert(

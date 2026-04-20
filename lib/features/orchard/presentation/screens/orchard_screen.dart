@@ -88,7 +88,7 @@ class OrchardScreen extends ConsumerWidget {
                                           color: AppColors.textSecondary,
                                         ),
                                       ),
-                                      error: (_, __) => const SizedBox.shrink(),
+                                      error: (_, _) => const SizedBox.shrink(),
                                     ),
                                   ],
                                 ),

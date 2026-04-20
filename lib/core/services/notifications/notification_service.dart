@@ -175,7 +175,7 @@ class NotificationService {
     final hourDisplay = frostHour.hour.toString().padLeft(2, '0');
     final title = '\u2744\uFE0F Risque de gel cette nuit';
     final body =
-        'Jusqu\'a ${tempDisplay}\u00B0C vers ${hourDisplay}h. '
+        'Jusqu\'a $tempDisplay\u00B0C vers ${hourDisplay}h. '
         'Pensez a proteger vos plants sensibles (voile, paillage).';
 
     const androidDetails = AndroidNotificationDetails(
@@ -213,7 +213,7 @@ class NotificationService {
         );
       }
       debugPrint(
-        'Alerte gel planifiee pour $scheduled (min ${tempDisplay}\u00B0C)',
+        'Alerte gel planifiee pour $scheduled (min $tempDisplay\u00B0C)',
       );
     } catch (e, st) {
       CrashReportingService.recordError(e, st,

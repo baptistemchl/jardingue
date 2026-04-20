@@ -171,7 +171,7 @@ class WeatherHeader extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 
@@ -283,7 +283,7 @@ class _WeatherLocationPickerSheetState
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) =>
+              error: (_, _) =>
                   Center(child: Text(AppLocalizations.of(context)!.searchError)),
             ),
           ),

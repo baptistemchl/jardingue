@@ -404,7 +404,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
             );
           },
           loading: () => const SizedBox.shrink(),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
         ),
         // Boutons d'action
         Row(
@@ -590,7 +590,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 
@@ -757,7 +757,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 
@@ -778,7 +778,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 
@@ -1137,7 +1137,7 @@ class _InfoCard extends StatelessWidget {
                   style: AppTypography.titleSmall,
                 ),
               ),
-              if (trailing != null) trailing!,
+              ?trailing,
             ],
           ),
           const SizedBox(height: 12),

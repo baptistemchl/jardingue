@@ -512,7 +512,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
               }
               return ListView.separated(
                 itemCount: plants.length,
-                separatorBuilder: (_, __) =>
+                separatorBuilder: (_, _) =>
                     const SizedBox(height: 8),
                 itemBuilder: (_, i) {
                   final plant = plants[i];

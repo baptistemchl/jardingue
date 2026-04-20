@@ -39,7 +39,7 @@ class WeatherHourlySection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             padding: AppSpacing.horizontalPadding,
             itemCount: hourlyForecast.length.clamp(0, 24),
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
             itemBuilder: (context, index) => _HourlyCard(
               forecast: hourlyForecast[index],
               isNow: index == 0,

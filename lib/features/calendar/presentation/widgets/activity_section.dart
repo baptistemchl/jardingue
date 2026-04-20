@@ -176,7 +176,7 @@ class ActivitySectionScrollable extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               clipBehavior: Clip.none,
               itemCount: activities.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
               itemBuilder: (context, index) =>
                   PlantActivityCardImproved(activity: activities[index]),
             ),

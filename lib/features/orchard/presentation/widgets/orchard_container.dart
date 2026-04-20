@@ -66,7 +66,7 @@ class OrchardContainer extends ConsumerWidget {
                           color: AppColors.textSecondary,
                         ),
                       ),
-                      error: (_, __) => Text(
+                      error: (_, _) => Text(
                         AppLocalizations.of(context)!.error,
                         style: AppTypography.caption.copyWith(
                           color: AppColors.error,

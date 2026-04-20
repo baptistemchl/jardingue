@@ -90,7 +90,7 @@ void main() {
           garden: _fakeGarden(),
           maxWidthM: 1.0,
           maxHeightM: 1.0,
-          onUpdate: (_, __) {},
+          onUpdate: (_, _) {},
           onDelete: () {},
         ),
       ));
@@ -122,7 +122,7 @@ void main() {
           garden: _fakeGarden(),
           maxWidthM: 1.0,
           maxHeightM: 1.0,
-          onUpdate: (_, __) {},
+          onUpdate: (_, _) {},
           onDelete: () => deleteCalled = true,
         ),
       ));
@@ -160,7 +160,7 @@ void main() {
           garden: _fakeGarden(),
           maxWidthM: 1.0,
           maxHeightM: 1.0,
-          onUpdate: (_, __) {},
+          onUpdate: (_, _) {},
           onDelete: () => deleteCalled = true,
         ),
       ));
@@ -197,7 +197,7 @@ void main() {
           garden: _fakeGarden(),
           maxWidthM: 1.0,
           maxHeightM: 1.0,
-          onUpdate: (_, __) {},
+          onUpdate: (_, _) {},
           onDelete: () {},
         ),
       ));
@@ -216,7 +216,7 @@ void main() {
           garden: _fakeGarden(),
           maxWidthM: 1.0,
           maxHeightM: 1.0,
-          onUpdate: (_, __) {},
+          onUpdate: (_, _) {},
           onDelete: () {},
         ),
       ));
@@ -233,7 +233,7 @@ void main() {
           garden: _fakeGarden(),
           maxWidthM: 1.0,
           maxHeightM: 1.0,
-          onUpdate: (_, __) {},
+          onUpdate: (_, _) {},
           onDelete: () {},
         ),
       ));

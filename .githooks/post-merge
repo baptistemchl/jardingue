@@ -1,0 +1,20 @@
+#!/bin/bash
+# Hook post-merge : resync app_info.dart si pubspec.yaml a bougé pendant
+# le merge. Le pre-commit ne suffit pas car il ne fire pas sur git merge.
+
+if git diff ORIG_HEAD HEAD --name-only | grep -q 'pubspec.yaml'; then
+  echo "📦 pubspec.yaml a changé pendant le merge — resync de app_info.dart..."
+
+  if [ -x .fvm/flutter_sdk/bin/dart ]; then
+    DART=.fvm/flutter_sdk/bin/dart
+  else
+    DART=dart
+  fi
+
+  "$DART" run tool/update_version.dart
+
+  if ! git diff --quiet lib/core/constants/app_info.dart; then
+    echo "⚠️  app_info.dart regénéré — pense à committer :"
+    echo "    git add lib/core/constants/app_info.dart && git commit"
+  fi
+fi

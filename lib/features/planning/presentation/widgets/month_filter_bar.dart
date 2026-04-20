@@ -32,7 +32,7 @@ class MonthFilterBar extends ConsumerWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: AppSpacing.horizontalPadding,
-        separatorBuilder: (_, __) =>
+        separatorBuilder: (_, _) =>
             const SizedBox(width: 6),
         itemCount: 13,
         itemBuilder: (context, index) {
