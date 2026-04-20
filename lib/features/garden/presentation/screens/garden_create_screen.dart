@@ -75,6 +75,33 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
 
     try {
       if (isEditing) {
+        // Vérifie que les éléments existants tiennent
+        // dans les nouvelles dimensions.
+        final cellSize = widget.garden!.cellSizeCm;
+        final newWidthCells =
+            (_widthMeters * 100 / cellSize).ceil();
+        final newHeightCells =
+            (_heightMeters * 100 / cellSize).ceil();
+        final elements = await ref.read(
+          gardenPlantsProvider(widget.garden!.id).future,
+        );
+        final overflow = elements
+            .where((e) =>
+                !e.isPendingPlacement &&
+                (e.gridX + e.widthCells > newWidthCells ||
+                    e.gridY + e.heightCells > newHeightCells))
+            .length;
+        if (overflow > 0) {
+          if (mounted) {
+            _showError(
+              AppLocalizations.of(context)!
+                  .gardenResizeOverflow(overflow),
+            );
+            setState(() => _isLoading = false);
+          }
+          return;
+        }
+
         await ref
             .read(gardenNotifierProvider.notifier)
             .updateGarden(

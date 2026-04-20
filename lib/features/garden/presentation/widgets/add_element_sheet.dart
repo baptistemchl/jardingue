@@ -9,6 +9,7 @@ import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/database_providers.dart';
 import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/utils/plant_emoji_mapper.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 /// Sheet pour ajouter un élément (plante ou zone)
 class AddElementSheet extends ConsumerStatefulWidget {
@@ -46,6 +47,8 @@ class _AddElementSheetState extends ConsumerState<AddElementSheet> {
   void dispose() {
     _searchController.dispose();
     _debounce?.cancel();
+    // Ne pas laisser la recherche fuir vers l'ecran Plantes principal.
+    ref.read(plantsFilterProvider.notifier).clearFilters();
     super.dispose();
   }
 
@@ -83,6 +86,26 @@ class _AddElementSheetState extends ConsumerState<AddElementSheet> {
   void _confirm() {
     final widthM = _widthCm / 100.0;
     final heightM = _heightCm / 100.0;
+
+    // Validation : l'élément doit tenir dans le jardin
+    if (widthM > widget.garden.widthMeters ||
+        heightM > widget.garden.heightMeters) {
+      final maxW = (widget.garden.widthMeters * 100).round();
+      final maxH = (widget.garden.heightMeters * 100).round();
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!
+                  .elementTooBigForGarden(maxW, maxH),
+            ),
+            backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      return;
+    }
 
     if (_step == 1 && _selectedPlant != null) {
       widget.onPlantAdded(_selectedPlant!.id, widthM, heightM);

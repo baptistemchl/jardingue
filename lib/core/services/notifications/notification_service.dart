@@ -18,6 +18,12 @@ class NotificationService {
   static const _channelName = 'Rappels d\'arrosage';
   static const _channelDesc = 'Notifications pour arroser vos plantes';
 
+  static const _frostChannelId = 'frost_alerts';
+  static const _frostChannelName = 'Alertes de gel';
+  static const _frostChannelDesc =
+      'Avertissements lorsque du gel est prevu la nuit';
+  static const _frostNotifId = 2;
+
   Future<void> init() async {
     if (_initialized) return;
 
@@ -152,6 +158,76 @@ class NotificationService {
       body: body,
       notificationDetails: notificationDetails,
     );
+  }
+
+  /// Planifie (ou affiche) une alerte de gel pour la nuit a venir.
+  /// [minTemp] est la temperature minimale prevue, [frostHour] l'heure
+  /// a laquelle elle est atteinte, et [alertAt] le moment ou l'utilisateur
+  /// doit etre averti (generalement en fin d'apres-midi, avant le gel).
+  Future<void> scheduleFrostAlert({
+    required double minTemp,
+    required DateTime frostHour,
+    required DateTime alertAt,
+  }) async {
+    if (!_initialized) await init();
+
+    final tempDisplay = minTemp.round();
+    final hourDisplay = frostHour.hour.toString().padLeft(2, '0');
+    final title = '\u2744\uFE0F Risque de gel cette nuit';
+    final body =
+        'Jusqu\'a ${tempDisplay}\u00B0C vers ${hourDisplay}h. '
+        'Pensez a proteger vos plants sensibles (voile, paillage).';
+
+    const androidDetails = AndroidNotificationDetails(
+      _frostChannelId,
+      _frostChannelName,
+      channelDescription: _frostChannelDesc,
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: DarwinNotificationDetails(),
+    );
+
+    try {
+      final now = tz.TZDateTime.now(tz.local);
+      final scheduled = tz.TZDateTime.from(alertAt, tz.local);
+
+      if (scheduled.isBefore(now.add(const Duration(minutes: 1)))) {
+        await _plugin.show(
+          id: _frostNotifId,
+          title: title,
+          body: body,
+          notificationDetails: details,
+        );
+      } else {
+        await _plugin.zonedSchedule(
+          id: _frostNotifId,
+          title: title,
+          body: body,
+          scheduledDate: scheduled,
+          notificationDetails: details,
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        );
+      }
+      debugPrint(
+        'Alerte gel planifiee pour $scheduled (min ${tempDisplay}\u00B0C)',
+      );
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'NotificationService.scheduleFrostAlert',
+        extra: {
+          'minTemp': minTemp,
+          'frostHour': frostHour.toIso8601String(),
+        },
+      );
+    }
+  }
+
+  Future<void> cancelFrostAlert() async {
+    await _plugin.cancel(id: _frostNotifId);
   }
 
   /// Annule toutes les notifications planifiees

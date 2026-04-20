@@ -15,6 +15,7 @@ import 'core/services/rating/rate_app_service.dart';
 import 'core/services/update/in_app_update_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/database_providers.dart';
+import 'core/providers/frost_notification_provider.dart';
 import 'core/providers/garden_event_providers.dart';
 import 'features/premium/presentation/providers/premium_providers.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -150,6 +151,8 @@ class _JardingueAppState extends ConsumerState<JardingueApp>
             CrashReportingService.log('DB prête: $count plantes');
             // Planifier les notifications d'arrosage
             ref.read(wateringNotificationSchedulerProvider.future);
+            // Planifier l'alerte de gel si la meteo l'indique
+            ref.read(frostNotificationSchedulerProvider.future);
           })
           .catchError((Object e, StackTrace st) {
             CrashReportingService.recordError(

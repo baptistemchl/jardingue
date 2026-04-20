@@ -1,8 +1,77 @@
+import 'dart:io' show Platform;
+
 /// Mapping centralisé des emojis pour les plantes.
 /// Utilise le nom commun pour trouver l'emoji le plus
 /// pertinent, avec fallback sur le code catégorie.
 class PlantEmojiMapper {
   PlantEmojiMapper._();
+
+  /// Remplace les emojis Unicode 14+ par des équivalents
+  /// Unicode 6 (universels) sur les OS trop anciens — sinon
+  /// l'utilisateur voit un carré "tofu". La bascule est
+  /// globale : Android 14 (API 34) / iOS 17.4+ pour Unicode
+  /// 15.1, ce qui couvre aussi Unicode 14.
+  static const _legacyFallbacks = <String, String>{
+    '\u{1FADC}': '\u{1F955}', // root vegetable → carotte
+    '\u{1FADA}': '\u{1F954}', // ginger root → pomme de terre
+    '\u{1FAD8}': '\u{1F331}', // beans → seedling
+    '\u{1FADB}': '\u{1F331}', // pea pod → seedling
+    '\u{1FABB}': '\u{1F49C}', // hyacinth → coeur violet
+  };
+
+  static bool? _cachedModernSupport;
+
+  static bool get _supportsModernEmojis {
+    final cached = _cachedModernSupport;
+    if (cached != null) return cached;
+    final result = _detectModernEmojiSupport();
+    _cachedModernSupport = result;
+    return result;
+  }
+
+  static bool _detectModernEmojiSupport() {
+    try {
+      if (Platform.isAndroid) {
+        // Format typique : "14" ou "Android 14 (API 34)".
+        final v = Platform.operatingSystemVersion;
+        final apiMatch = RegExp(r'API\s+(\d+)').firstMatch(v);
+        if (apiMatch != null) {
+          return int.parse(apiMatch.group(1)!) >= 34;
+        }
+        final majorMatch = RegExp(r'(\d+)').firstMatch(v);
+        if (majorMatch != null) {
+          return int.parse(majorMatch.group(1)!) >= 14;
+        }
+        return false;
+      }
+      if (Platform.isIOS) {
+        final v = Platform.operatingSystemVersion;
+        final m =
+            RegExp(r'(\d+)\.(\d+)').firstMatch(v);
+        if (m != null) {
+          final major = int.parse(m.group(1)!);
+          final minor = int.parse(m.group(2)!);
+          return major > 17 || (major == 17 && minor >= 4);
+        }
+        return false;
+      }
+      // Desktop / autres : on assume une police récente.
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Visible pour les tests : permet de forcer le mode
+  /// legacy ou moderne sans dépendre de la plateforme.
+  static void debugSetModernEmojiSupport(bool? value) {
+    _cachedModernSupport = value;
+  }
+
+  static String _withFallback(String emoji) {
+    if (_supportsModernEmojis) return emoji;
+    return _legacyFallbacks[emoji] ?? emoji;
+  }
 
   static const _nameToEmoji = <String, String>{
     // Legumes fruits
@@ -36,13 +105,16 @@ class PlantEmojiMapper {
 
     // Legumes racines
     'carotte': '\u{1F955}',
-    'radis': '\u{1F955}',
-    'navet': '\u{1F955}',
-    'betterave': '\u{1F955}',
+    'radis': '\u{1FADC}',
+    'navet': '\u{1FADC}',
+    'betterave': '\u{1F360}',
     'panais': '\u{1F955}',
+    // Ordre important : "patate douce" doit matcher
+    // avant "patate" (iteration sur insertion order).
+    'patate douce': '\u{1F360}',
     'pomme de terre': '\u{1F954}',
-    'patate': '\u{1F360}',
-    'topinambour': '\u{1F954}',
+    'patate': '\u{1F954}',
+    'topinambour': '\u{1FADA}',
 
     // Bulbes
     'oignon': '\u{1F9C5}',
@@ -51,9 +123,9 @@ class PlantEmojiMapper {
     'ail': '\u{1F9C4}',
 
     // Legumineuses
-    'haricot': '\u{1FADB}',
+    'haricot': '\u{1FAD8}',
     'pois': '\u{1FADB}',
-    'feve': '\u{1FADB}',
+    'feve': '\u{1FAD8}',
 
     // Petits fruits
     'fraise': '\u{1F353}',
@@ -64,7 +136,7 @@ class PlantEmojiMapper {
     'rhubarbe': '\u{1F33F}',
 
     // Aromates
-    'lavande': '\u{1F49C}',
+    'lavande': '\u{1FABB}',
     'basilic': '\u{1F33F}',
     'persil': '\u{1F33F}',
     'ciboulette': '\u{1F33F}',
@@ -81,7 +153,7 @@ class PlantEmojiMapper {
     'sarriette': '\u{1F33F}',
 
     // Autres legumes
-    'artichaut': '\u{1F33B}',
+    'artichaut': '\u{1F33F}',
     'mais': '\u{1F33D}',
     'brocoli': '\u{1F966}',
     'chou-fleur': '\u{1F966}',
@@ -120,10 +192,14 @@ class PlantEmojiMapper {
   }) {
     final lower = _normalize(commonName);
     for (final entry in _nameToEmoji.entries) {
-      if (lower.contains(entry.key)) return entry.value;
+      if (lower.contains(entry.key)) {
+        return _withFallback(entry.value);
+      }
     }
     if (categoryCode != null) {
-      return _categoryToEmoji[categoryCode] ?? fallback;
+      return _withFallback(
+        _categoryToEmoji[categoryCode] ?? fallback,
+      );
     }
     return fallback;
   }
@@ -131,7 +207,9 @@ class PlantEmojiMapper {
   /// Retourne l'emoji pour un code categorie.
   static String fromCategory(String? categoryCode) {
     if (categoryCode == null) return fallback;
-    return _categoryToEmoji[categoryCode] ?? fallback;
+    return _withFallback(
+      _categoryToEmoji[categoryCode] ?? fallback,
+    );
   }
 
   /// Normalise les accents pour la recherche.

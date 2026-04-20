@@ -1347,6 +1347,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Vos jardins et événements sont enregistrés sur votre téléphone. Supprimer l\'application ou vider le cache supprimera vos données.\n\nLa sauvegarde en ligne arrive bientôt !'**
   String get onboardingDataDesc;
+
+  /// No description provided for @elementTooBigForGarden.
+  ///
+  /// In fr, this message translates to:
+  /// **'Élément trop grand pour le jardin (max {maxWidthCm}cm × {maxHeightCm}cm)'**
+  String elementTooBigForGarden(int maxWidthCm, int maxHeightCm);
+
+  /// No description provided for @gardenResizeOverflow.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Impossible de redimensionner : 1 élément dépasse du nouveau jardin.} other{Impossible de redimensionner : {count} éléments dépassent du nouveau jardin.}}'**
+  String gardenResizeOverflow(int count);
 }
 
 class _AppLocalizationsDelegate

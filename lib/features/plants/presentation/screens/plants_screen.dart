@@ -35,6 +35,13 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    // Les sheets de selection (potager, calendrier) ecrivent dans le meme
+    // provider de filtre. On repart toujours d'un filtre vierge en entrant
+    // sur l'ecran Plantes pour eviter une recherche fantome.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(plantsFilterProvider.notifier).clearFilters();
+    });
   }
 
   @override

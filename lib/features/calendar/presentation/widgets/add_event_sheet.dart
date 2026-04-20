@@ -54,6 +54,8 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
   void dispose() {
     _searchCtrl.dispose();
     _debounce?.cancel();
+    // Ne pas laisser la recherche fuir vers l'ecran Plantes principal.
+    ref.read(plantsFilterProvider.notifier).clearFilters();
     super.dispose();
   }
 

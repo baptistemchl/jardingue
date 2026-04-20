@@ -727,4 +727,21 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get onboardingDataDesc =>
       'Vos jardins et événements sont enregistrés sur votre téléphone. Supprimer l\'application ou vider le cache supprimera vos données.\n\nLa sauvegarde en ligne arrive bientôt !';
+
+  @override
+  String elementTooBigForGarden(int maxWidthCm, int maxHeightCm) {
+    return 'Élément trop grand pour le jardin (max ${maxWidthCm}cm × ${maxHeightCm}cm)';
+  }
+
+  @override
+  String gardenResizeOverflow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Impossible de redimensionner : $count éléments dépassent du nouveau jardin.',
+      one: 'Impossible de redimensionner : 1 élément dépasse du nouveau jardin.',
+    );
+    return '$_temp0';
+  }
 }

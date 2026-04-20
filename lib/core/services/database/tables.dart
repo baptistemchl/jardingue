@@ -202,7 +202,7 @@ class GardenEvents extends Table {
 
   TextColumn get eventType => text()();
 
-  DateTimeColumn get eventDate => dateTime()();
+  DateTimeColumn get eventDate => daclauteTime()();
 
   TextColumn get notes => text().nullable()();
 

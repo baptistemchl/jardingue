@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/database/database.dart';
 import '../../features/plants/domain/models/plants_filter_state.dart';
+import '../../features/plants/domain/models/plant_helpers.dart';
 import '../../features/plants/data/repositories/plant_repository.dart';
 
 // Re-export des modeles pour retrocompatibilite
@@ -76,7 +77,10 @@ class PlantsFilterNotifier extends Notifier<PlantsFilterState> {
 // PLANTS LIST PROVIDERS
 // ============================================
 
-/// Provider pour la liste filtree des plantes (filtrage SQL).
+/// Provider pour la liste filtree des plantes.
+/// Les filtres categorie/exposition sont appliques en SQL, la recherche
+/// textuelle est appliquee en Dart avec une normalisation tolerante
+/// (accents, tirets, espaces et apostrophes ignores).
 final filteredPlantsProvider =
     FutureProvider<List<Plant>>((ref) async {
   await ref.watch(databaseInitProvider.future);
@@ -84,10 +88,8 @@ final filteredPlantsProvider =
   final repo = ref.watch(plantRepositoryProvider);
   final filters = ref.watch(plantsFilterProvider);
 
-  return repo.getFilteredPlants(
-    searchQuery: filters.searchQuery.isNotEmpty
-        ? filters.searchQuery
-        : null,
+  final plants = await repo.getFilteredPlants(
+    searchQuery: null,
     categoryCode: filters.category != PlantCategory.all
         ? filters.category.code
         : null,
@@ -95,6 +97,21 @@ final filteredPlantsProvider =
         ? filters.sunFilter.value
         : null,
   );
+
+  if (filters.searchQuery.isEmpty) return plants;
+
+  final needle = normalizePlantSearch(filters.searchQuery);
+  if (needle.isEmpty) return plants;
+
+  return plants.where((p) {
+    final common = normalizePlantSearch(p.commonName);
+    if (common.contains(needle)) return true;
+    final latin = p.latinName;
+    if (latin != null && normalizePlantSearch(latin).contains(needle)) {
+      return true;
+    }
+    return false;
+  }).toList();
 });
 
 /// Provider pour le nombre total de plantes (sans filtres).

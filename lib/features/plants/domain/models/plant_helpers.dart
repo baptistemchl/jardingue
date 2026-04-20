@@ -2,6 +2,30 @@ import '../../../../core/services/database/app_database.dart';
 import '../../../../core/utils/plant_emoji_mapper.dart';
 import 'plants_filter_state.dart';
 
+/// Normalisation tolerante pour la recherche de plantes :
+/// minuscules, suppression des accents et des separateurs courants
+/// (tirets, espaces, apostrophes). Permet a "choux fleurs", "choufleur"
+/// ou "Choux-Fleurs" de matcher la meme plante.
+String normalizePlantSearch(String input) {
+  const withAccents = 'àâäáãåçéèêëíìîïñóòôöõúùûüýÿ';
+  const without =    'aaaaaaceeeeiiiinoooooouuuuyy';
+  final lower = input.toLowerCase();
+  final buffer = StringBuffer();
+  for (final code in lower.runes) {
+    final ch = String.fromCharCode(code);
+    final idx = withAccents.indexOf(ch);
+    if (idx >= 0) {
+      buffer.write(without[idx]);
+    } else if (ch == '-' || ch == '\'' || ch == '\u2019' || ch == ' ') {
+      // Ignorer tirets, apostrophes, espaces.
+      continue;
+    } else {
+      buffer.write(ch);
+    }
+  }
+  return buffer.toString();
+}
+
 /// Extensions utilitaires pour le modele Plant de Drift.
 extension PlantHelpers on Plant {
   PlantCategory get category {

@@ -397,15 +397,22 @@ class _DraggableElementState extends State<_DraggableElement>
         + _dragOffset.dx;
     final yPx = e.yMeters(cellSizeCm) * kPixelsPerMeter
         + _dragOffset.dy;
-    final maxX = widget.garden.widthCells
-        * cellSizeCm / 100.0
-        - e.widthMeters(cellSizeCm);
-    final maxY = widget.garden.heightCells
-        * cellSizeCm / 100.0
-        - e.heightMeters(cellSizeCm);
+    // Si l'élément est plus grand que le jardin, maxX/maxY
+    // peut être négatif : on force à 0 pour éviter un crash
+    // de clamp(lowerLimit > upperLimit).
+    final maxX = math.max(
+      0.0,
+      widget.garden.widthCells * cellSizeCm / 100.0
+          - e.widthMeters(cellSizeCm),
+    );
+    final maxY = math.max(
+      0.0,
+      widget.garden.heightCells * cellSizeCm / 100.0
+          - e.heightMeters(cellSizeCm),
+    );
     return (
-      (xPx / kPixelsPerMeter).clamp(0, maxX),
-      (yPx / kPixelsPerMeter).clamp(0, maxY),
+      (xPx / kPixelsPerMeter).clamp(0.0, maxX),
+      (yPx / kPixelsPerMeter).clamp(0.0, maxY),
     );
   }
 

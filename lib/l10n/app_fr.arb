@@ -249,5 +249,18 @@
   "onboardingWeatherDesc": "Consultez la météo locale, les phases de lune et recevez des conseils adaptés pour savoir quand arroser et quand planter.",
   "onboardingDataTitle": "Vos données",
   "onboardingDataSubtitle": "Stockage local sur votre téléphone",
-  "onboardingDataDesc": "Vos jardins et événements sont enregistrés sur votre téléphone. Supprimer l'application ou vider le cache supprimera vos données.\n\nLa sauvegarde en ligne arrive bientôt !"
+  "onboardingDataDesc": "Vos jardins et événements sont enregistrés sur votre téléphone. Supprimer l'application ou vider le cache supprimera vos données.\n\nLa sauvegarde en ligne arrive bientôt !",
+
+  "elementTooBigForGarden": "Élément trop grand pour le jardin (max {maxWidthCm}cm × {maxHeightCm}cm)",
+  "@elementTooBigForGarden": {
+    "placeholders": {
+      "maxWidthCm": { "type": "int" },
+      "maxHeightCm": { "type": "int" }
+    }
+  },
+
+  "gardenResizeOverflow": "{count, plural, =1{Impossible de redimensionner : 1 élément dépasse du nouveau jardin.} other{Impossible de redimensionner : {count} éléments dépassent du nouveau jardin.}}",
+  "@gardenResizeOverflow": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }
