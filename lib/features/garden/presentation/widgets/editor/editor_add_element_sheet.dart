@@ -51,6 +51,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
   late double _height;
   final _searchCtrl = TextEditingController();
   Timer? _debounce;
+  late final PlantsFilterNotifier _filterNotifier;
 
   // Dates et arrosage
   DateTime? _sowedAt;
@@ -62,6 +63,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
     super.initState();
     _width = math.min(1.0, widget.maxWidthM);
     _height = math.min(1.0, widget.maxHeightM);
+    _filterNotifier = ref.read(plantsFilterProvider.notifier);
   }
 
   @override
@@ -69,7 +71,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
     _searchCtrl.dispose();
     _debounce?.cancel();
     // Ne pas laisser la recherche fuir vers l'ecran Plantes principal.
-    ref.read(plantsFilterProvider.notifier).clearFilters();
+    _filterNotifier.clearFilters();
     super.dispose();
   }
 
@@ -77,9 +79,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
     _debounce?.cancel();
     _debounce = Timer(
       const Duration(milliseconds: 300),
-      () => ref
-          .read(plantsFilterProvider.notifier)
-          .setSearchQuery(value),
+      () => _filterNotifier.setSearchQuery(value),
     );
   }
 

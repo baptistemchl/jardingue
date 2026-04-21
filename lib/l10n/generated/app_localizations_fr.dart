@@ -740,7 +740,8 @@ class AppLocalizationsFr extends AppLocalizations {
       locale: localeName,
       other:
           'Impossible de redimensionner : $count éléments dépassent du nouveau jardin.',
-      one: 'Impossible de redimensionner : 1 élément dépasse du nouveau jardin.',
+      one:
+          'Impossible de redimensionner : 1 élément dépasse du nouveau jardin.',
     );
     return '$_temp0';
   }

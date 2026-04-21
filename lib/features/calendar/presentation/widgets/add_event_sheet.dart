@@ -49,13 +49,20 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
 
   final _searchCtrl = TextEditingController();
   Timer? _debounce;
+  late final PlantsFilterNotifier _filterNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _filterNotifier = ref.read(plantsFilterProvider.notifier);
+  }
 
   @override
   void dispose() {
     _searchCtrl.dispose();
     _debounce?.cancel();
     // Ne pas laisser la recherche fuir vers l'ecran Plantes principal.
-    ref.read(plantsFilterProvider.notifier).clearFilters();
+    _filterNotifier.clearFilters();
     super.dispose();
   }
 
