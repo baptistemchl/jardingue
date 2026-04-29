@@ -83,7 +83,7 @@ class PlantsFilterNotifier extends Notifier<PlantsFilterState> {
 /// (accents, tirets, espaces et apostrophes ignores).
 final filteredPlantsProvider =
     FutureProvider<List<Plant>>((ref) async {
-  await ref.watch(databaseInitProvider.future);
+  await ref.read(databaseInitProvider.future);
 
   final repo = ref.watch(plantRepositoryProvider);
   final filters = ref.watch(plantsFilterProvider);
@@ -114,10 +114,19 @@ final filteredPlantsProvider =
   }).toList();
 });
 
+/// Provider pour toutes les plantes triées (sans filtres).
+/// Utilisé par les sélecteurs "culture précédente" de la rotation.
+final allPlantsSortedProvider =
+    FutureProvider<List<Plant>>((ref) async {
+  await ref.read(databaseInitProvider.future);
+  final db = ref.watch(databaseProvider);
+  return db.getAllPlantsSorted();
+});
+
 /// Provider pour le nombre total de plantes (sans filtres).
 final totalPlantsCountProvider =
     FutureProvider<int>((ref) async {
-  await ref.watch(databaseInitProvider.future);
+  await ref.read(databaseInitProvider.future);
   final repo = ref.watch(plantRepositoryProvider);
   return repo.countPlants();
 });
@@ -133,7 +142,7 @@ final filteredPlantsCountProvider =
 /// Provider pour les categories disponibles (SQL GROUP BY).
 final availableCategoriesProvider =
     FutureProvider<List<CategoryCount>>((ref) async {
-  await ref.watch(databaseInitProvider.future);
+  await ref.read(databaseInitProvider.future);
   final repo = ref.watch(plantRepositoryProvider);
   final counts = await repo.getCategoryCounts();
 
@@ -161,7 +170,7 @@ class CategoryCount {
 /// Provider pour une plante par ID.
 final plantByIdProvider =
     FutureProvider.family<Plant?, int>((ref, id) async {
-  await ref.watch(databaseInitProvider.future);
+  await ref.read(databaseInitProvider.future);
   final repo = ref.watch(plantRepositoryProvider);
   return repo.getPlantById(id);
 });

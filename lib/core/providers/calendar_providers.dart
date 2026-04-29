@@ -104,7 +104,7 @@ class ActivityFilterNotifier extends Notifier<GardenActivityType?> {
 /// Provider pour les activités d'un mois donné
 final monthActivitiesProvider =
     FutureProvider.family<MonthActivities, DateTime>((ref, month) async {
-      await ref.watch(databaseInitProvider.future);
+      await ref.read(databaseInitProvider.future);
       final db = ref.watch(databaseProvider);
       final plants = await db.getAllPlantsSorted();
 

@@ -454,6 +454,24 @@ abstract class AppLocalizations {
   /// **'Déplacez les éléments'**
   String get moveElements;
 
+  /// No description provided for @moveMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déplacer'**
+  String get moveMode;
+
+  /// No description provided for @resizeMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Redimensionner'**
+  String get resizeMode;
+
+  /// No description provided for @resizeElements.
+  ///
+  /// In fr, this message translates to:
+  /// **'Redimensionnez les éléments'**
+  String get resizeElements;
+
   /// No description provided for @gardenElements.
   ///
   /// In fr, this message translates to:
@@ -856,6 +874,60 @@ abstract class AppLocalizations {
   /// **'Récolte enregistrée !'**
   String get harvestRegistered;
 
+  /// No description provided for @fertilizerAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Engrais'**
+  String get fertilizerAction;
+
+  /// No description provided for @fertilizerRegistered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Engrais enregistré !'**
+  String get fertilizerRegistered;
+
+  /// No description provided for @mulchingAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paillage'**
+  String get mulchingAction;
+
+  /// No description provided for @mulchingRegistered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paillage enregistré !'**
+  String get mulchingRegistered;
+
+  /// No description provided for @slugControlAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anti-limaces'**
+  String get slugControlAction;
+
+  /// No description provided for @slugControlRegistered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anti-limaces enregistré !'**
+  String get slugControlRegistered;
+
+  /// No description provided for @treatmentAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Traitement'**
+  String get treatmentAction;
+
+  /// No description provided for @treatmentRegistered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Traitement enregistré !'**
+  String get treatmentRegistered;
+
+  /// No description provided for @maintenanceSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entretien'**
+  String get maintenanceSection;
+
   /// No description provided for @addEvent.
   ///
   /// In fr, this message translates to:
@@ -975,6 +1047,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Erreur de recherche'**
   String get searchError;
+
+  /// No description provided for @searchOffline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas de connexion internet. Vérifiez votre réseau et réessayez.'**
+  String get searchOffline;
 
   /// No description provided for @whatToRecord.
   ///

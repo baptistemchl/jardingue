@@ -14,10 +14,13 @@ import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/garden_providers.dart';
+import '../../../../core/providers/garden_event_providers.dart';
 import '../../domain/action_history.dart';
+import '../../domain/editor_mode.dart';
+import '../../domain/models/amendment_type.dart';
 import '../widgets/garden_grid.dart';
 import '../widgets/editor/undo_redo_buttons.dart';
-import '../widgets/editor/lock_toggle_button.dart';
+import '../widgets/editor/editor_mode_selector.dart';
 import '../widgets/editor/zoom_controls.dart';
 import '../widgets/editor/editor_stats.dart';
 import '../widgets/editor/editor_add_element_sheet.dart';
@@ -25,6 +28,33 @@ import '../widgets/editor/editor_edit_element_sheet.dart';
 import '../widgets/editor/editor_elements_list_sheet.dart';
 import '../widgets/editor/editor_plant_detail_sheet.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
+
+/// Indique si le calque "année précédente" est affiché dans l'éditeur.
+final _showPreviousLayerProvider =
+    NotifierProvider<_ShowPreviousLayerNotifier, bool>(
+        _ShowPreviousLayerNotifier.new);
+
+class _ShowPreviousLayerNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+  void toggle() => state = !state;
+}
+
+/// Ensemble des types d'amendements visibles.
+final _visibleAmendmentsProvider =
+    NotifierProvider<_VisibleAmendmentsNotifier, Set<AmendmentType>>(
+        _VisibleAmendmentsNotifier.new);
+
+class _VisibleAmendmentsNotifier extends Notifier<Set<AmendmentType>> {
+  @override
+  Set<AmendmentType> build() => Set.of(AmendmentType.values);
+
+  void toggle(AmendmentType t) {
+    final next = Set<AmendmentType>.of(state);
+    if (!next.add(t)) next.remove(t);
+    state = next;
+  }
+}
 
 class GardenEditorScreen extends ConsumerStatefulWidget {
   final int gardenId;
@@ -48,7 +78,7 @@ class _GardenEditorScreenState
 
   double _currentScale = 1.0;
   double _displayScale = 1.0;
-  bool _isLocked = true;
+  EditorMode _mode = EditorMode.locked;
   bool _initialized = false;
   Timer? _scaleDebounceTimer;
 
@@ -265,11 +295,23 @@ class _GardenEditorScreenState
     );
   }
 
-  // ========== Lock ==========
+  // ========== Mode d'edition ==========
 
-  void _toggleLock() {
-    setState(() => _isLocked = !_isLocked);
+  void _setMode(EditorMode m) {
+    if (m == _mode) return;
+    setState(() => _mode = m);
+  }
+
+  /// Toggle utilise par les sheets externes (liste des elements) :
+  /// verrouille si on etait deverrouille, sinon repasse en mode "deplacer"
+  /// (mode "doux" par defaut quand on deverrouille).
+  void _toggleLockFromSheet() {
     HapticFeedback.mediumImpact();
+    setState(() {
+      _mode = _mode == EditorMode.locked
+          ? EditorMode.move
+          : EditorMode.locked;
+    });
   }
 
   // ========== Undo / Redo ==========
@@ -324,7 +366,7 @@ class _GardenEditorScreenState
     double newY,
     int cellSizeCm,
   ) async {
-    if (_isLocked) return;
+    if (!_mode.canDrag) return;
     final action = MoveElementAction(
       elementId: element.id,
       gardenId: widget.gardenId,
@@ -398,7 +440,10 @@ class _GardenEditorScreenState
         maxWidthM: maxW,
         maxHeightM: maxH,
         onPlantAdded: (plantId, w, h,
-            {sowedAt, plantedAt, wateringFrequencyDays}) async {
+            {sowedAt,
+            plantedAt,
+            wateringFrequencyDays,
+            previousCropPlantId}) async {
           Navigator.of(ctx, rootNavigator: true).pop();
           await ref
               .read(gardenNotifierProvider.notifier)
@@ -412,6 +457,7 @@ class _GardenEditorScreenState
                 sowedAt: sowedAt,
                 plantedAt: plantedAt,
                 wateringFrequencyDays: wateringFrequencyDays,
+                previousCropPlantId: previousCropPlantId,
               );
         },
         onZoneAdded: (zoneType, w, h) async {
@@ -427,6 +473,108 @@ class _GardenEditorScreenState
                 zoneType: zoneType.name,
               );
         },
+        onAmendmentAdded: (type, w, h, appliedAt) async {
+          Navigator.of(ctx, rootNavigator: true).pop();
+          await ref
+              .read(gardenNotifierProvider.notifier)
+              .addAmendment(
+                gardenId: widget.gardenId,
+                type: type.code,
+                xMeters: 0.1,
+                yMeters: 0.1,
+                widthMeters: w,
+                heightMeters: h,
+                appliedAt: appliedAt,
+              );
+        },
+      ),
+    );
+  }
+
+  void _showAmendmentSheet(GardenAmendment a, int gardenId) {
+    final type = AmendmentType.fromCode(a.type);
+    if (type == null) return;
+    showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: EdgeInsets.fromLTRB(
+          20, 8, 20, MediaQuery.of(ctx).padding.bottom + 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(top: 4, bottom: 16),
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Text(type.emoji, style: const TextStyle(fontSize: 28)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(type.label, style: AppTypography.titleMedium),
+                      Text(
+                        'Appliqué le '
+                        '${a.appliedAt.day.toString().padLeft(2, '0')}/'
+                        '${a.appliedAt.month.toString().padLeft(2, '0')}/'
+                        '${a.appliedAt.year}',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              type.description,
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  Navigator.of(ctx, rootNavigator: true).pop();
+                  await ref
+                      .read(gardenNotifierProvider.notifier)
+                      .deleteAmendment(a.id, gardenId);
+                },
+                icon: Icon(
+                    PhosphorIcons.trash(PhosphorIconsStyle.regular)),
+                label: const Text('Supprimer l\'amendement'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.error,
+                  side: BorderSide(color: AppColors.error),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -514,10 +662,10 @@ class _GardenEditorScreenState
       builder: (ctx) => EditorElementsListSheet(
         garden: garden,
         elements: elements,
-        isLocked: _isLocked,
+        isLocked: _mode == EditorMode.locked,
         onToggleLock: () {
           Navigator.of(ctx, rootNavigator: true).pop();
-          _toggleLock();
+          _toggleLockFromSheet();
         },
         onElementTap: (e) {
           Navigator.of(ctx, rootNavigator: true).pop();
@@ -595,6 +743,7 @@ class _GardenEditorScreenState
           color: AppColors.border,
         ),
         _buildElementsListButton(gardenAsync, plantsAsync),
+        _buildLayersMenu(gardenAsync),
         IconButton(
           onPressed: _resetView,
           icon: Icon(
@@ -614,6 +763,40 @@ class _GardenEditorScreenState
           tooltip: 'Exporter le plan',
         ),
       ],
+    );
+  }
+
+  Widget _buildLayersMenu(AsyncValue<Garden?> gardenAsync) {
+    return gardenAsync.whenOrNull(
+          data: (garden) {
+            if (garden == null) return const SizedBox.shrink();
+            final hasPrevious = garden.previousGardenId != null;
+            final showPrevious = ref.watch(_showPreviousLayerProvider);
+            final highlight = hasPrevious && showPrevious;
+            return IconButton(
+              tooltip: 'Calques',
+              icon: Icon(
+                highlight
+                    ? PhosphorIcons.stackSimple(PhosphorIconsStyle.fill)
+                    : PhosphorIcons.stackSimple(
+                        PhosphorIconsStyle.regular),
+                color:
+                    highlight ? AppColors.primary : AppColors.textPrimary,
+              ),
+              onPressed: () => _openLayersSheet(hasPrevious),
+            );
+          },
+        ) ??
+        const SizedBox.shrink();
+  }
+
+  void _openLayersSheet(bool hasPrevious) {
+    showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => _LayersSheet(hasPrevious: hasPrevious),
     );
   }
 
@@ -697,9 +880,9 @@ class _GardenEditorScreenState
               child: Column(
                 children: [
                   Center(
-                    child: LockToggleButton(
-                      isLocked: _isLocked,
-                      onToggle: _toggleLock,
+                    child: EditorModeSelector(
+                      mode: _mode,
+                      onChanged: _setMode,
                     ),
                   ),
                   plantsAsync.whenOrNull(
@@ -773,32 +956,88 @@ class _GardenEditorScreenState
           _initializeView(garden, constraints);
         });
         return plantsAsync.when(
-          data: (elements) => InteractiveViewer(
-            transformationController: _transformController,
-            minScale: 0.001,
-            maxScale: 100.0,
-            constrained: false,
-            boundaryMargin: const EdgeInsets.all(5000),
-            onInteractionUpdate: _onInteractionUpdate,
-            onInteractionEnd: _onInteractionEnd,
-            child: RepaintBoundary(
-              key: _gardenGridKey,
-              child: GardenGrid(
-                garden: garden,
-                elements: elements,
-                isLocked: _isLocked,
-                onElementTap: (e) =>
-                    _showEditSheet(e, garden),
-                onElementMoved: (e, xM, yM) =>
-                    _onElementMoved(
-                  e,
-                  xM,
-                  yM,
-                  garden.cellSizeCm,
+          data: (elements) {
+            final showPrevious = ref.watch(_showPreviousLayerProvider);
+            final visibleAmendments =
+                ref.watch(_visibleAmendmentsProvider);
+            final previousAsync =
+                (showPrevious && garden.previousGardenId != null)
+                    ? ref.watch(
+                        gardenPlantsProvider(garden.previousGardenId!))
+                    : null;
+            final previousElements =
+                previousAsync?.asData?.value ?? const [];
+            final allAmendments = ref
+                    .watch(gardenAmendmentsLineageProvider(garden.id))
+                    .asData
+                    ?.value ??
+                const [];
+            final visibleFiltered = allAmendments.where((a) {
+              final type = AmendmentType.fromCode(a.type);
+              return type != null && visibleAmendments.contains(type);
+            });
+            // Courants = appartenant au potager actif → interactifs.
+            // Historiques = hérités des potagers précédents → painter.
+            final currentAmendments = visibleFiltered
+                .where((a) => a.gardenId == garden.id)
+                .toList();
+            final historicAmendments = visibleFiltered
+                .where((a) => a.gardenId != garden.id)
+                .toList();
+            // Derniers arrosages (1 requête bulk) → badge par plante.
+            final lastWateringByGp =
+                ref.watch(lastWateringDatesProvider).asData?.value ??
+                    const <int, DateTime>{};
+            return InteractiveViewer(
+              transformationController: _transformController,
+              minScale: 0.001,
+              maxScale: 100.0,
+              constrained: false,
+              boundaryMargin: const EdgeInsets.all(5000),
+              onInteractionUpdate: _onInteractionUpdate,
+              onInteractionEnd: _onInteractionEnd,
+              child: RepaintBoundary(
+                key: _gardenGridKey,
+                child: GardenGrid(
+                  garden: garden,
+                  elements: elements,
+                  previousElements: previousElements,
+                  amendments: currentAmendments,
+                  historicAmendments: historicAmendments,
+                  lastWateringByGp: lastWateringByGp,
+                  mode: _mode,
+                  onElementTap: (e) =>
+                      _showEditSheet(e, garden),
+                  onElementMoved: (e, xM, yM) =>
+                      _onElementMoved(
+                    e,
+                    xM,
+                    yM,
+                    garden.cellSizeCm,
+                  ),
+                  onElementResized: (e, wM, hM) => ref
+                      .read(gardenNotifierProvider.notifier)
+                      .updateElementSize(e.id, wM, hM, garden.id),
+                  onAmendmentTap: (a) =>
+                      _showAmendmentSheet(a, garden.id),
+                  onAmendmentMoved: (a, xM, yM) => ref
+                      .read(gardenNotifierProvider.notifier)
+                      .moveAmendment(
+                          id: a.id,
+                          gardenId: garden.id,
+                          xMeters: xM,
+                          yMeters: yM),
+                  onAmendmentResized: (a, wM, hM) => ref
+                      .read(gardenNotifierProvider.notifier)
+                      .resizeAmendment(
+                          id: a.id,
+                          gardenId: garden.id,
+                          widthMeters: wM,
+                          heightMeters: hM),
                 ),
               ),
-            ),
-          ),
+            );
+          },
           loading: () => const Center(
             child: CircularProgressIndicator(),
           ),
@@ -1021,6 +1260,115 @@ class _PdfPreviewScreen extends StatelessWidget {
         allowPrinting: false,
         allowSharing: false,
         pdfFileName: '$title.pdf',
+      ),
+    );
+  }
+}
+
+
+/// Bottom sheet des calques. Coche/décoche des types d'amendements et
+/// l'année précédente via les StateProviders ; reste ouvert pendant la
+/// sélection, sans déclencher de rebuild parasite de l'éditeur.
+class _LayersSheet extends ConsumerWidget {
+  final bool hasPrevious;
+  const _LayersSheet({required this.hasPrevious});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showPrevious = ref.watch(_showPreviousLayerProvider);
+    final visible = ref.watch(_visibleAmendmentsProvider);
+
+    void togglePrevious() {
+      ref.read(_showPreviousLayerProvider.notifier).toggle();
+    }
+
+    void toggleAmendment(AmendmentType t) {
+      ref.read(_visibleAmendmentsProvider.notifier).toggle(t);
+    }
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: EdgeInsets.only(
+        left: 8,
+        right: 8,
+        top: 8,
+        bottom: MediaQuery.of(context).padding.bottom + 8,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(top: 4, bottom: 12),
+            decoration: BoxDecoration(
+              color: AppColors.border,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Row(
+              children: [
+                Icon(
+                  PhosphorIcons.stackSimple(PhosphorIconsStyle.fill),
+                  size: 20,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: 8),
+                Text('Calques', style: AppTypography.titleMedium),
+              ],
+            ),
+          ),
+          const Divider(height: 8),
+          if (hasPrevious) ...[
+            CheckboxListTile(
+              value: showPrevious,
+              onChanged: (_) => togglePrevious(),
+              controlAffinity: ListTileControlAffinity.leading,
+              dense: true,
+              title: const Text('Année précédente'),
+              subtitle: Text(
+                'Plantes du potager précédent en hachures',
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            const Divider(height: 8),
+          ],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Amendements',
+                style: AppTypography.labelMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ),
+          for (final t in AmendmentType.values)
+            CheckboxListTile(
+              value: visible.contains(t),
+              onChanged: (_) => toggleAmendment(t),
+              controlAffinity: ListTileControlAffinity.leading,
+              dense: true,
+              title: Row(
+                children: [
+                  Text(t.emoji, style: const TextStyle(fontSize: 16)),
+                  const SizedBox(width: 8),
+                  Text(t.label),
+                ],
+              ),
+            ),
+          const SizedBox(height: 8),
+        ],
       ),
     );
   }

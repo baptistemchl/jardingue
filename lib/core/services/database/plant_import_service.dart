@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import '../../../features/garden/domain/models/rotation_family.dart';
 import '../crash_reporting/crash_reporting_service.dart';
 import 'app_database.dart';
 
@@ -28,6 +29,17 @@ class PlantImportService {
       final ail = await _db.getPlantById(8);
       if (ail != null && ail.sowingMonths.isNotEmpty) {
         debugPrint('Calendriers obsoletes (v9), reimport force...');
+        return importFromAssets(forceReimport: true);
+      }
+      if (sample != null && sample.rotationFamily == null) {
+        debugPrint('Familles de rotation absentes (v10), reimport force...');
+        return importFromAssets(forceReimport: true);
+      }
+      // Vérifie si les nouvelles variétés de melons (247-250) sont
+      // présentes. Si l'id 247 manque, on réimporte pour rattraper.
+      final petitGris = await _db.getPlantById(247);
+      if (petitGris == null) {
+        debugPrint('Variétés melons absentes, reimport force...');
         return importFromAssets(forceReimport: true);
       }
       debugPrint('Base de donnees deja peuplee ($existingCount plantes)');
@@ -86,10 +98,14 @@ class PlantImportService {
 
   /// Importe une plante depuis le JSON
   Future<void> _importPlant(Map<String, dynamic> json) async {
+    final latinName = json['latin_name'] as String?;
+    final family =
+        RotationFamily.fromLatinName(latinName) ?? RotationFamily.other;
+
     final plant = PlantsCompanion(
       id: Value(json['id'] as int),
       commonName: Value(json['common_name'] as String),
-      latinName: Value(json['latin_name'] as String?),
+      latinName: Value(latinName),
 
       // Catégorie
       categoryCode: Value(json['category_code'] as String?),
@@ -145,6 +161,8 @@ class PlantImportService {
       climateAdaptation: Value(_encodeMap(json['climate_adaptation'])),
       toxicity: Value(json['toxicity'] as String?),
       practicalTips: Value(json['practical_tips'] as String?),
+
+      rotationFamily: Value(family.code),
     );
 
     await _db.insertPlant(plant);

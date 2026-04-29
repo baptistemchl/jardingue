@@ -10,9 +10,11 @@ import '../../../../../core/theme/app_typography.dart';
 import '../../../../../core/services/database/app_database.dart';
 import '../../../../../core/providers/database_providers.dart';
 import '../../../../../core/utils/plant_emoji_mapper.dart';
+import '../../../domain/models/amendment_type.dart';
 import '../../../domain/models/watering_helpers.dart';
 import '../../../domain/models/zone_type.dart';
 import 'dimension_input.dart';
+import 'previous_crop_picker.dart';
 
 /// Sheet pour ajouter un element au potager depuis
 /// l'editeur, avec limitation aux dimensions du jardin.
@@ -24,9 +26,15 @@ class EditorAddElementSheet
   final Function(int plantId, double w, double h,
       {DateTime? sowedAt,
       DateTime? plantedAt,
-      int? wateringFrequencyDays}) onPlantAdded;
+      int? wateringFrequencyDays,
+      int? previousCropPlantId}) onPlantAdded;
   final Function(ZoneType type, double w, double h)
       onZoneAdded;
+  final Function(
+      AmendmentType type,
+      double w,
+      double h,
+      DateTime appliedAt) onAmendmentAdded;
 
   const EditorAddElementSheet({
     super.key,
@@ -35,6 +43,7 @@ class EditorAddElementSheet
     required this.maxHeightM,
     required this.onPlantAdded,
     required this.onZoneAdded,
+    required this.onAmendmentAdded,
   });
 
   @override
@@ -42,10 +51,15 @@ class EditorAddElementSheet
       _State();
 }
 
+/// Mode courant du flux d'ajout.
+enum _AddMode { plant, zone, amendment }
+
 class _State extends ConsumerState<EditorAddElementSheet> {
   int _step = 0;
-  bool _isAddingZone = false;
+  _AddMode _mode = _AddMode.plant;
   ZoneType _selectedZoneType = ZoneType.greenhouse;
+  AmendmentType _selectedAmendmentType = AmendmentType.fumure;
+  DateTime _amendmentAppliedAt = DateTime.now();
   Plant? _selectedPlant;
   late double _width;
   late double _height;
@@ -57,6 +71,9 @@ class _State extends ConsumerState<EditorAddElementSheet> {
   DateTime? _sowedAt;
   DateTime _plantedAt = DateTime.now();
   int? _wateringFrequencyDays;
+
+  // Rotation : culture précédente (facultatif).
+  int? _previousCropPlantId;
 
   @override
   void initState() {
@@ -70,8 +87,10 @@ class _State extends ConsumerState<EditorAddElementSheet> {
   void dispose() {
     _searchCtrl.dispose();
     _debounce?.cancel();
-    // Ne pas laisser la recherche fuir vers l'ecran Plantes principal.
-    _filterNotifier.clearFilters();
+    // Riverpod interdit state= pendant le teardown du widget tree ;
+    // on déplace l'appel après la frame courante.
+    final notifier = _filterNotifier;
+    Future.microtask(() => notifier.clearFilters());
     super.dispose();
   }
 
@@ -85,6 +104,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
 
   void _selectPlant(Plant plant) {
     setState(() {
+      _mode = _AddMode.plant;
       _selectedPlant = plant;
       if (plant.spacingBetweenPlants != null &&
           plant.spacingBetweenPlants! > 0) {
@@ -99,26 +119,49 @@ class _State extends ConsumerState<EditorAddElementSheet> {
           defaultWateringFrequencyDays(plant.watering);
       _plantedAt = DateTime.now();
       _sowedAt = null;
+      _previousCropPlantId = null;
       _step = 2;
     });
   }
 
   void _selectZone(ZoneType type) {
     setState(() {
+      _mode = _AddMode.zone;
       _selectedZoneType = type;
-      _isAddingZone = true;
       _width = math.min(1.0, widget.maxWidthM);
       _height = math.min(1.0, widget.maxHeightM);
       _step = 2;
     });
   }
 
+  void _selectAmendment(AmendmentType type) {
+    setState(() {
+      _mode = _AddMode.amendment;
+      _selectedAmendmentType = type;
+      _amendmentAppliedAt = DateTime.now();
+      // Les amendements couvrent typiquement une zone plus large.
+      _width = math.min(2.0, widget.maxWidthM);
+      _height = math.min(2.0, widget.maxHeightM);
+      _step = 2;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    // Pour l'étape 1 (liste des plantes), on fige la hauteur mais on
+    // clampe à l'espace visible réel : 85 % écran, sans dépasser ce
+    // qui reste une fois le clavier ouvert — sinon le Column intérieur
+    // provoquait un RenderFlex overflow quand la recherche ne renvoyait
+    // rien (l'empty-state ne rentrait pas dans l'Expanded résiduel).
+    final step1Height = _step == 1
+        ? math.min(
+            media.size.height * 0.85,
+            media.size.height - media.viewInsets.bottom - 48,
+          )
+        : null;
     return Container(
-      height: _step == 1
-          ? MediaQuery.of(context).size.height * 0.85
-          : null,
+      height: step1Height,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(
@@ -130,14 +173,10 @@ class _State extends ConsumerState<EditorAddElementSheet> {
         right: 20,
         top: 20,
         bottom: _step == 1
-            ? MediaQuery.of(context).padding.bottom + 20
-            : MediaQuery.of(context).viewInsets.bottom +
-                MediaQuery.of(context).padding.bottom +
-                20,
+            ? media.padding.bottom + 20
+            : media.viewInsets.bottom + media.padding.bottom + 20,
       ),
-      child: _step == 1
-          ? _buildPlantSelection()
-          : _buildMainContent(),
+      child: _step == 1 ? _buildPlantSelection() : _buildMainContent(),
     );
   }
 
@@ -190,7 +229,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
           child: Text(
             _step == 0
                 ? AppLocalizations.of(context)!.addElement
-                : (_isAddingZone
+                : (_mode == _AddMode.zone
                     ? AppLocalizations.of(context)!.configureZone
                     : AppLocalizations.of(context)!.configurePlant),
             style: AppTypography.titleMedium,
@@ -246,7 +285,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
         subtitle: AppLocalizations.of(context)!.chooseAmongVarieties,
         color: AppColors.primary,
         onTap: () => setState(() {
-          _isAddingZone = false;
+          _mode = _AddMode.plant;
           _step = 1;
         }),
       ),
@@ -268,17 +307,69 @@ class _State extends ConsumerState<EditorAddElementSheet> {
                 ))
             .toList(),
       ),
+      const SizedBox(height: 20),
+      Text(
+        'Ou ajouter un amendement',
+        style: AppTypography.labelMedium.copyWith(
+          color: AppColors.textSecondary,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: AmendmentType.values
+            .map((t) => _AmendmentChip(
+                  type: t,
+                  onTap: () => _selectAmendment(t),
+                ))
+            .toList(),
+      ),
     ];
   }
 
+  /// Données du header selon le mode courant : (bgColor, emoji, title, subtitle?).
+  ({Color bg, String emoji, String title, String? subtitle})
+      _headerInfoForMode() {
+    switch (_mode) {
+      case _AddMode.zone:
+        return (
+          bg: Color(_selectedZoneType.color).withValues(alpha: 0.2),
+          emoji: _selectedZoneType.emoji,
+          title: _selectedZoneType.label,
+          subtitle: null,
+        );
+      case _AddMode.amendment:
+        return (
+          bg: Color(_selectedAmendmentType.color).withValues(alpha: 0.2),
+          emoji: _selectedAmendmentType.emoji,
+          title: _selectedAmendmentType.label,
+          subtitle: _selectedAmendmentType.description,
+        );
+      case _AddMode.plant:
+        return (
+          bg: AppColors.primaryContainer,
+          emoji: _selectedPlant == null
+              ? '\u{1F331}'
+              : PlantEmojiMapper.fromName(
+                  _selectedPlant!.commonName,
+                  categoryCode: _selectedPlant!.categoryCode,
+                ),
+          title: _selectedPlant?.commonName ?? 'Plante',
+          subtitle: _selectedPlant?.latinName,
+        );
+    }
+  }
+
   List<Widget> _buildDimensionConfig() {
+    final header = _headerInfoForMode();
+    final subtitleIsLatin =
+        _mode == _AddMode.plant && _selectedPlant?.latinName != null;
     return [
-      // Element selectionne
       Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.primaryContainer
-              .withValues(alpha: 0.3),
+          color: AppColors.primaryContainer.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -287,24 +378,12 @@ class _State extends ConsumerState<EditorAddElementSheet> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: _isAddingZone
-                    ? Color(_selectedZoneType.color)
-                        .withValues(alpha: 0.2)
-                    : AppColors.primaryContainer,
+                color: header.bg,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Text(
-                  _isAddingZone
-                      ? _selectedZoneType.emoji
-                      : (_selectedPlant != null
-                          ? PlantEmojiMapper.fromName(
-                              _selectedPlant!.commonName,
-                              categoryCode:
-                                  _selectedPlant!
-                                      .categoryCode,
-                            )
-                          : '\u{1F331}'),
+                  header.emoji,
                   style: const TextStyle(fontSize: 24),
                 ),
               ),
@@ -312,23 +391,15 @@ class _State extends ConsumerState<EditorAddElementSheet> {
             const SizedBox(width: 12),
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _isAddingZone
-                        ? _selectedZoneType.label
-                        : (_selectedPlant?.commonName ??
-                            'Plante'),
-                    style: AppTypography.titleSmall,
-                  ),
-                  if (!_isAddingZone &&
-                      _selectedPlant?.latinName != null)
+                  Text(header.title, style: AppTypography.titleSmall),
+                  if (header.subtitle != null)
                     Text(
-                      _selectedPlant!.latinName!,
-                      style: AppTypography.caption
-                          .copyWith(
-                        fontStyle: FontStyle.italic,
+                      header.subtitle!,
+                      style: AppTypography.caption.copyWith(
+                        fontStyle:
+                            subtitleIsLatin ? FontStyle.italic : null,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -337,7 +408,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
             ),
             TextButton(
               onPressed: () => setState(
-                () => _step = _isAddingZone ? 0 : 1,
+                () => _step = _mode == _AddMode.plant ? 1 : 0,
               ),
               child: Text(AppLocalizations.of(context)!.change),
             ),
@@ -362,8 +433,17 @@ class _State extends ConsumerState<EditorAddElementSheet> {
         unit: 'm',
         onChanged: (v) => setState(() => _height = v),
       ),
-      // Section dates et arrosage (plantes uniquement)
-      if (!_isAddingZone) ...[
+      if (_mode == _AddMode.amendment) ...[
+        const SizedBox(height: 24),
+        Text('Date d\'application', style: AppTypography.labelMedium),
+        const SizedBox(height: 8),
+        _DatePickerRow(
+          label: 'Appliqué le',
+          date: _amendmentAppliedAt,
+          onChanged: (d) => setState(() => _amendmentAppliedAt = d),
+        ),
+      ],
+      if (_mode == _AddMode.plant) ...[
         const SizedBox(height: 24),
         Text(AppLocalizations.of(context)!.dates, style: AppTypography.labelMedium),
         const SizedBox(height: 8),
@@ -388,25 +468,42 @@ class _State extends ConsumerState<EditorAddElementSheet> {
           onChanged: (v) =>
               setState(() => _wateringFrequencyDays = v),
         ),
+        if (_selectedPlant != null) ...[
+          const SizedBox(height: 20),
+          PreviousCropPicker(
+            value: _previousCropPlantId,
+            currentPlant: _selectedPlant!,
+            onChanged: (v) => setState(() => _previousCropPlantId = v),
+          ),
+        ],
       ],
       const SizedBox(height: 24),
       ElevatedButton(
         onPressed: () {
-          if (_isAddingZone) {
-            widget.onZoneAdded(
-              _selectedZoneType,
-              _width,
-              _height,
-            );
-          } else if (_selectedPlant != null) {
-            widget.onPlantAdded(
-              _selectedPlant!.id,
-              _width,
-              _height,
-              sowedAt: _sowedAt,
-              plantedAt: _plantedAt,
-              wateringFrequencyDays: _wateringFrequencyDays,
-            );
+          switch (_mode) {
+            case _AddMode.zone:
+              widget.onZoneAdded(_selectedZoneType, _width, _height);
+              break;
+            case _AddMode.amendment:
+              widget.onAmendmentAdded(
+                _selectedAmendmentType,
+                _width,
+                _height,
+                _amendmentAppliedAt,
+              );
+              break;
+            case _AddMode.plant:
+              if (_selectedPlant == null) break;
+              widget.onPlantAdded(
+                _selectedPlant!.id,
+                _width,
+                _height,
+                sowedAt: _sowedAt,
+                plantedAt: _plantedAt,
+                wateringFrequencyDays: _wateringFrequencyDays,
+                previousCropPlantId: _previousCropPlantId,
+              );
+              break;
           }
         },
         style: ElevatedButton.styleFrom(
@@ -418,9 +515,13 @@ class _State extends ConsumerState<EditorAddElementSheet> {
           ),
         ),
         child: Text(
-          _isAddingZone
-              ? AppLocalizations.of(context)!.addTheZone
-              : AppLocalizations.of(context)!.addThePlant,
+          switch (_mode) {
+            _AddMode.zone =>
+              AppLocalizations.of(context)!.addTheZone,
+            _AddMode.amendment => 'Ajouter l\'amendement',
+            _AddMode.plant =>
+              AppLocalizations.of(context)!.addThePlant,
+          },
           style: AppTypography.bodyMedium.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -487,26 +588,31 @@ class _State extends ConsumerState<EditorAddElementSheet> {
           child: plantsAsync.when(
             data: (plants) {
               if (plants.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        PhosphorIcons.plant(
-                          PhosphorIconsStyle.duotone,
-                        ),
-                        size: 48,
-                        color: AppColors.textTertiary,
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            PhosphorIcons.plant(
+                              PhosphorIconsStyle.duotone,
+                            ),
+                            size: 48,
+                            color: AppColors.textTertiary,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            AppLocalizations.of(context)!.noPlantFound,
+                            textAlign: TextAlign.center,
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        AppLocalizations.of(context)!.noPlantFound,
-                        style: AppTypography.bodyMedium
-                            .copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 );
               }
@@ -614,34 +720,62 @@ class _ZoneChip extends StatelessWidget {
   const _ZoneChip({required this.type, required this.onTap});
 
   @override
+  Widget build(BuildContext context) => _ColoredEmojiChip(
+        color: Color(type.color),
+        emoji: type.emoji,
+        label: type.label,
+        onTap: onTap,
+      );
+}
+
+class _AmendmentChip extends StatelessWidget {
+  final AmendmentType type;
+  final VoidCallback onTap;
+  const _AmendmentChip({required this.type, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => _ColoredEmojiChip(
+        color: Color(type.color),
+        emoji: type.emoji,
+        label: type.label,
+        onTap: onTap,
+      );
+}
+
+class _ColoredEmojiChip extends StatelessWidget {
+  final Color color;
+  final String emoji;
+  final String label;
+  final VoidCallback onTap;
+
+  const _ColoredEmojiChip({
+    required this.color,
+    required this.emoji,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
   Widget build(BuildContext context) {
-    final c = Color(type.color);
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 10,
-        ),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: c.withValues(alpha: 0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: c.withValues(alpha: 0.3),
-          ),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              type.emoji,
-              style: const TextStyle(fontSize: 18),
-            ),
+            Text(emoji, style: const TextStyle(fontSize: 18)),
             const SizedBox(width: 8),
             Text(
-              type.label,
+              label,
               style: AppTypography.bodySmall.copyWith(
-                color: c,
+                color: color,
                 fontWeight: FontWeight.w500,
               ),
             ),

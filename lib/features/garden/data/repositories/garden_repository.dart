@@ -1,5 +1,12 @@
+import 'package:drift/drift.dart' as drift;
+import '../../../../core/models/patch.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../domain/models/garden_plant_with_details.dart';
+
+/// Traduit un [Patch] de la couche métier en `drift.Value<T>` utilisée
+/// côté base. Cantonne l'import `drift` à la couche data.
+drift.Value<T> _patchToValue<T>(Patch<T> p) =>
+    p.present ? drift.Value(p.value) : const drift.Value.absent();
 
 /// Abstract interface for garden-related data operations.
 abstract interface class GardenRepository {
@@ -7,6 +14,15 @@ abstract interface class GardenRepository {
   Future<Garden?> getGardenById(int id);
   Future<int> createGarden(GardensCompanion garden);
   Future<bool> updateGarden(Garden garden);
+  Future<void> updateGardenPartial({
+    required int id,
+    String? name,
+    int? widthCells,
+    int? heightCells,
+    int? cellSizeCm,
+    Patch<int?> year,
+    Patch<int?> previousGardenId,
+  });
   Future<int> deleteGarden(int id);
   Future<List<GardenPlant>> getGardenPlants(int gardenId);
   Future<List<GardenPlantWithDetails>> getGardenPlantsWithDetails(
@@ -20,6 +36,7 @@ abstract interface class GardenRepository {
     DateTime? sowedAt,
     DateTime? plantedAt,
     int? wateringFrequencyDays,
+    Patch<int?> previousCropPlantId,
   });
 }
 
@@ -41,6 +58,26 @@ class DriftGardenRepository implements GardenRepository {
 
   @override
   Future<bool> updateGarden(Garden garden) => _db.updateGarden(garden);
+
+  @override
+  Future<void> updateGardenPartial({
+    required int id,
+    String? name,
+    int? widthCells,
+    int? heightCells,
+    int? cellSizeCm,
+    Patch<int?> year = const Patch.absent(),
+    Patch<int?> previousGardenId = const Patch.absent(),
+  }) =>
+      _db.updateGardenPartial(
+        id: id,
+        name: name,
+        widthCells: widthCells,
+        heightCells: heightCells,
+        cellSizeCm: cellSizeCm,
+        year: _patchToValue(year),
+        previousGardenId: _patchToValue(previousGardenId),
+      );
 
   @override
   Future<int> deleteGarden(int id) => _db.deleteGarden(id);
@@ -82,11 +119,13 @@ class DriftGardenRepository implements GardenRepository {
     DateTime? sowedAt,
     DateTime? plantedAt,
     int? wateringFrequencyDays,
+    Patch<int?> previousCropPlantId = const Patch.absent(),
   }) =>
       _db.updateGardenPlantDetails(
         id: id,
         sowedAt: sowedAt,
         plantedAt: plantedAt,
         wateringFrequencyDays: wateringFrequencyDays,
+        previousCropPlantId: _patchToValue(previousCropPlantId),
       );
 }

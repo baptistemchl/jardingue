@@ -221,6 +221,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get moveElements => 'Déplacez les éléments';
 
   @override
+  String get moveMode => 'Déplacer';
+
+  @override
+  String get resizeMode => 'Redimensionner';
+
+  @override
+  String get resizeElements => 'Redimensionnez les éléments';
+
+  @override
   String get gardenElements => 'Éléments du potager';
 
   @override
@@ -456,6 +465,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String get harvestRegistered => 'Récolte enregistrée !';
 
   @override
+  String get fertilizerAction => 'Engrais';
+
+  @override
+  String get fertilizerRegistered => 'Engrais enregistré !';
+
+  @override
+  String get mulchingAction => 'Paillage';
+
+  @override
+  String get mulchingRegistered => 'Paillage enregistré !';
+
+  @override
+  String get slugControlAction => 'Anti-limaces';
+
+  @override
+  String get slugControlRegistered => 'Anti-limaces enregistré !';
+
+  @override
+  String get treatmentAction => 'Traitement';
+
+  @override
+  String get treatmentRegistered => 'Traitement enregistré !';
+
+  @override
+  String get maintenanceSection => 'Entretien';
+
+  @override
   String get addEvent => 'Ajouter un événement';
 
   @override
@@ -519,6 +555,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get searchError => 'Erreur de recherche';
+
+  @override
+  String get searchOffline =>
+      'Pas de connexion internet. Vérifiez votre réseau et réessayez.';
 
   @override
   String get whatToRecord => 'Que voulez-vous enregistrer ?';

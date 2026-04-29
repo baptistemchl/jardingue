@@ -5,7 +5,9 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/providers/database_providers.dart';
+import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/providers/planning_providers.dart';
+import '../../../../core/services/database/app_database.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/plant_emoji_mapper.dart';
 
@@ -306,26 +308,203 @@ class _PlantSelectorSheetState
             .value ??
         [];
 
-    final currentIds = current
-        .map((p) => p.plantId)
-        .toSet();
+    final currentIds = current.map((p) => p.plantId).toSet();
+    final newlyAddedIds =
+        _selectedIds.where((id) => !currentIds.contains(id)).toList();
 
-    // Ajouts
-    for (final id in _selectedIds) {
-      if (!currentIds.contains(id)) {
-        await notifier.add(id);
-      }
-    }
-
-    // Suppressions
+    // Suppressions : si l'utilisateur a décoché, on retire.
     for (final id in currentIds) {
       if (!_selectedIds.contains(id)) {
         await notifier.remove(id);
       }
     }
 
+    // S'il n'y a pas de nouvelles plantes à ajouter, on s'arrête ici.
+    if (newlyAddedIds.isEmpty) {
+      if (context.mounted) Navigator.of(context).pop();
+      return;
+    }
+
+    // Demande la destination : potager ou suivi seulement.
+    final gardens = await ref.read(gardensListProvider.future);
+    if (!context.mounted) return;
+
+    final destination = await _askDestination(context, gardens);
+    if (destination == null) return; // annulé
+
+    // Toujours ajouter au suivi (sélection manuelle).
+    for (final id in newlyAddedIds) {
+      await notifier.add(id);
+    }
+
+    // Si un potager a été choisi, placer les plantes en attente.
+    if (destination.gardenId != null) {
+      final gardenNotifier =
+          ref.read(gardenNotifierProvider.notifier);
+      for (final id in newlyAddedIds) {
+        await gardenNotifier.addPlantPendingPlacement(
+          gardenId: destination.gardenId!,
+          plantId: id,
+        );
+      }
+    }
+
     if (context.mounted) {
       Navigator.of(context).pop();
+      if (destination.gardenId != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${newlyAddedIds.length} plante(s) ajoutée(s) au '
+              'potager "${destination.gardenName}". '
+              'Placez-les dans l\'éditeur.',
+            ),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
     }
+  }
+
+  /// Demande si les nouvelles plantes vont dans un potager ou en suivi seul.
+  /// Retourne null si annulé.
+  Future<_AddDestination?> _askDestination(
+    BuildContext context,
+    List<Garden> gardens,
+  ) {
+    return showDialog<_AddDestination>(
+      context: context,
+      builder: (ctx) => _DestinationDialog(gardens: gardens),
+    );
+  }
+}
+
+class _AddDestination {
+  final int? gardenId;
+  final String? gardenName;
+  const _AddDestination.trackingOnly()
+      : gardenId = null,
+        gardenName = null;
+  const _AddDestination.garden(int id, String name)
+      : gardenId = id,
+        gardenName = name;
+}
+
+class _DestinationDialog extends StatefulWidget {
+  final List<Garden> gardens;
+  const _DestinationDialog({required this.gardens});
+
+  @override
+  State<_DestinationDialog> createState() => _DestinationDialogState();
+}
+
+class _DestinationDialogState extends State<_DestinationDialog> {
+  int? _selectedGardenId;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.gardens.length == 1) {
+      _selectedGardenId = widget.gardens.first.id;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gardens = widget.gardens;
+    return AlertDialog(
+      title: const Text('Où ajouter ces plantes ?'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Choisissez si ces plantes doivent être placées dans un '
+            'potager ou seulement suivies.',
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          if (gardens.isEmpty)
+            Text(
+              'Aucun potager créé — elles seront ajoutées au suivi.',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textTertiary,
+              ),
+            )
+          else ...[
+            Text('Potager', style: AppTypography.labelMedium),
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: DropdownButton<int?>(
+                value: _selectedGardenId,
+                isExpanded: true,
+                underline: const SizedBox.shrink(),
+                hint: Text(
+                  'Aucun',
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+                items: [
+                  DropdownMenuItem<int?>(
+                    value: null,
+                    child: Text(
+                      'Aucun (suivi seulement)',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  for (final g in gardens)
+                    DropdownMenuItem<int?>(
+                      value: g.id,
+                      child: Text(
+                        g.year != null ? '${g.name} (${g.year})' : g.name,
+                        style: AppTypography.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                ],
+                onChanged: (v) =>
+                    setState(() => _selectedGardenId = v),
+              ),
+            ),
+          ],
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Annuler'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_selectedGardenId == null) {
+              Navigator.of(context)
+                  .pop(const _AddDestination.trackingOnly());
+            } else {
+              final g = gardens.firstWhere(
+                (x) => x.id == _selectedGardenId,
+              );
+              Navigator.of(context)
+                  .pop(_AddDestination.garden(g.id, g.name));
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('Valider'),
+        ),
+      ],
+    );
   }
 }

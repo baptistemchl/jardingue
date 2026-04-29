@@ -32959,6 +32959,346 @@
       },
       "toxicity": null,
       "practical_tips": "Thym rampant couvre-sol, très rustique. Idéal en bordure, entre les dalles ou en rocaille. Arôme plus léger que le thym commun. Mellifère."
+    },
+    {
+      "id": 247,
+      "common_name": "Melon Petit gris de Rennes",
+      "latin_name": "Cucumis melo 'Petit gris de Rennes'",
+      "spacing_cm_between_plants": 80,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 2,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "normal",
+      "soil_treatment_advice": "Sol riche en humus, bien drainé et réchauffé. Incorporer du compost bien décomposé avant plantation.",
+      "soil_type": "Sol riche en humus, bien drainé.",
+      "growing_zone": "Mi-ombre à ensoleillé",
+      "watering": "Arroser régulièrement sans mouiller le feuillage ; réduire en fin de cycle pour concentrer les sucres.",
+      "planting_min_temp_c": 8,
+      "planting_weather_conditions": "Temps doux et stable, sol bien réchauffé (>15°C).",
+      "sowing_under_cover_period": "avril en godets",
+      "sowing_open_ground_period": "mai une fois le sol réchauffé",
+      "transplanting_period": "mi-mai à début juin après les gelées",
+      "harvest_period": "août à septembre",
+      "sowing_recommendation": "Semis sous abri en avril à 20-22°C. Variété adaptée aux climats tempérés et frais (sélection bretonne).",
+      "cultivation_greenhouse": "Excellent sous serre ou tunnel en climat frais. La variété la plus fiable en climat océanique.",
+      "planting_advice": "Planter sur buttes ou tas de compost ; pailler pour garder chaleur et humidité au pied.",
+      "care_advice": "Tailler au-dessus de la 2e feuille, puis chaque ramification au-dessus de la 3e feuille. Limiter à 4-5 fruits par pied.",
+      "red_flags": "Plantes très gélives ; sensibles à l'oïdium en fin de saison.",
+      "main_destroyers": ["limaces", "oïdium (champignon)", "pucerons"],
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (sous abri)",
+          "May": "Oui (pleine terre)",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui (plantation en place)",
+          "June": "Oui (plantation en place)",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "companion_plant_ids": [98, 22],
+      "antagonistic_plant_ids": [2],
+      "category_code": "fruit_vegetable",
+      "category_label": "Légume-fruit",
+      "climate_adaptation": {
+        "cold": "Variété bretonne, la plus fiable en climat frais. Sous abri au début, plantation dès mi-mai.",
+        "temperate": "Conditions idéales. Fruits à la chair gris-vert très parfumée, récolte août-septembre.",
+        "hot": "Tolère la chaleur ; arroser régulièrement au début, réduire en fin de cycle pour concentrer les sucres."
+      },
+      "toxicity": null,
+      "practical_tips": "Variété traditionnelle bretonne, parfumée, précoce. Récolter quand le pédoncule se détache tout seul et que le fruit dégage une odeur sucrée."
+    },
+    {
+      "id": 248,
+      "common_name": "Melon Charentais",
+      "latin_name": "Cucumis melo 'Charentais'",
+      "spacing_cm_between_plants": 80,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 2,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "normal",
+      "soil_treatment_advice": "Sol riche, drainé, réchauffé. Compost bien décomposé incorporé.",
+      "soil_type": "Sol de jardin classique, bien drainé.",
+      "growing_zone": "Mi-ombre à ensoleillé",
+      "watering": "Régulier jusqu'au début de la maturation, puis réduit pour concentrer les sucres.",
+      "planting_min_temp_c": 10,
+      "planting_weather_conditions": "Temps doux, stable, sol >15°C.",
+      "sowing_under_cover_period": "avril en godets",
+      "sowing_open_ground_period": "mai-juin",
+      "transplanting_period": "mi-mai à début juin",
+      "harvest_period": "juillet à septembre",
+      "sowing_recommendation": "Semis sous abri en avril à 20-22°C.",
+      "cultivation_greenhouse": "Bénéfique en climat frais ou pour devancer la saison.",
+      "planting_advice": "Plantation sur butte ou film plastique noir pour réchauffer le sol.",
+      "care_advice": "Tailler au-dessus de la 2e feuille, puis chaque ramification. Limiter à 4 fruits par pied.",
+      "red_flags": "Plante gélive, sensible à l'oïdium.",
+      "main_destroyers": ["limaces", "oïdium (champignon)", "pucerons"],
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (sous abri)",
+          "May": "Oui (pleine terre)",
+          "June": "Oui (pleine terre)",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui (plantation en place)",
+          "June": "Oui (plantation en place)",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "companion_plant_ids": [98, 22],
+      "antagonistic_plant_ids": [2],
+      "category_code": "fruit_vegetable",
+      "category_label": "Légume-fruit",
+      "climate_adaptation": {
+        "cold": "Culture difficile sans abri. Préférer une variété type 'Petit gris de Rennes'.",
+        "temperate": "Planter en mai sur butte ou film plastique. Conduite rigoureuse pour obtenir des fruits sucrés.",
+        "hot": "Conditions idéales. Fruits à chair orange très parfumée."
+      },
+      "toxicity": null,
+      "practical_tips": "Variété sucrée à chair orange. Récolter quand le pédoncule commence à se craqueler."
+    },
+    {
+      "id": 249,
+      "common_name": "Melon Cantaloup",
+      "latin_name": "Cucumis melo var. cantalupensis",
+      "spacing_cm_between_plants": 80,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 2,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "normal",
+      "soil_treatment_advice": "Sol profond, riche en humus, bien drainé.",
+      "soil_type": "Sol riche, drainé.",
+      "growing_zone": "Ensoleillé",
+      "watering": "Régulier au pied, réduit en fin de maturation.",
+      "planting_min_temp_c": 10,
+      "planting_weather_conditions": "Temps doux et stable, sol réchauffé.",
+      "sowing_under_cover_period": "avril en godets",
+      "sowing_open_ground_period": "mai",
+      "transplanting_period": "mi-mai à début juin",
+      "harvest_period": "juillet à septembre",
+      "sowing_recommendation": "Semis sous abri pour devancer la saison.",
+      "cultivation_greenhouse": "Très adapté sous tunnel en régions fraîches.",
+      "planting_advice": "Butte ou film plastique noir pour réchauffer.",
+      "care_advice": "Taille drastique : 2 feuilles, puis 3 feuilles, limiter à 4-5 fruits.",
+      "red_flags": "Gélive, sensible à l'oïdium en fin de saison.",
+      "main_destroyers": ["limaces", "oïdium (champignon)", "pucerons"],
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (sous abri)",
+          "May": "Oui (pleine terre)",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui (plantation en place)",
+          "June": "Oui (plantation en place)",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Oui",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "companion_plant_ids": [98, 22],
+      "antagonistic_plant_ids": [2],
+      "category_code": "fruit_vegetable",
+      "category_label": "Légume-fruit",
+      "climate_adaptation": {
+        "cold": "Sous serre uniquement ; choisir une variété précoce.",
+        "temperate": "Plantation sous abri en début de saison, puis en plein champ.",
+        "hot": "Excellent comportement en été chaud, chair très sucrée."
+      },
+      "toxicity": null,
+      "practical_tips": "Peau côtelée verruqueuse, chair orange sucrée. Récolter mûr pour le meilleur goût."
+    },
+    {
+      "id": 250,
+      "common_name": "Melon Sucrin de Tours",
+      "latin_name": "Cucumis melo 'Sucrin de Tours'",
+      "spacing_cm_between_plants": 80,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 2,
+      "sun_exposure": "ensoleillé",
+      "soil_moisture_preference": "normal",
+      "soil_treatment_advice": "Sol humifère, bien drainé. Compost bien décomposé.",
+      "soil_type": "Sol riche, drainé.",
+      "growing_zone": "Mi-ombre à ensoleillé",
+      "watering": "Régulier sans mouiller le feuillage.",
+      "planting_min_temp_c": 10,
+      "planting_weather_conditions": "Sol réchauffé, temps stable.",
+      "sowing_under_cover_period": "avril en godets",
+      "sowing_open_ground_period": "mai-juin",
+      "transplanting_period": "mi-mai à début juin",
+      "harvest_period": "août à septembre",
+      "sowing_recommendation": "Semis sous abri pour devancer la saison.",
+      "cultivation_greenhouse": "Bénéfique sous tunnel.",
+      "planting_advice": "Butte ou compost ; pailler généreusement.",
+      "care_advice": "Taille classique des melons. Limiter à 4 fruits par pied.",
+      "red_flags": "Gélif, oïdium en fin de saison.",
+      "main_destroyers": ["limaces", "oïdium (champignon)", "pucerons"],
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (sous abri)",
+          "May": "Oui (pleine terre)",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Oui (plantation en place)",
+          "June": "Oui (plantation en place)",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Oui",
+          "September": "Oui",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        }
+      },
+      "companion_plant_ids": [98, 22],
+      "antagonistic_plant_ids": [2],
+      "category_code": "fruit_vegetable",
+      "category_label": "Légume-fruit",
+      "climate_adaptation": {
+        "cold": "Peu adapté, préférer 'Petit gris de Rennes'.",
+        "temperate": "Variété ancienne de la région de Tours, rustique et sucrée.",
+        "hot": "Belle chair parfumée, fruits moyens."
+      },
+      "toxicity": null,
+      "practical_tips": "Variété ancienne à chair orange sucrée, bien parfumée. Récolte lorsque le pédoncule se fissure."
     }
   ]
 }

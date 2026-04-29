@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,9 +12,12 @@ import '../../../../../core/providers/database_providers.dart';
 import '../../../../../core/providers/garden_event_providers.dart';
 import '../../../../../core/providers/garden_providers.dart';
 import '../../../../../core/utils/plant_emoji_mapper.dart';
+import '../../../domain/models/amendment_type.dart';
 import '../../../domain/models/garden_event.dart';
+import '../../../domain/models/rotation_family.dart';
 import '../../../domain/models/watering_helpers.dart';
 import 'dimension_input.dart';
+import 'previous_crop_picker.dart';
 
 /// Sheet detaillee pour une plante dans l'editeur
 /// de potager, avec edition des dimensions.
@@ -56,7 +60,17 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final plant = widget.element.plant!;
+    // Re-watch la liste des plantes du potager pour rester réactif aux
+    // invalidations (ex: changement de `previousCropPlantId` via le picker
+    // est persisté en DB → on doit refléter la nouvelle valeur sans
+    // obliger l'utilisateur à refermer/rouvrir le sheet).
+    final liveElement = ref
+            .watch(gardenPlantsProvider(widget.garden.id))
+            .asData
+            ?.value
+            .firstWhereOrNull((e) => e.id == widget.element.id) ??
+        widget.element;
+    final plant = liveElement.plant!;
     final companionsAsync =
         ref.watch(plantCompanionsProvider(plant.id));
     final antagonistsAsync =
@@ -90,6 +104,8 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                     _buildHeader(plant),
                     const SizedBox(height: 24),
                     _buildPositionCard(plant, cs),
+                    const SizedBox(height: 16),
+                    _buildRotationCard(plant, liveElement),
                     const SizedBox(height: 16),
                     _buildCultureCard(plant),
                     const SizedBox(height: 16),
@@ -328,6 +344,120 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
     );
   }
 
+  Widget _buildRotationCard(
+    Plant plant,
+    GardenPlantWithDetails liveElement,
+  ) {
+    final gp = liveElement.gardenPlant;
+    final previousGardenId = widget.garden.previousGardenId;
+
+    final previousPlantsAsync = previousGardenId != null
+        ? ref.watch(gardenPlantsProvider(previousGardenId))
+        : null;
+    final previousPlants =
+        previousPlantsAsync?.asData?.value ?? const [];
+    final autoResolved = _resolveAutoPrevious(previousPlants, liveElement);
+
+    final allAmendments = ref
+            .watch(gardenAmendmentsLineageProvider(gp.gardenId))
+            .asData
+            ?.value ??
+        const [];
+    final overlapping = _amendmentsOverlapping(allAmendments, liveElement);
+    final warnings = _amendmentWarningsFor(plant, overlapping);
+
+    return _InfoCard(
+      title: 'Rotation',
+      icon: PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.fill),
+      children: [
+        PreviousCropPicker(
+          value: gp.previousCropPlantId,
+          currentPlant: plant,
+          autoResolved: autoResolved,
+          onChanged: (v) => ref
+              .read(gardenNotifierProvider.notifier)
+              .setPreviousCrop(
+                gardenPlantId: gp.id,
+                gardenId: gp.gardenId,
+                previousCropPlantId: v,
+              ),
+        ),
+        if (warnings.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          for (final w in warnings) ...[
+            _AmendmentWarningBanner(warning: w),
+            const SizedBox(height: 6),
+          ],
+        ],
+      ],
+    );
+  }
+
+  /// Filtre les amendements qui chevauchent la bounding box de la plante.
+  List<GardenAmendment> _amendmentsOverlapping(
+    List<GardenAmendment> all,
+    GardenPlantWithDetails e,
+  ) {
+    return all
+        .where((a) => gridRectsOverlap(
+              ax: e.gridX,
+              ay: e.gridY,
+              aw: e.widthCells,
+              ah: e.heightCells,
+              bx: a.gridX,
+              by: a.gridY,
+              bw: a.widthCells,
+              bh: a.heightCells,
+            ))
+        .toList();
+  }
+
+  /// Agrège toutes les alertes d'amendements pour la plante à cette cellule.
+  List<AmendmentWarning> _amendmentWarningsFor(
+    Plant plant,
+    List<GardenAmendment> overlapping,
+  ) {
+    final family = RotationFamily.fromLatinName(plant.latinName);
+    final now = DateTime.now();
+    final result = <AmendmentWarning>[];
+    for (final a in overlapping) {
+      final type = AmendmentType.fromCode(a.type);
+      if (type == null) continue;
+      result.addAll(amendmentWarningsFor(
+        plantLatinName: plant.latinName,
+        plantFamily: family,
+        amendment: type,
+        appliedAt: a.appliedAt,
+        now: now,
+      ));
+    }
+    return result;
+  }
+
+  /// Renvoie la plante du potager précédent qui chevauche la cellule
+  /// de l'élément courant, ou null.
+  Plant? _resolveAutoPrevious(
+    List<GardenPlantWithDetails> previous,
+    GardenPlantWithDetails e,
+  ) {
+    for (final p in previous) {
+      if (p.isZone || p.isPendingPlacement || p.plant == null) continue;
+      if (gridRectsOverlap(
+        ax: e.gridX,
+        ay: e.gridY,
+        aw: e.widthCells,
+        ah: e.heightCells,
+        bx: p.gridX,
+        by: p.gridY,
+        bw: p.widthCells,
+        bh: p.heightCells,
+      )) {
+        return p.plant;
+      }
+    }
+    return null;
+  }
+
   Widget _buildCultureCard(Plant plant) {
     final rows = <Widget>[];
     if (plant.spacingBetweenPlants != null) {
@@ -406,7 +536,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
           loading: () => const SizedBox.shrink(),
           error: (_, _) => const SizedBox.shrink(),
         ),
-        // Boutons d'action
+        // Boutons d'action principaux : eau, recolte, autre
         Row(
           children: [
             Expanded(
@@ -460,7 +590,100 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
             ),
           ],
         ),
+        const SizedBox(height: 12),
+        // Section entretien : engrais, paillage, anti-limaces, traitement
+        Row(
+          children: [
+            Text(
+              AppLocalizations.of(context)!.maintenanceSection,
+              style: AppTypography.labelSmall.copyWith(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: _QuickActionButton(
+                emoji: GardenEventType.fertilizer.emoji,
+                label: AppLocalizations.of(context)!.fertilizerAction,
+                color: GardenEventType.fertilizer.color,
+                onTap: () => _logMaintenance(
+                  gpId,
+                  GardenEventType.fertilizer,
+                  AppLocalizations.of(context)!.fertilizerRegistered,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _QuickActionButton(
+                emoji: GardenEventType.mulching.emoji,
+                label: AppLocalizations.of(context)!.mulchingAction,
+                color: GardenEventType.mulching.color,
+                onTap: () => _logMaintenance(
+                  gpId,
+                  GardenEventType.mulching,
+                  AppLocalizations.of(context)!.mulchingRegistered,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: _QuickActionButton(
+                emoji: GardenEventType.slugControl.emoji,
+                label: AppLocalizations.of(context)!.slugControlAction,
+                color: GardenEventType.slugControl.color,
+                onTap: () => _logMaintenance(
+                  gpId,
+                  GardenEventType.slugControl,
+                  AppLocalizations.of(context)!.slugControlRegistered,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _QuickActionButton(
+                emoji: GardenEventType.treatment.emoji,
+                label: AppLocalizations.of(context)!.treatmentAction,
+                color: GardenEventType.treatment.color,
+                onTap: () => _logMaintenance(
+                  gpId,
+                  GardenEventType.treatment,
+                  AppLocalizations.of(context)!.treatmentRegistered,
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
+    );
+  }
+
+  Future<void> _logMaintenance(
+    int gardenPlantId,
+    GardenEventType type,
+    String snackMessage,
+  ) async {
+    await ref.read(gardenEventNotifierProvider.notifier).logEvent(
+          gardenPlantId: gardenPlantId,
+          eventType: type,
+          date: DateTime.now(),
+        );
+    ref.invalidate(gardenPlantEventsProvider(gardenPlantId));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(snackMessage),
+        duration: const Duration(seconds: 2),
+      ),
     );
   }
 
@@ -1270,6 +1493,65 @@ class _QuickActionButton extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _AmendmentWarningBanner extends StatelessWidget {
+  final AmendmentWarning warning;
+  const _AmendmentWarningBanner({required this.warning});
+
+  @override
+  Widget build(BuildContext context) {
+    final isStrong =
+        warning.severity == AmendmentWarningSeverity.warning;
+    final baseColor = warning.color;
+    final icon = isStrong
+        ? PhosphorIcons.warning(PhosphorIconsStyle.fill)
+        : PhosphorIcons.info(PhosphorIconsStyle.fill);
+    final ageYears =
+        DateTime.now().difference(warning.appliedAt).inDays ~/ 365;
+    final ageLabel = ageYears == 0
+        ? ' (cette année)'
+        : ' (il y a $ageYears an${ageYears > 1 ? 's' : ''})';
+
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: baseColor.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: baseColor.withValues(alpha: 0.35),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: baseColor),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${warning.type.emoji} ${warning.type.label}$ageLabel',
+                  style: AppTypography.caption.copyWith(
+                    color: baseColor,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  warning.message,
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

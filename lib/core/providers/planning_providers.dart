@@ -31,25 +31,82 @@ final gardenTasksDatasourceProvider =
 });
 
 // ============================================
-// SELECTED PLANTS CONTROLLER
+// SELECTED PLANTS (union manuelle + jardin)
 // ============================================
 
+/// Stream brut des lignes `selected_plants` (sélection manuelle via
+/// l'écran Plantes).
+final _manualSelectedPlantsStream = StreamProvider<List<SelectedPlant>>(
+  (ref) async* {
+    await ref.read(databaseInitProvider.future);
+    final db = ref.watch(databaseProvider);
+    yield* db.watchSelectedPlants().map((rows) => rows.map((row) {
+          final sp = row.readTable(db.selectedPlantsTable);
+          final plant = row.readTable(db.plants);
+          return SelectedPlant(
+            plantId: sp.plantId,
+            commonName: plant.commonName,
+            categoryCode: plant.categoryCode,
+            addedAt: sp.addedAt,
+          );
+        }).toList());
+  },
+);
+
+/// Stream brut : plantes posées sur n'importe quel potager, converties
+/// en `SelectedPlant` (les zones `plantId=0` sont exclues).
+final _gardenDerivedSelectedPlantsStream =
+    StreamProvider<List<SelectedPlant>>((ref) async* {
+  await ref.read(databaseInitProvider.future);
+  final db = ref.watch(databaseProvider);
+  yield* db.watchAllGardenPlantsWithPlantAndGarden().map((rows) {
+    final map = <int, SelectedPlant>{};
+    for (final row in rows) {
+      final gp = row.readTable(db.gardenPlants);
+      if (gp.plantId == 0) continue;
+      final plant = row.readTableOrNull(db.plants);
+      if (plant == null) continue;
+      final addedAt = gp.plantedAt ?? gp.createdAt;
+      final existing = map[gp.plantId];
+      if (existing == null || addedAt.isAfter(existing.addedAt)) {
+        map[gp.plantId] = SelectedPlant(
+          plantId: gp.plantId,
+          commonName: plant.commonName,
+          categoryCode: plant.categoryCode,
+          addedAt: addedAt,
+        );
+      }
+    }
+    return map.values.toList();
+  });
+});
+
+/// Union des deux sources : les sélections manuelles gagnent sur les
+/// dérivées (même plantId) pour préserver leur date d'ajout originale.
+///
+/// Réactif par construction : dès qu'une ligne bouge dans
+/// `selected_plants` ou `garden_plants`, ce provider ré-émet.
 final selectedPlantsProvider =
-    AsyncNotifierProvider<
-        SelectedPlantsNotifier,
-        List<SelectedPlant>>(
+    AsyncNotifierProvider<SelectedPlantsNotifier, List<SelectedPlant>>(
   SelectedPlantsNotifier.new,
 );
 
-class SelectedPlantsNotifier
-    extends AsyncNotifier<List<SelectedPlant>> {
+class SelectedPlantsNotifier extends AsyncNotifier<List<SelectedPlant>> {
   @override
   Future<List<SelectedPlant>> build() async {
-    final repo = ref.watch(
-      planningRepositoryProvider,
-    );
     try {
-      return await repo.getSelectedPlants();
+      final manual = await ref.watch(_manualSelectedPlantsStream.future);
+      final garden =
+          await ref.watch(_gardenDerivedSelectedPlantsStream.future);
+      final merged = <int, SelectedPlant>{};
+      for (final p in garden) {
+        merged[p.plantId] = p;
+      }
+      for (final p in manual) {
+        merged[p.plantId] = p; // priorité à la sélection manuelle
+      }
+      return merged.values.toList()
+        ..sort((a, b) => b.addedAt.compareTo(a.addedAt));
     } catch (e, st) {
       CrashReportingService.recordError(
         e, st,
@@ -60,23 +117,15 @@ class SelectedPlantsNotifier
   }
 
   Future<void> add(int plantId) async {
-    state = await AsyncValue.guard(() async {
-      final repo = ref.read(
-        planningRepositoryProvider,
-      );
-      await repo.addSelectedPlant(plantId);
-      return repo.getSelectedPlants();
-    });
+    final repo = ref.read(planningRepositoryProvider);
+    await repo.addSelectedPlant(plantId);
+    // Pas besoin d'update local : le stream `.watch()` se chargera
+    // de pousser la nouvelle valeur au prochain tick DB.
   }
 
   Future<void> remove(int plantId) async {
-    state = await AsyncValue.guard(() async {
-      final repo = ref.read(
-        planningRepositoryProvider,
-      );
-      await repo.removeSelectedPlant(plantId);
-      return repo.getSelectedPlants();
-    });
+    final repo = ref.read(planningRepositoryProvider);
+    await repo.removeSelectedPlant(plantId);
   }
 }
 
@@ -113,7 +162,7 @@ class PlanningStateNotifier
       );
     }
 
-    await ref.watch(databaseInitProvider.future);
+    await ref.read(databaseInitProvider.future);
     final db = ref.watch(databaseProvider);
     final weather = ref.watch(weatherDataProvider);
     final currentMonth = DateTime.now().month;

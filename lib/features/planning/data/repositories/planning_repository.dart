@@ -8,13 +8,15 @@ class PlanningRepositoryImpl
 
   PlanningRepositoryImpl(this._db);
 
+  /// Retourne uniquement les sélections manuelles de la table
+  /// `selected_plants`. L'union avec les plantes posées sur un potager
+  /// se fait côté provider (cf. `selectedPlantsProvider`) pour rester
+  /// réactif.
   @override
   Future<List<SelectedPlant>> getSelectedPlants() async {
     final rows = await _db.getSelectedPlants();
     return rows.map((row) {
-      final sp = row.readTable(
-        _db.selectedPlantsTable,
-      );
+      final sp = row.readTable(_db.selectedPlantsTable);
       final plant = row.readTable(_db.plants);
       return SelectedPlant(
         plantId: sp.plantId,

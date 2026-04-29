@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/providers/weather_providers.dart';
+import '../../../../core/services/weather/location_service.dart';
 import '../../../../core/services/weather/weather_models.dart';
 import '../../../../core/theme/app_typography.dart';
 
@@ -283,8 +284,35 @@ class _WeatherLocationPickerSheetState
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, _) =>
-                  Center(child: Text(AppLocalizations.of(context)!.searchError)),
+              error: (e, _) {
+                final l10n = AppLocalizations.of(context)!;
+                final isOffline = e is CitySearchOfflineException;
+                return Padding(
+                  padding: AppSpacing.horizontalPadding,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isOffline
+                              ? PhosphorIcons.wifiSlash(PhosphorIconsStyle.regular)
+                              : PhosphorIcons.warning(PhosphorIconsStyle.regular),
+                          size: 32,
+                          color: AppColors.textTertiary,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          isOffline ? l10n.searchOffline : l10n.searchError,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],

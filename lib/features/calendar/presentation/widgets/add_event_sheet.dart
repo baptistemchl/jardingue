@@ -70,6 +70,13 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
       _eventType != null &&
       (_eventType!.isSowing || _eventType == GardenEventType.planting);
 
+  bool get _isMaintenance =>
+      _eventType != null && _eventType!.isMaintenance;
+
+  /// Potager choisi pour un evenement d'entretien (optionnel : null si
+  /// l'utilisateur a choisi "sans potager").
+  Garden? _maintenanceGarden;
+
   String get _dateLabel =>
       '${widget.selectedDate.day.toString().padLeft(2, '0')}/'
       '${widget.selectedDate.month.toString().padLeft(2, '0')}/'
@@ -146,6 +153,8 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
   //   0=type, 1=plante catalogue, 2=choix potager (optionnel), 3=confirm
   // Steps pour arrosage/recolte :
   //   0=type, 10=source, 11=jardin ou catalogue, 12=plante, 13=confirm
+  // Steps pour entretien (engrais/paillage/anti-limaces/traitement) :
+  //   0=type, 20=choix potager (optionnel), 21=confirm
 
   String get _headerTitle {
     if (_isSowingOrPlanting) {
@@ -154,6 +163,14 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
         1 => 'Quelle plante ?',
         2 => 'Ajouter à un potager ?',
         3 => 'Confirmer',
+        _ => '',
+      };
+    }
+    if (_isMaintenance) {
+      return switch (_step) {
+        0 => 'Que voulez-vous enregistrer ?',
+        20 => 'Sur quel potager ?',
+        21 => 'Confirmer',
         _ => '',
       };
     }
@@ -175,6 +192,13 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
     setState(() {
       if (_isSowingOrPlanting) {
         _step = _step > 0 ? _step - 1 : 0;
+      } else if (_isMaintenance) {
+        switch (_step) {
+          case 20:
+            _step = 0;
+          case 21:
+            _step = 20;
+        }
       } else {
         switch (_step) {
           case 10:
@@ -197,6 +221,14 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
         1 => _buildCatalogSelection(),
         2 => _buildGardenChoice(),
         3 => _buildSowingConfirmation(),
+        _ => const SizedBox.shrink(),
+      };
+    }
+    if (_isMaintenance) {
+      return switch (_step) {
+        0 => _buildTypeSelection(),
+        20 => _buildMaintenanceGardenChoice(),
+        21 => _buildMaintenanceConfirmation(),
         _ => const SizedBox.shrink(),
       };
     }
@@ -269,6 +301,31 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
           description: 'Enregistrer une recolte',
           onTap: () => _selectTrackingType(GardenEventType.harvest),
         ),
+        const SizedBox(height: 24),
+        Text('Entretien',
+            style: AppTypography.labelMedium
+                .copyWith(color: AppColors.textSecondary)),
+        const SizedBox(height: 10),
+        _TypeCard(
+          type: GardenEventType.fertilizer,
+          description: 'Fumure, compost, engrais vert...',
+          onTap: () => _selectMaintenanceType(GardenEventType.fertilizer),
+        ),
+        _TypeCard(
+          type: GardenEventType.mulching,
+          description: 'Paille, BRF, tontes...',
+          onTap: () => _selectMaintenanceType(GardenEventType.mulching),
+        ),
+        _TypeCard(
+          type: GardenEventType.slugControl,
+          description: 'Granules, pieges, biere...',
+          onTap: () => _selectMaintenanceType(GardenEventType.slugControl),
+        ),
+        _TypeCard(
+          type: GardenEventType.treatment,
+          description: 'Purin, savon noir, autre traitement',
+          onTap: () => _selectMaintenanceType(GardenEventType.treatment),
+        ),
       ],
     );
   }
@@ -278,6 +335,14 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
       _eventType = type;
       _step = 10;
       _trackingSource = null;
+    });
+  }
+
+  void _selectMaintenanceType(GardenEventType type) {
+    setState(() {
+      _eventType = type;
+      _maintenanceGarden = null;
+      _step = 20;
     });
   }
 
@@ -586,6 +651,165 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
           );
     }
 
+    widget.onEventAdded();
+    if (mounted) Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  // ============================================
+  // ENTRETIEN : choix potager (optionnel)
+  // ============================================
+
+  Widget _buildMaintenanceGardenChoice() {
+    final gardensAsync = ref.watch(gardensListProvider);
+
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        // Option "sans potager" — l'event est juste loge dans le calendrier
+        _SourceCard(
+          icon: PhosphorIcons.calendarCheck(PhosphorIconsStyle.duotone),
+          title: 'Sans potager',
+          subtitle: 'Juste enregistrer l\'action dans le calendrier',
+          color: AppColors.textSecondary,
+          onTap: () => setState(() {
+            _maintenanceGarden = null;
+            _step = 21;
+          }),
+        ),
+        const SizedBox(height: 16),
+        Text('Ou rattacher a un potager',
+            style: AppTypography.labelMedium
+                .copyWith(color: AppColors.textSecondary)),
+        const SizedBox(height: 10),
+        gardensAsync.when(
+          data: (gardens) {
+            if (gardens.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text('Aucun potager créé',
+                    style: AppTypography.bodySmall
+                        .copyWith(color: AppColors.textTertiary)),
+              );
+            }
+            return Column(
+              children: gardens.map((garden) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: _SelectionTile(
+                    emoji: '🌱',
+                    title: garden.name,
+                    subtitle: _gardenDims(garden),
+                    onTap: () => setState(() {
+                      _maintenanceGarden = garden;
+                      _step = 21;
+                    }),
+                  ),
+                );
+              }).toList(),
+            );
+          },
+          loading: () =>
+              const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Text('Erreur: $e'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMaintenanceConfirmation() {
+    if (_eventType == null) return const SizedBox.shrink();
+    final type = _eventType!;
+
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceVariant,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: type.color.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                    child:
+                        Text(type.emoji, style: const TextStyle(fontSize: 36))),
+              ),
+              const SizedBox(height: 12),
+              Text(type.label, style: AppTypography.titleLarge),
+              const SizedBox(height: 6),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                decoration: BoxDecoration(
+                  color: type.color.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text('Entretien',
+                    style: AppTypography.labelMedium.copyWith(
+                        color: type.color, fontWeight: FontWeight.w600)),
+              ),
+              const SizedBox(height: 12),
+              Text(_dateLabel,
+                  style: AppTypography.bodySmall
+                      .copyWith(color: AppColors.textSecondary)),
+              if (_maintenanceGarden != null) ...[
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(PhosphorIcons.squaresFour(PhosphorIconsStyle.fill),
+                        size: 14, color: AppColors.textTertiary),
+                    const SizedBox(width: 4),
+                    Text(_maintenanceGarden!.name,
+                        style: AppTypography.caption
+                            .copyWith(color: AppColors.textTertiary)),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          onPressed: _confirmMaintenance,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(type.emoji, style: const TextStyle(fontSize: 18)),
+              const SizedBox(width: 8),
+              Text('Enregistrer',
+                  style: AppTypography.bodyMedium.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.w600)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirmMaintenance() async {
+    if (_eventType == null) return;
+    await ref.read(gardenEventNotifierProvider.notifier).logEvent(
+          gardenId: _maintenanceGarden?.id,
+          eventType: _eventType!,
+          date: widget.selectedDate,
+        );
     widget.onEventAdded();
     if (mounted) Navigator.of(context, rootNavigator: true).pop();
   }

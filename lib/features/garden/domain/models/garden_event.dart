@@ -8,7 +8,12 @@ enum GardenEventType {
   sowingOpenGround('Semis pleine terre', '🌱', Color(0xFF4CAF50)),
   planting('Plantation', '🌿', Color(0xFF8BC34A)),
   watering('Arrosage', '💧', Color(0xFF03A9F4)),
-  harvest('Récolte', '🧺', Color(0xFFE91E63));
+  harvest('Récolte', '🧺', Color(0xFFE91E63)),
+  // ── Entretien : actions ponctuelles loguees au calendrier ──
+  fertilizer('Engrais', '🌾', Color(0xFF8D6E63)),
+  mulching('Paillage', '🍂', Color(0xFFBCAAA4)),
+  slugControl('Anti-limaces', '🐌', Color(0xFF7E57C2)),
+  treatment('Traitement', '🧴', Color(0xFF26A69A));
 
   final String label;
   final String emoji;
@@ -21,6 +26,14 @@ enum GardenEventType {
       this == sowing ||
       this == sowingUnderCover ||
       this == sowingOpenGround;
+
+  /// Retourne true si c'est un evenement d'entretien (action ponctuelle
+  /// sans plante associee : engrais, paillage, anti-limaces, traitement).
+  bool get isMaintenance =>
+      this == fertilizer ||
+      this == mulching ||
+      this == slugControl ||
+      this == treatment;
 
   static GardenEventType fromString(String s) =>
       values.firstWhere((e) => e.name == s, orElse: () => watering);
@@ -46,6 +59,16 @@ class GardenEventWithDetails {
 
   String get gardenName => garden?.name ?? '';
 
-  /// True si l'événement est lié à un potager
-  bool get hasGarden => gardenPlant != null && garden != null;
+  /// True si l'événement est lié à un potager (via une plante ou directement
+  /// via [event.gardenId] pour les actions d'entretien sans plante).
+  bool get hasGarden => garden != null;
+
+  /// Titre principal a afficher dans la liste : pour les events lies a une
+  /// plante on retourne le nom de la plante ; pour les events d'entretien
+  /// sans plante on retourne le label du type (ex: "Paillage").
+  String get displayTitle {
+    if (plant != null) return plant!.commonName;
+    if (type.isMaintenance) return type.label;
+    return 'Plante inconnue';
+  }
 }

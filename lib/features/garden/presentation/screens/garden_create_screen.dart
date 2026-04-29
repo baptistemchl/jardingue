@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/models/patch.dart';
 import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
@@ -23,6 +24,8 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
   late TextEditingController _nameController;
   late double _widthMeters;
   late double _heightMeters;
+  int? _year;
+  int? _previousGardenId;
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -34,6 +37,8 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
     _nameController = TextEditingController(text: widget.garden?.name ?? '');
     _widthMeters = widget.garden?.widthMeters ?? 3.0;
     _heightMeters = widget.garden?.heightMeters ?? 2.0;
+    _year = widget.garden?.year;
+    _previousGardenId = widget.garden?.previousGardenId;
   }
 
   @override
@@ -109,6 +114,8 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
               name: _nameController.text.trim(),
               widthMeters: _widthMeters,
               heightMeters: _heightMeters,
+              year: Patch(_year),
+              previousGardenId: Patch(_previousGardenId),
             );
       } else {
         await ref
@@ -117,6 +124,8 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
               name: _nameController.text.trim(),
               widthMeters: _widthMeters,
               heightMeters: _heightMeters,
+              year: _year,
+              previousGardenId: _previousGardenId,
             );
       }
 
@@ -292,6 +301,18 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                       ),
                     ),
                   ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // Année et potager précédent (rotation)
+                _RotationSection(
+                  year: _year,
+                  previousGardenId: _previousGardenId,
+                  currentGardenId: widget.garden?.id,
+                  onYearChanged: (v) => setState(() => _year = v),
+                  onPreviousGardenChanged: (v) =>
+                      setState(() => _previousGardenId = v),
                 ),
 
                 const SizedBox(height: 32),
@@ -519,6 +540,234 @@ class _GridPainter extends CustomPainter {
   bool shouldRepaint(covariant _GridPainter oldDelegate) =>
       oldDelegate.widthMeters != widthMeters ||
       oldDelegate.heightMeters != heightMeters;
+}
+
+/// Section "Rotation" : année du potager + potager précédent.
+class _RotationSection extends ConsumerWidget {
+  final int? year;
+  final int? previousGardenId;
+  final int? currentGardenId;
+  final ValueChanged<int?> onYearChanged;
+  final ValueChanged<int?> onPreviousGardenChanged;
+
+  const _RotationSection({
+    required this.year,
+    required this.previousGardenId,
+    required this.currentGardenId,
+    required this.onYearChanged,
+    required this.onPreviousGardenChanged,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gardensAsync = ref.watch(gardensListProvider);
+    final currentYear = DateTime.now().year;
+    // 4 années antérieures (au-delà la rotation n'a plus d'impact)
+    // et 1 année future (potager planifié pour l'an prochain).
+    final years = [
+      for (var y = currentYear - 4; y <= currentYear + 1; y++) y,
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Année du potager', style: AppTypography.labelMedium),
+        const SizedBox(height: 4),
+        Text(
+          'Permet de dater vos cultures et d\'activer la rotation.',
+          style: AppTypography.caption.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _YearChips(
+          value: year,
+          years: years,
+          onChanged: onYearChanged,
+        ),
+        const SizedBox(height: 20),
+        Text('Potager précédent', style: AppTypography.labelMedium),
+        const SizedBox(height: 4),
+        Text(
+          'Pour reprendre l\'historique d\'un ancien potager.',
+          style: AppTypography.caption.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        gardensAsync.when(
+          data: (list) {
+            final candidates =
+                list.where((g) => g.id != currentGardenId).toList();
+            return _PreviousGardenDropdown(
+              value: previousGardenId,
+              candidates: candidates,
+              onChanged: onPreviousGardenChanged,
+            );
+          },
+          loading: () => const SizedBox(
+            height: 48,
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          ),
+          error: (_, _) => Text(
+            'Impossible de charger les potagers.',
+            style: AppTypography.caption.copyWith(color: AppColors.error),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _YearChips extends StatelessWidget {
+  final int? value;
+  final List<int> years;
+  final ValueChanged<int?> onChanged;
+
+  const _YearChips({
+    required this.value,
+    required this.years,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _Chip(
+          label: 'Non définie',
+          selected: value == null,
+          onTap: () => onChanged(null),
+        ),
+        for (final y in years)
+          _Chip(
+            label: '$y',
+            selected: value == y,
+            onTap: () => onChanged(y),
+          ),
+      ],
+    );
+  }
+}
+
+class _Chip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _Chip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : AppColors.background,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.border,
+          ),
+        ),
+        child: Text(
+          label,
+          style: AppTypography.bodySmall.copyWith(
+            color: selected ? Colors.white : AppColors.textPrimary,
+            fontWeight:
+                selected ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PreviousGardenDropdown extends StatelessWidget {
+  final int? value;
+  final List<Garden> candidates;
+  final ValueChanged<int?> onChanged;
+
+  const _PreviousGardenDropdown({
+    required this.value,
+    required this.candidates,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (candidates.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Text(
+          'Aucun autre potager disponible.',
+          style: AppTypography.bodySmall.copyWith(
+            color: AppColors.textTertiary,
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: DropdownButton<int?>(
+        value: value,
+        hint: Text(
+          'Aucun',
+          style: AppTypography.bodySmall.copyWith(
+            color: AppColors.textTertiary,
+          ),
+        ),
+        isExpanded: true,
+        underline: const SizedBox.shrink(),
+        items: [
+          DropdownMenuItem<int?>(
+            value: null,
+            child: Text(
+              'Aucun',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          for (final g in candidates)
+            DropdownMenuItem<int?>(
+              value: g.id,
+              child: Text(
+                g.year != null ? '${g.name} (${g.year})' : g.name,
+                style: AppTypography.bodySmall,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+        ],
+        onChanged: onChanged,
+      ),
+    );
+  }
 }
 
 class _Stat extends StatelessWidget {

@@ -77,6 +77,10 @@ class Plants extends Table {
   // Conseils pratiques complémentaires
   TextColumn get practicalTips => text().nullable()();
 
+  // Famille botanique pour la rotation des cultures (v10)
+  // Ex: "solanaceae", "fabaceae", "brassicaceae"...
+  TextColumn get rotationFamily => text().nullable()();
+
   // Métadonnées
   BoolColumn get isUserModified =>
       boolean().withDefault(const Constant(false))();
@@ -97,6 +101,30 @@ class PlantCompanions extends Table {
 
   @override
   Set<Column> get primaryKey => {plantId, companionId};
+}
+
+/// Amendements appliqués à une zone du potager (fumure, compost,
+/// paillage, engrais vert, chaulage…). Datés et géolocalisés en cellules.
+/// (v11)
+class GardenAmendments extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get gardenId => integer().references(Gardens, #id)();
+
+  /// Code du type d'amendement : "fumure", "compost", "paillage",
+  /// "engrais_vert", "chaulage".
+  TextColumn get type => text()();
+
+  IntColumn get gridX => integer()();
+  IntColumn get gridY => integer()();
+  IntColumn get widthCells => integer()();
+  IntColumn get heightCells => integer()();
+
+  DateTimeColumn get appliedAt => dateTime()();
+
+  TextColumn get notes => text().nullable()();
+
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
 /// Table des relations plantes antagonistes
@@ -120,6 +148,13 @@ class Gardens extends Table {
   IntColumn get heightCells => integer().withDefault(const Constant(10))();
 
   IntColumn get cellSizeCm => integer().withDefault(const Constant(30))();
+
+  // Année de référence du potager (v10)
+  IntColumn get year => integer().nullable()();
+
+  // Potager dont celui-ci est la suite (v10)
+  IntColumn get previousGardenId =>
+      integer().nullable().references(Gardens, #id)();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 
@@ -149,6 +184,10 @@ class GardenPlants extends Table {
   DateTimeColumn get sowedAt => dateTime().nullable()();
 
   IntColumn get wateringFrequencyDays => integer().nullable()();
+
+  // Culture précédente manuelle (rotation) (v10)
+  IntColumn get previousCropPlantId =>
+      integer().nullable().references(Plants, #id)();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
@@ -189,7 +228,8 @@ class CompletedPlanningTasks extends Table {
   String get tableName => 'completed_planning_tasks';
 }
 
-/// Table pour les événements du jardin (semis, plantation, arrosage, récolte)
+/// Table pour les événements du jardin (semis, plantation, arrosage, récolte,
+/// entretien : engrais, paillage, anti-limaces, traitement).
 class GardenEvents extends Table {
   IntColumn get id => integer().autoIncrement()();
 
@@ -199,6 +239,12 @@ class GardenEvents extends Table {
 
   /// Lien direct vers le catalogue de plantes (pour événements sans potager)
   IntColumn get plantId => integer().nullable().references(Plants, #id)();
+
+  /// Lien direct vers un potager (utilise pour les actions d'entretien
+  /// applicables a un potager entier sans plante specifique : paillage
+  /// general, anti-limaces, etc.).
+  IntColumn get gardenId =>
+      integer().nullable().references(Gardens, #id)();
 
   TextColumn get eventType => text()();
 

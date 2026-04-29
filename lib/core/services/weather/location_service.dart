@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -196,7 +197,12 @@ class LocationService {
     }
   }
 
-  /// Recherche une ville par nom
+  /// Recherche une ville par nom.
+  ///
+  /// Lève [CitySearchOfflineException] si la requête échoue pour cause de
+  /// connexion réseau (DNS, timeout, perte de connexion). Ces erreurs ne sont
+  /// PAS rapportées à Crashlytics : elles sont attendues hors-ligne et doivent
+  /// être affichées à l'utilisateur sous forme de message.
   Future<List<LocationResult>> searchCity(String query) async {
     if (query.length < 2) return [];
 
@@ -228,12 +234,33 @@ class LocationService {
         );
       }).toList();
     } catch (e, st) {
+      if (_isNetworkConnectivityError(e)) {
+        throw const CitySearchOfflineException();
+      }
       CrashReportingService.recordError(e, st,
         reason: 'LocationService.searchCity',
         extra: {'query': query},
       );
       return [];
     }
+  }
+
+  static bool _isNetworkConnectivityError(Object e) {
+    if (e is SocketException) return true;
+    if (e is DioException) {
+      switch (e.type) {
+        case DioExceptionType.connectionError:
+        case DioExceptionType.connectionTimeout:
+        case DioExceptionType.receiveTimeout:
+        case DioExceptionType.sendTimeout:
+          return true;
+        case DioExceptionType.unknown:
+          return e.error is SocketException;
+        default:
+          return false;
+      }
+    }
+    return false;
   }
 
   /// Ouvre les paramètres de l'app (si permission refusée définitivement)
@@ -264,6 +291,14 @@ class _CityInfo {
   final String? country;
 
   _CityInfo({this.city, this.country});
+}
+
+/// Erreur attendue quand la recherche de ville échoue à cause de la
+/// connectivité réseau (hors-ligne, DNS, timeout).
+class CitySearchOfflineException implements Exception {
+  const CitySearchOfflineException();
+  @override
+  String toString() => 'CitySearchOfflineException';
 }
 
 /// Status de la permission de localisation

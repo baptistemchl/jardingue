@@ -33,15 +33,20 @@ class CrashReportingService {
 
     // Handler pour les erreurs Flutter (widgets, rendering, etc.)
     FlutterError.onError = (FlutterErrorDetails details) {
-      if (_isPdfPreviewRasterUnmountRace(details)) {
-        // Race condition connue du package `printing` (raster.dart:169) :
-        // widget.pages est lu apres unmount quand on quitte la preview
-        // pendant la generation. Conserve en non-fatal pour garder la
-        // trace sans polluer le taux de crash.
+      if (_isPdfPreviewRasterBug(
+        details.exception,
+        details.stack,
+        library: details.library,
+        context: details.context?.toString(),
+      )) {
+        // Bug connu du package `printing` (raster.dart) : RangeError pendant
+        // la rasterisation, souvent suite a une race entre le stream de pages
+        // et l'unmount du widget. Conserve en non-fatal pour garder la trace
+        // sans polluer le taux de crash.
         _crashlytics.recordError(
           details.exception,
           details.stack,
-          reason: 'printing: PdfPreviewRaster unmount race (known bug)',
+          reason: 'printing: PdfPreviewRaster bug (known)',
           fatal: false,
         );
       } else {
@@ -55,14 +60,19 @@ class CrashReportingService {
 
     // Handler pour les erreurs asynchrones non-Flutter
     PlatformDispatcher.instance.onError = (error, stack) {
+      // Meme bug printing peut s'echapper en async sans passer par
+      // FlutterError.onError ; on le degrade en non-fatal ici aussi.
+      final isPrintingBug = _isPdfPreviewRasterBug(error, stack);
       _crashlytics.recordError(
         error,
         stack,
-        fatal: true,
-        reason: 'PlatformDispatcher.onError (erreur non capturée)',
+        fatal: !isPrintingBug,
+        reason: isPrintingBug
+            ? 'printing: PdfPreviewRaster bug (known, async)'
+            : 'PlatformDispatcher.onError (erreur non capturée)',
       );
       if (kDebugMode) {
-        debugPrint('FATAL non-Flutter: $error\n$stack');
+        debugPrint('${isPrintingBug ? 'NON-FATAL' : 'FATAL'} non-Flutter: $error\n$stack');
       }
       return true;
     };
@@ -79,19 +89,26 @@ class CrashReportingService {
     }).sendPort);
   }
 
-  /// Detecte la race condition de `printing` (PdfPreviewRaster) qui lit
-  /// `widget.pages` apres unmount. On verifie trois conditions pour eviter
-  /// de masquer d'autres bugs du meme package.
-  static bool _isPdfPreviewRasterUnmountRace(
-    FlutterErrorDetails details,
-  ) {
-    if (details.library != 'printing') return false;
-    if (details.context?.toString().contains('rastering a PDF') != true) {
-      return false;
+  /// Detecte les bugs connus du package `printing` lors de la rasterisation
+  /// de la preview PDF (notamment RangeError sur la liste de pages, souvent
+  /// declenche par une race avec le unmount). On accepte plusieurs signaux
+  /// pour rester robuste : library, context d'erreur, ou simple presence de
+  /// `PdfPreviewRaster` dans la stack.
+  static bool _isPdfPreviewRasterBug(
+    Object? error,
+    StackTrace? stack, {
+    String? library,
+    String? context,
+  }) {
+    if (library == 'printing') return true;
+    if (context != null && context.contains('rastering a PDF')) return true;
+    final stackStr = stack?.toString() ?? '';
+    if (stackStr.contains('PdfPreviewRaster')) return true;
+    if (stackStr.contains('package:printing/') &&
+        stackStr.contains('raster')) {
+      return true;
     }
-    final stack = details.stack?.toString() ?? '';
-    return stack.contains('PdfPreviewRaster._raster') &&
-        stack.contains('State.widget');
+    return false;
   }
 
   // ──────────────────────────────────────────────

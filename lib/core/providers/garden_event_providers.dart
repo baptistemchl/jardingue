@@ -24,11 +24,11 @@ final gardenEventRepositoryProvider = Provider<GardenEventRepository>((ref) {
 // EVENT QUERIES
 // ============================================
 
-/// Événements pour une plante dans un jardin
+/// Stream réactif des événements d'une plante.
 final gardenPlantEventsProvider =
-    FutureProvider.family<List<GardenEvent>, int>((ref, gardenPlantId) async {
-  final repo = ref.watch(gardenEventRepositoryProvider);
-  return repo.getEventsForGardenPlant(gardenPlantId);
+    StreamProvider.family<List<GardenEvent>, int>((ref, gardenPlantId) async* {
+  final db = ref.watch(databaseProvider);
+  yield* db.watchEventsForGardenPlant(gardenPlantId);
 });
 
 /// Événements utilisateur pour un mois donné (avec détails)
@@ -65,6 +65,13 @@ Future<List<GardenEventWithDetails>> _enrichEvents(
   final plantCache = <int, Plant?>{};
   final gardenCache = <int, Garden?>{};
 
+  Future<Garden?> resolveGarden(int gardenId) async {
+    if (!gardenCache.containsKey(gardenId)) {
+      gardenCache[gardenId] = await gardenRepo.getGardenById(gardenId);
+    }
+    return gardenCache[gardenId];
+  }
+
   for (final event in events) {
     GardenPlant? gp;
     Plant? plant;
@@ -88,11 +95,7 @@ Future<List<GardenEventWithDetails>> _enrichEvents(
               gp.plantId > 0 ? await plantRepo.getPlantById(gp.plantId) : null;
         }
         plant = plantCache[gp.plantId];
-        if (!gardenCache.containsKey(gp.gardenId)) {
-          gardenCache[gp.gardenId] =
-              await gardenRepo.getGardenById(gp.gardenId);
-        }
-        garden = gardenCache[gp.gardenId];
+        garden = await resolveGarden(gp.gardenId);
       }
     } else if (event.plantId != null) {
       if (!plantCache.containsKey(event.plantId!)) {
@@ -102,7 +105,17 @@ Future<List<GardenEventWithDetails>> _enrichEvents(
       plant = plantCache[event.plantId!];
     }
 
-    if (plant == null && gp == null) continue;
+    // Resolution du garden direct (events d'entretien sans plante).
+    if (garden == null && event.gardenId != null) {
+      garden = await resolveGarden(event.gardenId!);
+    }
+
+    final type = GardenEventType.fromString(event.eventType);
+    // On garde l'event si :
+    // - une plante existe (events classiques semis/arrosage/recolte)
+    // - ou c'est un evenement d'entretien (avec ou sans potager)
+    final keep = plant != null || gp != null || type.isMaintenance;
+    if (!keep) continue;
 
     result.add(GardenEventWithDetails(
       event: event,
@@ -115,21 +128,31 @@ Future<List<GardenEventWithDetails>> _enrichEvents(
   return result;
 }
 
-/// Plantes suivies (avec événements hors potager) pour le picker arrosage/récolte
-final trackedPlantsProvider = FutureProvider<List<Plant>>((ref) async {
+/// Stream réactif des plantes actuellement suivies (distinct via events).
+final trackedPlantsProvider = StreamProvider<List<Plant>>((ref) async* {
   final db = ref.watch(databaseProvider);
   final plantRepo = ref.watch(plantRepositoryProvider);
-  final trackedIds = await db.getTrackedPlantIds();
-  return plantRepo.getPlantsByIds(trackedIds);
+  await for (final ids in db.watchTrackedPlantIds()) {
+    yield await plantRepo.getPlantsByIds(ids);
+  }
 });
 
-/// Dernier arrosage d'une plante
+/// Stream du dernier arrosage d'une plante.
 final lastWateringProvider =
-    FutureProvider.family<DateTime?, int>((ref, gardenPlantId) async {
-  final repo = ref.watch(gardenEventRepositoryProvider);
-  final event =
-      await repo.getLastEventOfType(gardenPlantId, GardenEventType.watering.name);
-  return event?.eventDate;
+    StreamProvider.family<DateTime?, int>((ref, gardenPlantId) async* {
+  final db = ref.watch(databaseProvider);
+  yield* db
+      .watchLastEventOfType(gardenPlantId, GardenEventType.watering.name)
+      .map((e) => e?.eventDate);
+});
+
+/// Stream des derniers arrosages pour toutes les plantes.
+/// Émet à chaque ajout/suppression d'événement d'arrosage.
+final lastWateringDatesProvider =
+    StreamProvider<Map<int, DateTime>>((ref) async* {
+  await ref.read(databaseInitProvider.future);
+  final db = ref.watch(databaseProvider);
+  yield* db.watchLastWateringDates();
 });
 
 // ============================================
@@ -140,7 +163,7 @@ final lastWateringProvider =
 /// Optimisé : 3 requêtes bulk au lieu de N+1
 final wateringRemindersProvider =
     FutureProvider<List<WateringReminder>>((ref) async {
-  await ref.watch(databaseInitProvider.future);
+  await ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
 
   // Données météo (peut échouer si pas de localisation)
@@ -285,16 +308,26 @@ class GardenEventNotifier extends Notifier<AsyncValue<void>> {
   Future<void> logEvent({
     int? gardenPlantId,
     int? plantId,
+    int? gardenId,
     required GardenEventType eventType,
     required DateTime date,
     String? notes,
   }) async {
-    assert(gardenPlantId != null || plantId != null);
+    // Pour les events d'entretien, l'utilisateur peut choisir "Sans potager" —
+    // l'event n'est alors lie a rien et reste un simple log dans le calendrier.
+    // Pour les autres types (semis, arrosage, recolte), au moins un lien
+    // (plante ou potager) est attendu — sinon l'event est inutilisable.
+    assert(eventType.isMaintenance ||
+            gardenPlantId != null ||
+            plantId != null ||
+            gardenId != null,
+        'non-maintenance events require gardenPlantId, plantId or gardenId');
     state = const AsyncLoading();
     try {
       await _repo.addEvent(GardenEventsCompanion.insert(
         gardenPlantId: Value(gardenPlantId),
         plantId: Value(plantId),
+        gardenId: Value(gardenId),
         eventType: eventType.name,
         eventDate: date,
         notes: Value(notes),
@@ -312,6 +345,7 @@ class GardenEventNotifier extends Notifier<AsyncValue<void>> {
           'eventType': eventType.name,
           'gardenPlantId': gardenPlantId ?? -1,
           'plantId': plantId ?? -1,
+          'gardenId': gardenId ?? -1,
         },
       );
       state = AsyncError(e, st);
@@ -357,9 +391,11 @@ class GardenEventNotifier extends Notifier<AsyncValue<void>> {
     }
   }
 
+  /// Seuls les providers encore en FutureProvider sont invalidés ici.
+  /// Les streams (gardenPlantEventsProvider, lastWateringProvider,
+  /// lastWateringDatesProvider) se rafraîchissent automatiquement via
+  /// Drift `.watch()`.
   void _invalidateAll(int gardenPlantId) {
-    ref.invalidate(gardenPlantEventsProvider(gardenPlantId));
-    ref.invalidate(lastWateringProvider(gardenPlantId));
     ref.invalidate(wateringRemindersProvider);
     ref.invalidate(allUserEventsProvider);
     ref.invalidate(monthUserEventsProvider(DateTime(

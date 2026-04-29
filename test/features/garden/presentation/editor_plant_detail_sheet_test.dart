@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jardingue/core/providers/database_providers.dart';
+import 'package:jardingue/core/providers/garden_event_providers.dart';
 import 'package:jardingue/core/providers/garden_providers.dart';
 import 'package:jardingue/core/services/database/app_database.dart';
 import 'package:jardingue/features/garden/domain/models/garden_plant_with_details.dart';
@@ -61,11 +62,26 @@ Widget _buildTestApp({
 }) {
   return ProviderScope(
     overrides: [
-      // Stub providers that the sheet watches
       plantCompanionsProvider(42)
           .overrideWith((ref) => Future.value(<Plant>[])),
       plantAntagonistsProvider(42)
           .overrideWith((ref) => Future.value(<Plant>[])),
+      allPlantsSortedProvider
+          .overrideWith((ref) => Future.value(<Plant>[_fakePlant()])),
+      // Providers désormais stream-backed : on émet un état initial vide
+      // pour que pumpAndSettle termine sans accès DB.
+      gardenPlantsProvider(1).overrideWith(
+        (ref) => Stream.value(<GardenPlantWithDetails>[]),
+      ),
+      gardenAmendmentsLineageProvider(1).overrideWith(
+        (ref) => Stream.value(<GardenAmendment>[]),
+      ),
+      lastWateringProvider(1).overrideWith(
+        (ref) => Stream.value(null),
+      ),
+      gardenPlantEventsProvider(1).overrideWith(
+        (ref) => Stream.value(<GardenEvent>[]),
+      ),
     ],
     child: MaterialApp(
       localizationsDelegates: const [

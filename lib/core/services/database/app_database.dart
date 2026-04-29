@@ -18,6 +18,7 @@ part 'app_database.g.dart';
     Gardens,
     GardenPlants,
     GardenEvents,
+    GardenAmendments,
     FruitTrees,
     UserFruitTrees,
     SelectedPlantsTable,
@@ -31,7 +32,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration {
@@ -43,14 +44,14 @@ class AppDatabase extends _$AppDatabase {
       onUpgrade: (Migrator m, int from, int to) async {
         // Migration v1 -> v2 : ajout des tables verger
         if (from < 2) {
-          await m.createTable(fruitTrees);
-          await m.createTable(userFruitTrees);
+          await _safeCreateTable(m, fruitTrees);
+          await _safeCreateTable(m, userFruitTrees);
         }
         // Migration v2 -> v3 : colonnes arrosage sur gardenPlants
         if (from < 3) {
-          await m.addColumn(gardenPlants, gardenPlants.sowedAt);
-          await m.addColumn(
-              gardenPlants, gardenPlants.wateringFrequencyDays);
+          await _safeAddColumn(m, gardenPlants, gardenPlants.sowedAt);
+          await _safeAddColumn(
+              m, gardenPlants, gardenPlants.wateringFrequencyDays);
         }
         // Migration v3 -> v4 : table gardenEvents avec plantId nullable
         // Pour les utilisateurs venant de v2 ou v1, la table n'existe pas
@@ -62,16 +63,16 @@ class AppDatabase extends _$AppDatabase {
             // L'ancienne table existe avec gardenPlantId NOT NULL
             await m.deleteTable('garden_events');
           }
-          await m.createTable(gardenEvents);
+          await _safeCreateTable(m, gardenEvents);
         }
         // Migration v4 -> v5 : enrichissement données (climate, toxicity, tips)
         if (from < 5) {
-          await m.addColumn(plants, plants.climateAdaptation);
-          await m.addColumn(plants, plants.toxicity);
-          await m.addColumn(plants, plants.practicalTips);
-          await m.addColumn(fruitTrees, fruitTrees.climateAdaptation);
-          await m.addColumn(fruitTrees, fruitTrees.toxicity);
-          await m.addColumn(fruitTrees, fruitTrees.practicalTips);
+          await _safeAddColumn(m, plants, plants.climateAdaptation);
+          await _safeAddColumn(m, plants, plants.toxicity);
+          await _safeAddColumn(m, plants, plants.practicalTips);
+          await _safeAddColumn(m, fruitTrees, fruitTrees.climateAdaptation);
+          await _safeAddColumn(m, fruitTrees, fruitTrees.toxicity);
+          await _safeAddColumn(m, fruitTrees, fruitTrees.practicalTips);
         }
         // Migration v5 -> v6 : indexes pour performances
         if (from < 6) {
@@ -79,17 +80,67 @@ class AppDatabase extends _$AppDatabase {
         }
         // Migration v6 -> v7 : table selected_plants (planification)
         if (from < 7) {
-          await m.createTable(selectedPlantsTable);
+          await _safeCreateTable(m, selectedPlantsTable);
         }
         // Migration v7 -> v8 : table completed_planning_tasks
         if (from < 8) {
-          await m.createTable(completedPlanningTasks);
+          await _safeCreateTable(m, completedPlanningTasks);
         }
         // Migration v8 -> v9 : correction calendriers semis/plantation
         // Pas de changement de schéma, mais le flag schemaVersion=9
         // déclenche le réimport des données JSON dans PlantImportService.
+
+        // Migration v9 -> v10 : rotation des cultures
+        if (from < 10) {
+          await _safeAddColumn(m, plants, plants.rotationFamily);
+          await _safeAddColumn(m, gardens, gardens.year);
+          await _safeAddColumn(m, gardens, gardens.previousGardenId);
+          await _safeAddColumn(
+              m, gardenPlants, gardenPlants.previousCropPlantId);
+        }
+        // Migration v10 -> v11 : calques d'amendements
+        if (from < 11) {
+          await _safeCreateTable(m, gardenAmendments);
+        }
+        // Migration v11 -> v12 : evenements d'entretien lies a un potager.
+        // Ajoute la colonne gardenId pour autoriser les events sans plante
+        // mais lies a un potager (paillage, anti-limaces, engrais...).
+        if (from < 12) {
+          await _safeAddColumn(m, gardenEvents, gardenEvents.gardenId);
+        }
       },
     );
+  }
+
+  /// Ajoute une colonne en ignorant l'erreur "duplicate column name".
+  ///
+  /// Drift se base sur `user_version` SQLite pour decider si une migration
+  /// doit s'executer. En dev (stash apply/pop, hot-reload de schema, import
+  /// d'une DB plus avancee...) ou en cas de migration partielle interrompue,
+  /// cette version peut etre desync avec le schema reel : la colonne existe
+  /// deja mais Drift relance la migration. On rattrape l'erreur pour rester
+  /// idempotent au lieu de bloquer le boot de l'app.
+  Future<void> _safeAddColumn(
+    Migrator m,
+    TableInfo table,
+    GeneratedColumn column,
+  ) async {
+    try {
+      await m.addColumn(table, column);
+    } catch (e) {
+      if (e.toString().contains('duplicate column')) return;
+      rethrow;
+    }
+  }
+
+  /// Variante idempotente de createTable : ignore "table already exists".
+  Future<void> _safeCreateTable(Migrator m, TableInfo table) async {
+    try {
+      await m.createTable(table);
+    } catch (e) {
+      if (e.toString().contains('already exists')) return;
+      rethrow;
+    }
   }
 
   Future<void> _createIndexes() async {
@@ -225,8 +276,15 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Garden>> getAllGardens() => select(gardens).get();
 
+  Stream<List<Garden>> watchAllGardens() => select(gardens).watch();
+
   Future<Garden?> getGardenById(int id) {
     return (select(gardens)..where((t) => t.id.equals(id))).getSingleOrNull();
+  }
+
+  Stream<Garden?> watchGardenById(int id) {
+    return (select(gardens)..where((t) => t.id.equals(id)))
+        .watchSingleOrNull();
   }
 
   Future<int> createGarden(GardensCompanion garden) {
@@ -237,8 +295,61 @@ class AppDatabase extends _$AppDatabase {
     return update(gardens).replace(garden);
   }
 
-  Future<int> deleteGarden(int id) {
-    return (delete(gardens)..where((t) => t.id.equals(id))).go();
+  /// Mise à jour partielle d'un potager (ne touche que les champs fournis).
+  Future<void> updateGardenPartial({
+    required int id,
+    String? name,
+    int? widthCells,
+    int? heightCells,
+    int? cellSizeCm,
+    Value<int?> year = const Value.absent(),
+    Value<int?> previousGardenId = const Value.absent(),
+  }) async {
+    await (update(gardens)..where((t) => t.id.equals(id))).write(
+      GardensCompanion(
+        name: name != null ? Value(name) : const Value.absent(),
+        widthCells:
+            widthCells != null ? Value(widthCells) : const Value.absent(),
+        heightCells:
+            heightCells != null ? Value(heightCells) : const Value.absent(),
+        cellSizeCm:
+            cellSizeCm != null ? Value(cellSizeCm) : const Value.absent(),
+        year: year,
+        previousGardenId: previousGardenId,
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  /// Supprime un potager ET ses dependances (plantes, evenements, amendements).
+  ///
+  /// Sans ce cascade, les events lies via gardenPlantId ou directement via
+  /// gardenId restent orphelins dans la table garden_events et continuent
+  /// d'apparaitre dans "Mon suivi" alors que le potager n'existe plus.
+  /// On encapsule dans une transaction pour eviter les etats partiels.
+  Future<int> deleteGarden(int id) async {
+    return transaction(() async {
+      // 1. Recuperer les ids des plantes du potager pour purger leurs events.
+      final gpIds = await (selectOnly(gardenPlants)
+            ..addColumns([gardenPlants.id])
+            ..where(gardenPlants.gardenId.equals(id)))
+          .map((r) => r.read(gardenPlants.id)!)
+          .get();
+      // 2. Supprimer les events lies aux plantes du potager.
+      if (gpIds.isNotEmpty) {
+        await (delete(gardenEvents)
+              ..where((t) => t.gardenPlantId.isIn(gpIds)))
+            .go();
+      }
+      // 3. Supprimer les events lies directement au potager (entretien).
+      await (delete(gardenEvents)..where((t) => t.gardenId.equals(id))).go();
+      // 4. Supprimer les amendements du potager.
+      await (delete(gardenAmendments)..where((t) => t.gardenId.equals(id))).go();
+      // 5. Supprimer les plantes du potager.
+      await (delete(gardenPlants)..where((t) => t.gardenId.equals(id))).go();
+      // 6. Enfin supprimer le potager lui-meme.
+      return (delete(gardens)..where((t) => t.id.equals(id))).go();
+    });
   }
 
   // ============================================
@@ -337,6 +448,7 @@ class AppDatabase extends _$AppDatabase {
     DateTime? sowedAt,
     DateTime? plantedAt,
     int? wateringFrequencyDays,
+    Value<int?> previousCropPlantId = const Value.absent(),
   }) async {
     await (update(gardenPlants)..where((t) => t.id.equals(id))).write(
       GardenPlantsCompanion(
@@ -346,6 +458,7 @@ class AppDatabase extends _$AppDatabase {
         wateringFrequencyDays: wateringFrequencyDays != null
             ? Value(wateringFrequencyDays)
             : const Value.absent(),
+        previousCropPlantId: previousCropPlantId,
       ),
     );
 
@@ -364,6 +477,74 @@ class AppDatabase extends _$AppDatabase {
                 t.eventType.equals('sowing')))
           .write(GardenEventsCompanion(eventDate: Value(sowedAt)));
     }
+  }
+
+  // ============================================
+  // GARDEN AMENDMENTS QUERIES
+  // ============================================
+
+  Future<List<GardenAmendment>> getAmendmentsForGarden(int gardenId) {
+    return (select(gardenAmendments)
+          ..where((t) => t.gardenId.equals(gardenId))
+          ..orderBy([(t) => OrderingTerm.desc(t.appliedAt)]))
+        .get();
+  }
+
+  /// Agrège les amendements du potager et de ses ancêtres (via la chaîne
+  /// previousGardenId) — une seule requête via CTE récursive SQLite.
+  Future<List<GardenAmendment>> getAmendmentsForGardenLineage(
+      int gardenId) async {
+    final result = await customSelect(
+      'WITH RECURSIVE lineage(id) AS ('
+      '  SELECT ?1 '
+      '  UNION ALL '
+      '  SELECT g.previous_garden_id FROM gardens g '
+      '  JOIN lineage l ON g.id = l.id '
+      '  WHERE g.previous_garden_id IS NOT NULL'
+      ') '
+      'SELECT a.* FROM garden_amendments a '
+      'WHERE a.garden_id IN (SELECT id FROM lineage) '
+      'ORDER BY a.applied_at DESC',
+      variables: [Variable.withInt(gardenId)],
+      readsFrom: {gardenAmendments, gardens},
+    ).get();
+    return result.map((row) => gardenAmendments.map(row.data)).toList();
+  }
+
+  Future<int> addAmendment(GardenAmendmentsCompanion companion) {
+    return into(gardenAmendments).insert(companion);
+  }
+
+  Future<int> deleteAmendment(int id) {
+    return (delete(gardenAmendments)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<void> updateAmendment({
+    required int id,
+    String? type,
+    int? gridX,
+    int? gridY,
+    int? widthCells,
+    int? heightCells,
+    DateTime? appliedAt,
+    Value<String?> notes = const Value.absent(),
+  }) async {
+    await (update(gardenAmendments)..where((t) => t.id.equals(id))).write(
+      GardenAmendmentsCompanion(
+        type: type != null ? Value(type) : const Value.absent(),
+        gridX: gridX != null ? Value(gridX) : const Value.absent(),
+        gridY: gridY != null ? Value(gridY) : const Value.absent(),
+        widthCells: widthCells != null
+            ? Value(widthCells)
+            : const Value.absent(),
+        heightCells: heightCells != null
+            ? Value(heightCells)
+            : const Value.absent(),
+        appliedAt:
+            appliedAt != null ? Value(appliedAt) : const Value.absent(),
+        notes: notes,
+      ),
+    );
   }
 
   // ============================================
@@ -684,19 +865,128 @@ class AppDatabase extends _$AppDatabase {
     ])).get();
   }
 
-  /// Derniers événements d'arrosage par gardenPlantId (1 query au lieu de N)
+  /// Derniers événements d'arrosage par gardenPlantId.
+  /// Agrégation SQL (MAX) : une ligne par plante au lieu de scanner
+  /// tout l'historique d'arrosage.
   Future<Map<int, DateTime>> getLastWateringDates() async {
-    final events = await (select(gardenEvents)
-          ..where((t) =>
-              t.eventType.equals('watering') &
-              t.gardenPlantId.isNotNull())
-          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)]))
-        .get();
+    final maxDate = gardenEvents.eventDate.max();
+    final query = selectOnly(gardenEvents)
+      ..addColumns([gardenEvents.gardenPlantId, maxDate])
+      ..where(gardenEvents.eventType.equals('watering') &
+          gardenEvents.gardenPlantId.isNotNull())
+      ..groupBy([gardenEvents.gardenPlantId]);
+    final rows = await query.get();
     final result = <int, DateTime>{};
-    for (final event in events) {
-      result.putIfAbsent(event.gardenPlantId!, () => event.eventDate);
+    for (final row in rows) {
+      final gpId = row.read(gardenEvents.gardenPlantId);
+      final last = row.read(maxDate);
+      if (gpId != null && last != null) result[gpId] = last;
     }
     return result;
+  }
+
+  // ============================================
+  // REACTIVE STREAMS (Drift .watch())
+  // Les écrans s'abonnent via StreamProvider ; toute mutation des
+  // tables concernées est propagée automatiquement à l'UI, sans
+  // invalidation manuelle.
+  // ============================================
+
+  Stream<List<TypedResult>> watchGardenPlantsWithDetails(int gardenId) {
+    return (select(gardenPlants).join([
+      leftOuterJoin(plants, plants.id.equalsExp(gardenPlants.plantId)),
+    ])..where(gardenPlants.gardenId.equals(gardenId)))
+        .watch();
+  }
+
+  Stream<List<TypedResult>> watchAllGardenPlantsWithPlantAndGarden() {
+    return (select(gardenPlants).join([
+      leftOuterJoin(plants, plants.id.equalsExp(gardenPlants.plantId)),
+      innerJoin(gardens, gardens.id.equalsExp(gardenPlants.gardenId)),
+    ])).watch();
+  }
+
+  Stream<List<GardenEvent>> watchEventsForGardenPlant(int gardenPlantId) {
+    return (select(gardenEvents)
+          ..where((t) => t.gardenPlantId.equals(gardenPlantId))
+          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)]))
+        .watch();
+  }
+
+  Stream<List<GardenEvent>> watchAllEvents() {
+    return (select(gardenEvents)
+          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)]))
+        .watch();
+  }
+
+  Stream<GardenEvent?> watchLastEventOfType(
+      int gardenPlantId, String eventType) {
+    return (select(gardenEvents)
+          ..where((t) =>
+              t.gardenPlantId.equals(gardenPlantId) &
+              t.eventType.equals(eventType))
+          ..orderBy([(t) => OrderingTerm.desc(t.eventDate)])
+          ..limit(1))
+        .watchSingleOrNull();
+  }
+
+  Stream<List<int>> watchTrackedPlantIds() {
+    final query = selectOnly(gardenEvents, distinct: true)
+      ..addColumns([gardenEvents.plantId])
+      ..where(gardenEvents.plantId.isNotNull());
+    return query
+        .watch()
+        .map((rows) => rows.map((r) => r.read(gardenEvents.plantId)!).toList());
+  }
+
+  Stream<List<TypedResult>> watchSelectedPlants() {
+    return (select(selectedPlantsTable).join([
+      innerJoin(
+        plants,
+        plants.id.equalsExp(selectedPlantsTable.plantId),
+      ),
+    ])..orderBy([
+            OrderingTerm.desc(selectedPlantsTable.addedAt),
+          ]))
+        .watch();
+  }
+
+  Stream<List<GardenAmendment>> watchAmendmentsForGardenLineage(int gardenId) {
+    return customSelect(
+      'WITH RECURSIVE lineage(id) AS ('
+      '  SELECT ?1 '
+      '  UNION ALL '
+      '  SELECT g.previous_garden_id FROM gardens g '
+      '  JOIN lineage l ON g.id = l.id '
+      '  WHERE g.previous_garden_id IS NOT NULL'
+      ') '
+      'SELECT a.* FROM garden_amendments a '
+      'WHERE a.garden_id IN (SELECT id FROM lineage) '
+      'ORDER BY a.applied_at DESC',
+      variables: [Variable.withInt(gardenId)],
+      readsFrom: {gardenAmendments, gardens},
+    ).watch().map(
+          (rows) =>
+              rows.map((row) => gardenAmendments.map(row.data)).toList(),
+        );
+  }
+
+  Stream<Map<int, DateTime>> watchLastWateringDates() {
+    final maxDate = gardenEvents.eventDate.max();
+    final query = selectOnly(gardenEvents)
+      ..addColumns([gardenEvents.gardenPlantId, maxDate])
+      ..where(gardenEvents.eventType.equals('watering') &
+          gardenEvents.gardenPlantId.isNotNull())
+      ..groupBy([gardenEvents.gardenPlantId]);
+    return query.watch().map((rows) {
+      final result = <int, DateTime>{};
+      for (final row in rows) {
+        final gpId = row.read(gardenEvents.gardenPlantId);
+        final last = row.read(maxDate);
+        if (gpId != null && last != null) result[gpId] = last;
+      }
+      return result;
+    });
   }
 }
 

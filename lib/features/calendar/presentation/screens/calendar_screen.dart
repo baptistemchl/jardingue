@@ -49,9 +49,18 @@ class _CalendarScreenState
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(
-      initialPage: 0,
-    );
+    // Le provider [calendarViewProvider] est global (Riverpod) donc il survit
+    // a la navigation entre onglets bottom nav, alors que ce State est
+    // detruit/recree. Sans synchroniser, l'utilisateur revient sur "Mon suivi"
+    // mais le PageView s'ouvre toujours sur "Calendrier" → l'indicateur du
+    // TabBar (qui lit le provider) et le contenu visible (page 0) divergent.
+    final initialView = ref.read(calendarViewProvider);
+    final initialPage = switch (initialView) {
+      CalendarViewType.calendar => 0,
+      CalendarViewType.list => 1,
+      CalendarViewType.myActivities => 2,
+    };
+    _pageController = PageController(initialPage: initialPage);
     // Popup d'aide au premier lancement
     WidgetsBinding.instance
         .addPostFrameCallback((_) {

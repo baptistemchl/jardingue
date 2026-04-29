@@ -391,12 +391,19 @@ class _UserEventTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final type = event.type;
-    final plantEmoji = event.plant != null
-        ? PlantEmojiMapper.fromName(
-            event.plant!.commonName,
-            categoryCode: event.plant!.categoryCode,
-          )
-        : '🌱';
+    // Pour un event d'entretien sans plante, on affiche directement l'emoji
+    // du type (paillage, anti-limaces...) plutot que l'emoji generique 🌱.
+    final String leadingEmoji;
+    if (event.plant != null) {
+      leadingEmoji = PlantEmojiMapper.fromName(
+        event.plant!.commonName,
+        categoryCode: event.plant!.categoryCode,
+      );
+    } else if (type.isMaintenance) {
+      leadingEmoji = type.emoji;
+    } else {
+      leadingEmoji = '🌱';
+    }
 
     return GestureDetector(
       onTap: () => _openPlantDetail(context, ref),
@@ -418,7 +425,7 @@ class _UserEventTile extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
-                child: Text(plantEmoji, style: const TextStyle(fontSize: 20)),
+                child: Text(leadingEmoji, style: const TextStyle(fontSize: 20)),
               ),
             ),
             const SizedBox(width: 12),
@@ -427,7 +434,7 @@ class _UserEventTile extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    event.plantName,
+                    event.displayTitle,
                     style: AppTypography.titleSmall,
                   ),
                   const SizedBox(height: 2),
@@ -485,7 +492,12 @@ class _UserEventTile extends ConsumerWidget {
   }
 
   void _openPlantDetail(BuildContext context, WidgetRef ref) {
-    if (event.plant == null) return;
+    // Event d'entretien sans plante : on ouvre directement la sheet detail
+    // simplifiee (qui gere le cas plant == null).
+    if (event.plant == null) {
+      _showSimplePlantInfo(context, ref);
+      return;
+    }
 
     final gp = event.gardenPlant;
     final garden = event.garden;
@@ -568,15 +580,21 @@ class _EventDetailSheetState extends ConsumerState<_EventDetailSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final plant = widget.event.plant!;
-    final emoji = PlantEmojiMapper.fromName(
-        plant.commonName, categoryCode: plant.categoryCode);
+    final plant = widget.event.plant;
+    final isMaintenance = widget.event.type.isMaintenance;
+    // Pour les events d'entretien sans plante, on affiche l'emoji du type
+    // d'entretien ; sinon l'emoji de la plante.
+    final emoji = plant != null
+        ? PlantEmojiMapper.fromName(
+            plant.commonName, categoryCode: plant.categoryCode)
+        : widget.event.type.emoji;
     final date =
         '${widget.event.event.eventDate.day.toString().padLeft(2, '0')}/'
         '${widget.event.event.eventDate.month.toString().padLeft(2, '0')}/'
         '${widget.event.event.eventDate.year}';
 
-    final hasChanged = _currentType != widget.event.type;
+    final hasChanged =
+        !isMaintenance && _currentType != widget.event.type;
 
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -585,9 +603,10 @@ class _EventDetailSheetState extends ConsumerState<_EventDetailSheet> {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 48)),
           const SizedBox(height: 12),
-          Text(plant.commonName, style: AppTypography.titleLarge),
-          if (plant.latinName != null)
-            Text(plant.latinName!,
+          Text(plant?.commonName ?? widget.event.type.label,
+              style: AppTypography.titleLarge),
+          if (plant?.latinName != null)
+            Text(plant!.latinName!,
                 style: AppTypography.bodySmall.copyWith(
                     fontStyle: FontStyle.italic,
                     color: AppColors.textSecondary)),
@@ -601,12 +620,14 @@ class _EventDetailSheetState extends ConsumerState<_EventDetailSheet> {
                     .copyWith(color: AppColors.textTertiary)),
           const SizedBox(height: 20),
 
-          Text('Type d\'evenement', style: AppTypography.labelMedium),
-          const SizedBox(height: 10),
-          Wrap(
+          if (!isMaintenance) ...[
+            Text('Type d\'evenement', style: AppTypography.labelMedium),
+            const SizedBox(height: 10),
+          ],
+          if (!isMaintenance) Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: GardenEventType.values.map((t) {
+            children: GardenEventType.values.where((t) => !t.isMaintenance).map((t) {
               final selected = _currentType == t;
               return GestureDetector(
                 onTap: () => setState(() => _currentType = t),
@@ -694,6 +715,7 @@ class _EventDetailSheetState extends ConsumerState<_EventDetailSheet> {
                   await notifier.logEvent(
                     gardenPlantId: widget.event.event.gardenPlantId,
                     plantId: widget.event.event.plantId,
+                    gardenId: widget.event.event.gardenId,
                     eventType: _currentType,
                     date: widget.event.event.eventDate,
                   );
