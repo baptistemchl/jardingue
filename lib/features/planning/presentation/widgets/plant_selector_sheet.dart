@@ -5,11 +5,13 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/providers/database_providers.dart';
+import '../../../../core/providers/garden_event_providers.dart';
 import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/providers/planning_providers.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/plant_emoji_mapper.dart';
+import '../../../garden/domain/models/garden_event.dart';
 
 class PlantSelectorSheet
     extends ConsumerStatefulWidget {
@@ -325,26 +327,35 @@ class _PlantSelectorSheetState
       return;
     }
 
-    // Demande la destination : potager ou suivi seulement.
+    // Demande la destination : potager OU event sans potager.
     final gardens = await ref.read(gardensListProvider.future);
     if (!context.mounted) return;
 
     final destination = await _askDestination(context, gardens);
     if (destination == null) return; // annulé
 
-    // Toujours ajouter au suivi (sélection manuelle).
-    for (final id in newlyAddedIds) {
-      await notifier.add(id);
-    }
-
-    // Si un potager a été choisi, placer les plantes en attente.
     if (destination.gardenId != null) {
+      // Ajouter au potager en pending placement → la plante sera trackee
+      // via garden_plants (fusionne dans selectedPlantsProvider).
       final gardenNotifier =
           ref.read(gardenNotifierProvider.notifier);
       for (final id in newlyAddedIds) {
         await gardenNotifier.addPlantPendingPlacement(
           gardenId: destination.gardenId!,
           plantId: id,
+        );
+      }
+    } else {
+      // Pas de potager : on cree un event (semis ou plantation) avec
+      // plantId seul → la plante apparait dans la planification ET dans
+      // Mon Suivi via garden_events.
+      final eventNotifier =
+          ref.read(gardenEventNotifierProvider.notifier);
+      for (final id in newlyAddedIds) {
+        await eventNotifier.logEvent(
+          plantId: id,
+          eventType: destination.eventType!,
+          date: DateTime.now(),
         );
       }
     }
@@ -362,11 +373,24 @@ class _PlantSelectorSheetState
             duration: const Duration(seconds: 4),
           ),
         );
+      } else {
+        final label = destination.eventType == GardenEventType.sowing
+            ? 'semée(s)'
+            : 'plantée(s)';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${newlyAddedIds.length} plante(s) $label aujourd\'hui '
+              '(visible dans Mon Suivi).',
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
     }
   }
 
-  /// Demande si les nouvelles plantes vont dans un potager ou en suivi seul.
+  /// Demande la destination : potager OU event (semis/plantation sans potager).
   /// Retourne null si annulé.
   Future<_AddDestination?> _askDestination(
     BuildContext context,
@@ -379,132 +403,157 @@ class _PlantSelectorSheetState
   }
 }
 
+/// Destination d'ajout : soit un potager (pending placement), soit un event
+/// sans potager (semis ou plantation, daté du jour).
 class _AddDestination {
   final int? gardenId;
   final String? gardenName;
-  const _AddDestination.trackingOnly()
-      : gardenId = null,
-        gardenName = null;
+  final GardenEventType? eventType;
   const _AddDestination.garden(int id, String name)
       : gardenId = id,
-        gardenName = name;
+        gardenName = name,
+        eventType = null;
+  const _AddDestination.event(GardenEventType type)
+      : gardenId = null,
+        gardenName = null,
+        eventType = type;
 }
 
-class _DestinationDialog extends StatefulWidget {
+/// Dialog : "Ou ajouter ces plantes ?" — potager existant OU event seul
+/// (semis / plantation aujourd'hui sans potager).
+class _DestinationDialog extends StatelessWidget {
   final List<Garden> gardens;
   const _DestinationDialog({required this.gardens});
 
-  @override
-  State<_DestinationDialog> createState() => _DestinationDialogState();
-}
+  void _pickGarden(BuildContext context, Garden g) {
+    Navigator.of(context).pop(_AddDestination.garden(g.id, g.name));
+  }
 
-class _DestinationDialogState extends State<_DestinationDialog> {
-  int? _selectedGardenId;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.gardens.length == 1) {
-      _selectedGardenId = widget.gardens.first.id;
-    }
+  void _pickEvent(BuildContext context, GardenEventType type) {
+    Navigator.of(context).pop(_AddDestination.event(type));
   }
 
   @override
   Widget build(BuildContext context) {
-    final gardens = widget.gardens;
     return AlertDialog(
       title: const Text('Où ajouter ces plantes ?'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Choisissez si ces plantes doivent être placées dans un '
-            'potager ou seulement suivies.',
-            style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 16),
-          if (gardens.isEmpty)
-            Text(
-              'Aucun potager créé — elles seront ajoutées au suivi.',
-              style: AppTypography.caption.copyWith(
-                color: AppColors.textTertiary,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (gardens.isNotEmpty) ...[
+              Text(
+                'Dans un potager',
+                style: AppTypography.labelMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
-            )
-          else ...[
-            Text('Potager', style: AppTypography.labelMedium),
-            const SizedBox(height: 4),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.border),
+              const SizedBox(height: 8),
+              for (final g in gardens) ...[
+                _DestinationTile(
+                  emoji: '🌱',
+                  title: g.year != null ? '${g.name} (${g.year})' : g.name,
+                  subtitle: 'Placement à définir dans l\'éditeur',
+                  onTap: () => _pickGarden(context, g),
+                ),
+                const SizedBox(height: 6),
+              ],
+              const SizedBox(height: 12),
+              Text(
+                'Sans potager (logué dans Mon Suivi)',
+                style: AppTypography.labelMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
-              child: DropdownButton<int?>(
-                value: _selectedGardenId,
-                isExpanded: true,
-                underline: const SizedBox.shrink(),
-                hint: Text(
-                  'Aucun',
+              const SizedBox(height: 8),
+            ] else
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Text(
+                  'Aucun potager — choisissez le type d\'action enregistrée :',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textTertiary,
+                    color: AppColors.textSecondary,
                   ),
                 ),
-                items: [
-                  DropdownMenuItem<int?>(
-                    value: null,
-                    child: Text(
-                      'Aucun (suivi seulement)',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                  for (final g in gardens)
-                    DropdownMenuItem<int?>(
-                      value: g.id,
-                      child: Text(
-                        g.year != null ? '${g.name} (${g.year})' : g.name,
-                        style: AppTypography.bodySmall,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                ],
-                onChanged: (v) =>
-                    setState(() => _selectedGardenId = v),
               ),
+            _DestinationTile(
+              emoji: GardenEventType.sowing.emoji,
+              title: 'J\'ai semé aujourd\'hui',
+              subtitle: 'Crée un événement de semis',
+              onTap: () => _pickEvent(context, GardenEventType.sowing),
+            ),
+            const SizedBox(height: 6),
+            _DestinationTile(
+              emoji: GardenEventType.planting.emoji,
+              title: 'J\'ai planté aujourd\'hui',
+              subtitle: 'Crée un événement de plantation',
+              onTap: () => _pickEvent(context, GardenEventType.planting),
             ),
           ],
-        ],
+        ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Annuler'),
         ),
-        ElevatedButton(
-          onPressed: () {
-            if (_selectedGardenId == null) {
-              Navigator.of(context)
-                  .pop(const _AddDestination.trackingOnly());
-            } else {
-              final g = gardens.firstWhere(
-                (x) => x.id == _selectedGardenId,
-              );
-              Navigator.of(context)
-                  .pop(_AddDestination.garden(g.id, g.name));
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-          ),
-          child: const Text('Valider'),
-        ),
       ],
+    );
+  }
+}
+
+class _DestinationTile extends StatelessWidget {
+  final String emoji;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _DestinationTile({
+    required this.emoji,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: AppTypography.titleSmall),
+                  Text(
+                    subtitle,
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
+              size: 14,
+              color: AppColors.textTertiary,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

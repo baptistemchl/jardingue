@@ -21,7 +21,7 @@ part 'app_database.g.dart';
     GardenAmendments,
     FruitTrees,
     UserFruitTrees,
-    SelectedPlantsTable,
+    // SelectedPlantsTable retiree en v13 — voir migration onUpgrade.
     CompletedPlanningTasks,
   ],
 )
@@ -32,7 +32,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration {
@@ -78,9 +78,16 @@ class AppDatabase extends _$AppDatabase {
         if (from < 6) {
           await _createIndexes();
         }
-        // Migration v6 -> v7 : table selected_plants (planification)
+        // Migration v6 -> v7 : table selected_plants (planification).
+        // La table a ete dropee en v13 (unification des sources). Si un
+        // utilisateur passe directement de v6 vers v13+, on cree quand
+        // meme la table : la migration v12->v13 va la lire puis la dropper.
         if (from < 7) {
-          await _safeCreateTable(m, selectedPlantsTable);
+          await customStatement(
+            'CREATE TABLE IF NOT EXISTS selected_plants ('
+            'plant_id INTEGER NOT NULL PRIMARY KEY, '
+            'added_at INTEGER NOT NULL)',
+          );
         }
         // Migration v7 -> v8 : table completed_planning_tasks
         if (from < 8) {
@@ -108,8 +115,63 @@ class AppDatabase extends _$AppDatabase {
         if (from < 12) {
           await _safeAddColumn(m, gardenEvents, gardenEvents.gardenId);
         }
+        // Migration v12 -> v13 : unification des sources "mes plantes".
+        // La table `selected_plants` etait une troisieme source de verite
+        // separee de `garden_plants` et `garden_events`. On convertit chaque
+        // ligne orpheline (pas de potager, pas d'event) en event `planting`
+        // avec plantId seul, puis on drop la table. Les autres lignes sont
+        // implicitement preservees via leur gardenPlant ou event existant.
+        if (from < 13) {
+          await _migrateSelectedPlantsToEvents();
+          await customStatement('DROP TABLE IF EXISTS selected_plants');
+        }
       },
     );
+  }
+
+  /// Pour chaque ligne de `selected_plants` qui n'est referencee ni par
+  /// `garden_plants` ni par `garden_events` (= ajoutee a la planification
+  /// uniquement, sans potager ni event), on cree un event `planting` avec
+  /// `plantId` seul et `eventDate = addedAt`. La table est ensuite drop par
+  /// le caller : pas de risque de perte, les autres lignes ont deja un
+  /// gardenPlant ou event qui les rend visibles dans la planification.
+  ///
+  /// On verifie que la table existe avant de lire — un fresh install passe
+  /// directement par onCreate sans jamais avoir cree `selected_plants`.
+  Future<void> _migrateSelectedPlantsToEvents() async {
+    final exists = await customSelect(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='selected_plants'",
+    ).get();
+    if (exists.isEmpty) return;
+
+    final orphanRows = await customSelect(
+      '''
+      SELECT sp.plant_id AS plant_id, sp.added_at AS added_at
+      FROM selected_plants sp
+      WHERE NOT EXISTS (
+        SELECT 1 FROM garden_plants gp WHERE gp.plant_id = sp.plant_id
+      ) AND NOT EXISTS (
+        SELECT 1 FROM garden_events ge WHERE ge.plant_id = sp.plant_id
+      )
+      ''',
+    ).get();
+
+    final now = DateTime.now();
+    for (final row in orphanRows) {
+      final plantId = row.read<int>('plant_id');
+      // `added_at` est stocke en secondes Unix par Drift.
+      final addedAtSec = row.read<int>('added_at');
+      final addedAt = DateTime.fromMillisecondsSinceEpoch(
+        addedAtSec * 1000,
+        isUtc: false,
+      );
+      await into(gardenEvents).insert(GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        eventType: 'planting',
+        eventDate: addedAt,
+        createdAt: Value(now),
+      ));
+    }
   }
 
   /// Ajoute une colonne en ignorant l'erreur "duplicate column name".
@@ -548,54 +610,6 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // ============================================
-  // SELECTED PLANTS QUERIES (PLANNING)
-  // ============================================
-
-  Future<List<TypedResult>> getSelectedPlants() {
-    return (select(selectedPlantsTable).join([
-      innerJoin(
-        plants,
-        plants.id.equalsExp(
-          selectedPlantsTable.plantId,
-        ),
-      ),
-    ])..orderBy([
-        OrderingTerm.desc(
-          selectedPlantsTable.addedAt,
-        ),
-      ]))
-        .get();
-  }
-
-  Future<int> insertSelectedPlant(int plantId) {
-    return into(selectedPlantsTable).insert(
-      SelectedPlantsTableCompanion(
-        plantId: Value(plantId),
-      ),
-      mode: InsertMode.insertOrIgnore,
-    );
-  }
-
-  Future<int> deleteSelectedPlant(int plantId) {
-    return (delete(selectedPlantsTable)
-          ..where(
-            (t) => t.plantId.equals(plantId),
-          ))
-        .go();
-  }
-
-  Future<List<int>> getSelectedPlantIds() async {
-    final rows = await (select(selectedPlantsTable)
-          ..orderBy([
-            (t) => OrderingTerm.desc(t.addedAt),
-          ]))
-        .get();
-    return rows
-        .map((r) => r.plantId)
-        .toList();
-  }
-
-  // ============================================
   // COMPLETED PLANNING TASKS QUERIES
   // ============================================
 
@@ -939,16 +953,40 @@ class AppDatabase extends _$AppDatabase {
         .map((rows) => rows.map((r) => r.read(gardenEvents.plantId)!).toList());
   }
 
-  Stream<List<TypedResult>> watchSelectedPlants() {
-    return (select(selectedPlantsTable).join([
-      innerJoin(
-        plants,
-        plants.id.equalsExp(selectedPlantsTable.plantId),
-      ),
-    ])..orderBy([
-            OrderingTerm.desc(selectedPlantsTable.addedAt),
-          ]))
-        .watch();
+  /// Stream des plantes tracees via au moins un event (avec leur date de
+  /// premier event = addedAt), join avec le catalogue. Utilise par la
+  /// planification pour fusionner avec les plantes posees en potager.
+  Stream<List<({int plantId, String commonName, String? categoryCode, DateTime addedAt})>>
+      watchTrackedPlantsWithDetails() {
+    final query = selectOnly(gardenEvents)
+      ..addColumns([
+        gardenEvents.plantId,
+        gardenEvents.eventDate.min(),
+      ])
+      ..where(gardenEvents.plantId.isNotNull())
+      ..groupBy([gardenEvents.plantId]);
+
+    return query.watch().asyncMap((eventRows) async {
+      if (eventRows.isEmpty) return const [];
+      final ids = <int>[];
+      final addedAtById = <int, DateTime>{};
+      for (final row in eventRows) {
+        final pid = row.read(gardenEvents.plantId);
+        final minDate = row.read(gardenEvents.eventDate.min());
+        if (pid == null) continue;
+        ids.add(pid);
+        if (minDate != null) addedAtById[pid] = minDate;
+      }
+      final plantRows = await (select(plants)..where((t) => t.id.isIn(ids))).get();
+      return plantRows.map((p) {
+        return (
+          plantId: p.id,
+          commonName: p.commonName,
+          categoryCode: p.categoryCode,
+          addedAt: addedAtById[p.id] ?? DateTime.now(),
+        );
+      }).toList();
+    });
   }
 
   Stream<List<GardenAmendment>> watchAmendmentsForGardenLineage(int gardenId) {

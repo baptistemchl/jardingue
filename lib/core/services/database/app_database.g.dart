@@ -8007,266 +8007,6 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
   }
 }
 
-class $SelectedPlantsTableTable extends SelectedPlantsTable
-    with TableInfo<$SelectedPlantsTableTable, SelectedPlantsTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SelectedPlantsTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _plantIdMeta = const VerificationMeta(
-    'plantId',
-  );
-  @override
-  late final GeneratedColumn<int> plantId = GeneratedColumn<int>(
-    'plant_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES plants (id)',
-    ),
-  );
-  static const VerificationMeta _addedAtMeta = const VerificationMeta(
-    'addedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> addedAt = GeneratedColumn<DateTime>(
-    'added_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, plantId, addedAt];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'selected_plants';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<SelectedPlantsTableData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('plant_id')) {
-      context.handle(
-        _plantIdMeta,
-        plantId.isAcceptableOrUnknown(data['plant_id']!, _plantIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_plantIdMeta);
-    }
-    if (data.containsKey('added_at')) {
-      context.handle(
-        _addedAtMeta,
-        addedAt.isAcceptableOrUnknown(data['added_at']!, _addedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  SelectedPlantsTableData map(
-    Map<String, dynamic> data, {
-    String? tablePrefix,
-  }) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SelectedPlantsTableData(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      plantId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}plant_id'],
-      )!,
-      addedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}added_at'],
-      )!,
-    );
-  }
-
-  @override
-  $SelectedPlantsTableTable createAlias(String alias) {
-    return $SelectedPlantsTableTable(attachedDatabase, alias);
-  }
-}
-
-class SelectedPlantsTableData extends DataClass
-    implements Insertable<SelectedPlantsTableData> {
-  final int id;
-  final int plantId;
-  final DateTime addedAt;
-  const SelectedPlantsTableData({
-    required this.id,
-    required this.plantId,
-    required this.addedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['plant_id'] = Variable<int>(plantId);
-    map['added_at'] = Variable<DateTime>(addedAt);
-    return map;
-  }
-
-  SelectedPlantsTableCompanion toCompanion(bool nullToAbsent) {
-    return SelectedPlantsTableCompanion(
-      id: Value(id),
-      plantId: Value(plantId),
-      addedAt: Value(addedAt),
-    );
-  }
-
-  factory SelectedPlantsTableData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SelectedPlantsTableData(
-      id: serializer.fromJson<int>(json['id']),
-      plantId: serializer.fromJson<int>(json['plantId']),
-      addedAt: serializer.fromJson<DateTime>(json['addedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'plantId': serializer.toJson<int>(plantId),
-      'addedAt': serializer.toJson<DateTime>(addedAt),
-    };
-  }
-
-  SelectedPlantsTableData copyWith({
-    int? id,
-    int? plantId,
-    DateTime? addedAt,
-  }) => SelectedPlantsTableData(
-    id: id ?? this.id,
-    plantId: plantId ?? this.plantId,
-    addedAt: addedAt ?? this.addedAt,
-  );
-  SelectedPlantsTableData copyWithCompanion(SelectedPlantsTableCompanion data) {
-    return SelectedPlantsTableData(
-      id: data.id.present ? data.id.value : this.id,
-      plantId: data.plantId.present ? data.plantId.value : this.plantId,
-      addedAt: data.addedAt.present ? data.addedAt.value : this.addedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SelectedPlantsTableData(')
-          ..write('id: $id, ')
-          ..write('plantId: $plantId, ')
-          ..write('addedAt: $addedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, plantId, addedAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is SelectedPlantsTableData &&
-          other.id == this.id &&
-          other.plantId == this.plantId &&
-          other.addedAt == this.addedAt);
-}
-
-class SelectedPlantsTableCompanion
-    extends UpdateCompanion<SelectedPlantsTableData> {
-  final Value<int> id;
-  final Value<int> plantId;
-  final Value<DateTime> addedAt;
-  const SelectedPlantsTableCompanion({
-    this.id = const Value.absent(),
-    this.plantId = const Value.absent(),
-    this.addedAt = const Value.absent(),
-  });
-  SelectedPlantsTableCompanion.insert({
-    this.id = const Value.absent(),
-    required int plantId,
-    this.addedAt = const Value.absent(),
-  }) : plantId = Value(plantId);
-  static Insertable<SelectedPlantsTableData> custom({
-    Expression<int>? id,
-    Expression<int>? plantId,
-    Expression<DateTime>? addedAt,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (plantId != null) 'plant_id': plantId,
-      if (addedAt != null) 'added_at': addedAt,
-    });
-  }
-
-  SelectedPlantsTableCompanion copyWith({
-    Value<int>? id,
-    Value<int>? plantId,
-    Value<DateTime>? addedAt,
-  }) {
-    return SelectedPlantsTableCompanion(
-      id: id ?? this.id,
-      plantId: plantId ?? this.plantId,
-      addedAt: addedAt ?? this.addedAt,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (plantId.present) {
-      map['plant_id'] = Variable<int>(plantId.value);
-    }
-    if (addedAt.present) {
-      map['added_at'] = Variable<DateTime>(addedAt.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SelectedPlantsTableCompanion(')
-          ..write('id: $id, ')
-          ..write('plantId: $plantId, ')
-          ..write('addedAt: $addedAt')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $CompletedPlanningTasksTable extends CompletedPlanningTasks
     with TableInfo<$CompletedPlanningTasksTable, CompletedPlanningTask> {
   @override
@@ -8696,8 +8436,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $FruitTreesTable fruitTrees = $FruitTreesTable(this);
   late final $UserFruitTreesTable userFruitTrees = $UserFruitTreesTable(this);
-  late final $SelectedPlantsTableTable selectedPlantsTable =
-      $SelectedPlantsTableTable(this);
   late final $CompletedPlanningTasksTable completedPlanningTasks =
       $CompletedPlanningTasksTable(this);
   @override
@@ -8714,7 +8452,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     gardenAmendments,
     fruitTrees,
     userFruitTrees,
-    selectedPlantsTable,
     completedPlanningTasks,
   ];
 }
@@ -8815,33 +8552,6 @@ final class $$PlantsTableReferences
     ).filter((f) => f.plantId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_gardenEventsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<
-    $SelectedPlantsTableTable,
-    List<SelectedPlantsTableData>
-  >
-  _selectedPlantsTableRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.selectedPlantsTable,
-        aliasName: $_aliasNameGenerator(
-          db.plants.id,
-          db.selectedPlantsTable.plantId,
-        ),
-      );
-
-  $$SelectedPlantsTableTableProcessedTableManager get selectedPlantsTableRefs {
-    final manager = $$SelectedPlantsTableTableTableManager(
-      $_db,
-      $_db.selectedPlantsTable,
-    ).filter((f) => f.plantId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _selectedPlantsTableRefsTable($_db),
-    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -9081,31 +8791,6 @@ class $$PlantsTableFilterComposer
           }) => $$GardenEventsTableFilterComposer(
             $db: $db,
             $table: $db.gardenEvents,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> selectedPlantsTableRefs(
-    Expression<bool> Function($$SelectedPlantsTableTableFilterComposer f) f,
-  ) {
-    final $$SelectedPlantsTableTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.selectedPlantsTable,
-      getReferencedColumn: (t) => t.plantId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$SelectedPlantsTableTableFilterComposer(
-            $db: $db,
-            $table: $db.selectedPlantsTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -9530,32 +9215,6 @@ class $$PlantsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> selectedPlantsTableRefs<T extends Object>(
-    Expression<T> Function($$SelectedPlantsTableTableAnnotationComposer a) f,
-  ) {
-    final $$SelectedPlantsTableTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.id,
-          referencedTable: $db.selectedPlantsTable,
-          getReferencedColumn: (t) => t.plantId,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$SelectedPlantsTableTableAnnotationComposer(
-                $db: $db,
-                $table: $db.selectedPlantsTable,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-
   Expression<T> completedPlanningTasksRefs<T extends Object>(
     Expression<T> Function($$CompletedPlanningTasksTableAnnotationComposer a) f,
   ) {
@@ -9598,7 +9257,6 @@ class $$PlantsTableTableManager
           Plant,
           PrefetchHooks Function({
             bool gardenEventsRefs,
-            bool selectedPlantsTableRefs,
             bool completedPlanningTasksRefs,
           })
         > {
@@ -9772,16 +9430,11 @@ class $$PlantsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({
-                gardenEventsRefs = false,
-                selectedPlantsTableRefs = false,
-                completedPlanningTasksRefs = false,
-              }) {
+              ({gardenEventsRefs = false, completedPlanningTasksRefs = false}) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (gardenEventsRefs) db.gardenEvents,
-                    if (selectedPlantsTableRefs) db.selectedPlantsTable,
                     if (completedPlanningTasksRefs) db.completedPlanningTasks,
                   ],
                   addJoins: null,
@@ -9802,27 +9455,6 @@ class $$PlantsTableTableManager
                                 table,
                                 p0,
                               ).gardenEventsRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.plantId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (selectedPlantsTableRefs)
-                        await $_getPrefetchedData<
-                          Plant,
-                          $PlantsTable,
-                          SelectedPlantsTableData
-                        >(
-                          currentTable: table,
-                          referencedTable: $$PlantsTableReferences
-                              ._selectedPlantsTableRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$PlantsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).selectedPlantsTableRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.plantId == item.id,
@@ -9872,7 +9504,6 @@ typedef $$PlantsTableProcessedTableManager =
       Plant,
       PrefetchHooks Function({
         bool gardenEventsRefs,
-        bool selectedPlantsTableRefs,
         bool completedPlanningTasksRefs,
       })
     >;
@@ -14508,299 +14139,6 @@ typedef $$UserFruitTreesTableProcessedTableManager =
       UserFruitTree,
       PrefetchHooks Function({bool fruitTreeId})
     >;
-typedef $$SelectedPlantsTableTableCreateCompanionBuilder =
-    SelectedPlantsTableCompanion Function({
-      Value<int> id,
-      required int plantId,
-      Value<DateTime> addedAt,
-    });
-typedef $$SelectedPlantsTableTableUpdateCompanionBuilder =
-    SelectedPlantsTableCompanion Function({
-      Value<int> id,
-      Value<int> plantId,
-      Value<DateTime> addedAt,
-    });
-
-final class $$SelectedPlantsTableTableReferences
-    extends
-        BaseReferences<
-          _$AppDatabase,
-          $SelectedPlantsTableTable,
-          SelectedPlantsTableData
-        > {
-  $$SelectedPlantsTableTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static $PlantsTable _plantIdTable(_$AppDatabase db) => db.plants.createAlias(
-    $_aliasNameGenerator(db.selectedPlantsTable.plantId, db.plants.id),
-  );
-
-  $$PlantsTableProcessedTableManager get plantId {
-    final $_column = $_itemColumn<int>('plant_id')!;
-
-    final manager = $$PlantsTableTableManager(
-      $_db,
-      $_db.plants,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_plantIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-}
-
-class $$SelectedPlantsTableTableFilterComposer
-    extends Composer<_$AppDatabase, $SelectedPlantsTableTable> {
-  $$SelectedPlantsTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get addedAt => $composableBuilder(
-    column: $table.addedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$PlantsTableFilterComposer get plantId {
-    final $$PlantsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.plantId,
-      referencedTable: $db.plants,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlantsTableFilterComposer(
-            $db: $db,
-            $table: $db.plants,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$SelectedPlantsTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $SelectedPlantsTableTable> {
-  $$SelectedPlantsTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get addedAt => $composableBuilder(
-    column: $table.addedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$PlantsTableOrderingComposer get plantId {
-    final $$PlantsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.plantId,
-      referencedTable: $db.plants,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlantsTableOrderingComposer(
-            $db: $db,
-            $table: $db.plants,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$SelectedPlantsTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $SelectedPlantsTableTable> {
-  $$SelectedPlantsTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get addedAt =>
-      $composableBuilder(column: $table.addedAt, builder: (column) => column);
-
-  $$PlantsTableAnnotationComposer get plantId {
-    final $$PlantsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.plantId,
-      referencedTable: $db.plants,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlantsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.plants,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$SelectedPlantsTableTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $SelectedPlantsTableTable,
-          SelectedPlantsTableData,
-          $$SelectedPlantsTableTableFilterComposer,
-          $$SelectedPlantsTableTableOrderingComposer,
-          $$SelectedPlantsTableTableAnnotationComposer,
-          $$SelectedPlantsTableTableCreateCompanionBuilder,
-          $$SelectedPlantsTableTableUpdateCompanionBuilder,
-          (SelectedPlantsTableData, $$SelectedPlantsTableTableReferences),
-          SelectedPlantsTableData,
-          PrefetchHooks Function({bool plantId})
-        > {
-  $$SelectedPlantsTableTableTableManager(
-    _$AppDatabase db,
-    $SelectedPlantsTableTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$SelectedPlantsTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$SelectedPlantsTableTableOrderingComposer(
-                $db: db,
-                $table: table,
-              ),
-          createComputedFieldComposer: () =>
-              $$SelectedPlantsTableTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<int> plantId = const Value.absent(),
-                Value<DateTime> addedAt = const Value.absent(),
-              }) => SelectedPlantsTableCompanion(
-                id: id,
-                plantId: plantId,
-                addedAt: addedAt,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required int plantId,
-                Value<DateTime> addedAt = const Value.absent(),
-              }) => SelectedPlantsTableCompanion.insert(
-                id: id,
-                plantId: plantId,
-                addedAt: addedAt,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$SelectedPlantsTableTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: ({plantId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (plantId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.plantId,
-                                referencedTable:
-                                    $$SelectedPlantsTableTableReferences
-                                        ._plantIdTable(db),
-                                referencedColumn:
-                                    $$SelectedPlantsTableTableReferences
-                                        ._plantIdTable(db)
-                                        .id,
-                              )
-                              as T;
-                    }
-
-                    return state;
-                  },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$SelectedPlantsTableTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $SelectedPlantsTableTable,
-      SelectedPlantsTableData,
-      $$SelectedPlantsTableTableFilterComposer,
-      $$SelectedPlantsTableTableOrderingComposer,
-      $$SelectedPlantsTableTableAnnotationComposer,
-      $$SelectedPlantsTableTableCreateCompanionBuilder,
-      $$SelectedPlantsTableTableUpdateCompanionBuilder,
-      (SelectedPlantsTableData, $$SelectedPlantsTableTableReferences),
-      SelectedPlantsTableData,
-      PrefetchHooks Function({bool plantId})
-    >;
 typedef $$CompletedPlanningTasksTableCreateCompanionBuilder =
     CompletedPlanningTasksCompanion Function({
       Value<int> id,
@@ -15178,8 +14516,6 @@ class $AppDatabaseManager {
       $$FruitTreesTableTableManager(_db, _db.fruitTrees);
   $$UserFruitTreesTableTableManager get userFruitTrees =>
       $$UserFruitTreesTableTableManager(_db, _db.userFruitTrees);
-  $$SelectedPlantsTableTableTableManager get selectedPlantsTable =>
-      $$SelectedPlantsTableTableTableManager(_db, _db.selectedPlantsTable);
   $$CompletedPlanningTasksTableTableManager get completedPlanningTasks =>
       $$CompletedPlanningTasksTableTableManager(
         _db,

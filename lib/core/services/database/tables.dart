@@ -192,19 +192,10 @@ class GardenPlants extends Table {
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
-/// Table des plantes sélectionnées pour la planification
-class SelectedPlantsTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
-
-  IntColumn get plantId =>
-      integer().references(Plants, #id)();
-
-  DateTimeColumn get addedAt =>
-      dateTime().withDefault(currentDateAndTime)();
-
-  @override
-  String get tableName => 'selected_plants';
-}
+// SelectedPlantsTable retiree en v13. La planification lit desormais
+// directement les plantes posees dans `garden_plants` ∪ celles ayant un
+// event dans `garden_events`. La migration v12->v13 convertit les lignes
+// orphelines en events `planting` puis drop la table.
 
 /// Table de suivi des tâches de planification complétées
 class CompletedPlanningTasks extends Table {

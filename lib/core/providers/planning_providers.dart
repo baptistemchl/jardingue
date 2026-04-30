@@ -1,25 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/planning/data/datasources/garden_tasks_datasource.dart';
-import '../../features/planning/data/repositories/planning_repository.dart';
 import '../../features/planning/domain/models/planning_state.dart';
 import '../../features/planning/domain/models/selected_plant.dart';
-import '../../features/planning/domain/repositories/planning_repository_interface.dart';
 import '../../features/planning/domain/usecases/compute_planning_tasks.dart';
 import '../services/crash_reporting/crash_reporting_service.dart';
 import '../utils/plant_emoji_mapper.dart';
 import 'database_providers.dart';
 import 'weather_providers.dart';
-
-// ============================================
-// REPOSITORY
-// ============================================
-
-final planningRepositoryProvider =
-    Provider<PlanningRepositoryInterface>((ref) {
-  final db = ref.watch(databaseProvider);
-  return PlanningRepositoryImpl(db);
-});
 
 // ============================================
 // DATASOURCE TACHES POTAGERES
@@ -33,25 +21,6 @@ final gardenTasksDatasourceProvider =
 // ============================================
 // SELECTED PLANTS (union manuelle + jardin)
 // ============================================
-
-/// Stream brut des lignes `selected_plants` (sélection manuelle via
-/// l'écran Plantes).
-final _manualSelectedPlantsStream = StreamProvider<List<SelectedPlant>>(
-  (ref) async* {
-    await ref.read(databaseInitProvider.future);
-    final db = ref.watch(databaseProvider);
-    yield* db.watchSelectedPlants().map((rows) => rows.map((row) {
-          final sp = row.readTable(db.selectedPlantsTable);
-          final plant = row.readTable(db.plants);
-          return SelectedPlant(
-            plantId: sp.plantId,
-            commonName: plant.commonName,
-            categoryCode: plant.categoryCode,
-            addedAt: sp.addedAt,
-          );
-        }).toList());
-  },
-);
 
 /// Stream brut : plantes posées sur n'importe quel potager, converties
 /// en `SelectedPlant` (les zones `plantId=0` sont exclues).
@@ -81,11 +50,27 @@ final _gardenDerivedSelectedPlantsStream =
   });
 });
 
-/// Union des deux sources : les sélections manuelles gagnent sur les
-/// dérivées (même plantId) pour préserver leur date d'ajout originale.
+/// Stream brut : plantes tracees via au moins un event (semis, plantation,
+/// arrosage, recolte, entretien...). Source unifiee pour la planification.
+final _eventDerivedSelectedPlantsStream =
+    StreamProvider<List<SelectedPlant>>((ref) async* {
+  await ref.read(databaseInitProvider.future);
+  final db = ref.watch(databaseProvider);
+  yield* db.watchTrackedPlantsWithDetails().map((rows) => rows
+      .map((r) => SelectedPlant(
+            plantId: r.plantId,
+            commonName: r.commonName,
+            categoryCode: r.categoryCode,
+            addedAt: r.addedAt,
+          ))
+      .toList());
+});
+
+/// Union des deux sources : `garden_plants` (plante posee) et
+/// `garden_events` (plante avec au moins un event, potager ou non).
 ///
-/// Réactif par construction : dès qu'une ligne bouge dans
-/// `selected_plants` ou `garden_plants`, ce provider ré-émet.
+/// On preserve la date d'ajout la plus ancienne pour rester chronologique.
+/// Reactif par construction : tout changement DB (potager, event) re-emet.
 final selectedPlantsProvider =
     AsyncNotifierProvider<SelectedPlantsNotifier, List<SelectedPlant>>(
   SelectedPlantsNotifier.new,
@@ -95,15 +80,22 @@ class SelectedPlantsNotifier extends AsyncNotifier<List<SelectedPlant>> {
   @override
   Future<List<SelectedPlant>> build() async {
     try {
-      final manual = await ref.watch(_manualSelectedPlantsStream.future);
       final garden =
           await ref.watch(_gardenDerivedSelectedPlantsStream.future);
+      final fromEvents =
+          await ref.watch(_eventDerivedSelectedPlantsStream.future);
       final merged = <int, SelectedPlant>{};
-      for (final p in garden) {
+      for (final p in fromEvents) {
         merged[p.plantId] = p;
       }
-      for (final p in manual) {
-        merged[p.plantId] = p; // priorité à la sélection manuelle
+      for (final p in garden) {
+        // Priorite a `garden_plants` (date plus precise via plantedAt).
+        // Si la plante existe deja via event, on garde la date la plus
+        // ancienne pour ne pas remonter artificiellement la plante.
+        final existing = merged[p.plantId];
+        if (existing == null || p.addedAt.isBefore(existing.addedAt)) {
+          merged[p.plantId] = p;
+        }
       }
       return merged.values.toList()
         ..sort((a, b) => b.addedAt.compareTo(a.addedAt));
@@ -116,16 +108,32 @@ class SelectedPlantsNotifier extends AsyncNotifier<List<SelectedPlant>> {
     }
   }
 
-  Future<void> add(int plantId) async {
-    final repo = ref.read(planningRepositoryProvider);
-    await repo.addSelectedPlant(plantId);
-    // Pas besoin d'update local : le stream `.watch()` se chargera
-    // de pousser la nouvelle valeur au prochain tick DB.
-  }
-
+  /// Retire une plante du suivi : supprime tous ses events et tous les
+  /// gardenPlants qui la referencent. La plante reapparaitra si
+  /// l'utilisateur la replante / re-logue un event.
   Future<void> remove(int plantId) async {
-    final repo = ref.read(planningRepositoryProvider);
-    await repo.removeSelectedPlant(plantId);
+    final db = ref.read(databaseProvider);
+    await db.transaction(() async {
+      // 1. Supprimer les events lies via gardenPlantId (events des potagers)
+      final gpIds = await (db.selectOnly(db.gardenPlants)
+            ..addColumns([db.gardenPlants.id])
+            ..where(db.gardenPlants.plantId.equals(plantId)))
+          .map((r) => r.read(db.gardenPlants.id)!)
+          .get();
+      if (gpIds.isNotEmpty) {
+        await (db.delete(db.gardenEvents)
+              ..where((t) => t.gardenPlantId.isIn(gpIds)))
+            .go();
+      }
+      // 2. Supprimer les events lies directement via plantId (sans potager)
+      await (db.delete(db.gardenEvents)
+            ..where((t) => t.plantId.equals(plantId)))
+          .go();
+      // 3. Supprimer les gardenPlants
+      await (db.delete(db.gardenPlants)
+            ..where((t) => t.plantId.equals(plantId)))
+          .go();
+    });
   }
 }
 
