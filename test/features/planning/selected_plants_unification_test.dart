@@ -83,6 +83,110 @@ void main() {
     });
   });
 
+  group('backfillMissingPlantingEvents', () {
+    test('creates a planting event for gardenPlants without one', () async {
+      final gardenId = await createGarden();
+      final pid = await insertPlant('Ail');
+
+      // GardenPlant sans aucun event (situation typique apres restore cloud)
+      await db.into(db.gardenPlants).insert(GardenPlantsCompanion.insert(
+            gardenId: gardenId,
+            plantId: pid,
+            gridX: 0,
+            gridY: 0,
+            widthCells: const Value(2),
+            heightCells: const Value(2),
+            plantedAt: Value(DateTime(2026, 4, 10)),
+          ));
+
+      // Aucun event au depart
+      final eventsBefore = await db.select(db.gardenEvents).get();
+      expect(eventsBefore, isEmpty);
+
+      await db.backfillMissingPlantingEvents();
+
+      // Un event planting a ete cree, daté de plantedAt
+      final eventsAfter = await db.select(db.gardenEvents).get();
+      expect(eventsAfter, hasLength(1));
+      expect(eventsAfter.first.eventType, 'planting');
+      expect(eventsAfter.first.eventDate, DateTime(2026, 4, 10));
+      expect(eventsAfter.first.gardenPlantId, isNotNull);
+    });
+
+    test('creates both planting AND sowing events when sowedAt is set',
+        () async {
+      final gardenId = await createGarden();
+      final pid = await insertPlant('Tomate');
+
+      await db.into(db.gardenPlants).insert(GardenPlantsCompanion.insert(
+            gardenId: gardenId,
+            plantId: pid,
+            gridX: 0,
+            gridY: 0,
+            widthCells: const Value(2),
+            heightCells: const Value(2),
+            plantedAt: Value(DateTime(2026, 5, 15)),
+            sowedAt: Value(DateTime(2026, 3, 1)),
+          ));
+
+      await db.backfillMissingPlantingEvents();
+
+      final events = await db.select(db.gardenEvents).get();
+      final byType = {for (final e in events) e.eventType: e};
+      expect(byType.keys, containsAll(['planting', 'sowing']));
+      expect(byType['sowing']!.eventDate, DateTime(2026, 3, 1));
+      expect(byType['planting']!.eventDate, DateTime(2026, 5, 15));
+    });
+
+    test('does NOT duplicate events that already exist', () async {
+      final gardenId = await createGarden();
+      final pid = await insertPlant('Carotte');
+
+      final gpId = await db.into(db.gardenPlants).insert(
+            GardenPlantsCompanion.insert(
+              gardenId: gardenId,
+              plantId: pid,
+              gridX: 0,
+              gridY: 0,
+              widthCells: const Value(2),
+              heightCells: const Value(2),
+              plantedAt: Value(DateTime(2026, 4, 1)),
+            ),
+          );
+      // Event planting deja present (cas backup recent)
+      await db.into(db.gardenEvents).insert(GardenEventsCompanion.insert(
+            gardenPlantId: Value(gpId),
+            eventType: 'planting',
+            eventDate: DateTime(2026, 4, 1),
+          ));
+
+      await db.backfillMissingPlantingEvents();
+
+      final events = await db.select(db.gardenEvents).get();
+      expect(events, hasLength(1),
+          reason: 'le backfill ne doit pas creer de doublon');
+    });
+
+    test('skips zone gardenPlants (plantId == 0)', () async {
+      final gardenId = await createGarden();
+
+      await db.into(db.gardenPlants).insert(GardenPlantsCompanion.insert(
+            gardenId: gardenId,
+            plantId: 0, // Zone, pas une vraie plante
+            gridX: 0,
+            gridY: 0,
+            widthCells: const Value(2),
+            heightCells: const Value(2),
+          ));
+
+      await db.backfillMissingPlantingEvents();
+
+      final events = await db.select(db.gardenEvents).get();
+      expect(events, isEmpty,
+          reason: 'les zones ne doivent pas avoir d\'event planting');
+    });
+  });
+
   group('deleteGarden cascade keeps event-only plants', () {
     // Garantit qu'apres suppression d'un potager, les plantes qui ont AUSSI
     // un event hors-potager restent visibles dans la planification.

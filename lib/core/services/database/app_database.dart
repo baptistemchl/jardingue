@@ -32,7 +32,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration {
@@ -125,6 +125,14 @@ class AppDatabase extends _$AppDatabase {
           await _migrateSelectedPlantsToEvents();
           await customStatement('DROP TABLE IF EXISTS selected_plants');
         }
+        // Migration v13 -> v14 : backfill des events `planting`/`sowing`
+        // pour les gardenPlants historiques. Avant ce changement, ajouter
+        // une plante au potager ne creait pas systematiquement d'event,
+        // donc Mon Suivi etait vide pour les plantes pre-existantes alors
+        // qu'elles devraient apparaitre.
+        if (from < 14) {
+          await _backfillPlantingEventsForExistingGardenPlants();
+        }
       },
     );
   }
@@ -171,6 +179,65 @@ class AppDatabase extends _$AppDatabase {
         eventDate: addedAt,
         createdAt: Value(now),
       ));
+    }
+  }
+
+  /// Voir [backfillMissingPlantingEvents].
+  Future<void> _backfillPlantingEventsForExistingGardenPlants() =>
+      backfillMissingPlantingEvents();
+
+  /// Pour chaque `garden_plant` qui n'a pas encore d'event `planting`
+  /// associe, on en cree un avec `eventDate = plantedAt ?? sowedAt
+  /// ?? createdAt`. Idem pour `sowing` si `sowedAt` est defini et
+  /// qu'aucun event sowing n'existe encore. Garantit que toute plante
+  /// posee dans un potager apparait dans Mon Suivi avec sa date reelle.
+  ///
+  /// Appele par la migration v13->v14 ET apres une restauration cloud
+  /// (les sauvegardes anciennes ne contiennent pas systematiquement les
+  /// events lies, donc les plantes restaurees seraient invisibles dans
+  /// Mon Suivi sans ce backfill).
+  Future<void> backfillMissingPlantingEvents() async {
+    final now = DateTime.now();
+    final allGp = await select(gardenPlants).get();
+    for (final gp in allGp) {
+      // Ignorer les zones (plantId = 0).
+      if (gp.plantId == 0) continue;
+
+      // Verifie si un event `planting` existe deja pour ce gardenPlant.
+      final existingPlanting = await (select(gardenEvents)
+            ..where((t) =>
+                t.gardenPlantId.equals(gp.id) &
+                t.eventType.equals('planting'))
+            ..limit(1))
+          .getSingleOrNull();
+
+      if (existingPlanting == null) {
+        final plantingDate = gp.plantedAt ?? gp.sowedAt ?? gp.createdAt;
+        await into(gardenEvents).insert(GardenEventsCompanion.insert(
+          gardenPlantId: Value(gp.id),
+          eventType: 'planting',
+          eventDate: plantingDate,
+          createdAt: Value(now),
+        ));
+      }
+
+      // Si la plante a un sowedAt et pas d'event sowing, on en cree un.
+      if (gp.sowedAt != null) {
+        final existingSowing = await (select(gardenEvents)
+              ..where((t) =>
+                  t.gardenPlantId.equals(gp.id) &
+                  t.eventType.equals('sowing'))
+              ..limit(1))
+            .getSingleOrNull();
+        if (existingSowing == null) {
+          await into(gardenEvents).insert(GardenEventsCompanion.insert(
+            gardenPlantId: Value(gp.id),
+            eventType: 'sowing',
+            eventDate: gp.sowedAt!,
+            createdAt: Value(now),
+          ));
+        }
+      }
     }
   }
 

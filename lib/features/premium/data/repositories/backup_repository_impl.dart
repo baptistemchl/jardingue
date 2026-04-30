@@ -75,6 +75,10 @@ class BackupRepositoryImpl implements BackupRepository {
       await _importUserFruitTrees(
         data.userFruitTrees,
       );
+      // Sauvegardes anciennes : les gardenPlants peuvent avoir ete crees
+      // sans events `planting`/`sowing` associes. Sans ce backfill, les
+      // plantes restaurees n'apparaissent pas dans Mon Suivi.
+      await _db.backfillMissingPlantingEvents();
     });
   }
 

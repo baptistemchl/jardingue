@@ -5,7 +5,6 @@ import 'package:drift/drift.dart' show Value;
 import '../models/patch.dart';
 import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/app_database.dart';
-import '../../features/garden/data/repositories/garden_event_repository.dart';
 import 'garden_event_providers.dart';
 import '../../features/garden/domain/models/garden_event.dart';
 import '../../features/garden/domain/models/garden_plant_with_details.dart';
@@ -230,21 +229,22 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
         ),
       );
 
-      // Créer les événements correspondants
-      final eventRepo = DriftGardenEventRepository(
-          ref.read(databaseProvider));
+      // Créer les événements via le notifier pour declencher l'invalidation
+      // de Mon Suivi (allUserEventsProvider, monthUserEventsProvider).
+      final eventNotifier =
+          ref.read(gardenEventNotifierProvider.notifier);
       if (sowedAt != null) {
-        await eventRepo.addEvent(GardenEventsCompanion.insert(
-          gardenPlantId: Value(id),
-          eventType: GardenEventType.sowing.name,
-          eventDate: sowedAt,
-        ));
+        await eventNotifier.logEvent(
+          gardenPlantId: id,
+          eventType: GardenEventType.sowing,
+          date: sowedAt,
+        );
       }
-      await eventRepo.addEvent(GardenEventsCompanion.insert(
-        gardenPlantId: Value(id),
-        eventType: GardenEventType.planting.name,
-        eventDate: effectivePlantedAt,
-      ));
+      await eventNotifier.logEvent(
+        gardenPlantId: id,
+        eventType: GardenEventType.planting,
+        date: effectivePlantedAt,
+      );
 
       state = const AsyncData(null);
       return id;
@@ -300,21 +300,20 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
         ),
       );
 
-      // Créer les événements
-      final eventRepo = DriftGardenEventRepository(
-          ref.read(databaseProvider));
+      final eventNotifier =
+          ref.read(gardenEventNotifierProvider.notifier);
       if (sowedAt != null) {
-        await eventRepo.addEvent(GardenEventsCompanion.insert(
-          gardenPlantId: Value(id),
-          eventType: GardenEventType.sowing.name,
-          eventDate: sowedAt,
-        ));
+        await eventNotifier.logEvent(
+          gardenPlantId: id,
+          eventType: GardenEventType.sowing,
+          date: sowedAt,
+        );
       }
-      await eventRepo.addEvent(GardenEventsCompanion.insert(
-        gardenPlantId: Value(id),
-        eventType: GardenEventType.planting.name,
-        eventDate: effectivePlantedAt,
-      ));
+      await eventNotifier.logEvent(
+        gardenPlantId: id,
+        eventType: GardenEventType.planting,
+        date: effectivePlantedAt,
+      );
 
       state = const AsyncData(null);
       return id;
