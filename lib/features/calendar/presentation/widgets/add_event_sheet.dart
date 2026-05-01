@@ -10,6 +10,7 @@ import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/providers/garden_event_providers.dart';
 import '../../../../core/providers/weather_providers.dart';
 import '../../../../core/utils/plant_emoji_mapper.dart';
+import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../garden/domain/models/garden_event.dart';
 
 /// Bottom sheet pour ajouter un evenement depuis le calendrier.
@@ -61,8 +62,11 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
   void dispose() {
     _searchCtrl.dispose();
     _debounce?.cancel();
-    // Ne pas laisser la recherche fuir vers l'ecran Plantes principal.
-    _filterNotifier.clearFilters();
+    // Differe la mutation du provider apres la phase de finalisation du
+    // widget tree, sinon Flutter leve "Tried to modify a provider while the
+    // widget tree was building" quand le sheet est demonte via une
+    // transition de route.
+    Future.microtask(_filterNotifier.clearFilters);
     super.dispose();
   }
 
@@ -84,34 +88,15 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.82,
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: Column(
-        children: [
-          _buildHandle(),
-          _buildHeader(),
-          const Divider(),
-          Expanded(child: _buildCurrentStep()),
-        ],
-      ),
+    return Column(
+      children: [
+        const AppBottomSheetHandle(),
+        _buildHeader(),
+        const Divider(),
+        Expanded(child: _buildCurrentStep()),
+      ],
     );
   }
-
-  Widget _buildHandle() => Padding(
-        padding: const EdgeInsets.only(top: 12, bottom: 8),
-        child: Container(
-          width: 40,
-          height: 4,
-          decoration: BoxDecoration(
-            color: AppColors.border,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-      );
 
   Widget _buildHeader() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../../core/widgets/decorative_background.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
@@ -170,12 +171,10 @@ class _CalendarScreenState
 
   void _onDayTap(DateTime date) {
     final selectedMonth = ref.read(selectedMonthProvider);
-    showModalBottomSheet(
+    AppBottomSheet.show(
       context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => AddEventSheet(
+      heightFraction: 0.82,
+      child: AddEventSheet(
         selectedDate: date,
         onEventAdded: () {
           // Rafraichir "Mon suivi" pour le mois en cours

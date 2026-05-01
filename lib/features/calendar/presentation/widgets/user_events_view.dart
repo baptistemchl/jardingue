@@ -8,6 +8,7 @@ import '../../../../core/providers/calendar_providers.dart';
 import '../../../../core/providers/garden_event_providers.dart';
 import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/utils/plant_emoji_mapper.dart';
+import '../../../../core/widgets/app_bottom_sheet.dart';
 import 'add_event_sheet.dart';
 import '../../../garden/domain/models/garden_event.dart';
 import '../../../garden/presentation/widgets/editor/editor_plant_detail_sheet.dart';
@@ -163,12 +164,10 @@ class _UserEventsViewState extends ConsumerState<UserEventsView> {
   }
 
   void _showAddEventSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
+    AppBottomSheet.show(
       context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => AddEventSheet(
+      heightFraction: 0.82,
+      child: AddEventSheet(
         selectedDate: DateTime.now(),
         onEventAdded: () {
           ref.invalidate(allUserEventsProvider);
@@ -543,15 +542,9 @@ class _UserEventTile extends ConsumerWidget {
   }
 
   void _showSimplePlantInfo(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
+    AppBottomSheet.show(
       context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => _EventDetailSheet(event: event),
+      child: _EventDetailSheet(event: event),
     );
   }
 }
@@ -597,10 +590,12 @@ class _EventDetailSheetState extends ConsumerState<_EventDetailSheet> {
         !isMaintenance && _currentType != widget.event.type;
 
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const AppBottomSheetHandle(),
+          const SizedBox(height: 8),
           Text(emoji, style: const TextStyle(fontSize: 48)),
           const SizedBox(height: 12),
           Text(plant?.commonName ?? widget.event.type.label,

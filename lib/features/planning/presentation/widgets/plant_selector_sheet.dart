@@ -11,6 +11,7 @@ import '../../../../core/providers/planning_providers.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/plant_emoji_mapper.dart';
+import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../garden/domain/models/garden_event.dart';
 
 class PlantSelectorSheet
@@ -50,35 +51,11 @@ class _PlantSelectorSheetState
       databaseInitProvider,
     );
 
-    return Container(
-      height:
-          MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(24),
-        ),
-      ),
-      child: Column(
-        children: [
-          // Handle
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(
-                top: 12,
-              ),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.border,
-                borderRadius:
-                    BorderRadius.circular(2),
-              ),
-            ),
-          ),
-
-          // Titre
-          Padding(
+    return Column(
+      children: [
+        const AppBottomSheetHandle(),
+        // Titre
+        Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
@@ -160,15 +137,7 @@ class _PlantSelectorSheetState
 
           // Bouton valider
           Padding(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              12,
-              16,
-              MediaQuery.of(context)
-                      .padding
-                      .bottom +
-                  16,
-            ),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             child: SizedBox(
               width: double.infinity,
               height: 50,
@@ -197,8 +166,7 @@ class _PlantSelectorSheetState
               ),
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_info.dart';
 import '../theme/app_typography.dart';
+import 'app_bottom_sheet.dart';
 
 /// Bottom sheet "A propos" avec infos de version, copyright
 /// et remerciements.
@@ -13,39 +14,16 @@ class AboutSheet extends StatelessWidget {
   const AboutSheet({super.key});
 
   static void show(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const AboutSheet(),
-    );
+    AppBottomSheet.show(context: context, child: const AboutSheet());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle
-          Padding(
-            padding: const EdgeInsets.only(top: 12, bottom: 8),
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.border,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-
-          Padding(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const AppBottomSheetHandle(),
+        Padding(
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
             child: Column(
               children: [
@@ -222,8 +200,7 @@ class AboutSheet extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 }

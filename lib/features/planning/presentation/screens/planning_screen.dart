@@ -6,6 +6,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/providers/planning_providers.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../../core/widgets/decorative_background.dart';
 import '../../domain/models/planning_state.dart';
 import '../widgets/garden_task_tile.dart';
@@ -256,13 +257,11 @@ class _Content extends ConsumerWidget {
   }
 
   void _openSelector(BuildContext context) {
-    showModalBottomSheet(
+    AppBottomSheet.show(
       context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) =>
-          const PlantSelectorSheet(),
+      heightFraction: 0.8,
+      backgroundColor: AppColors.background,
+      child: const PlantSelectorSheet(),
     );
   }
 }

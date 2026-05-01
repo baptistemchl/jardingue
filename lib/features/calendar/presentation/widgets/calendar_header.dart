@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/calendar_providers.dart';
+import '../../../../core/widgets/app_bottom_sheet.dart';
 
 // ============================================
 // HEADER
@@ -110,11 +111,9 @@ class CalendarHeader extends ConsumerWidget {
   }
 
   void _showMonthPicker(BuildContext context, WidgetRef ref, DateTime current) {
-    showModalBottomSheet(
-      useRootNavigator: true,
+    AppBottomSheet.show(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => MonthPickerSheet(
+      child: MonthPickerSheet(
         currentMonth: current,
         onMonthSelected: (month) {
           ref.read(selectedMonthProvider.notifier).set(month);
@@ -218,24 +217,13 @@ class MonthPickerSheet extends StatelessWidget {
       'Décembre',
     ];
 
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: const EdgeInsets.all(20),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: AppColors.border,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 20),
+          const AppBottomSheetHandle(),
+          const SizedBox(height: 12),
           Text('Choisir un mois', style: AppTypography.titleLarge),
           const SizedBox(height: 20),
           GridView.builder(
@@ -277,7 +265,6 @@ class MonthPickerSheet extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: 30),
         ],
       ),
     );

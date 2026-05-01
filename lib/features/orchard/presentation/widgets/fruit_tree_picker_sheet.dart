@@ -179,6 +179,9 @@ class _FruitTreePickerSheetState extends ConsumerState<FruitTreePickerSheet> {
 
                     return ListView.separated(
                       controller: scrollController,
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).padding.bottom + 16,
+                      ),
                       itemCount: trees.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 8),
                       itemBuilder: (context, index) {

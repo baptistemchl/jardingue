@@ -11,6 +11,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:printing/printing.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/app_back_button.dart';
+import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/garden_providers.dart';
@@ -494,32 +495,16 @@ class _GardenEditorScreenState
   void _showAmendmentSheet(GardenAmendment a, int gardenId) {
     final type = AmendmentType.fromCode(a.type);
     if (type == null) return;
-    showModalBottomSheet<void>(
+    AppBottomSheet.show<void>(
       context: context,
-      useRootNavigator: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: EdgeInsets.fromLTRB(
-          20, 8, 20, MediaQuery.of(ctx).padding.bottom + 20),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(top: 4, bottom: 16),
-                decoration: BoxDecoration(
-                  color: AppColors.border,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
+            const Center(child: AppBottomSheetHandle()),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Text(type.emoji, style: const TextStyle(fontSize: 28)),
@@ -555,7 +540,7 @@ class _GardenEditorScreenState
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () async {
-                  Navigator.of(ctx, rootNavigator: true).pop();
+                  Navigator.of(context, rootNavigator: true).pop();
                   await ref
                       .read(gardenNotifierProvider.notifier)
                       .deleteAmendment(a.id, gardenId);
@@ -791,12 +776,9 @@ class _GardenEditorScreenState
   }
 
   void _openLayersSheet(bool hasPrevious) {
-    showModalBottomSheet<void>(
+    AppBottomSheet.show<void>(
       context: context,
-      useRootNavigator: true,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) => _LayersSheet(hasPrevious: hasPrevious),
+      child: _LayersSheet(hasPrevious: hasPrevious),
     );
   }
 
@@ -1286,29 +1268,13 @@ class _LayersSheet extends ConsumerWidget {
       ref.read(_visibleAmendmentsProvider.notifier).toggle(t);
     }
 
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: EdgeInsets.only(
-        left: 8,
-        right: 8,
-        top: 8,
-        bottom: MediaQuery.of(context).padding.bottom + 8,
-      ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(top: 4, bottom: 12),
-            decoration: BoxDecoration(
-              color: AppColors.border,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
+          const AppBottomSheetHandle(),
+          const SizedBox(height: 4),
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
