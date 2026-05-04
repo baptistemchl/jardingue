@@ -17,6 +17,14 @@ class OrchardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userTreesAsync = ref.watch(userFruitTreesNotifierProvider);
+    // Le FAB n'est utile que lorsqu'il y a déjà des arbres : sinon
+    // l'empty-state propose déjà un CTA bien plus explicite (« Ajouter
+    // un arbre » centré, illustré). Afficher les deux ensemble fait
+    // doublon visuel.
+    final hasTrees = userTreesAsync.maybeWhen(
+      data: (trees) => trees.isNotEmpty,
+      orElse: () => false,
+    );
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -156,22 +164,24 @@ class OrchardScreen extends ConsumerWidget {
             ),
           ),
 
-          // 2. Le bouton flottant positionné manuellement
-          Positioned(
-            bottom: 120, // Rehaussé à 120px du bas
-            right: 16, // Marge standard à droite
-            child: FloatingActionButton.extended(
-              onPressed: () => _showTreePicker(context),
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              icon: Icon(PhosphorIcons.plus(PhosphorIconsStyle.bold)),
-              label: Text(AppLocalizations.of(context)!.add),
-              elevation: 4,
+          // 2. Le bouton flottant positionné manuellement — visible
+          //    uniquement quand il y a au moins un arbre, pour ne pas
+          //    faire doublon avec le CTA central de l'empty state.
+          if (hasTrees)
+            Positioned(
+              bottom: 120,
+              right: 16,
+              child: FloatingActionButton.extended(
+                onPressed: () => _showTreePicker(context),
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                icon: Icon(PhosphorIcons.plus(PhosphorIconsStyle.bold)),
+                label: Text(AppLocalizations.of(context)!.add),
+                elevation: 4,
+              ),
             ),
-          ),
         ],
       ),
-      // On retire le floatingActionButton du Scaffold car il est maintenant dans la Stack
     );
   }
 

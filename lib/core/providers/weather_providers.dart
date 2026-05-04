@@ -42,19 +42,23 @@ final effectiveLocationProvider = Provider<AsyncValue<LocationResult>>((ref) {
 
 /// Provider principal pour les données météo
 final weatherDataProvider = FutureProvider<WeatherData>((ref) async {
+  // Toutes les `ref.watch` doivent être déclarées synchroniquement
+  // (avant tout `await`) sous peine de casser le bookkeeping
+  // pause/resume des subscriptions Riverpod 3.x lors d'un changement
+  // de TickerMode (navigation, clavier).
+  //
   // Si l'utilisateur a choisi une ville, on l'utilise directement
-  // sans attendre le GPS (qui peut timeout pendant 15s+)
+  // sans attendre le GPS (qui peut timeout pendant 15s+) — d'où la
+  // capture conditionnelle du futur.
   final selected = ref.watch(selectedLocationProvider);
+  final locationFuture = selected != null
+      ? Future.value(selected)
+      : ref.watch(currentLocationProvider.future);
+  final weatherService = ref.watch(weatherServiceProvider);
 
-  final LocationResult effective;
-  if (selected != null) {
-    effective = selected;
-  } else {
-    effective = await ref.watch(currentLocationProvider.future);
-  }
+  final effective = await locationFuture;
 
   CrashReportingService.log('Météo: chargement pour ${effective.displayName} (${effective.source.name})');
-  final weatherService = ref.watch(weatherServiceProvider);
   final weather = await weatherService.getWeather(
     latitude: effective.latitude,
     longitude: effective.longitude,

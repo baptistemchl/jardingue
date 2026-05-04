@@ -83,10 +83,13 @@ class PlantsFilterNotifier extends Notifier<PlantsFilterState> {
 /// (accents, tirets, espaces et apostrophes ignores).
 final filteredPlantsProvider =
     FutureProvider<List<Plant>>((ref) async {
-  await ref.read(databaseInitProvider.future);
-
+  // Toutes les `ref.watch` doivent être déclarées synchroniquement
+  // avant tout `await` (cf. règle Riverpod 3.x sur le bookkeeping
+  // pause/resume).
+  final initFuture = ref.read(databaseInitProvider.future);
   final repo = ref.watch(plantRepositoryProvider);
   final filters = ref.watch(plantsFilterProvider);
+  await initFuture;
 
   final plants = await repo.getFilteredPlants(
     searchQuery: null,
@@ -118,17 +121,33 @@ final filteredPlantsProvider =
 /// Utilisé par les sélecteurs "culture précédente" de la rotation.
 final allPlantsSortedProvider =
     FutureProvider<List<Plant>>((ref) async {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  await initFuture;
   return db.getAllPlantsSorted();
 });
 
-/// Provider pour le nombre total de plantes (sans filtres).
+/// Provider pour le nombre total de plantes du **catalogue** (exclut les
+/// plantes user). Source du badge "X variétés" affiché en tête de l'écran
+/// catalogue : on veut rester aligné avec la promesse marketing, qui ne
+/// prend pas en compte les plantes que l'utilisatrice crée elle-même.
 final totalPlantsCountProvider =
     FutureProvider<int>((ref) async {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final repo = ref.watch(plantRepositoryProvider);
-  return repo.countPlants();
+  await initFuture;
+  return repo.countCatalogPlants();
+});
+
+/// Provider pour la liste des plantes créées par l'utilisateur. Utile
+/// pour l'écran catalogue (badge distinctif), un éventuel écran "mes
+/// plantes" et le debug.
+final userPlantsListProvider =
+    FutureProvider<List<Plant>>((ref) async {
+  final initFuture = ref.read(databaseInitProvider.future);
+  final repo = ref.watch(plantRepositoryProvider);
+  await initFuture;
+  return repo.getAllUserPlants();
 });
 
 /// Provider pour le nombre de plantes filtrees.
@@ -140,11 +159,15 @@ final filteredPlantsCountProvider =
 });
 
 /// Provider pour les categories disponibles (SQL GROUP BY).
+/// On filtre sur le catalogue pour rester cohérent avec
+/// [totalPlantsCountProvider] : si une utilisatrice crée 5 plantes
+/// "fruit_vegetable", le compteur de cette catégorie ne doit pas dériver.
 final availableCategoriesProvider =
     FutureProvider<List<CategoryCount>>((ref) async {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final repo = ref.watch(plantRepositoryProvider);
-  final counts = await repo.getCategoryCounts();
+  await initFuture;
+  final counts = await repo.getCatalogCategoryCounts();
 
   return counts.entries
       .map(
@@ -170,8 +193,9 @@ class CategoryCount {
 /// Provider pour une plante par ID.
 final plantByIdProvider =
     FutureProvider.family<Plant?, int>((ref, id) async {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final repo = ref.watch(plantRepositoryProvider);
+  await initFuture;
   return repo.getPlantById(id);
 });
 

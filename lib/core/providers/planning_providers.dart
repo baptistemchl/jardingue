@@ -26,8 +26,10 @@ final gardenTasksDatasourceProvider =
 /// en `SelectedPlant` (les zones `plantId=0` sont exclues).
 final _gardenDerivedSelectedPlantsStream =
     StreamProvider<List<SelectedPlant>>((ref) async* {
-  await ref.read(databaseInitProvider.future);
+  // `ref.watch` synchroniquement avant tout `await`.
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  await initFuture;
   yield* db.watchAllGardenPlantsWithPlantAndGarden().map((rows) {
     final map = <int, SelectedPlant>{};
     for (final row in rows) {
@@ -54,8 +56,9 @@ final _gardenDerivedSelectedPlantsStream =
 /// arrosage, recolte, entretien...). Source unifiee pour la planification.
 final _eventDerivedSelectedPlantsStream =
     StreamProvider<List<SelectedPlant>>((ref) async* {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  await initFuture;
   yield* db.watchTrackedPlantsWithDetails().map((rows) => rows
       .map((r) => SelectedPlant(
             plantId: r.plantId,
@@ -79,11 +82,16 @@ final selectedPlantsProvider =
 class SelectedPlantsNotifier extends AsyncNotifier<List<SelectedPlant>> {
   @override
   Future<List<SelectedPlant>> build() async {
+    // Toutes les `ref.watch` doivent être déclarées synchroniquement
+    // avant tout `await` pour préserver le bookkeeping pause/resume
+    // de Riverpod 3.x lors d'un changement de TickerMode.
+    final gardenFuture =
+        ref.watch(_gardenDerivedSelectedPlantsStream.future);
+    final eventsFuture =
+        ref.watch(_eventDerivedSelectedPlantsStream.future);
     try {
-      final garden =
-          await ref.watch(_gardenDerivedSelectedPlantsStream.future);
-      final fromEvents =
-          await ref.watch(_eventDerivedSelectedPlantsStream.future);
+      final garden = await gardenFuture;
+      final fromEvents = await eventsFuture;
       final merged = <int, SelectedPlant>{};
       for (final p in fromEvents) {
         merged[p.plantId] = p;
@@ -152,16 +160,17 @@ class PlanningStateNotifier
     extends AsyncNotifier<PlanningState> {
   @override
   Future<PlanningState> build() async {
-    final selectedPlants = await ref.watch(
-      selectedPlantsProvider.future,
-    );
+    // Toutes les `ref.watch` synchroniquement avant `await` (cf.
+    // règle Riverpod 3.x sur le bookkeeping pause/resume).
+    final selectedPlantsFuture =
+        ref.watch(selectedPlantsProvider.future);
+    final datasource = ref.watch(gardenTasksDatasourceProvider);
+    final initFuture = ref.read(databaseInitProvider.future);
+    final db = ref.watch(databaseProvider);
+    final weather = ref.watch(weatherDataProvider);
 
-    // Charger les tâches potagères JSON
-    final datasource = ref.watch(
-      gardenTasksDatasourceProvider,
-    );
-    final gardenTasksByMonth =
-        await datasource.loadByMonth();
+    final selectedPlants = await selectedPlantsFuture;
+    final gardenTasksByMonth = await datasource.loadByMonth();
 
     if (selectedPlants.isEmpty) {
       return PlanningState(
@@ -170,9 +179,7 @@ class PlanningStateNotifier
       );
     }
 
-    await ref.read(databaseInitProvider.future);
-    final db = ref.watch(databaseProvider);
-    final weather = ref.watch(weatherDataProvider);
+    await initFuture;
     final currentMonth = DateTime.now().month;
 
     final plantDataList = <PlantData>[];

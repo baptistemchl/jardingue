@@ -53,12 +53,17 @@ class PlantImportService {
     final jsonData = json.decode(jsonString) as Map<String, dynamic>;
     final plantsJson = jsonData['plants'] as List<dynamic>;
 
-    // Nettoie les tables si réimport forcé
+    // Nettoie les tables si réimport forcé.
+    // On utilise les variantes catalogue-only pour PRESERVER les plantes user
+    // (et leurs relations compagne/antagoniste) lors d'un réimport forcé.
+    // Sans ce filtrage, chaque ajout futur de plante au catalogue qui
+    // déclenche une condition de réimport effacerait les plantes créées par
+    // l'utilisateur — ce que l'on veut absolument éviter.
     if (forceReimport) {
-      await _db.deleteAllAntagonists();
-      await _db.deleteAllCompanions();
-      await _db.deleteAllPlants();
-      debugPrint('Tables nettoyees');
+      await _db.deleteCatalogAntagonists();
+      await _db.deleteCatalogCompanions();
+      await _db.deleteCatalogPlants();
+      debugPrint('Tables nettoyees (catalogue uniquement)');
     }
 
     int importedCount = 0;

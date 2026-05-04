@@ -187,6 +187,35 @@ class AboutSheet extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
+                      GestureDetector(
+                        onTap: () => launchUrl(
+                          Uri.parse(
+                            AppLocalizations.of(context)!.aboutInstagramUrl,
+                          ),
+                          mode: LaunchMode.externalApplication,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              PhosphorIcons.instagramLogo(
+                                  PhosphorIconsStyle.regular),
+                              size: 13,
+                              color: AppColors.primary,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              AppLocalizations.of(context)!.aboutInstagram,
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.primary,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 6),
                       Text(
                         AppLocalizations.of(context)!.aboutCopyright(DateTime.now().year.toString()),
                         style: AppTypography.caption.copyWith(

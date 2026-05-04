@@ -10,6 +10,7 @@ import '../../../../../core/theme/app_typography.dart';
 import '../../../../../core/services/database/app_database.dart';
 import '../../../../../core/providers/database_providers.dart';
 import '../../../../../core/utils/plant_emoji_mapper.dart';
+import '../../../../plants/presentation/widgets/user_plant_form_sheet.dart';
 import '../../../domain/models/amendment_type.dart';
 import '../../../domain/models/watering_helpers.dart';
 import '../../../domain/models/zone_type.dart';
@@ -102,6 +103,23 @@ class _State extends ConsumerState<EditorAddElementSheet> {
     );
   }
 
+  /// Ouvre le formulaire de création d'une plante personnalisée
+  /// puis, si l'utilisateur a sauvegardé, enchaîne directement sur
+  /// l'étape 2 (dimensions / dates / arrosage) avec la plante
+  /// fraîchement créée. Évite à l'utilisateur de re-rechercher après
+  /// création — l'usage normal est "je ne trouve pas ma plante" →
+  /// création → "je peux la poser tout de suite".
+  Future<void> _createCustomPlant() async {
+    // Replie le clavier (la barre de recherche peut être focused).
+    FocusManager.instance.primaryFocus?.unfocus();
+    final newId = await showUserPlantFormSheet(context: context);
+    if (!mounted || newId == null) return;
+    final plant =
+        await ref.read(plantRepositoryProvider).getPlantById(newId);
+    if (!mounted || plant == null) return;
+    _selectPlant(plant);
+  }
+
   void _selectPlant(Plant plant) {
     setState(() {
       _mode = _AddMode.plant;
@@ -149,34 +167,44 @@ class _State extends ConsumerState<EditorAddElementSheet> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    // Pour l'étape 1 (liste des plantes), on fige la hauteur mais on
-    // clampe à l'espace visible réel : 85 % écran, sans dépasser ce
-    // qui reste une fois le clavier ouvert — sinon le Column intérieur
-    // provoquait un RenderFlex overflow quand la recherche ne renvoyait
-    // rien (l'empty-state ne rentrait pas dans l'Expanded résiduel).
+    // À l'étape 1 (sélection plante), on fige la hauteur de la sheet
+    // pour permettre à l'`Expanded(ListView)` de prendre l'espace
+    // résiduel. On part de 85 % de l'écran VISIBLE — c'est-à-dire en
+    // soustrayant la hauteur du clavier — sinon le bas de la liste
+    // (et le bouton "Créer une plante personnalisée") restait masqué
+    // sous le clavier dès qu'on tapait dans la recherche.
+    final visibleHeight =
+        media.size.height - media.viewInsets.bottom;
     final step1Height = _step == 1
         ? math.min(
             media.size.height * 0.85,
-            media.size.height - media.viewInsets.bottom - 48,
+            visibleHeight - 48,
           )
         : null;
-    return Container(
-      height: step1Height,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+    return Padding(
+      // Pousse l'intégralité de la sheet au-dessus du clavier. Sans
+      // ça, la sheet est ancrée au bas de l'écran et le clavier
+      // recouvre ses derniers pixels (cas typique : barre de recherche
+      // en bas de la sheet, liste invisible).
+      padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
+      child: Container(
+        height: step1Height,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
         ),
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: media.padding.bottom + 20,
+        ),
+        child: _step == 1
+            ? _buildPlantSelection()
+            : _buildMainContent(),
       ),
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: _step == 1
-            ? media.padding.bottom + 20
-            : media.viewInsets.bottom + media.padding.bottom + 20,
-      ),
-      child: _step == 1 ? _buildPlantSelection() : _buildMainContent(),
     );
   }
 
@@ -583,7 +611,15 @@ class _State extends ConsumerState<EditorAddElementSheet> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
+        // Tuile persistante "Créer une plante personnalisée" : la
+        // raison d'être de la feature est justement de débloquer le
+        // cas "je ne trouve pas ma plante dans le catalogue". On la
+        // place ici (après la barre de recherche, avant la liste)
+        // pour qu'elle soit accessible aussi bien depuis le résultat
+        // vide que pendant le scroll.
+        _CreateCustomPlantTile(onTap: _createCustomPlant),
+        const SizedBox(height: 12),
         Expanded(
           child: plantsAsync.when(
             data: (plants) {
@@ -872,6 +908,81 @@ class _PlantListItem extends StatelessWidget {
                     ),
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Tuile call-to-action présente en permanence en haut de la liste
+/// de sélection des plantes. Bordure pointillée + couleur primaire
+/// pour la distinguer visuellement des items du catalogue, sans pour
+/// autant l'imposer comme un élément intrusif.
+class _CreateCustomPlantTile extends StatelessWidget {
+  final VoidCallback onTap;
+  const _CreateCustomPlantTile({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: 0.4),
+            width: 1.2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                PhosphorIcons.plus(PhosphorIconsStyle.bold),
+                color: AppColors.primary,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.createPlantAction,
+                    style: AppTypography.titleSmall.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.createPlantHint,
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.primary.withValues(
+                        alpha: 0.8,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
+              color: AppColors.primary,
+              size: 18,
             ),
           ],
         ),

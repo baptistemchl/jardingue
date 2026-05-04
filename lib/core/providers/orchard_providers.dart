@@ -76,17 +76,21 @@ class FruitTreesFilterNotifier extends Notifier<FruitTreesFilterState> {
 
 final allFruitTreesProvider =
     FutureProvider<List<FruitTree>>((ref) async {
-  await ref.watch(fruitTreesInitProvider.future);
+  // Toutes les `ref.watch` doivent être déclarées synchroniquement
+  // avant tout `await` (cf. règle Riverpod 3.x sur le bookkeeping
+  // pause/resume).
+  final initFuture = ref.watch(fruitTreesInitProvider.future);
   final repo = ref.watch(fruitTreeRepositoryProvider);
+  await initFuture;
   return repo.getAllFruitTrees();
 });
 
 final filteredFruitTreesProvider =
     FutureProvider<List<FruitTree>>((ref) async {
-  await ref.watch(fruitTreesInitProvider.future);
-
+  final initFuture = ref.watch(fruitTreesInitProvider.future);
   final repo = ref.watch(fruitTreeRepositoryProvider);
   final filters = ref.watch(fruitTreesFilterProvider);
+  await initFuture;
 
   return repo.getFilteredFruitTrees(
     searchQuery: filters.searchQuery.isNotEmpty
@@ -102,15 +106,17 @@ final filteredFruitTreesProvider =
 
 final fruitTreeByIdProvider =
     FutureProvider.family<FruitTree?, int>((ref, id) async {
-  await ref.watch(fruitTreesInitProvider.future);
+  final initFuture = ref.watch(fruitTreesInitProvider.future);
   final repo = ref.watch(fruitTreeRepositoryProvider);
+  await initFuture;
   return repo.getFruitTreeById(id);
 });
 
 final fruitTreesCountProvider =
     FutureProvider<int>((ref) async {
-  await ref.watch(fruitTreesInitProvider.future);
+  final initFuture = ref.watch(fruitTreesInitProvider.future);
   final repo = ref.watch(fruitTreeRepositoryProvider);
+  await initFuture;
   return repo.countFruitTrees();
 });
 

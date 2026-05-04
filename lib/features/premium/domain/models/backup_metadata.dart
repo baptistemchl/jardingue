@@ -5,6 +5,7 @@ class BackupMetadata {
   final int plantCount;
   final int eventCount;
   final int treeCount;
+  final int userPlantCount;
 
   const BackupMetadata({
     required this.createdAt,
@@ -12,8 +13,9 @@ class BackupMetadata {
     required this.plantCount,
     required this.eventCount,
     required this.treeCount,
+    this.userPlantCount = 0,
   });
 
   int get totalItems =>
-      gardenCount + plantCount + eventCount + treeCount;
+      gardenCount + plantCount + eventCount + treeCount + userPlantCount;
 }

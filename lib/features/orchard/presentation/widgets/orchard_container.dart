@@ -164,8 +164,12 @@ class OrchardContainer extends ConsumerWidget {
   }
 
   void _navigateToOrchard(BuildContext context) {
-    Navigator.push(
-      context,
+    // `rootNavigator: true` est indispensable : sans ça, la nouvelle
+    // route est poussée sur le navigator imbriqué de la ShellRoute,
+    // donc la bottom nav bar custom (`ScaffoldWithNavBar`) reste
+    // visible par-dessus l'écran verger. En passant par le navigator
+    // racine, OrchardScreen s'affiche en plein écran sans la nav.
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(builder: (_) => const OrchardScreen()),
     );
   }

@@ -104,8 +104,10 @@ class ActivityFilterNotifier extends Notifier<GardenActivityType?> {
 /// Provider pour les activités d'un mois donné
 final monthActivitiesProvider =
     FutureProvider.family<MonthActivities, DateTime>((ref, month) async {
-      await ref.read(databaseInitProvider.future);
+      // `ref.watch` synchroniquement avant `await` (cf. règle Riverpod 3.x).
+      final initFuture = ref.read(databaseInitProvider.future);
       final db = ref.watch(databaseProvider);
+      await initFuture;
       final plants = await db.getAllPlantsSorted();
 
       final monthName = _getEnglishMonthName(month.month);
@@ -217,16 +219,19 @@ final yearSummaryProvider = FutureProvider.family<Map<int, int>, int>((
   ref,
   year,
 ) async {
-  final summary = <int, int>{};
+  // On capture les 12 futures synchroniquement avant le moindre
+  // `await` pour respecter la règle Riverpod 3.x (pause/resume).
+  final futures = <Future<MonthActivities>>[
+    for (var month = 1; month <= 12; month++)
+      ref.watch(
+        monthActivitiesProvider(DateTime(year, month)).future,
+      ),
+  ];
 
-  for (var month = 1; month <= 12; month++) {
-    final activities = await ref.watch(
-      monthActivitiesProvider(DateTime(year, month)).future,
-    );
-    summary[month] = activities.totalActivities;
-  }
-
-  return summary;
+  final results = await Future.wait(futures);
+  return {
+    for (var i = 0; i < 12; i++) i + 1: results[i].totalActivities,
+  };
 });
 
 // ============================================

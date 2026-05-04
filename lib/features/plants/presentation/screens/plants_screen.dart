@@ -10,7 +10,9 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/glass_decoration.dart';
 import '../../../../core/providers/database_providers.dart';
 import '../../../../core/services/database/database.dart';
+import '../../../../core/services/database/app_database.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../widgets/user_plant_form_sheet.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 /// Écran de la liste des plantes
@@ -173,6 +175,28 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                         onClear: () {
                           _searchController.clear();
                           _onSearchChanged('');
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppSpacing.md),
+                  ),
+
+                  // Créer une plante personnalisée — tuile placée
+                  // directement sous la recherche pour qu'elle soit
+                  // explicite et toujours visible (vs un FAB qui était
+                  // masqué par la nav bar custom). Ouvre le formulaire
+                  // de création — pas de pré-sélection ici, on revient
+                  // simplement sur le catalogue après création.
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: AppSpacing.horizontalPadding,
+                      child: _CreatePlantTile(
+                        onTap: () {
+                          _unfocus();
+                          showUserPlantFormSheet(context: context);
                         },
                       ),
                     ),
@@ -414,6 +438,15 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
   }
 
   void _showPlantDetail(BuildContext context, Plant plant) {
+    // Plante user (≥ 1_000_000) → édition. Catalogue → fiche read-only.
+    if (plant.isUserModified ||
+        plant.id >= AppDatabase.userPlantIdMin) {
+      showUserPlantFormSheet(
+        context: context,
+        initialPlant: plant,
+      );
+      return;
+    }
     showModalBottomSheet(
       useRootNavigator: true,
       context: context,
@@ -474,6 +507,76 @@ class _SearchBar extends StatelessWidget {
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CreatePlantTile extends StatelessWidget {
+  final VoidCallback onTap;
+  const _CreatePlantTile({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppSpacing.borderRadiusLg,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: 12,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: 0.07),
+          borderRadius: AppSpacing.borderRadiusLg,
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: 0.4),
+            width: 1.2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.15),
+                borderRadius: AppSpacing.borderRadiusMd,
+              ),
+              child: Icon(
+                PhosphorIcons.plus(PhosphorIconsStyle.bold),
+                color: AppColors.primary,
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.createPlantAction,
+                    style: AppTypography.titleSmall.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    AppLocalizations.of(context)!.createPlantHint,
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.primary.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
+              color: AppColors.primary,
+              size: 16,
+            ),
+          ],
         ),
       ),
     );
@@ -628,6 +731,38 @@ class _PlantCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (plant.isUserModified)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.warning.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              PhosphorIcons.pencilSimple(
+                                PhosphorIconsStyle.fill,
+                              ),
+                              color: AppColors.warning,
+                              size: 10,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              AppLocalizations.of(context)!.userPlantBadge,
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.warning,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

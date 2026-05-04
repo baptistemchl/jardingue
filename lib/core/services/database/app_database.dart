@@ -10,6 +10,21 @@ import 'tables.dart';
 
 part 'app_database.g.dart';
 
+/// Snapshot des liens entre une plante user et le potager : permet à la
+/// couche repository de décider si une suppression est sûre avant de
+/// l'engager (FK non cascade, donc orphelins potentiels sinon).
+class UserPlantUsageInfo {
+  final List<String> gardenNames;
+  final int eventCount;
+
+  const UserPlantUsageInfo({
+    required this.gardenNames,
+    required this.eventCount,
+  });
+
+  bool get isInUse => gardenNames.isNotEmpty || eventCount > 0;
+}
+
 @DriftDatabase(
   tables: [
     Plants,
@@ -331,9 +346,27 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deleteAllPlants() => delete(plants).go();
 
+  /// Supprime uniquement les plantes catalogue (préserve les user plants).
+  /// Utilisée par PlantImportService au lieu de [deleteAllPlants] pour ne
+  /// jamais effacer les plantes que l'utilisateur a créées lors d'un
+  /// réimport forcé du catalogue.
+  Future<int> deleteCatalogPlants() =>
+      (delete(plants)..where((t) => t.isUserModified.equals(false))).go();
+
   Future<int> countPlants() async {
     final count = plants.id.count();
     final query = selectOnly(plants)..addColumns([count]);
+    final result = await query.getSingle();
+    return result.read(count) ?? 0;
+  }
+
+  /// Compte les plantes du catalogue uniquement (exclut les user plants).
+  /// Source du badge "X variétés" qui doit refléter le catalogue.
+  Future<int> countCatalogPlants() async {
+    final count = plants.id.count();
+    final query = selectOnly(plants)
+      ..addColumns([count])
+      ..where(plants.isUserModified.equals(false));
     final result = await query.getSingle();
     return result.read(count) ?? 0;
   }
@@ -398,6 +431,192 @@ class AppDatabase extends _$AppDatabase {
   Future<int> deleteAllCompanions() => delete(plantCompanions).go();
 
   Future<int> deleteAllAntagonists() => delete(plantAntagonists).go();
+
+  /// Ne supprime que les paires où **les deux** plantes sont du catalogue
+  /// (id < [userPlantIdMin]). Préserve toute relation impliquant au moins
+  /// une user plant lors d'un réimport forcé.
+  Future<int> deleteCatalogCompanions() =>
+      (delete(plantCompanions)..where(
+            (t) =>
+                t.plantId.isSmallerThanValue(userPlantIdMin) &
+                t.companionId.isSmallerThanValue(userPlantIdMin),
+          ))
+          .go();
+
+  Future<int> deleteCatalogAntagonists() =>
+      (delete(plantAntagonists)..where(
+            (t) =>
+                t.plantId.isSmallerThanValue(userPlantIdMin) &
+                t.antagonistId.isSmallerThanValue(userPlantIdMin),
+          ))
+          .go();
+
+  // ============================================
+  // USER PLANTS (isUserModified = true)
+  // ============================================
+
+  /// IDs des plantes user démarrent à 1 000 000 pour exclure tout chevauchement
+  /// avec le catalogue (max actuel ≈ 250). Garantit qu'aucun ajout futur au
+  /// catalogue ne pourra écraser une plante user.
+  static const int userPlantIdMin = 1000000;
+
+  /// Prochain ID disponible pour une nouvelle plante user.
+  /// Renvoie [userPlantIdMin] si aucune n'existe encore.
+  Future<int> nextUserPlantId() async {
+    final maxExpr = plants.id.max();
+    final query = selectOnly(plants)
+      ..addColumns([maxExpr])
+      ..where(plants.isUserModified.equals(true));
+    final result = await query.getSingle();
+    final current = result.read(maxExpr);
+    if (current == null) return userPlantIdMin;
+    return current + 1;
+  }
+
+  /// Insère une plante user. Le caller (repository) doit avoir préassigné
+  /// `id` (via [nextUserPlantId]) et positionné `isUserModified = true`.
+  Future<int> insertUserPlant(PlantsCompanion data) =>
+      into(plants).insert(data);
+
+  /// Met à jour une plante user. Le where bornée à `isUserModified = true`
+  /// garantit qu'aucune plante du catalogue ne peut être modifiée par
+  /// erreur via cette méthode.
+  Future<int> updateUserPlant(int id, PlantsCompanion data) {
+    return (update(plants)..where(
+          (t) => t.id.equals(id) & t.isUserModified.equals(true),
+        ))
+        .write(data);
+  }
+
+  /// Liste toutes les plantes user (utilisée par le backup et les tests).
+  Future<List<Plant>> getAllUserPlants() {
+    return (select(plants)..where((t) => t.isUserModified.equals(true))).get();
+  }
+
+  /// Renvoie un snapshot de l'utilisation d'une plante user dans le potager
+  /// — noms des potagers où elle est posée + nombre d'events liés. Le
+  /// repository s'en sert pour décider si une suppression est sûre.
+  Future<UserPlantUsageInfo> getUserPlantUsage(int id) async {
+    final gardenRows = await (select(gardenPlants).join([
+      innerJoin(gardens, gardens.id.equalsExp(gardenPlants.gardenId)),
+    ])..where(gardenPlants.plantId.equals(id))).get();
+    final gardenNames = <String>{
+      for (final r in gardenRows) r.readTable(gardens).name,
+    }.toList();
+
+    final eventCountExpr = gardenEvents.id.count();
+    final eventQuery = selectOnly(gardenEvents)
+      ..addColumns([eventCountExpr])
+      ..where(gardenEvents.plantId.equals(id));
+    final eventRow = await eventQuery.getSingle();
+
+    return UserPlantUsageInfo(
+      gardenNames: gardenNames,
+      eventCount: eventRow.read(eventCountExpr) ?? 0,
+    );
+  }
+
+  /// Remplace l'ensemble des compagnes d'une plante user par la liste
+  /// fournie (delete + reinsert dans une transaction). Utilisé lors d'une
+  /// édition pour synchroniser proprement l'état après modification.
+  Future<void> replaceCompanionsForUserPlant(
+    int plantId,
+    List<int> companionIds,
+  ) {
+    return transaction(() async {
+      await (delete(plantCompanions)
+            ..where((t) => t.plantId.equals(plantId)))
+          .go();
+      for (final c in companionIds) {
+        await insertCompanion(plantId, c);
+      }
+    });
+  }
+
+  /// Idem [replaceCompanionsForUserPlant] mais pour les antagonistes.
+  Future<void> replaceAntagonistsForUserPlant(
+    int plantId,
+    List<int> antagonistIds,
+  ) {
+    return transaction(() async {
+      await (delete(plantAntagonists)
+            ..where((t) => t.plantId.equals(plantId)))
+          .go();
+      for (final a in antagonistIds) {
+        await insertAntagonist(plantId, a);
+      }
+    });
+  }
+
+  /// Supprime une plante user **en cascade** : retire toutes les
+  /// références qui la pointent (gardenPlants, gardenEvents, completed
+  /// planning tasks, compagne/antagoniste, previousCropPlantId) puis
+  /// la plante elle-même. Bornée à `isUserModified = true` pour ne
+  /// jamais toucher au catalogue.
+  ///
+  /// L'UI doit afficher un avertissement préalable basé sur
+  /// [getUserPlantUsage] avant d'appeler cette méthode si la plante
+  /// est utilisée — la suppression est définitive et impacte le grid
+  /// du potager + Mon Suivi + planning.
+  Future<int> deleteUserPlant(int id) {
+    return transaction(() async {
+      // 1. IDs des gardenPlants liés à cette plante : on les utilise
+      //    pour purger les events qui les référencent par
+      //    gardenPlantId (lien indirect via la plante posée).
+      final gpIds = await (selectOnly(gardenPlants)
+            ..addColumns([gardenPlants.id])
+            ..where(gardenPlants.plantId.equals(id)))
+          .map((r) => r.read(gardenPlants.id)!)
+          .get();
+
+      if (gpIds.isNotEmpty) {
+        await (delete(gardenEvents)
+              ..where((t) => t.gardenPlantId.isIn(gpIds)))
+            .go();
+      }
+
+      // 2. Events liés directement par plantId (suivi sans potager
+      //    associé : tracked plants, planification).
+      await (delete(gardenEvents)..where((t) => t.plantId.equals(id)))
+          .go();
+
+      // 3. Les gardenPlants eux-mêmes.
+      await (delete(gardenPlants)..where((t) => t.plantId.equals(id)))
+          .go();
+
+      // 4. Réinitialiser previousCropPlantId là où c'était cette
+      //    plante (préserve les autres lignes, on perd juste l'info
+      //    de rotation pour ces poses).
+      await (update(gardenPlants)
+            ..where((t) => t.previousCropPlantId.equals(id)))
+          .write(const GardenPlantsCompanion(
+        previousCropPlantId: Value(null),
+      ));
+
+      // 5. Tâches de planification complétées qui pointaient cette
+      //    plante.
+      await (delete(completedPlanningTasks)
+            ..where((t) => t.plantId.equals(id)))
+          .go();
+
+      // 6. Relations compagne / antagoniste (dans les deux sens).
+      await (delete(plantCompanions)..where(
+            (t) => t.plantId.equals(id) | t.companionId.equals(id),
+          ))
+          .go();
+      await (delete(plantAntagonists)..where(
+            (t) => t.plantId.equals(id) | t.antagonistId.equals(id),
+          ))
+          .go();
+
+      // 7. La plante elle-même (bornée à isUserModified=true pour
+      //    sécurité absolue : impossible de wiper du catalogue).
+      return (delete(plants)..where(
+            (t) => t.id.equals(id) & t.isUserModified.equals(true),
+          ))
+          .go();
+    });
+  }
 
   // ============================================
   // GARDENS QUERIES
@@ -887,6 +1106,24 @@ class AppDatabase extends _$AppDatabase {
     final countExpr = plants.id.count();
     final query = selectOnly(plants)
       ..addColumns([plants.categoryCode, countExpr])
+      ..groupBy([plants.categoryCode]);
+    final results = await query.get();
+    return {
+      for (final row in results)
+        (row.read(plants.categoryCode) ?? 'unknown'):
+            (row.read(countExpr) ?? 0),
+    };
+  }
+
+  /// Variante catalogue-only de [getCategoryCounts]. Le badge de comptage
+  /// par catégorie sur l'écran Plantes doit refléter le catalogue, pas les
+  /// plantes user (sinon le total visible ne correspond plus à la promesse
+  /// "X variétés").
+  Future<Map<String, int>> getCatalogCategoryCounts() async {
+    final countExpr = plants.id.count();
+    final query = selectOnly(plants)
+      ..addColumns([plants.categoryCode, countExpr])
+      ..where(plants.isUserModified.equals(false))
       ..groupBy([plants.categoryCode]);
     final results = await query.get();
     return {

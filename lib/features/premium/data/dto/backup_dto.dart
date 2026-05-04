@@ -17,11 +17,15 @@ class BackupDto {
         'plantCount': data.metadata.plantCount,
         'eventCount': data.metadata.eventCount,
         'treeCount': data.metadata.treeCount,
+        'userPlantCount': data.metadata.userPlantCount,
       },
       'gardens': data.gardens,
       'gardenPlants': data.gardenPlants,
       'gardenEvents': data.gardenEvents,
       'userFruitTrees': data.userFruitTrees,
+      'userPlants': data.userPlants,
+      'userPlantCompanions': data.userPlantCompanions,
+      'userPlantAntagonists': data.userPlantAntagonists,
     };
   }
 
@@ -37,6 +41,13 @@ class BackupDto {
       gardenEvents: _parseList(json['gardenEvents']),
       userFruitTrees:
           _parseList(json['userFruitTrees']),
+      // Les 3 listes user sont absentes des backups antérieurs à la v1.6 :
+      // _parseList renvoie [] pour rester rétrocompatible.
+      userPlants: _parseList(json['userPlants']),
+      userPlantCompanions:
+          _parseList(json['userPlantCompanions']),
+      userPlantAntagonists:
+          _parseList(json['userPlantAntagonists']),
     );
   }
 
@@ -56,6 +67,7 @@ class BackupDto {
       plantCount: meta['plantCount'] as int? ?? 0,
       eventCount: meta['eventCount'] as int? ?? 0,
       treeCount: meta['treeCount'] as int? ?? 0,
+      userPlantCount: meta['userPlantCount'] as int? ?? 0,
     );
   }
 

@@ -1246,6 +1246,492 @@ abstract class AppLocalizations {
   /// **'❌ À éviter'**
   String get badCompanions;
 
+  /// No description provided for @createPlantAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer une plante personnalisée'**
+  String get createPlantAction;
+
+  /// No description provided for @createPlantHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas dans la liste ? Ajoute-la'**
+  String get createPlantHint;
+
+  /// No description provided for @userPlantBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Personnalisée'**
+  String get userPlantBadge;
+
+  /// No description provided for @userPlantFormCreateTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer une plante'**
+  String get userPlantFormCreateTitle;
+
+  /// No description provided for @userPlantFormEditTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la plante'**
+  String get userPlantFormEditTitle;
+
+  /// No description provided for @userPlantFormSectionEssentials.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essentiel'**
+  String get userPlantFormSectionEssentials;
+
+  /// No description provided for @userPlantFormSectionEssentialsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Champs obligatoires'**
+  String get userPlantFormSectionEssentialsSubtitle;
+
+  /// No description provided for @userPlantFormSectionCalendars.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calendriers'**
+  String get userPlantFormSectionCalendars;
+
+  /// No description provided for @userPlantFormSectionCalendarsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moins un mois requis (semis, plantation ou récolte)'**
+  String get userPlantFormSectionCalendarsSubtitle;
+
+  /// No description provided for @userPlantFormSectionConditions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conditions de culture'**
+  String get userPlantFormSectionConditions;
+
+  /// No description provided for @userPlantFormSectionAdvice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseils & repères'**
+  String get userPlantFormSectionAdvice;
+
+  /// No description provided for @userPlantFormSectionCompanions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compagnons & antagonistes'**
+  String get userPlantFormSectionCompanions;
+
+  /// No description provided for @userPlantFormSectionAdvanced.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avancé'**
+  String get userPlantFormSectionAdvanced;
+
+  /// No description provided for @userPlantFieldCommonName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom commun *'**
+  String get userPlantFieldCommonName;
+
+  /// No description provided for @userPlantFieldCommonNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: Pastèque'**
+  String get userPlantFieldCommonNameHint;
+
+  /// No description provided for @userPlantFieldCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie *'**
+  String get userPlantFieldCategory;
+
+  /// No description provided for @userPlantFieldSpacingPlants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Espacement plants (cm) *'**
+  String get userPlantFieldSpacingPlants;
+
+  /// No description provided for @userPlantFieldSpacingPlantsHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: 100'**
+  String get userPlantFieldSpacingPlantsHint;
+
+  /// No description provided for @userPlantFieldSpacingRows.
+  ///
+  /// In fr, this message translates to:
+  /// **'Espacement rangs (cm) *'**
+  String get userPlantFieldSpacingRows;
+
+  /// No description provided for @userPlantFieldSpacingRowsHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: 150'**
+  String get userPlantFieldSpacingRowsHint;
+
+  /// No description provided for @userPlantFieldEmoji.
+  ///
+  /// In fr, this message translates to:
+  /// **'Icône'**
+  String get userPlantFieldEmoji;
+
+  /// No description provided for @userPlantFieldEmojiAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Auto (modifier)'**
+  String get userPlantFieldEmojiAuto;
+
+  /// No description provided for @userPlantFieldEmojiManual.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier l\'icône'**
+  String get userPlantFieldEmojiManual;
+
+  /// No description provided for @userPlantFieldSun.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exposition'**
+  String get userPlantFieldSun;
+
+  /// No description provided for @userPlantFieldSunHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'— Choisir —'**
+  String get userPlantFieldSunHint;
+
+  /// No description provided for @userPlantFieldDepth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profondeur (cm)'**
+  String get userPlantFieldDepth;
+
+  /// No description provided for @userPlantFieldDepthHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: 2'**
+  String get userPlantFieldDepthHint;
+
+  /// No description provided for @userPlantFieldMinTemp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Temp. mini (°C)'**
+  String get userPlantFieldMinTemp;
+
+  /// No description provided for @userPlantFieldMinTempHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: 12'**
+  String get userPlantFieldMinTempHint;
+
+  /// No description provided for @userPlantFieldSoilType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de sol'**
+  String get userPlantFieldSoilType;
+
+  /// No description provided for @userPlantFieldSoilTypeHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: léger, sableux, drainé'**
+  String get userPlantFieldSoilTypeHint;
+
+  /// No description provided for @userPlantFieldSoilMoisture.
+  ///
+  /// In fr, this message translates to:
+  /// **'Humidité préférée'**
+  String get userPlantFieldSoilMoisture;
+
+  /// No description provided for @userPlantFieldSoilMoistureHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: modérée à régulière'**
+  String get userPlantFieldSoilMoistureHint;
+
+  /// No description provided for @userPlantFieldWatering.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosage'**
+  String get userPlantFieldWatering;
+
+  /// No description provided for @userPlantFieldWateringHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: régulier au pied'**
+  String get userPlantFieldWateringHint;
+
+  /// No description provided for @userPlantFieldRotation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Famille botanique (rotation)'**
+  String get userPlantFieldRotation;
+
+  /// No description provided for @userPlantFieldRotationHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Auto depuis le nom latin'**
+  String get userPlantFieldRotationHint;
+
+  /// No description provided for @userPlantFieldSowingReco.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseil de semis'**
+  String get userPlantFieldSowingReco;
+
+  /// No description provided for @userPlantFieldPlantingAdvice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseil de plantation'**
+  String get userPlantFieldPlantingAdvice;
+
+  /// No description provided for @userPlantFieldCare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entretien'**
+  String get userPlantFieldCare;
+
+  /// No description provided for @userPlantFieldRedFlags.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points d\'attention'**
+  String get userPlantFieldRedFlags;
+
+  /// No description provided for @userPlantFieldPracticalTips.
+  ///
+  /// In fr, this message translates to:
+  /// **'Astuces pratiques'**
+  String get userPlantFieldPracticalTips;
+
+  /// No description provided for @userPlantFieldLatinName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom latin'**
+  String get userPlantFieldLatinName;
+
+  /// No description provided for @userPlantFieldLatinNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex: Citrullus lanatus'**
+  String get userPlantFieldLatinNameHint;
+
+  /// No description provided for @userPlantFieldToxicity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toxicité'**
+  String get userPlantFieldToxicity;
+
+  /// No description provided for @userPlantFieldToxicityHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Laisser vide si non toxique'**
+  String get userPlantFieldToxicityHint;
+
+  /// No description provided for @userPlantCalendarSowing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis'**
+  String get userPlantCalendarSowing;
+
+  /// No description provided for @userPlantCalendarPlanting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plantation'**
+  String get userPlantCalendarPlanting;
+
+  /// No description provided for @userPlantCalendarHarvest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récolte'**
+  String get userPlantCalendarHarvest;
+
+  /// No description provided for @userPlantCompanionsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plantes compagnes'**
+  String get userPlantCompanionsLabel;
+
+  /// No description provided for @userPlantAntagonistsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plantes antagonistes'**
+  String get userPlantAntagonistsLabel;
+
+  /// No description provided for @userPlantCompanionsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{c} compagne(s), {a} antagoniste(s)'**
+  String userPlantCompanionsSubtitle(int c, int a);
+
+  /// No description provided for @userPlantCompanionsAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get userPlantCompanionsAdd;
+
+  /// No description provided for @userPlantCompanionsEdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get userPlantCompanionsEdit;
+
+  /// No description provided for @userPlantCompanionsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune sélection'**
+  String get userPlantCompanionsEmpty;
+
+  /// No description provided for @userPlantCompanionsValidate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider ({n})'**
+  String userPlantCompanionsValidate(int n);
+
+  /// No description provided for @userPlantCompanionsSearch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher…'**
+  String get userPlantCompanionsSearch;
+
+  /// No description provided for @userPlantSaveCreate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer'**
+  String get userPlantSaveCreate;
+
+  /// No description provided for @userPlantSaveEdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get userPlantSaveEdit;
+
+  /// No description provided for @userPlantDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette plante'**
+  String get userPlantDelete;
+
+  /// No description provided for @userPlantDeleteConfirmTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette plante ?'**
+  String get userPlantDeleteConfirmTitle;
+
+  /// No description provided for @userPlantDeleteConfirmBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'La plante \"{name}\" sera définitivement retirée de ton catalogue.'**
+  String userPlantDeleteConfirmBody(String name);
+
+  /// No description provided for @userPlantDeleteCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get userPlantDeleteCancel;
+
+  /// No description provided for @userPlantDeleteConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get userPlantDeleteConfirm;
+
+  /// No description provided for @userPlantInUseHeader.
+  ///
+  /// In fr, this message translates to:
+  /// **'⚠️ \"{name}\" figure encore dans tes plans.'**
+  String userPlantInUseHeader(String name);
+
+  /// No description provided for @userPlantInUseGardens.
+  ///
+  /// In fr, this message translates to:
+  /// **'Elle sera retirée de : {gardens}.'**
+  String userPlantInUseGardens(String gardens);
+
+  /// No description provided for @userPlantInUseEvents.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} événement(s) de suivi seront effacés.'**
+  String userPlantInUseEvents(int count);
+
+  /// No description provided for @userPlantInUseFooter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est irréversible.'**
+  String get userPlantInUseFooter;
+
+  /// No description provided for @userPlantValidationName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nom commun est obligatoire.'**
+  String get userPlantValidationName;
+
+  /// No description provided for @userPlantValidationCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisis une catégorie.'**
+  String get userPlantValidationCategory;
+
+  /// No description provided for @userPlantValidationSpacingPlants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indique l\'espacement entre plants (cm > 0).'**
+  String get userPlantValidationSpacingPlants;
+
+  /// No description provided for @userPlantValidationSpacingRows.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indique l\'espacement entre rangs (cm > 0).'**
+  String get userPlantValidationSpacingRows;
+
+  /// No description provided for @userPlantValidationCalendars.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coche au moins un mois sur l\'un des calendriers (semis, plantation ou récolte).'**
+  String get userPlantValidationCalendars;
+
+  /// No description provided for @userPlantSaveError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors de l\'enregistrement : {message}'**
+  String userPlantSaveError(String message);
+
+  /// No description provided for @userPlantDeleteError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors de la suppression : {message}'**
+  String userPlantDeleteError(String message);
+
+  /// No description provided for @userPlantSunFull.
+  ///
+  /// In fr, this message translates to:
+  /// **'☀️ Ensoleillé'**
+  String get userPlantSunFull;
+
+  /// No description provided for @userPlantSunPartial.
+  ///
+  /// In fr, this message translates to:
+  /// **'⛅ Mi-ombre'**
+  String get userPlantSunPartial;
+
+  /// No description provided for @userPlantSunShade.
+  ///
+  /// In fr, this message translates to:
+  /// **'🌥️ Ombragé'**
+  String get userPlantSunShade;
+
+  /// No description provided for @userPlantEmojiPickerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une icône'**
+  String get userPlantEmojiPickerTitle;
+
+  /// No description provided for @userPlantCompanionsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compagnes'**
+  String get userPlantCompanionsTitle;
+
+  /// No description provided for @userPlantAntagonistsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Antagonistes'**
+  String get userPlantAntagonistsTitle;
+
   /// No description provided for @weatherLoading.
   ///
   /// In fr, this message translates to:
@@ -1285,8 +1771,20 @@ abstract class AppLocalizations {
   /// No description provided for @aboutContact.
   ///
   /// In fr, this message translates to:
-  /// **'contact@agence-ixp.fr'**
+  /// **'agenceixp.app@gmail.com'**
   String get aboutContact;
+
+  /// No description provided for @aboutInstagram.
+  ///
+  /// In fr, this message translates to:
+  /// **'@agenceixp'**
+  String get aboutInstagram;
+
+  /// No description provided for @aboutInstagramUrl.
+  ///
+  /// In fr, this message translates to:
+  /// **'https://www.instagram.com/agenceixp/'**
+  String get aboutInstagramUrl;
 
   /// No description provided for @aboutCopyright.
   ///

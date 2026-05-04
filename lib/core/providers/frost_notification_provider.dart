@@ -24,8 +24,11 @@ bool _isNightHour(HourlyForecast h) {
 /// ~18h le jour precedant le gel (ou immediatement si cette heure est passee).
 final frostNotificationSchedulerProvider =
     FutureProvider<void>((ref) async {
+  // Sync watch avant tout `await` (cf. règle Riverpod 3.x sur le
+  // bookkeeping pause/resume des subscriptions).
+  final weatherFuture = ref.watch(weatherDataProvider.future);
   try {
-    final weather = await ref.watch(weatherDataProvider.future);
+    final weather = await weatherFuture;
     final service = NotificationService();
 
     final now = DateTime.now();

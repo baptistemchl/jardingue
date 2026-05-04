@@ -150,8 +150,9 @@ final lastWateringProvider =
 /// Émet à chaque ajout/suppression d'événement d'arrosage.
 final lastWateringDatesProvider =
     StreamProvider<Map<int, DateTime>>((ref) async* {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  await initFuture;
   yield* db.watchLastWateringDates();
 });
 
@@ -163,15 +164,24 @@ final lastWateringDatesProvider =
 /// Optimisé : 3 requêtes bulk au lieu de N+1
 final wateringRemindersProvider =
     FutureProvider<List<WateringReminder>>((ref) async {
-  await ref.read(databaseInitProvider.future);
+  // Toutes les souscriptions DOIVENT être déclarées synchroniquement
+  // avant tout `await`. Sans ça, lors d'un changement de TickerMode
+  // (navigation entre onglets, ouverture du clavier…), Riverpod
+  // tente de pause/resume des subscriptions dans un état où le
+  // bookkeeping n'est pas encore complet → assertion
+  // "pausedActiveSubscriptionCount" qui crash en debug.
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  final weatherFuture = ref.watch(weatherDataProvider.future);
+
+  await initFuture;
 
   // Données météo (peut échouer si pas de localisation)
   double precipNext24h = 0;
   int maxPrecipProb = 0;
   bool weatherAvailable = false;
   try {
-    final weather = await ref.watch(weatherDataProvider.future);
+    final weather = await weatherFuture;
     weatherAvailable = true;
     for (int i = 0; i < weather.hourlyForecast.length && i < 24; i++) {
       precipNext24h += weather.hourlyForecast[i].precipitation;
@@ -271,8 +281,11 @@ final wateringRemindersProvider =
 /// basées sur les rappels actuels.
 final wateringNotificationSchedulerProvider =
     FutureProvider<void>((ref) async {
+  // Sync watch avant l'await (cf. wateringRemindersProvider).
+  final remindersFuture =
+      ref.watch(wateringRemindersProvider.future);
   try {
-    final reminders = await ref.watch(wateringRemindersProvider.future);
+    final reminders = await remindersFuture;
     final plantNames = reminders
         .where((r) => !r.weatherSaysSkip && r.isOverdue)
         .map((r) => r.gardenPlant.name)

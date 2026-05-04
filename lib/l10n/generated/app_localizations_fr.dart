@@ -667,6 +667,269 @@ class AppLocalizationsFr extends AppLocalizations {
   String get badCompanions => '❌ À éviter';
 
   @override
+  String get createPlantAction => 'Créer une plante personnalisée';
+
+  @override
+  String get createPlantHint => 'Pas dans la liste ? Ajoute-la';
+
+  @override
+  String get userPlantBadge => 'Personnalisée';
+
+  @override
+  String get userPlantFormCreateTitle => 'Créer une plante';
+
+  @override
+  String get userPlantFormEditTitle => 'Modifier la plante';
+
+  @override
+  String get userPlantFormSectionEssentials => 'Essentiel';
+
+  @override
+  String get userPlantFormSectionEssentialsSubtitle => 'Champs obligatoires';
+
+  @override
+  String get userPlantFormSectionCalendars => 'Calendriers';
+
+  @override
+  String get userPlantFormSectionCalendarsSubtitle =>
+      'Au moins un mois requis (semis, plantation ou récolte)';
+
+  @override
+  String get userPlantFormSectionConditions => 'Conditions de culture';
+
+  @override
+  String get userPlantFormSectionAdvice => 'Conseils & repères';
+
+  @override
+  String get userPlantFormSectionCompanions => 'Compagnons & antagonistes';
+
+  @override
+  String get userPlantFormSectionAdvanced => 'Avancé';
+
+  @override
+  String get userPlantFieldCommonName => 'Nom commun *';
+
+  @override
+  String get userPlantFieldCommonNameHint => 'ex: Pastèque';
+
+  @override
+  String get userPlantFieldCategory => 'Catégorie *';
+
+  @override
+  String get userPlantFieldSpacingPlants => 'Espacement plants (cm) *';
+
+  @override
+  String get userPlantFieldSpacingPlantsHint => 'ex: 100';
+
+  @override
+  String get userPlantFieldSpacingRows => 'Espacement rangs (cm) *';
+
+  @override
+  String get userPlantFieldSpacingRowsHint => 'ex: 150';
+
+  @override
+  String get userPlantFieldEmoji => 'Icône';
+
+  @override
+  String get userPlantFieldEmojiAuto => 'Auto (modifier)';
+
+  @override
+  String get userPlantFieldEmojiManual => 'Modifier l\'icône';
+
+  @override
+  String get userPlantFieldSun => 'Exposition';
+
+  @override
+  String get userPlantFieldSunHint => '— Choisir —';
+
+  @override
+  String get userPlantFieldDepth => 'Profondeur (cm)';
+
+  @override
+  String get userPlantFieldDepthHint => 'ex: 2';
+
+  @override
+  String get userPlantFieldMinTemp => 'Temp. mini (°C)';
+
+  @override
+  String get userPlantFieldMinTempHint => 'ex: 12';
+
+  @override
+  String get userPlantFieldSoilType => 'Type de sol';
+
+  @override
+  String get userPlantFieldSoilTypeHint => 'ex: léger, sableux, drainé';
+
+  @override
+  String get userPlantFieldSoilMoisture => 'Humidité préférée';
+
+  @override
+  String get userPlantFieldSoilMoistureHint => 'ex: modérée à régulière';
+
+  @override
+  String get userPlantFieldWatering => 'Arrosage';
+
+  @override
+  String get userPlantFieldWateringHint => 'ex: régulier au pied';
+
+  @override
+  String get userPlantFieldRotation => 'Famille botanique (rotation)';
+
+  @override
+  String get userPlantFieldRotationHint => 'Auto depuis le nom latin';
+
+  @override
+  String get userPlantFieldSowingReco => 'Conseil de semis';
+
+  @override
+  String get userPlantFieldPlantingAdvice => 'Conseil de plantation';
+
+  @override
+  String get userPlantFieldCare => 'Entretien';
+
+  @override
+  String get userPlantFieldRedFlags => 'Points d\'attention';
+
+  @override
+  String get userPlantFieldPracticalTips => 'Astuces pratiques';
+
+  @override
+  String get userPlantFieldLatinName => 'Nom latin';
+
+  @override
+  String get userPlantFieldLatinNameHint => 'ex: Citrullus lanatus';
+
+  @override
+  String get userPlantFieldToxicity => 'Toxicité';
+
+  @override
+  String get userPlantFieldToxicityHint => 'Laisser vide si non toxique';
+
+  @override
+  String get userPlantCalendarSowing => 'Semis';
+
+  @override
+  String get userPlantCalendarPlanting => 'Plantation';
+
+  @override
+  String get userPlantCalendarHarvest => 'Récolte';
+
+  @override
+  String get userPlantCompanionsLabel => 'Plantes compagnes';
+
+  @override
+  String get userPlantAntagonistsLabel => 'Plantes antagonistes';
+
+  @override
+  String userPlantCompanionsSubtitle(int c, int a) {
+    return '$c compagne(s), $a antagoniste(s)';
+  }
+
+  @override
+  String get userPlantCompanionsAdd => 'Ajouter';
+
+  @override
+  String get userPlantCompanionsEdit => 'Modifier';
+
+  @override
+  String get userPlantCompanionsEmpty => 'Aucune sélection';
+
+  @override
+  String userPlantCompanionsValidate(int n) {
+    return 'Valider ($n)';
+  }
+
+  @override
+  String get userPlantCompanionsSearch => 'Rechercher…';
+
+  @override
+  String get userPlantSaveCreate => 'Créer';
+
+  @override
+  String get userPlantSaveEdit => 'Enregistrer';
+
+  @override
+  String get userPlantDelete => 'Supprimer cette plante';
+
+  @override
+  String get userPlantDeleteConfirmTitle => 'Supprimer cette plante ?';
+
+  @override
+  String userPlantDeleteConfirmBody(String name) {
+    return 'La plante \"$name\" sera définitivement retirée de ton catalogue.';
+  }
+
+  @override
+  String get userPlantDeleteCancel => 'Annuler';
+
+  @override
+  String get userPlantDeleteConfirm => 'Supprimer';
+
+  @override
+  String userPlantInUseHeader(String name) {
+    return '⚠️ \"$name\" figure encore dans tes plans.';
+  }
+
+  @override
+  String userPlantInUseGardens(String gardens) {
+    return 'Elle sera retirée de : $gardens.';
+  }
+
+  @override
+  String userPlantInUseEvents(int count) {
+    return '$count événement(s) de suivi seront effacés.';
+  }
+
+  @override
+  String get userPlantInUseFooter => 'Cette action est irréversible.';
+
+  @override
+  String get userPlantValidationName => 'Le nom commun est obligatoire.';
+
+  @override
+  String get userPlantValidationCategory => 'Choisis une catégorie.';
+
+  @override
+  String get userPlantValidationSpacingPlants =>
+      'Indique l\'espacement entre plants (cm > 0).';
+
+  @override
+  String get userPlantValidationSpacingRows =>
+      'Indique l\'espacement entre rangs (cm > 0).';
+
+  @override
+  String get userPlantValidationCalendars =>
+      'Coche au moins un mois sur l\'un des calendriers (semis, plantation ou récolte).';
+
+  @override
+  String userPlantSaveError(String message) {
+    return 'Erreur lors de l\'enregistrement : $message';
+  }
+
+  @override
+  String userPlantDeleteError(String message) {
+    return 'Erreur lors de la suppression : $message';
+  }
+
+  @override
+  String get userPlantSunFull => '☀️ Ensoleillé';
+
+  @override
+  String get userPlantSunPartial => '⛅ Mi-ombre';
+
+  @override
+  String get userPlantSunShade => '🌥️ Ombragé';
+
+  @override
+  String get userPlantEmojiPickerTitle => 'Choisir une icône';
+
+  @override
+  String get userPlantCompanionsTitle => 'Compagnes';
+
+  @override
+  String get userPlantAntagonistsTitle => 'Antagonistes';
+
+  @override
   String get weatherLoading => 'Chargement de la météo...';
 
   @override
@@ -687,7 +950,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get aboutMadeWithLove => 'Conçu avec amour en Bretagne';
 
   @override
-  String get aboutContact => 'contact@agence-ixp.fr';
+  String get aboutContact => 'agenceixp.app@gmail.com';
+
+  @override
+  String get aboutInstagram => '@agenceixp';
+
+  @override
+  String get aboutInstagramUrl => 'https://www.instagram.com/agenceixp/';
 
   @override
   String aboutCopyright(String year) {

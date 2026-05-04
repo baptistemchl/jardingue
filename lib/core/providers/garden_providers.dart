@@ -32,16 +32,20 @@ final gardenRepositoryProvider = Provider<GardenRepository>((ref) {
 
 /// Stream réactif de la liste des potagers.
 final gardensListProvider = StreamProvider<List<Garden>>((ref) async* {
-  await ref.read(databaseInitProvider.future);
+  // `ref.watch` synchroniquement avant tout `await` (cf. règle
+  // Riverpod 3.x sur le bookkeeping pause/resume).
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  await initFuture;
   yield* db.watchAllGardens();
 });
 
 /// Stream réactif d'un potager par ID.
 final gardenByIdProvider =
     StreamProvider.family<Garden?, int>((ref, id) async* {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  await initFuture;
   yield* db.watchGardenById(id);
 });
 
@@ -50,8 +54,9 @@ final gardenByIdProvider =
 /// invalidation manuelle n'est nécessaire dans les notifiers.
 final gardenPlantsProvider = StreamProvider.family<
     List<GardenPlantWithDetails>, int>((ref, gardenId) async* {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  await initFuture;
   yield* db.watchGardenPlantsWithDetails(gardenId).map((rows) => rows
       .map((row) => GardenPlantWithDetails(
             gardenPlant: row.readTable(db.gardenPlants),
@@ -64,8 +69,9 @@ final gardenPlantsProvider = StreamProvider.family<
 final gardenAmendmentsLineageProvider =
     StreamProvider.family<List<GardenAmendment>, int>(
         (ref, gardenId) async* {
-  await ref.read(databaseInitProvider.future);
+  final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
+  await initFuture;
   yield* db.watchAmendmentsForGardenLineage(gardenId);
 });
 
