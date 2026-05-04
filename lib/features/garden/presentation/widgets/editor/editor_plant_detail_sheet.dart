@@ -15,7 +15,8 @@ import '../../../../../core/utils/plant_emoji_mapper.dart';
 import '../../../domain/models/amendment_type.dart';
 import '../../../domain/models/garden_event.dart';
 import '../../../domain/models/rotation_family.dart';
-import '../../../domain/models/watering_helpers.dart';
+import '../../../domain/models/care_helpers.dart';
+import '../../../domain/models/care_reminder.dart';
 import 'dimension_input.dart';
 import 'previous_crop_picker.dart';
 
@@ -292,7 +293,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                   wateringFrequencyDays: freq,
                 );
             ref.invalidate(gardenPlantsProvider(gardenId));
-            ref.invalidate(wateringRemindersProvider);
+            ref.invalidate(careRemindersProvider(CareKind.watering));
           },
         ),
         if (_showSizeEditor) ...[

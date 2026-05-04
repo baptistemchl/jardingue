@@ -107,7 +107,7 @@ class BackupNotifier extends Notifier<BackupState> {
       // Invalider tous les providers qui lisent la DB
       // pour que l'UI se mette à jour après la restauration
       ref.invalidate(gardensListProvider);
-      ref.invalidate(wateringRemindersProvider);
+      ref.invalidate(careRemindersProvider);
       ref.invalidate(allUserEventsProvider);
       ref.invalidate(trackedPlantsProvider);
       ref.invalidate(userFruitTreesProvider);

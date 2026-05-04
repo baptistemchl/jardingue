@@ -4,9 +4,9 @@ import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/app_database.dart';
 import '../services/notifications/notification_service.dart';
 import '../../features/garden/data/repositories/garden_event_repository.dart';
+import '../../features/garden/domain/models/care_helpers.dart';
+import '../../features/garden/domain/models/care_reminder.dart';
 import '../../features/garden/domain/models/garden_event.dart';
-import '../../features/garden/domain/models/watering_helpers.dart';
-import '../../features/garden/domain/models/watering_reminder.dart';
 import 'database_providers.dart';
 import 'garden_providers.dart';
 import 'weather_providers.dart';
@@ -157,13 +157,19 @@ final lastWateringDatesProvider =
 });
 
 // ============================================
-// WATERING REMINDERS
+// CARE REMINDERS (generic : watering, fertilizing, ...)
 // ============================================
 
-/// Rappels d'arrosage pour toutes les plantes de tous les jardins
-/// Optimisé : 3 requêtes bulk au lieu de N+1
-final wateringRemindersProvider =
-    FutureProvider<List<WateringReminder>>((ref) async {
+/// Rappels generiques pour un type de soin recurrent.
+///
+/// Famille parametree par [CareKind] : on partage la totalite de la logique
+/// (subscription DB, calcul d'echeance, tri) entre arrosage et fertilisation.
+/// Seuls trois points divergent : la frequence par defaut, la requete des
+/// dernieres dates, et l'eventuel hint meteo (uniquement pour l'arrosage).
+///
+/// Optimise : 2-3 requetes bulk au lieu de N+1.
+final careRemindersProvider =
+    FutureProvider.family<List<CareReminder>, CareKind>((ref, kind) async {
   // Toutes les souscriptions DOIVENT être déclarées synchroniquement
   // avant tout `await`. Sans ça, lors d'un changement de TickerMode
   // (navigation entre onglets, ouverture du clavier…), Riverpod
@@ -172,33 +178,43 @@ final wateringRemindersProvider =
   // "pausedActiveSubscriptionCount" qui crash en debug.
   final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
-  final weatherFuture = ref.watch(weatherDataProvider.future);
+  // La meteo n'a de sens que pour l'arrosage. On ne s'y abonne pas pour
+  // les autres kinds, ce qui evite des invalidations inutiles.
+  final weatherFuture = kind == CareKind.watering
+      ? ref.watch(weatherDataProvider.future)
+      : null;
 
   await initFuture;
 
-  // Données météo (peut échouer si pas de localisation)
+  // Hint meteo (arrosage uniquement)
+  CareHint? weatherHint;
+  bool weatherAvailable = false;
   double precipNext24h = 0;
   int maxPrecipProb = 0;
-  bool weatherAvailable = false;
-  try {
-    final weather = await weatherFuture;
-    weatherAvailable = true;
-    for (int i = 0; i < weather.hourlyForecast.length && i < 24; i++) {
-      precipNext24h += weather.hourlyForecast[i].precipitation;
-      if (weather.hourlyForecast[i].precipitationProbability > maxPrecipProb) {
-        maxPrecipProb = weather.hourlyForecast[i].precipitationProbability;
+  if (weatherFuture != null) {
+    try {
+      final weather = await weatherFuture;
+      weatherAvailable = true;
+      for (int i = 0; i < weather.hourlyForecast.length && i < 24; i++) {
+        precipNext24h += weather.hourlyForecast[i].precipitation;
+        if (weather.hourlyForecast[i].precipitationProbability > maxPrecipProb) {
+          maxPrecipProb = weather.hourlyForecast[i].precipitationProbability;
+        }
       }
+    } catch (_) {
+      // Pas de données météo, on continue sans
     }
-  } catch (_) {
-    // Pas de données météo, on continue sans
   }
 
-  // 1 requête : tous les gardenPlants + plant + garden via JOINs
+  // 1 requete : tous les gardenPlants + plant + garden via JOINs
   final allRows = await db.getAllGardenPlantsWithPlantAndGarden();
-  // 1 requête : derniers arrosages groupés par gardenPlantId
-  final lastWateringDates = await db.getLastWateringDates();
+  // 1 requete : dernieres dates pour le type d'event correspondant
+  final lastDates = await switch (kind) {
+    CareKind.watering => db.getLastWateringDates(),
+    CareKind.fertilizing => db.getLastFertilizingDates(),
+  };
 
-  final List<WateringReminder> reminders = [];
+  final List<CareReminder> reminders = [];
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
 
@@ -211,55 +227,70 @@ final wateringRemindersProvider =
 
     final plant = row.readTableOrNull(db.plants);
 
-    // Fréquence d'arrosage
-    final freq =
-        gp.wateringFrequencyDays ?? defaultWateringFrequencyDays(plant?.watering);
+    // Frequence : override utilisateur > catalogue > defaut par categorie
+    final freq = switch (kind) {
+      CareKind.watering => gp.wateringFrequencyDays ??
+          defaultWateringFrequencyDays(plant?.watering),
+      CareKind.fertilizing => gp.fertilizingFrequencyDays ??
+          plant?.fertilizationFrequencyDays ??
+          defaultFertilizationFrequencyDays(plant?.categoryCode),
+    };
 
-    // Dernier arrosage (depuis le batch)
-    final lastWatered = lastWateringDates[gp.id];
+    final lastDate = lastDates[gp.id];
 
-    // Calcul du prochain arrosage
+    // Calcul de la prochaine echeance.
+    // - Si on a une derniere date : last + freq.
+    // - Sinon, on utilise plantedAt comme reference (fertiliser au moment
+    //   de la plantation est rare — on aligne sur today pour ne pas
+    //   spammer les plantes recemment posees, sauf pour l'arrosage qui
+    //   garde l'ancien comportement par compat).
     DateTime nextDue;
-    if (lastWatered != null) {
-      final lastDay =
-          DateTime(lastWatered.year, lastWatered.month, lastWatered.day);
+    if (lastDate != null) {
+      final lastDay = DateTime(lastDate.year, lastDate.month, lastDate.day);
       nextDue = lastDay.add(Duration(days: freq));
-    } else if (gp.plantedAt != null) {
+    } else if (kind == CareKind.watering && gp.plantedAt != null) {
       nextDue = DateTime(
           gp.plantedAt!.year, gp.plantedAt!.month, gp.plantedAt!.day);
+    } else if (kind == CareKind.fertilizing && gp.plantedAt != null) {
+      // Premiere fertilisation : ~freq jours apres la plantation.
+      final pAt = DateTime(
+          gp.plantedAt!.year, gp.plantedAt!.month, gp.plantedAt!.day);
+      nextDue = pAt.add(Duration(days: freq));
     } else {
       nextDue = today;
     }
 
-    final isOverdue = nextDue.isBefore(today) || nextDue.isAtSameMomentAs(today);
+    final isOverdue =
+        nextDue.isBefore(today) || nextDue.isAtSameMomentAs(today);
 
-    // Conseil météo
-    bool weatherSkip = false;
-    String weatherAdvice = '';
-    if (weatherAvailable) {
+    // Hint meteo pour l'arrosage uniquement
+    if (kind == CareKind.watering && weatherAvailable) {
       if (precipNext24h > 5) {
-        weatherSkip = true;
-        weatherAdvice = 'Pluie suffisante prévue, reportez';
+        weatherHint = const CareHint(
+            skip: true, message: 'Pluie suffisante prévue, reportez');
       } else if (maxPrecipProb > 60) {
-        weatherSkip = true;
-        weatherAdvice = 'Forte probabilité de pluie, reportez';
+        weatherHint = const CareHint(
+            skip: true, message: 'Forte probabilité de pluie, reportez');
       } else if (precipNext24h > 0) {
-        weatherAdvice = 'Pluie légère prévue, arrosez si nécessaire';
+        weatherHint = const CareHint(
+            skip: false, message: 'Pluie légère prévue, arrosez si nécessaire');
+      } else {
+        weatherHint = null;
       }
     }
 
-    // N'ajouter que les plantes à arroser bientôt
+    // N'ajouter que les plantes a soigner bientot (today ou demain)
     final daysUntil = nextDue.difference(today).inDays;
     if (daysUntil <= 1) {
-      reminders.add(WateringReminder(
+      reminders.add(CareReminder(
+        kind: kind,
         gardenPlant: GardenPlantWithDetails(gardenPlant: gp, plant: plant),
         garden: garden,
-        lastWatered: lastWatered,
+        lastDate: lastDate,
         frequencyDays: freq,
-        nextWateringDue: nextDue,
+        nextDue: nextDue,
         isOverdue: isOverdue,
-        weatherSaysSkip: weatherSkip,
-        weatherAdvice: weatherAdvice,
+        hint: weatherHint,
       ));
     }
   }
@@ -267,7 +298,7 @@ final wateringRemindersProvider =
   // Trier : en retard d'abord, puis par urgence
   reminders.sort((a, b) {
     if (a.isOverdue != b.isOverdue) return a.isOverdue ? -1 : 1;
-    return a.nextWateringDue.compareTo(b.nextWateringDue);
+    return a.nextDue.compareTo(b.nextDue);
   });
 
   return reminders;
@@ -281,13 +312,13 @@ final wateringRemindersProvider =
 /// basées sur les rappels actuels.
 final wateringNotificationSchedulerProvider =
     FutureProvider<void>((ref) async {
-  // Sync watch avant l'await (cf. wateringRemindersProvider).
+  // Sync watch avant l'await (cf. careRemindersProvider).
   final remindersFuture =
-      ref.watch(wateringRemindersProvider.future);
+      ref.watch(careRemindersProvider(CareKind.watering).future);
   try {
     final reminders = await remindersFuture;
     final plantNames = reminders
-        .where((r) => !r.weatherSaysSkip && r.isOverdue)
+        .where((r) => !r.shouldSkip && r.isOverdue)
         .map((r) => r.gardenPlant.name)
         .toList();
 
@@ -365,13 +396,21 @@ class GardenEventNotifier extends Notifier<AsyncValue<void>> {
     }
   }
 
-  Future<void> quickWater(int gardenPlantId) async {
+  /// Logge un soin recurrent ([CareKind]) sur une plante a la date courante.
+  ///
+  /// Generique pour eviter d'avoir un quickX par type. Le mapping vers
+  /// [GardenEventType] est porte par [CareKind.eventType].
+  Future<void> quickLogCare(CareKind kind, int gardenPlantId) async {
     await logEvent(
       gardenPlantId: gardenPlantId,
-      eventType: GardenEventType.watering,
+      eventType: kind.eventType,
       date: DateTime.now(),
     );
   }
+
+  /// Raccourci historique. Conserve pour ne pas casser les usages existants.
+  Future<void> quickWater(int gardenPlantId) =>
+      quickLogCare(CareKind.watering, gardenPlantId);
 
   Future<void> quickHarvest(int gardenPlantId) async {
     await logEvent(
@@ -409,7 +448,9 @@ class GardenEventNotifier extends Notifier<AsyncValue<void>> {
   /// lastWateringDatesProvider) se rafraîchissent automatiquement via
   /// Drift `.watch()`.
   void _invalidateAll(int gardenPlantId) {
-    ref.invalidate(wateringRemindersProvider);
+    // Invalide TOUTE la famille careRemindersProvider : un meme event
+    // (watering, fertilizer...) peut impacter les rappels de son kind.
+    ref.invalidate(careRemindersProvider);
     ref.invalidate(allUserEventsProvider);
     ref.invalidate(monthUserEventsProvider(DateTime(
       DateTime.now().year,

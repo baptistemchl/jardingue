@@ -412,6 +412,158 @@ class AppLocalizationsFr extends AppLocalizations {
   String get waterAction => 'Arroser';
 
   @override
+  String get fertilizingToday => 'Fertilisation du jour';
+
+  @override
+  String plantsToFertilizeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count plantes à fertiliser',
+      one: '1 plante à fertiliser',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get neverFertilized => 'Jamais fertilisé';
+
+  @override
+  String fertilizedDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return 'Fertilisé il y a $count jour$_temp0';
+  }
+
+  @override
+  String nameFertilized(String name) {
+    return '$name fertilisé !';
+  }
+
+  @override
+  String get fertilizeAction => 'Fertiliser';
+
+  @override
+  String get pheromoneTrapsTitle => 'Pièges à phéromones';
+
+  @override
+  String pheromoneTrapsToReplace(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pièges à renouveler',
+      one: '1 piège à renouveler',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pheromoneTrapsOverdueCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count en retard',
+      one: '1 en retard',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pheromoneTrapsDueSoon => 'Renouvellement à prévoir';
+
+  @override
+  String otherTrapsCount(int count) {
+    return '+$count autres pièges';
+  }
+
+  @override
+  String get renewAction => 'Renouveler';
+
+  @override
+  String trapRenewedFor(String name) {
+    return 'Piège de $name renouvelé !';
+  }
+
+  @override
+  String installedDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return 'Posé il y a $count jour$_temp0';
+  }
+
+  @override
+  String renewalInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return 'Renouvellement dans $count jour$_temp0';
+  }
+
+  @override
+  String get trapsScreenTitle => 'Mes pièges';
+
+  @override
+  String get myTrapsAction => 'Gérer mes pièges';
+
+  @override
+  String get addTrapAction => 'Ajouter un piège';
+
+  @override
+  String get addTrapTitle => 'Ajouter un piège à phéromones';
+
+  @override
+  String get trapType => 'Type de piège';
+
+  @override
+  String get installationDate => 'Date de pose';
+
+  @override
+  String get lifetimeDays => 'Durée de vie (jours)';
+
+  @override
+  String lifetimeAboutDays(int count) {
+    return 'Environ $count jours';
+  }
+
+  @override
+  String get showAllTrapTypes => 'Afficher tous les types';
+
+  @override
+  String get selectTypeFirst => 'Sélectionnez d\'abord un type';
+
+  @override
+  String get notesHint => 'Optionnel';
+
+  @override
+  String get pickTreeForTrap => 'Pour quel arbre ?';
+
+  @override
+  String get trapsEmptyTitle => 'Aucun piège';
+
+  @override
+  String get trapsEmptySubtitle =>
+      'Posez votre premier piège à phéromones\npour suivre les renouvellements.';
+
+  @override
+  String get deleteTrapTitle => 'Supprimer le piège ?';
+
+  @override
+  String deleteTrapConfirm(String type) {
+    return 'Voulez-vous vraiment supprimer ce piège ($type) ?';
+  }
+
+  @override
   String get inGarden => 'Dans le potager';
 
   @override

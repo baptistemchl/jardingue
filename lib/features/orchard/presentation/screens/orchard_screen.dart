@@ -5,9 +5,11 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/orchard_providers.dart';
-import '../widgets/user_fruit_tree_card.dart';
 import '../widgets/fruit_tree_picker_sheet.dart';
+import '../widgets/pheromone_trap_reminders_card.dart';
+import '../widgets/user_fruit_tree_card.dart';
 import '../widgets/user_tree_detail_sheet.dart';
+import 'traps_screen.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 /// Écran principal du verger - Liste des arbres de l'utilisateur
@@ -109,6 +111,34 @@ class OrchardScreen extends ConsumerWidget {
                     ),
                   ),
 
+                  // Card rappels pieges a pheromones (full)
+                  SliverPadding(
+                    padding: AppSpacing.horizontalPadding,
+                    sliver: const SliverToBoxAdapter(
+                      child: PheromoneTrapRemindersCard(compact: false),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
+
+                  // Bouton "Mes pieges" — acces a la gestion CRUD complete.
+                  // Visible meme s'il n'y a aucun rappel a renouveler, pour
+                  // permettre l'ajout du premier piege.
+                  if (hasTrees)
+                    SliverPadding(
+                      padding: AppSpacing.horizontalPadding,
+                      sliver: SliverToBoxAdapter(
+                        child: _MyTrapsButton(
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const TrapsScreen(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (hasTrees)
+                    const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
                   // Liste des arbres
                   userTreesAsync.when(
                     data: (trees) {
@@ -202,6 +232,59 @@ class OrchardScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => UserTreeDetailSheet(tree: tree),
+    );
+  }
+}
+
+class _MyTrapsButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _MyTrapsButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF3E0),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                PhosphorIcons.bug(PhosphorIconsStyle.duotone),
+                color: const Color(0xFFFB8C00),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                loc.myTrapsAction,
+                style: AppTypography.bodyMedium
+                    .copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            Icon(
+              PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
+              size: 16,
+              color: AppColors.textSecondary,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

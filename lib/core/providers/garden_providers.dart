@@ -552,7 +552,7 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
     try {
       await _repo.removePlantFromGarden(gardenPlantId);
       ref.invalidate(allUserEventsProvider);
-      ref.invalidate(wateringRemindersProvider);
+      ref.invalidate(careRemindersProvider);
       ref.invalidate(trackedPlantsProvider);
       state = const AsyncData(null);
     } catch (e, st) {

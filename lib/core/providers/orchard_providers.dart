@@ -2,13 +2,18 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/database.dart';
-import '../../features/orchard/domain/models/fruit_trees_filter_state.dart';
-import '../../features/orchard/domain/models/user_fruit_tree_with_details.dart';
 import '../../features/orchard/data/repositories/fruit_tree_repository.dart';
+import '../../features/orchard/data/repositories/pheromone_trap_repository.dart';
+import '../../features/orchard/domain/models/fruit_trees_filter_state.dart';
+import '../../features/orchard/domain/models/pheromone_trap_reminder.dart';
+import '../../features/orchard/domain/models/pheromone_trap_type.dart';
+import '../../features/orchard/domain/models/user_fruit_tree_with_details.dart';
 import 'database_providers.dart';
 
 // Re-export des modeles pour retrocompatibilite
 export '../../features/orchard/domain/models/fruit_trees_filter_state.dart';
+export '../../features/orchard/domain/models/pheromone_trap_reminder.dart';
+export '../../features/orchard/domain/models/pheromone_trap_type.dart';
 export '../../features/orchard/domain/models/user_fruit_tree_with_details.dart';
 
 // ============================================
@@ -226,6 +231,151 @@ final userFruitTreesCountProvider =
   final repo = ref.watch(fruitTreeRepositoryProvider);
   return repo.countUserFruitTrees();
 });
+
+// ============================================
+// PHEROMONE TRAPS PROVIDERS (v15)
+// ============================================
+
+final pheromoneTrapRepositoryProvider =
+    Provider<PheromoneTrapRepository>((ref) {
+  final db = ref.watch(databaseProvider);
+  return PheromoneTrapRepository(db);
+});
+
+/// Tous les pieges joints aux details d'arbre.
+/// Tri : echeance la plus proche en premier (urgence visuelle).
+final pheromoneTrapRemindersProvider =
+    FutureProvider<List<PheromoneTrapReminder>>((ref) async {
+  // Sync watch avant tout await
+  final initFuture = ref.read(databaseInitProvider.future);
+  final db = ref.watch(databaseProvider);
+  await initFuture;
+
+  final rows = await db.getAllPheromoneTrapsWithTreeDetails();
+
+  final reminders = rows.map((row) {
+    final trap = row.readTable(db.pheromoneTraps);
+    final user = row.readTable(db.userFruitTrees);
+    final tree = row.readTable(db.fruitTrees);
+    return PheromoneTrapReminder(
+      trap: trap,
+      userFruitTree: user,
+      fruitTree: tree,
+    );
+  }).toList();
+
+  // En retard / due soon en premier, puis par date d'echeance
+  final now = DateTime.now();
+  reminders.sort((a, b) {
+    final aOver = a.isOverdueAt(now);
+    final bOver = b.isOverdueAt(now);
+    if (aOver != bOver) return aOver ? -1 : 1;
+    return a.nextRenewalDue.compareTo(b.nextRenewalDue);
+  });
+
+  return reminders;
+});
+
+/// Notifier metier pour CRUD pieges. Refresh automatiquement les rappels
+/// (un meme provider famille n'existant pas ici, on invalide directement).
+class PheromoneTrapsNotifier
+    extends Notifier<AsyncValue<void>> {
+  @override
+  AsyncValue<void> build() => const AsyncData(null);
+
+  PheromoneTrapRepository get _repo =>
+      ref.read(pheromoneTrapRepositoryProvider);
+
+  Future<int> addTrap({
+    required int userFruitTreeId,
+    required PheromoneTrapType type,
+    required DateTime installedAt,
+    int? lifetimeDays,
+    String? notes,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final id = await _repo.addTrap(
+        userFruitTreeId: userFruitTreeId,
+        type: type,
+        installedAt: installedAt,
+        lifetimeDays: lifetimeDays,
+        notes: notes,
+      );
+      _invalidate();
+      state = const AsyncData(null);
+      return id;
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+          reason: 'PheromoneTrapsNotifier.addTrap');
+      state = AsyncError(e, st);
+      rethrow;
+    }
+  }
+
+  Future<void> renewTrap(int id, {DateTime? installedAt, int? lifetimeDays}) async {
+    state = const AsyncLoading();
+    try {
+      await _repo.renewTrap(
+        id: id,
+        installedAt: installedAt,
+        lifetimeDays: lifetimeDays,
+      );
+      _invalidate();
+      state = const AsyncData(null);
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+          reason: 'PheromoneTrapsNotifier.renewTrap');
+      state = AsyncError(e, st);
+    }
+  }
+
+  Future<void> updateTrap({
+    required int id,
+    PheromoneTrapType? type,
+    DateTime? installedAt,
+    int? lifetimeDays,
+    String? notes,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      await _repo.updateTrap(
+        id: id,
+        type: type,
+        installedAt: installedAt,
+        lifetimeDays: lifetimeDays,
+        notes: notes,
+      );
+      _invalidate();
+      state = const AsyncData(null);
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+          reason: 'PheromoneTrapsNotifier.updateTrap');
+      state = AsyncError(e, st);
+    }
+  }
+
+  Future<void> deleteTrap(int id) async {
+    state = const AsyncLoading();
+    try {
+      await _repo.deleteTrap(id);
+      _invalidate();
+      state = const AsyncData(null);
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+          reason: 'PheromoneTrapsNotifier.deleteTrap');
+      state = AsyncError(e, st);
+    }
+  }
+
+  void _invalidate() {
+    ref.invalidate(pheromoneTrapRemindersProvider);
+  }
+}
+
+final pheromoneTrapsNotifierProvider =
+    NotifierProvider<PheromoneTrapsNotifier, AsyncValue<void>>(
+        PheromoneTrapsNotifier.new);
 
 // ============================================
 // HELPERS

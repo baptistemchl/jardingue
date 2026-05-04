@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jardingue/features/garden/domain/models/care_reminder.dart';
+import 'package:jardingue/features/garden/presentation/widgets/care_reminders_card.dart';
 import 'package:jardingue/features/garden/presentation/widgets/smart_weather_card.dart';
-import 'package:jardingue/features/garden/presentation/widgets/watering_reminders_card.dart';
 import 'package:jardingue/features/orchard/presentation/widgets/orchard_container.dart';
+import 'package:jardingue/features/orchard/presentation/widgets/pheromone_trap_reminders_card.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
@@ -146,10 +148,30 @@ class GardenScreen extends ConsumerWidget {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: AppSpacing.horizontalPadding,
-                    child: const WateringRemindersCard(),
+                    child:
+                        const CareRemindersCard(kind: CareKind.watering),
                   ),
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: 16)),
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+                // Carte rappels de fertilisation
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: AppSpacing.horizontalPadding,
+                    child: const CareRemindersCard(
+                        kind: CareKind.fertilizing),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+                // Mini-card pieges a pheromones (a renouveler)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: AppSpacing.horizontalPadding,
+                    child: const PheromoneTrapRemindersCard(compact: true),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
                 // Section liste des potagers (container unique)
                 SliverToBoxAdapter(

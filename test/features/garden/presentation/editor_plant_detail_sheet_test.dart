@@ -5,7 +5,6 @@ import 'package:jardingue/core/providers/database_providers.dart';
 import 'package:jardingue/core/providers/garden_event_providers.dart';
 import 'package:jardingue/core/providers/garden_providers.dart';
 import 'package:jardingue/core/services/database/app_database.dart';
-import 'package:jardingue/features/garden/domain/models/garden_plant_with_details.dart';
 import 'package:jardingue/features/garden/presentation/widgets/editor/editor_plant_detail_sheet.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';

@@ -81,6 +81,11 @@ class Plants extends Table {
   // Ex: "solanaceae", "fabaceae", "brassicaceae"...
   TextColumn get rotationFamily => text().nullable()();
 
+  // Frequence de fertilisation par defaut (jours), issue du catalogue (v15).
+  // Sert de fallback quand l'utilisateur n'a pas defini sa propre valeur sur
+  // le GardenPlant (sinon: defaultFertilizationFrequencyDays(categoryCode)).
+  IntColumn get fertilizationFrequencyDays => integer().nullable()();
+
   // Métadonnées
   BoolColumn get isUserModified =>
       boolean().withDefault(const Constant(false))();
@@ -184,6 +189,11 @@ class GardenPlants extends Table {
   DateTimeColumn get sowedAt => dateTime().nullable()();
 
   IntColumn get wateringFrequencyDays => integer().nullable()();
+
+  // Frequence de fertilisation personnalisee par l'utilisateur (jours, v15).
+  // Si null : on retombe sur Plants.fertilizationFrequencyDays puis sur
+  // defaultFertilizationFrequencyDays(categoryCode).
+  IntColumn get fertilizingFrequencyDays => integer().nullable()();
 
   // Culture précédente manuelle (rotation) (v10)
   IntColumn get previousCropPlantId =>

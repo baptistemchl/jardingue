@@ -42,6 +42,13 @@ class PlantImportService {
         debugPrint('Variétés melons absentes, reimport force...');
         return importFromAssets(forceReimport: true);
       }
+      // v15 : verifie si la fertilisation a ete seedee. La tomate (id=1)
+      // est gourmande donc doit avoir une frequence definie.
+      if (sample != null && sample.fertilizationFrequencyDays == null) {
+        debugPrint(
+            'Fertilisation absente du catalogue (v15), reimport force...');
+        return importFromAssets(forceReimport: true);
+      }
       debugPrint('Base de donnees deja peuplee ($existingCount plantes)');
       return existingCount;
     }
@@ -168,6 +175,11 @@ class PlantImportService {
       practicalTips: Value(json['practical_tips'] as String?),
 
       rotationFamily: Value(family.code),
+
+      // Fertilisation (v15) : extrait depuis le bloc fertilization. Cle
+      // unique frequency_days, le type/notes restent dans le JSON pour
+      // affichage mais ne sont pas indexes (pas de requete dessus).
+      fertilizationFrequencyDays: Value(_extractFertilizationFrequency(json)),
     );
 
     await _db.insertPlant(plant);
@@ -202,6 +214,18 @@ class PlantImportService {
   String? _encodeList(dynamic list) {
     if (list == null) return null;
     return json.encode(list);
+  }
+
+  /// Extrait la frequence de fertilisation (jours) depuis le bloc
+  /// `fertilization` du JSON. Tolerant aux entrees manquantes : retourne
+  /// null pour qu'on retombe sur le defaut par categorie au runtime.
+  int? _extractFertilizationFrequency(Map<String, dynamic> data) {
+    final block = data['fertilization'];
+    if (block is! Map) return null;
+    final freq = block['frequency_days'];
+    if (freq is int) return freq;
+    if (freq is num) return freq.toInt();
+    return null;
   }
 
   /// Encode une map en JSON string

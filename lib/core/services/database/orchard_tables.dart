@@ -135,3 +135,33 @@ class UserFruitTrees extends Table {
 
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }
+
+/// Pieges a pheromones poses sur un arbre fruitier de l'utilisateur (v15).
+///
+/// Une ligne par piege physique pose. Le renouvellement se fait en mettant
+/// a jour `installedAt` (action quick-renew) ou en supprimant + recreant
+/// (changement de type, deplacement...).
+///
+/// `lifetimeDays` est copie depuis le default du `trapType` au moment de
+/// l'ajout, mais reste editable par l'utilisateur (les capsules longue
+/// duree vs standard ont des durees differentes meme pour un meme ravageur).
+class PheromoneTraps extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Lien vers l'arbre cible. Cascade delete fait par le repository.
+  IntColumn get userFruitTreeId =>
+      integer().references(UserFruitTrees, #id)();
+
+  /// Identifiant du type (PheromoneTrapType.name).
+  TextColumn get trapType => text()();
+
+  /// Date de pose (= date de mise en service du diffuseur courant).
+  DateTimeColumn get installedAt => dateTime()();
+
+  /// Duree de vie de la capsule en jours.
+  IntColumn get lifetimeDays => integer()();
+
+  TextColumn get notes => text().nullable()();
+
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}

@@ -368,6 +368,17 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _fertilizationFrequencyDaysMeta =
+      const VerificationMeta('fertilizationFrequencyDays');
+  @override
+  late final GeneratedColumn<int> fertilizationFrequencyDays =
+      GeneratedColumn<int>(
+        'fertilization_frequency_days',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _isUserModifiedMeta = const VerificationMeta(
     'isUserModified',
   );
@@ -442,6 +453,7 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
     toxicity,
     practicalTips,
     rotationFamily,
+    fertilizationFrequencyDays,
     isUserModified,
     createdAt,
     updatedAt,
@@ -730,6 +742,15 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
         ),
       );
     }
+    if (data.containsKey('fertilization_frequency_days')) {
+      context.handle(
+        _fertilizationFrequencyDaysMeta,
+        fertilizationFrequencyDays.isAcceptableOrUnknown(
+          data['fertilization_frequency_days']!,
+          _fertilizationFrequencyDaysMeta,
+        ),
+      );
+    }
     if (data.containsKey('is_user_modified')) {
       context.handle(
         _isUserModifiedMeta,
@@ -892,6 +913,10 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
         DriftSqlType.string,
         data['${effectivePrefix}rotation_family'],
       ),
+      fertilizationFrequencyDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}fertilization_frequency_days'],
+      ),
       isUserModified: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_user_modified'],
@@ -947,6 +972,7 @@ class Plant extends DataClass implements Insertable<Plant> {
   final String? toxicity;
   final String? practicalTips;
   final String? rotationFamily;
+  final int? fertilizationFrequencyDays;
   final bool isUserModified;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -984,6 +1010,7 @@ class Plant extends DataClass implements Insertable<Plant> {
     this.toxicity,
     this.practicalTips,
     this.rotationFamily,
+    this.fertilizationFrequencyDays,
     required this.isUserModified,
     required this.createdAt,
     required this.updatedAt,
@@ -1094,6 +1121,11 @@ class Plant extends DataClass implements Insertable<Plant> {
     if (!nullToAbsent || rotationFamily != null) {
       map['rotation_family'] = Variable<String>(rotationFamily);
     }
+    if (!nullToAbsent || fertilizationFrequencyDays != null) {
+      map['fertilization_frequency_days'] = Variable<int>(
+        fertilizationFrequencyDays,
+      );
+    }
     map['is_user_modified'] = Variable<bool>(isUserModified);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1198,6 +1230,10 @@ class Plant extends DataClass implements Insertable<Plant> {
       rotationFamily: rotationFamily == null && nullToAbsent
           ? const Value.absent()
           : Value(rotationFamily),
+      fertilizationFrequencyDays:
+          fertilizationFrequencyDays == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fertilizationFrequencyDays),
       isUserModified: Value(isUserModified),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -1263,6 +1299,9 @@ class Plant extends DataClass implements Insertable<Plant> {
       toxicity: serializer.fromJson<String?>(json['toxicity']),
       practicalTips: serializer.fromJson<String?>(json['practicalTips']),
       rotationFamily: serializer.fromJson<String?>(json['rotationFamily']),
+      fertilizationFrequencyDays: serializer.fromJson<int?>(
+        json['fertilizationFrequencyDays'],
+      ),
       isUserModified: serializer.fromJson<bool>(json['isUserModified']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -1315,6 +1354,9 @@ class Plant extends DataClass implements Insertable<Plant> {
       'toxicity': serializer.toJson<String?>(toxicity),
       'practicalTips': serializer.toJson<String?>(practicalTips),
       'rotationFamily': serializer.toJson<String?>(rotationFamily),
+      'fertilizationFrequencyDays': serializer.toJson<int?>(
+        fertilizationFrequencyDays,
+      ),
       'isUserModified': serializer.toJson<bool>(isUserModified),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -1355,6 +1397,7 @@ class Plant extends DataClass implements Insertable<Plant> {
     Value<String?> toxicity = const Value.absent(),
     Value<String?> practicalTips = const Value.absent(),
     Value<String?> rotationFamily = const Value.absent(),
+    Value<int?> fertilizationFrequencyDays = const Value.absent(),
     bool? isUserModified,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -1436,6 +1479,9 @@ class Plant extends DataClass implements Insertable<Plant> {
     rotationFamily: rotationFamily.present
         ? rotationFamily.value
         : this.rotationFamily,
+    fertilizationFrequencyDays: fertilizationFrequencyDays.present
+        ? fertilizationFrequencyDays.value
+        : this.fertilizationFrequencyDays,
     isUserModified: isUserModified ?? this.isUserModified,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -1529,6 +1575,9 @@ class Plant extends DataClass implements Insertable<Plant> {
       rotationFamily: data.rotationFamily.present
           ? data.rotationFamily.value
           : this.rotationFamily,
+      fertilizationFrequencyDays: data.fertilizationFrequencyDays.present
+          ? data.fertilizationFrequencyDays.value
+          : this.fertilizationFrequencyDays,
       isUserModified: data.isUserModified.present
           ? data.isUserModified.value
           : this.isUserModified,
@@ -1573,6 +1622,7 @@ class Plant extends DataClass implements Insertable<Plant> {
           ..write('toxicity: $toxicity, ')
           ..write('practicalTips: $practicalTips, ')
           ..write('rotationFamily: $rotationFamily, ')
+          ..write('fertilizationFrequencyDays: $fertilizationFrequencyDays, ')
           ..write('isUserModified: $isUserModified, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1615,6 +1665,7 @@ class Plant extends DataClass implements Insertable<Plant> {
     toxicity,
     practicalTips,
     rotationFamily,
+    fertilizationFrequencyDays,
     isUserModified,
     createdAt,
     updatedAt,
@@ -1656,6 +1707,7 @@ class Plant extends DataClass implements Insertable<Plant> {
           other.toxicity == this.toxicity &&
           other.practicalTips == this.practicalTips &&
           other.rotationFamily == this.rotationFamily &&
+          other.fertilizationFrequencyDays == this.fertilizationFrequencyDays &&
           other.isUserModified == this.isUserModified &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -1695,6 +1747,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
   final Value<String?> toxicity;
   final Value<String?> practicalTips;
   final Value<String?> rotationFamily;
+  final Value<int?> fertilizationFrequencyDays;
   final Value<bool> isUserModified;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1732,6 +1785,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     this.toxicity = const Value.absent(),
     this.practicalTips = const Value.absent(),
     this.rotationFamily = const Value.absent(),
+    this.fertilizationFrequencyDays = const Value.absent(),
     this.isUserModified = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1770,6 +1824,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     this.toxicity = const Value.absent(),
     this.practicalTips = const Value.absent(),
     this.rotationFamily = const Value.absent(),
+    this.fertilizationFrequencyDays = const Value.absent(),
     this.isUserModified = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1808,6 +1863,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     Expression<String>? toxicity,
     Expression<String>? practicalTips,
     Expression<String>? rotationFamily,
+    Expression<int>? fertilizationFrequencyDays,
     Expression<bool>? isUserModified,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1856,6 +1912,8 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
       if (toxicity != null) 'toxicity': toxicity,
       if (practicalTips != null) 'practical_tips': practicalTips,
       if (rotationFamily != null) 'rotation_family': rotationFamily,
+      if (fertilizationFrequencyDays != null)
+        'fertilization_frequency_days': fertilizationFrequencyDays,
       if (isUserModified != null) 'is_user_modified': isUserModified,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1896,6 +1954,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     Value<String?>? toxicity,
     Value<String?>? practicalTips,
     Value<String?>? rotationFamily,
+    Value<int?>? fertilizationFrequencyDays,
     Value<bool>? isUserModified,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -1939,6 +1998,8 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
       toxicity: toxicity ?? this.toxicity,
       practicalTips: practicalTips ?? this.practicalTips,
       rotationFamily: rotationFamily ?? this.rotationFamily,
+      fertilizationFrequencyDays:
+          fertilizationFrequencyDays ?? this.fertilizationFrequencyDays,
       isUserModified: isUserModified ?? this.isUserModified,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -2061,6 +2122,11 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     if (rotationFamily.present) {
       map['rotation_family'] = Variable<String>(rotationFamily.value);
     }
+    if (fertilizationFrequencyDays.present) {
+      map['fertilization_frequency_days'] = Variable<int>(
+        fertilizationFrequencyDays.value,
+      );
+    }
     if (isUserModified.present) {
       map['is_user_modified'] = Variable<bool>(isUserModified.value);
     }
@@ -2109,6 +2175,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
           ..write('toxicity: $toxicity, ')
           ..write('practicalTips: $practicalTips, ')
           ..write('rotationFamily: $rotationFamily, ')
+          ..write('fertilizationFrequencyDays: $fertilizationFrequencyDays, ')
           ..write('isUserModified: $isUserModified, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -3261,6 +3328,17 @@ class $GardenPlantsTable extends GardenPlants
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _fertilizingFrequencyDaysMeta =
+      const VerificationMeta('fertilizingFrequencyDays');
+  @override
+  late final GeneratedColumn<int> fertilizingFrequencyDays =
+      GeneratedColumn<int>(
+        'fertilizing_frequency_days',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _previousCropPlantIdMeta =
       const VerificationMeta('previousCropPlantId');
   @override
@@ -3299,6 +3377,7 @@ class $GardenPlantsTable extends GardenPlants
     notes,
     sowedAt,
     wateringFrequencyDays,
+    fertilizingFrequencyDays,
     previousCropPlantId,
     createdAt,
   ];
@@ -3391,6 +3470,15 @@ class $GardenPlantsTable extends GardenPlants
         ),
       );
     }
+    if (data.containsKey('fertilizing_frequency_days')) {
+      context.handle(
+        _fertilizingFrequencyDaysMeta,
+        fertilizingFrequencyDays.isAcceptableOrUnknown(
+          data['fertilizing_frequency_days']!,
+          _fertilizingFrequencyDaysMeta,
+        ),
+      );
+    }
     if (data.containsKey('previous_crop_plant_id')) {
       context.handle(
         _previousCropPlantIdMeta,
@@ -3459,6 +3547,10 @@ class $GardenPlantsTable extends GardenPlants
         DriftSqlType.int,
         data['${effectivePrefix}watering_frequency_days'],
       ),
+      fertilizingFrequencyDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}fertilizing_frequency_days'],
+      ),
       previousCropPlantId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}previous_crop_plant_id'],
@@ -3488,6 +3580,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
   final String? notes;
   final DateTime? sowedAt;
   final int? wateringFrequencyDays;
+  final int? fertilizingFrequencyDays;
   final int? previousCropPlantId;
   final DateTime createdAt;
   const GardenPlant({
@@ -3502,6 +3595,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     this.notes,
     this.sowedAt,
     this.wateringFrequencyDays,
+    this.fertilizingFrequencyDays,
     this.previousCropPlantId,
     required this.createdAt,
   });
@@ -3526,6 +3620,11 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     }
     if (!nullToAbsent || wateringFrequencyDays != null) {
       map['watering_frequency_days'] = Variable<int>(wateringFrequencyDays);
+    }
+    if (!nullToAbsent || fertilizingFrequencyDays != null) {
+      map['fertilizing_frequency_days'] = Variable<int>(
+        fertilizingFrequencyDays,
+      );
     }
     if (!nullToAbsent || previousCropPlantId != null) {
       map['previous_crop_plant_id'] = Variable<int>(previousCropPlantId);
@@ -3555,6 +3654,9 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
       wateringFrequencyDays: wateringFrequencyDays == null && nullToAbsent
           ? const Value.absent()
           : Value(wateringFrequencyDays),
+      fertilizingFrequencyDays: fertilizingFrequencyDays == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fertilizingFrequencyDays),
       previousCropPlantId: previousCropPlantId == null && nullToAbsent
           ? const Value.absent()
           : Value(previousCropPlantId),
@@ -3581,6 +3683,9 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
       wateringFrequencyDays: serializer.fromJson<int?>(
         json['wateringFrequencyDays'],
       ),
+      fertilizingFrequencyDays: serializer.fromJson<int?>(
+        json['fertilizingFrequencyDays'],
+      ),
       previousCropPlantId: serializer.fromJson<int?>(
         json['previousCropPlantId'],
       ),
@@ -3602,6 +3707,9 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
       'notes': serializer.toJson<String?>(notes),
       'sowedAt': serializer.toJson<DateTime?>(sowedAt),
       'wateringFrequencyDays': serializer.toJson<int?>(wateringFrequencyDays),
+      'fertilizingFrequencyDays': serializer.toJson<int?>(
+        fertilizingFrequencyDays,
+      ),
       'previousCropPlantId': serializer.toJson<int?>(previousCropPlantId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -3619,6 +3727,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     Value<String?> notes = const Value.absent(),
     Value<DateTime?> sowedAt = const Value.absent(),
     Value<int?> wateringFrequencyDays = const Value.absent(),
+    Value<int?> fertilizingFrequencyDays = const Value.absent(),
     Value<int?> previousCropPlantId = const Value.absent(),
     DateTime? createdAt,
   }) => GardenPlant(
@@ -3635,6 +3744,9 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     wateringFrequencyDays: wateringFrequencyDays.present
         ? wateringFrequencyDays.value
         : this.wateringFrequencyDays,
+    fertilizingFrequencyDays: fertilizingFrequencyDays.present
+        ? fertilizingFrequencyDays.value
+        : this.fertilizingFrequencyDays,
     previousCropPlantId: previousCropPlantId.present
         ? previousCropPlantId.value
         : this.previousCropPlantId,
@@ -3659,6 +3771,9 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
       wateringFrequencyDays: data.wateringFrequencyDays.present
           ? data.wateringFrequencyDays.value
           : this.wateringFrequencyDays,
+      fertilizingFrequencyDays: data.fertilizingFrequencyDays.present
+          ? data.fertilizingFrequencyDays.value
+          : this.fertilizingFrequencyDays,
       previousCropPlantId: data.previousCropPlantId.present
           ? data.previousCropPlantId.value
           : this.previousCropPlantId,
@@ -3680,6 +3795,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
           ..write('notes: $notes, ')
           ..write('sowedAt: $sowedAt, ')
           ..write('wateringFrequencyDays: $wateringFrequencyDays, ')
+          ..write('fertilizingFrequencyDays: $fertilizingFrequencyDays, ')
           ..write('previousCropPlantId: $previousCropPlantId, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -3699,6 +3815,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     notes,
     sowedAt,
     wateringFrequencyDays,
+    fertilizingFrequencyDays,
     previousCropPlantId,
     createdAt,
   );
@@ -3717,6 +3834,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
           other.notes == this.notes &&
           other.sowedAt == this.sowedAt &&
           other.wateringFrequencyDays == this.wateringFrequencyDays &&
+          other.fertilizingFrequencyDays == this.fertilizingFrequencyDays &&
           other.previousCropPlantId == this.previousCropPlantId &&
           other.createdAt == this.createdAt);
 }
@@ -3733,6 +3851,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
   final Value<String?> notes;
   final Value<DateTime?> sowedAt;
   final Value<int?> wateringFrequencyDays;
+  final Value<int?> fertilizingFrequencyDays;
   final Value<int?> previousCropPlantId;
   final Value<DateTime> createdAt;
   const GardenPlantsCompanion({
@@ -3747,6 +3866,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
     this.notes = const Value.absent(),
     this.sowedAt = const Value.absent(),
     this.wateringFrequencyDays = const Value.absent(),
+    this.fertilizingFrequencyDays = const Value.absent(),
     this.previousCropPlantId = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -3762,6 +3882,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
     this.notes = const Value.absent(),
     this.sowedAt = const Value.absent(),
     this.wateringFrequencyDays = const Value.absent(),
+    this.fertilizingFrequencyDays = const Value.absent(),
     this.previousCropPlantId = const Value.absent(),
     this.createdAt = const Value.absent(),
   }) : gardenId = Value(gardenId),
@@ -3780,6 +3901,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
     Expression<String>? notes,
     Expression<DateTime>? sowedAt,
     Expression<int>? wateringFrequencyDays,
+    Expression<int>? fertilizingFrequencyDays,
     Expression<int>? previousCropPlantId,
     Expression<DateTime>? createdAt,
   }) {
@@ -3796,6 +3918,8 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
       if (sowedAt != null) 'sowed_at': sowedAt,
       if (wateringFrequencyDays != null)
         'watering_frequency_days': wateringFrequencyDays,
+      if (fertilizingFrequencyDays != null)
+        'fertilizing_frequency_days': fertilizingFrequencyDays,
       if (previousCropPlantId != null)
         'previous_crop_plant_id': previousCropPlantId,
       if (createdAt != null) 'created_at': createdAt,
@@ -3814,6 +3938,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
     Value<String?>? notes,
     Value<DateTime?>? sowedAt,
     Value<int?>? wateringFrequencyDays,
+    Value<int?>? fertilizingFrequencyDays,
     Value<int?>? previousCropPlantId,
     Value<DateTime>? createdAt,
   }) {
@@ -3830,6 +3955,8 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
       sowedAt: sowedAt ?? this.sowedAt,
       wateringFrequencyDays:
           wateringFrequencyDays ?? this.wateringFrequencyDays,
+      fertilizingFrequencyDays:
+          fertilizingFrequencyDays ?? this.fertilizingFrequencyDays,
       previousCropPlantId: previousCropPlantId ?? this.previousCropPlantId,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -3873,6 +4000,11 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
         wateringFrequencyDays.value,
       );
     }
+    if (fertilizingFrequencyDays.present) {
+      map['fertilizing_frequency_days'] = Variable<int>(
+        fertilizingFrequencyDays.value,
+      );
+    }
     if (previousCropPlantId.present) {
       map['previous_crop_plant_id'] = Variable<int>(previousCropPlantId.value);
     }
@@ -3896,6 +4028,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
           ..write('notes: $notes, ')
           ..write('sowedAt: $sowedAt, ')
           ..write('wateringFrequencyDays: $wateringFrequencyDays, ')
+          ..write('fertilizingFrequencyDays: $fertilizingFrequencyDays, ')
           ..write('previousCropPlantId: $previousCropPlantId, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -8007,6 +8140,483 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
   }
 }
 
+class $PheromoneTrapsTable extends PheromoneTraps
+    with TableInfo<$PheromoneTrapsTable, PheromoneTrap> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PheromoneTrapsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _userFruitTreeIdMeta = const VerificationMeta(
+    'userFruitTreeId',
+  );
+  @override
+  late final GeneratedColumn<int> userFruitTreeId = GeneratedColumn<int>(
+    'user_fruit_tree_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES user_fruit_trees (id)',
+    ),
+  );
+  static const VerificationMeta _trapTypeMeta = const VerificationMeta(
+    'trapType',
+  );
+  @override
+  late final GeneratedColumn<String> trapType = GeneratedColumn<String>(
+    'trap_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _installedAtMeta = const VerificationMeta(
+    'installedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> installedAt = GeneratedColumn<DateTime>(
+    'installed_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lifetimeDaysMeta = const VerificationMeta(
+    'lifetimeDays',
+  );
+  @override
+  late final GeneratedColumn<int> lifetimeDays = GeneratedColumn<int>(
+    'lifetime_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    userFruitTreeId,
+    trapType,
+    installedAt,
+    lifetimeDays,
+    notes,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pheromone_traps';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PheromoneTrap> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('user_fruit_tree_id')) {
+      context.handle(
+        _userFruitTreeIdMeta,
+        userFruitTreeId.isAcceptableOrUnknown(
+          data['user_fruit_tree_id']!,
+          _userFruitTreeIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_userFruitTreeIdMeta);
+    }
+    if (data.containsKey('trap_type')) {
+      context.handle(
+        _trapTypeMeta,
+        trapType.isAcceptableOrUnknown(data['trap_type']!, _trapTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trapTypeMeta);
+    }
+    if (data.containsKey('installed_at')) {
+      context.handle(
+        _installedAtMeta,
+        installedAt.isAcceptableOrUnknown(
+          data['installed_at']!,
+          _installedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_installedAtMeta);
+    }
+    if (data.containsKey('lifetime_days')) {
+      context.handle(
+        _lifetimeDaysMeta,
+        lifetimeDays.isAcceptableOrUnknown(
+          data['lifetime_days']!,
+          _lifetimeDaysMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lifetimeDaysMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PheromoneTrap map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PheromoneTrap(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      userFruitTreeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}user_fruit_tree_id'],
+      )!,
+      trapType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trap_type'],
+      )!,
+      installedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}installed_at'],
+      )!,
+      lifetimeDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lifetime_days'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PheromoneTrapsTable createAlias(String alias) {
+    return $PheromoneTrapsTable(attachedDatabase, alias);
+  }
+}
+
+class PheromoneTrap extends DataClass implements Insertable<PheromoneTrap> {
+  final int id;
+
+  /// Lien vers l'arbre cible. Cascade delete fait par le repository.
+  final int userFruitTreeId;
+
+  /// Identifiant du type (PheromoneTrapType.name).
+  final String trapType;
+
+  /// Date de pose (= date de mise en service du diffuseur courant).
+  final DateTime installedAt;
+
+  /// Duree de vie de la capsule en jours.
+  final int lifetimeDays;
+  final String? notes;
+  final DateTime createdAt;
+  const PheromoneTrap({
+    required this.id,
+    required this.userFruitTreeId,
+    required this.trapType,
+    required this.installedAt,
+    required this.lifetimeDays,
+    this.notes,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['user_fruit_tree_id'] = Variable<int>(userFruitTreeId);
+    map['trap_type'] = Variable<String>(trapType);
+    map['installed_at'] = Variable<DateTime>(installedAt);
+    map['lifetime_days'] = Variable<int>(lifetimeDays);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  PheromoneTrapsCompanion toCompanion(bool nullToAbsent) {
+    return PheromoneTrapsCompanion(
+      id: Value(id),
+      userFruitTreeId: Value(userFruitTreeId),
+      trapType: Value(trapType),
+      installedAt: Value(installedAt),
+      lifetimeDays: Value(lifetimeDays),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory PheromoneTrap.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PheromoneTrap(
+      id: serializer.fromJson<int>(json['id']),
+      userFruitTreeId: serializer.fromJson<int>(json['userFruitTreeId']),
+      trapType: serializer.fromJson<String>(json['trapType']),
+      installedAt: serializer.fromJson<DateTime>(json['installedAt']),
+      lifetimeDays: serializer.fromJson<int>(json['lifetimeDays']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'userFruitTreeId': serializer.toJson<int>(userFruitTreeId),
+      'trapType': serializer.toJson<String>(trapType),
+      'installedAt': serializer.toJson<DateTime>(installedAt),
+      'lifetimeDays': serializer.toJson<int>(lifetimeDays),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  PheromoneTrap copyWith({
+    int? id,
+    int? userFruitTreeId,
+    String? trapType,
+    DateTime? installedAt,
+    int? lifetimeDays,
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+  }) => PheromoneTrap(
+    id: id ?? this.id,
+    userFruitTreeId: userFruitTreeId ?? this.userFruitTreeId,
+    trapType: trapType ?? this.trapType,
+    installedAt: installedAt ?? this.installedAt,
+    lifetimeDays: lifetimeDays ?? this.lifetimeDays,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  PheromoneTrap copyWithCompanion(PheromoneTrapsCompanion data) {
+    return PheromoneTrap(
+      id: data.id.present ? data.id.value : this.id,
+      userFruitTreeId: data.userFruitTreeId.present
+          ? data.userFruitTreeId.value
+          : this.userFruitTreeId,
+      trapType: data.trapType.present ? data.trapType.value : this.trapType,
+      installedAt: data.installedAt.present
+          ? data.installedAt.value
+          : this.installedAt,
+      lifetimeDays: data.lifetimeDays.present
+          ? data.lifetimeDays.value
+          : this.lifetimeDays,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PheromoneTrap(')
+          ..write('id: $id, ')
+          ..write('userFruitTreeId: $userFruitTreeId, ')
+          ..write('trapType: $trapType, ')
+          ..write('installedAt: $installedAt, ')
+          ..write('lifetimeDays: $lifetimeDays, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    userFruitTreeId,
+    trapType,
+    installedAt,
+    lifetimeDays,
+    notes,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PheromoneTrap &&
+          other.id == this.id &&
+          other.userFruitTreeId == this.userFruitTreeId &&
+          other.trapType == this.trapType &&
+          other.installedAt == this.installedAt &&
+          other.lifetimeDays == this.lifetimeDays &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt);
+}
+
+class PheromoneTrapsCompanion extends UpdateCompanion<PheromoneTrap> {
+  final Value<int> id;
+  final Value<int> userFruitTreeId;
+  final Value<String> trapType;
+  final Value<DateTime> installedAt;
+  final Value<int> lifetimeDays;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  const PheromoneTrapsCompanion({
+    this.id = const Value.absent(),
+    this.userFruitTreeId = const Value.absent(),
+    this.trapType = const Value.absent(),
+    this.installedAt = const Value.absent(),
+    this.lifetimeDays = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  PheromoneTrapsCompanion.insert({
+    this.id = const Value.absent(),
+    required int userFruitTreeId,
+    required String trapType,
+    required DateTime installedAt,
+    required int lifetimeDays,
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  }) : userFruitTreeId = Value(userFruitTreeId),
+       trapType = Value(trapType),
+       installedAt = Value(installedAt),
+       lifetimeDays = Value(lifetimeDays);
+  static Insertable<PheromoneTrap> custom({
+    Expression<int>? id,
+    Expression<int>? userFruitTreeId,
+    Expression<String>? trapType,
+    Expression<DateTime>? installedAt,
+    Expression<int>? lifetimeDays,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userFruitTreeId != null) 'user_fruit_tree_id': userFruitTreeId,
+      if (trapType != null) 'trap_type': trapType,
+      if (installedAt != null) 'installed_at': installedAt,
+      if (lifetimeDays != null) 'lifetime_days': lifetimeDays,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  PheromoneTrapsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? userFruitTreeId,
+    Value<String>? trapType,
+    Value<DateTime>? installedAt,
+    Value<int>? lifetimeDays,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+  }) {
+    return PheromoneTrapsCompanion(
+      id: id ?? this.id,
+      userFruitTreeId: userFruitTreeId ?? this.userFruitTreeId,
+      trapType: trapType ?? this.trapType,
+      installedAt: installedAt ?? this.installedAt,
+      lifetimeDays: lifetimeDays ?? this.lifetimeDays,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userFruitTreeId.present) {
+      map['user_fruit_tree_id'] = Variable<int>(userFruitTreeId.value);
+    }
+    if (trapType.present) {
+      map['trap_type'] = Variable<String>(trapType.value);
+    }
+    if (installedAt.present) {
+      map['installed_at'] = Variable<DateTime>(installedAt.value);
+    }
+    if (lifetimeDays.present) {
+      map['lifetime_days'] = Variable<int>(lifetimeDays.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PheromoneTrapsCompanion(')
+          ..write('id: $id, ')
+          ..write('userFruitTreeId: $userFruitTreeId, ')
+          ..write('trapType: $trapType, ')
+          ..write('installedAt: $installedAt, ')
+          ..write('lifetimeDays: $lifetimeDays, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $CompletedPlanningTasksTable extends CompletedPlanningTasks
     with TableInfo<$CompletedPlanningTasksTable, CompletedPlanningTask> {
   @override
@@ -8436,6 +9046,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $FruitTreesTable fruitTrees = $FruitTreesTable(this);
   late final $UserFruitTreesTable userFruitTrees = $UserFruitTreesTable(this);
+  late final $PheromoneTrapsTable pheromoneTraps = $PheromoneTrapsTable(this);
   late final $CompletedPlanningTasksTable completedPlanningTasks =
       $CompletedPlanningTasksTable(this);
   @override
@@ -8452,6 +9063,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     gardenAmendments,
     fruitTrees,
     userFruitTrees,
+    pheromoneTraps,
     completedPlanningTasks,
   ];
 }
@@ -8491,6 +9103,7 @@ typedef $$PlantsTableCreateCompanionBuilder =
       Value<String?> toxicity,
       Value<String?> practicalTips,
       Value<String?> rotationFamily,
+      Value<int?> fertilizationFrequencyDays,
       Value<bool> isUserModified,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -8530,6 +9143,7 @@ typedef $$PlantsTableUpdateCompanionBuilder =
       Value<String?> toxicity,
       Value<String?> practicalTips,
       Value<String?> rotationFamily,
+      Value<int?> fertilizationFrequencyDays,
       Value<bool> isUserModified,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -8757,6 +9371,11 @@ class $$PlantsTableFilterComposer
 
   ColumnFilters<String> get rotationFamily => $composableBuilder(
     column: $table.rotationFamily,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fertilizationFrequencyDays => $composableBuilder(
+    column: $table.fertilizationFrequencyDays,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9001,6 +9620,11 @@ class $$PlantsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get fertilizationFrequencyDays => $composableBuilder(
+    column: $table.fertilizationFrequencyDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isUserModified => $composableBuilder(
     column: $table.isUserModified,
     builder: (column) => ColumnOrderings(column),
@@ -9179,6 +9803,11 @@ class $$PlantsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get fertilizationFrequencyDays => $composableBuilder(
+    column: $table.fertilizationFrequencyDays,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isUserModified => $composableBuilder(
     column: $table.isUserModified,
     builder: (column) => column,
@@ -9306,6 +9935,7 @@ class $$PlantsTableTableManager
                 Value<String?> toxicity = const Value.absent(),
                 Value<String?> practicalTips = const Value.absent(),
                 Value<String?> rotationFamily = const Value.absent(),
+                Value<int?> fertilizationFrequencyDays = const Value.absent(),
                 Value<bool> isUserModified = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -9343,6 +9973,7 @@ class $$PlantsTableTableManager
                 toxicity: toxicity,
                 practicalTips: practicalTips,
                 rotationFamily: rotationFamily,
+                fertilizationFrequencyDays: fertilizationFrequencyDays,
                 isUserModified: isUserModified,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -9382,6 +10013,7 @@ class $$PlantsTableTableManager
                 Value<String?> toxicity = const Value.absent(),
                 Value<String?> practicalTips = const Value.absent(),
                 Value<String?> rotationFamily = const Value.absent(),
+                Value<int?> fertilizationFrequencyDays = const Value.absent(),
                 Value<bool> isUserModified = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -9419,6 +10051,7 @@ class $$PlantsTableTableManager
                 toxicity: toxicity,
                 practicalTips: practicalTips,
                 rotationFamily: rotationFamily,
+                fertilizationFrequencyDays: fertilizationFrequencyDays,
                 isUserModified: isUserModified,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -10928,6 +11561,7 @@ typedef $$GardenPlantsTableCreateCompanionBuilder =
       Value<String?> notes,
       Value<DateTime?> sowedAt,
       Value<int?> wateringFrequencyDays,
+      Value<int?> fertilizingFrequencyDays,
       Value<int?> previousCropPlantId,
       Value<DateTime> createdAt,
     });
@@ -10944,6 +11578,7 @@ typedef $$GardenPlantsTableUpdateCompanionBuilder =
       Value<String?> notes,
       Value<DateTime?> sowedAt,
       Value<int?> wateringFrequencyDays,
+      Value<int?> fertilizingFrequencyDays,
       Value<int?> previousCropPlantId,
       Value<DateTime> createdAt,
     });
@@ -11081,6 +11716,11 @@ class $$GardenPlantsTableFilterComposer
 
   ColumnFilters<int> get wateringFrequencyDays => $composableBuilder(
     column: $table.wateringFrequencyDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fertilizingFrequencyDays => $composableBuilder(
+    column: $table.fertilizingFrequencyDays,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11238,6 +11878,11 @@ class $$GardenPlantsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get fertilizingFrequencyDays => $composableBuilder(
+    column: $table.fertilizingFrequencyDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -11352,6 +11997,11 @@ class $$GardenPlantsTableAnnotationComposer
 
   GeneratedColumn<int> get wateringFrequencyDays => $composableBuilder(
     column: $table.wateringFrequencyDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get fertilizingFrequencyDays => $composableBuilder(
+    column: $table.fertilizingFrequencyDays,
     builder: (column) => column,
   );
 
@@ -11497,6 +12147,7 @@ class $$GardenPlantsTableTableManager
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime?> sowedAt = const Value.absent(),
                 Value<int?> wateringFrequencyDays = const Value.absent(),
+                Value<int?> fertilizingFrequencyDays = const Value.absent(),
                 Value<int?> previousCropPlantId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => GardenPlantsCompanion(
@@ -11511,6 +12162,7 @@ class $$GardenPlantsTableTableManager
                 notes: notes,
                 sowedAt: sowedAt,
                 wateringFrequencyDays: wateringFrequencyDays,
+                fertilizingFrequencyDays: fertilizingFrequencyDays,
                 previousCropPlantId: previousCropPlantId,
                 createdAt: createdAt,
               ),
@@ -11527,6 +12179,7 @@ class $$GardenPlantsTableTableManager
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime?> sowedAt = const Value.absent(),
                 Value<int?> wateringFrequencyDays = const Value.absent(),
+                Value<int?> fertilizingFrequencyDays = const Value.absent(),
                 Value<int?> previousCropPlantId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => GardenPlantsCompanion.insert(
@@ -11541,6 +12194,7 @@ class $$GardenPlantsTableTableManager
                 notes: notes,
                 sowedAt: sowedAt,
                 wateringFrequencyDays: wateringFrequencyDays,
+                fertilizingFrequencyDays: fertilizingFrequencyDays,
                 previousCropPlantId: previousCropPlantId,
                 createdAt: createdAt,
               ),
@@ -13699,6 +14353,27 @@ final class $$UserFruitTreesTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static MultiTypedResultKey<$PheromoneTrapsTable, List<PheromoneTrap>>
+  _pheromoneTrapsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.pheromoneTraps,
+    aliasName: $_aliasNameGenerator(
+      db.userFruitTrees.id,
+      db.pheromoneTraps.userFruitTreeId,
+    ),
+  );
+
+  $$PheromoneTrapsTableProcessedTableManager get pheromoneTrapsRefs {
+    final manager = $$PheromoneTrapsTableTableManager(
+      $_db,
+      $_db.pheromoneTraps,
+    ).filter((f) => f.userFruitTreeId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_pheromoneTrapsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$UserFruitTreesTableFilterComposer
@@ -13796,6 +14471,31 @@ class $$UserFruitTreesTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> pheromoneTrapsRefs(
+    Expression<bool> Function($$PheromoneTrapsTableFilterComposer f) f,
+  ) {
+    final $$PheromoneTrapsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.pheromoneTraps,
+      getReferencedColumn: (t) => t.userFruitTreeId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PheromoneTrapsTableFilterComposer(
+            $db: $db,
+            $table: $db.pheromoneTraps,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -13977,6 +14677,31 @@ class $$UserFruitTreesTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> pheromoneTrapsRefs<T extends Object>(
+    Expression<T> Function($$PheromoneTrapsTableAnnotationComposer a) f,
+  ) {
+    final $$PheromoneTrapsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.pheromoneTraps,
+      getReferencedColumn: (t) => t.userFruitTreeId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PheromoneTrapsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pheromoneTraps,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$UserFruitTreesTableTableManager
@@ -13992,7 +14717,7 @@ class $$UserFruitTreesTableTableManager
           $$UserFruitTreesTableUpdateCompanionBuilder,
           (UserFruitTree, $$UserFruitTreesTableReferences),
           UserFruitTree,
-          PrefetchHooks Function({bool fruitTreeId})
+          PrefetchHooks Function({bool fruitTreeId, bool pheromoneTrapsRefs})
         > {
   $$UserFruitTreesTableTableManager(
     _$AppDatabase db,
@@ -14079,7 +14804,398 @@ class $$UserFruitTreesTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({fruitTreeId = false}) {
+          prefetchHooksCallback:
+              ({fruitTreeId = false, pheromoneTrapsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (pheromoneTrapsRefs) db.pheromoneTraps,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (fruitTreeId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.fruitTreeId,
+                                    referencedTable:
+                                        $$UserFruitTreesTableReferences
+                                            ._fruitTreeIdTable(db),
+                                    referencedColumn:
+                                        $$UserFruitTreesTableReferences
+                                            ._fruitTreeIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (pheromoneTrapsRefs)
+                        await $_getPrefetchedData<
+                          UserFruitTree,
+                          $UserFruitTreesTable,
+                          PheromoneTrap
+                        >(
+                          currentTable: table,
+                          referencedTable: $$UserFruitTreesTableReferences
+                              ._pheromoneTrapsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$UserFruitTreesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).pheromoneTrapsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.userFruitTreeId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$UserFruitTreesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserFruitTreesTable,
+      UserFruitTree,
+      $$UserFruitTreesTableFilterComposer,
+      $$UserFruitTreesTableOrderingComposer,
+      $$UserFruitTreesTableAnnotationComposer,
+      $$UserFruitTreesTableCreateCompanionBuilder,
+      $$UserFruitTreesTableUpdateCompanionBuilder,
+      (UserFruitTree, $$UserFruitTreesTableReferences),
+      UserFruitTree,
+      PrefetchHooks Function({bool fruitTreeId, bool pheromoneTrapsRefs})
+    >;
+typedef $$PheromoneTrapsTableCreateCompanionBuilder =
+    PheromoneTrapsCompanion Function({
+      Value<int> id,
+      required int userFruitTreeId,
+      required String trapType,
+      required DateTime installedAt,
+      required int lifetimeDays,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+    });
+typedef $$PheromoneTrapsTableUpdateCompanionBuilder =
+    PheromoneTrapsCompanion Function({
+      Value<int> id,
+      Value<int> userFruitTreeId,
+      Value<String> trapType,
+      Value<DateTime> installedAt,
+      Value<int> lifetimeDays,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+    });
+
+final class $$PheromoneTrapsTableReferences
+    extends BaseReferences<_$AppDatabase, $PheromoneTrapsTable, PheromoneTrap> {
+  $$PheromoneTrapsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $UserFruitTreesTable _userFruitTreeIdTable(_$AppDatabase db) =>
+      db.userFruitTrees.createAlias(
+        $_aliasNameGenerator(
+          db.pheromoneTraps.userFruitTreeId,
+          db.userFruitTrees.id,
+        ),
+      );
+
+  $$UserFruitTreesTableProcessedTableManager get userFruitTreeId {
+    final $_column = $_itemColumn<int>('user_fruit_tree_id')!;
+
+    final manager = $$UserFruitTreesTableTableManager(
+      $_db,
+      $_db.userFruitTrees,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_userFruitTreeIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PheromoneTrapsTableFilterComposer
+    extends Composer<_$AppDatabase, $PheromoneTrapsTable> {
+  $$PheromoneTrapsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trapType => $composableBuilder(
+    column: $table.trapType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get installedAt => $composableBuilder(
+    column: $table.installedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lifetimeDays => $composableBuilder(
+    column: $table.lifetimeDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$UserFruitTreesTableFilterComposer get userFruitTreeId {
+    final $$UserFruitTreesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userFruitTreeId,
+      referencedTable: $db.userFruitTrees,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UserFruitTreesTableFilterComposer(
+            $db: $db,
+            $table: $db.userFruitTrees,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PheromoneTrapsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PheromoneTrapsTable> {
+  $$PheromoneTrapsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trapType => $composableBuilder(
+    column: $table.trapType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get installedAt => $composableBuilder(
+    column: $table.installedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lifetimeDays => $composableBuilder(
+    column: $table.lifetimeDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$UserFruitTreesTableOrderingComposer get userFruitTreeId {
+    final $$UserFruitTreesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userFruitTreeId,
+      referencedTable: $db.userFruitTrees,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UserFruitTreesTableOrderingComposer(
+            $db: $db,
+            $table: $db.userFruitTrees,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PheromoneTrapsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PheromoneTrapsTable> {
+  $$PheromoneTrapsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trapType =>
+      $composableBuilder(column: $table.trapType, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get installedAt => $composableBuilder(
+    column: $table.installedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lifetimeDays => $composableBuilder(
+    column: $table.lifetimeDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$UserFruitTreesTableAnnotationComposer get userFruitTreeId {
+    final $$UserFruitTreesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userFruitTreeId,
+      referencedTable: $db.userFruitTrees,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UserFruitTreesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.userFruitTrees,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PheromoneTrapsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PheromoneTrapsTable,
+          PheromoneTrap,
+          $$PheromoneTrapsTableFilterComposer,
+          $$PheromoneTrapsTableOrderingComposer,
+          $$PheromoneTrapsTableAnnotationComposer,
+          $$PheromoneTrapsTableCreateCompanionBuilder,
+          $$PheromoneTrapsTableUpdateCompanionBuilder,
+          (PheromoneTrap, $$PheromoneTrapsTableReferences),
+          PheromoneTrap,
+          PrefetchHooks Function({bool userFruitTreeId})
+        > {
+  $$PheromoneTrapsTableTableManager(
+    _$AppDatabase db,
+    $PheromoneTrapsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PheromoneTrapsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PheromoneTrapsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PheromoneTrapsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> userFruitTreeId = const Value.absent(),
+                Value<String> trapType = const Value.absent(),
+                Value<DateTime> installedAt = const Value.absent(),
+                Value<int> lifetimeDays = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => PheromoneTrapsCompanion(
+                id: id,
+                userFruitTreeId: userFruitTreeId,
+                trapType: trapType,
+                installedAt: installedAt,
+                lifetimeDays: lifetimeDays,
+                notes: notes,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int userFruitTreeId,
+                required String trapType,
+                required DateTime installedAt,
+                required int lifetimeDays,
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => PheromoneTrapsCompanion.insert(
+                id: id,
+                userFruitTreeId: userFruitTreeId,
+                trapType: trapType,
+                installedAt: installedAt,
+                lifetimeDays: lifetimeDays,
+                notes: notes,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PheromoneTrapsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({userFruitTreeId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -14099,16 +15215,16 @@ class $$UserFruitTreesTableTableManager
                       dynamic
                     >
                   >(state) {
-                    if (fruitTreeId) {
+                    if (userFruitTreeId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.fruitTreeId,
-                                referencedTable: $$UserFruitTreesTableReferences
-                                    ._fruitTreeIdTable(db),
+                                currentColumn: table.userFruitTreeId,
+                                referencedTable: $$PheromoneTrapsTableReferences
+                                    ._userFruitTreeIdTable(db),
                                 referencedColumn:
-                                    $$UserFruitTreesTableReferences
-                                        ._fruitTreeIdTable(db)
+                                    $$PheromoneTrapsTableReferences
+                                        ._userFruitTreeIdTable(db)
                                         .id,
                               )
                               as T;
@@ -14125,19 +15241,19 @@ class $$UserFruitTreesTableTableManager
       );
 }
 
-typedef $$UserFruitTreesTableProcessedTableManager =
+typedef $$PheromoneTrapsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $UserFruitTreesTable,
-      UserFruitTree,
-      $$UserFruitTreesTableFilterComposer,
-      $$UserFruitTreesTableOrderingComposer,
-      $$UserFruitTreesTableAnnotationComposer,
-      $$UserFruitTreesTableCreateCompanionBuilder,
-      $$UserFruitTreesTableUpdateCompanionBuilder,
-      (UserFruitTree, $$UserFruitTreesTableReferences),
-      UserFruitTree,
-      PrefetchHooks Function({bool fruitTreeId})
+      $PheromoneTrapsTable,
+      PheromoneTrap,
+      $$PheromoneTrapsTableFilterComposer,
+      $$PheromoneTrapsTableOrderingComposer,
+      $$PheromoneTrapsTableAnnotationComposer,
+      $$PheromoneTrapsTableCreateCompanionBuilder,
+      $$PheromoneTrapsTableUpdateCompanionBuilder,
+      (PheromoneTrap, $$PheromoneTrapsTableReferences),
+      PheromoneTrap,
+      PrefetchHooks Function({bool userFruitTreeId})
     >;
 typedef $$CompletedPlanningTasksTableCreateCompanionBuilder =
     CompletedPlanningTasksCompanion Function({
@@ -14516,6 +15632,8 @@ class $AppDatabaseManager {
       $$FruitTreesTableTableManager(_db, _db.fruitTrees);
   $$UserFruitTreesTableTableManager get userFruitTrees =>
       $$UserFruitTreesTableTableManager(_db, _db.userFruitTrees);
+  $$PheromoneTrapsTableTableManager get pheromoneTraps =>
+      $$PheromoneTrapsTableTableManager(_db, _db.pheromoneTraps);
   $$CompletedPlanningTasksTableTableManager get completedPlanningTasks =>
       $$CompletedPlanningTasksTableTableManager(
         _db,

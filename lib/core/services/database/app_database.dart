@@ -36,6 +36,7 @@ class UserPlantUsageInfo {
     GardenAmendments,
     FruitTrees,
     UserFruitTrees,
+    PheromoneTraps,
     // SelectedPlantsTable retiree en v13 — voir migration onUpgrade.
     CompletedPlanningTasks,
   ],
@@ -47,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration {
@@ -147,6 +148,18 @@ class AppDatabase extends _$AppDatabase {
         // qu'elles devraient apparaitre.
         if (from < 14) {
           await _backfillPlantingEventsForExistingGardenPlants();
+        }
+        // Migration v14 -> v15 : programmation de la fertilisation +
+        // pieges a pheromones renouvelables. Trois changements :
+        // - colonne fertilization_frequency_days sur `plants` (catalog)
+        // - colonne fertilizing_frequency_days sur `garden_plants` (override)
+        // - nouvelle table `pheromone_traps` liee a `user_fruit_trees`
+        if (from < 15) {
+          await _safeAddColumn(
+              m, plants, plants.fertilizationFrequencyDays);
+          await _safeAddColumn(
+              m, gardenPlants, gardenPlants.fertilizingFrequencyDays);
+          await _safeCreateTable(m, pheromoneTraps);
         }
       },
     );
@@ -796,6 +809,7 @@ class AppDatabase extends _$AppDatabase {
     DateTime? sowedAt,
     DateTime? plantedAt,
     int? wateringFrequencyDays,
+    int? fertilizingFrequencyDays,
     Value<int?> previousCropPlantId = const Value.absent(),
   }) async {
     await (update(gardenPlants)..where((t) => t.id.equals(id))).write(
@@ -805,6 +819,9 @@ class AppDatabase extends _$AppDatabase {
             plantedAt != null ? Value(plantedAt) : const Value.absent(),
         wateringFrequencyDays: wateringFrequencyDays != null
             ? Value(wateringFrequencyDays)
+            : const Value.absent(),
+        fertilizingFrequencyDays: fertilizingFrequencyDays != null
+            ? Value(fertilizingFrequencyDays)
             : const Value.absent(),
         previousCropPlantId: previousCropPlantId,
       ),
@@ -1061,7 +1078,14 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<int> deleteUserFruitTree(int id) {
-    return (delete(userFruitTrees)..where((t) => t.id.equals(id))).go();
+    return transaction(() async {
+      // Cascade : supprimer les pieges a pheromones poses sur cet arbre
+      // (FK non cascade, donc orphelins potentiels sinon).
+      await (delete(pheromoneTraps)
+            ..where((t) => t.userFruitTreeId.equals(id)))
+          .go();
+      return (delete(userFruitTrees)..where((t) => t.id.equals(id))).go();
+    });
   }
 
   Future<int> countUserFruitTrees() async {
@@ -1186,11 +1210,20 @@ class AppDatabase extends _$AppDatabase {
   /// Derniers événements d'arrosage par gardenPlantId.
   /// Agrégation SQL (MAX) : une ligne par plante au lieu de scanner
   /// tout l'historique d'arrosage.
-  Future<Map<int, DateTime>> getLastWateringDates() async {
+  Future<Map<int, DateTime>> getLastWateringDates() =>
+      _getLastEventDates('watering');
+
+  /// Derniers événements de fertilisation par gardenPlantId (v15).
+  Future<Map<int, DateTime>> getLastFertilizingDates() =>
+      _getLastEventDates('fertilizer');
+
+  /// Generalise [getLastWateringDates] / [getLastFertilizingDates] : derniere
+  /// date d'event d'un type donne, groupee par gardenPlantId.
+  Future<Map<int, DateTime>> _getLastEventDates(String eventType) async {
     final maxDate = gardenEvents.eventDate.max();
     final query = selectOnly(gardenEvents)
       ..addColumns([gardenEvents.gardenPlantId, maxDate])
-      ..where(gardenEvents.eventType.equals('watering') &
+      ..where(gardenEvents.eventType.equals(eventType) &
           gardenEvents.gardenPlantId.isNotNull())
       ..groupBy([gardenEvents.gardenPlantId]);
     final rows = await query.get();
@@ -1201,6 +1234,82 @@ class AppDatabase extends _$AppDatabase {
       if (gpId != null && last != null) result[gpId] = last;
     }
     return result;
+  }
+
+  // ============================================
+  // PHEROMONE TRAPS QUERIES (v15)
+  // ============================================
+
+  Future<List<PheromoneTrap>> getAllPheromoneTraps() =>
+      select(pheromoneTraps).get();
+
+  Future<List<PheromoneTrap>> getTrapsForUserFruitTree(int userFruitTreeId) {
+    return (select(pheromoneTraps)
+          ..where((t) => t.userFruitTreeId.equals(userFruitTreeId))
+          ..orderBy([(t) => OrderingTerm.desc(t.installedAt)]))
+        .get();
+  }
+
+  Future<int> insertPheromoneTrap(PheromoneTrapsCompanion trap) {
+    return into(pheromoneTraps).insert(trap);
+  }
+
+  Future<int> deletePheromoneTrap(int id) {
+    return (delete(pheromoneTraps)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<void> renewPheromoneTrap({
+    required int id,
+    required DateTime installedAt,
+    int? lifetimeDays,
+  }) async {
+    await (update(pheromoneTraps)..where((t) => t.id.equals(id))).write(
+      PheromoneTrapsCompanion(
+        installedAt: Value(installedAt),
+        lifetimeDays: lifetimeDays != null
+            ? Value(lifetimeDays)
+            : const Value.absent(),
+      ),
+    );
+  }
+
+  Future<void> updatePheromoneTrap({
+    required int id,
+    String? trapType,
+    DateTime? installedAt,
+    int? lifetimeDays,
+    Value<String?> notes = const Value.absent(),
+  }) async {
+    await (update(pheromoneTraps)..where((t) => t.id.equals(id))).write(
+      PheromoneTrapsCompanion(
+        trapType: trapType != null ? Value(trapType) : const Value.absent(),
+        installedAt:
+            installedAt != null ? Value(installedAt) : const Value.absent(),
+        lifetimeDays: lifetimeDays != null
+            ? Value(lifetimeDays)
+            : const Value.absent(),
+        notes: notes,
+      ),
+    );
+  }
+
+  /// Pieges joints aux UserFruitTrees + FruitTrees via 2 JOINs (single query).
+  Future<List<TypedResult>> getAllPheromoneTrapsWithTreeDetails() {
+    return (select(pheromoneTraps).join([
+      innerJoin(userFruitTrees,
+          userFruitTrees.id.equalsExp(pheromoneTraps.userFruitTreeId)),
+      innerJoin(fruitTrees,
+          fruitTrees.id.equalsExp(userFruitTrees.fruitTreeId)),
+    ])).get();
+  }
+
+  Stream<List<TypedResult>> watchAllPheromoneTrapsWithTreeDetails() {
+    return (select(pheromoneTraps).join([
+      innerJoin(userFruitTrees,
+          userFruitTrees.id.equalsExp(pheromoneTraps.userFruitTreeId)),
+      innerJoin(fruitTrees,
+          fruitTrees.id.equalsExp(userFruitTrees.fruitTreeId)),
+    ])).watch();
   }
 
   // ============================================

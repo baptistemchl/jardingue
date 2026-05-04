@@ -772,6 +772,192 @@ abstract class AppLocalizations {
   /// **'Arroser'**
   String get waterAction;
 
+  /// No description provided for @fertilizingToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fertilisation du jour'**
+  String get fertilizingToday;
+
+  /// No description provided for @plantsToFertilizeCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 plante à fertiliser} other{{count} plantes à fertiliser}}'**
+  String plantsToFertilizeCount(int count);
+
+  /// No description provided for @neverFertilized.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jamais fertilisé'**
+  String get neverFertilized;
+
+  /// No description provided for @fertilizedDaysAgo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fertilisé il y a {count} jour{count, plural, =1{} other{s}}'**
+  String fertilizedDaysAgo(int count);
+
+  /// No description provided for @nameFertilized.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} fertilisé !'**
+  String nameFertilized(String name);
+
+  /// No description provided for @fertilizeAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fertiliser'**
+  String get fertilizeAction;
+
+  /// No description provided for @pheromoneTrapsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièges à phéromones'**
+  String get pheromoneTrapsTitle;
+
+  /// No description provided for @pheromoneTrapsToReplace.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 piège à renouveler} other{{count} pièges à renouveler}}'**
+  String pheromoneTrapsToReplace(int count);
+
+  /// No description provided for @pheromoneTrapsOverdueCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 en retard} other{{count} en retard}}'**
+  String pheromoneTrapsOverdueCount(int count);
+
+  /// No description provided for @pheromoneTrapsDueSoon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renouvellement à prévoir'**
+  String get pheromoneTrapsDueSoon;
+
+  /// No description provided for @otherTrapsCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'+{count} autres pièges'**
+  String otherTrapsCount(int count);
+
+  /// No description provided for @renewAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renouveler'**
+  String get renewAction;
+
+  /// No description provided for @trapRenewedFor.
+  ///
+  /// In fr, this message translates to:
+  /// **'Piège de {name} renouvelé !'**
+  String trapRenewedFor(String name);
+
+  /// No description provided for @installedDaysAgo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Posé il y a {count} jour{count, plural, =1{} other{s}}'**
+  String installedDaysAgo(int count);
+
+  /// No description provided for @renewalInDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renouvellement dans {count} jour{count, plural, =1{} other{s}}'**
+  String renewalInDays(int count);
+
+  /// No description provided for @trapsScreenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes pièges'**
+  String get trapsScreenTitle;
+
+  /// No description provided for @myTrapsAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gérer mes pièges'**
+  String get myTrapsAction;
+
+  /// No description provided for @addTrapAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un piège'**
+  String get addTrapAction;
+
+  /// No description provided for @addTrapTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un piège à phéromones'**
+  String get addTrapTitle;
+
+  /// No description provided for @trapType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de piège'**
+  String get trapType;
+
+  /// No description provided for @installationDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date de pose'**
+  String get installationDate;
+
+  /// No description provided for @lifetimeDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Durée de vie (jours)'**
+  String get lifetimeDays;
+
+  /// No description provided for @lifetimeAboutDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Environ {count} jours'**
+  String lifetimeAboutDays(int count);
+
+  /// No description provided for @showAllTrapTypes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher tous les types'**
+  String get showAllTrapTypes;
+
+  /// No description provided for @selectTypeFirst.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez d\'abord un type'**
+  String get selectTypeFirst;
+
+  /// No description provided for @notesHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Optionnel'**
+  String get notesHint;
+
+  /// No description provided for @pickTreeForTrap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour quel arbre ?'**
+  String get pickTreeForTrap;
+
+  /// No description provided for @trapsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun piège'**
+  String get trapsEmptyTitle;
+
+  /// No description provided for @trapsEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Posez votre premier piège à phéromones\npour suivre les renouvellements.'**
+  String get trapsEmptySubtitle;
+
+  /// No description provided for @deleteTrapTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le piège ?'**
+  String get deleteTrapTitle;
+
+  /// No description provided for @deleteTrapConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voulez-vous vraiment supprimer ce piège ({type}) ?'**
+  String deleteTrapConfirm(String type);
+
   /// No description provided for @inGarden.
   ///
   /// In fr, this message translates to:

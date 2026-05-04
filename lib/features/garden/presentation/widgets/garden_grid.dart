@@ -9,7 +9,7 @@ import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/garden_providers.dart';
 import '../../domain/editor_mode.dart';
 import '../../domain/models/amendment_type.dart';
-import '../../domain/models/watering_helpers.dart';
+import '../../domain/models/care_helpers.dart';
 
 /// Pixels par mètre (échelle de la grille)
 /// 200px/m = 2px/cm, donc 10cm = 20px, 50cm = 100px, 1m = 200px
@@ -183,12 +183,12 @@ class GardenGrid extends StatelessWidget {
   }
 
   /// Calcule le statut d'arrosage pour une plante (null pour les zones).
-  WateringStatus? _statusFor(GardenPlantWithDetails e) {
+  CareStatus? _statusFor(GardenPlantWithDetails e) {
     if (e.isZone) return null;
     final freq = e.gardenPlant.wateringFrequencyDays ??
         defaultWateringFrequencyDays(e.plant?.watering);
-    return computeWateringStatus(
-      lastWatered: lastWateringByGp[e.id],
+    return computeCareStatus(
+      lastDate: lastWateringByGp[e.id],
       frequencyDays: freq,
       now: DateTime.now(),
     );
@@ -407,7 +407,7 @@ class _DraggableElement extends StatefulWidget {
   final GardenPlantWithDetails element;
   final Garden garden;
   final EditorMode mode;
-  final WateringStatus? wateringStatus;
+  final CareStatus? wateringStatus;
   final VoidCallback? onTap;
   final Function(double xMeters, double yMeters)? onMoved;
   final Function(double widthMeters, double heightMeters)? onResized;
@@ -828,22 +828,22 @@ class _DraggableElementState extends State<_DraggableElement>
   Widget _buildWateringBadge() {
     final status = widget.wateringStatus!;
     final (bgColor, icon, tooltip) = switch (status) {
-      WateringStatus.never => (
+      CareStatus.never => (
           const Color(0xFF9E9E9E),
           PhosphorIcons.drop(PhosphorIconsStyle.regular),
           'Jamais arrosée',
         ),
-      WateringStatus.upToDate => (
+      CareStatus.upToDate => (
           const Color(0xFF03A9F4),
           PhosphorIcons.drop(PhosphorIconsStyle.fill),
           'Arrosée récemment',
         ),
-      WateringStatus.dueSoon => (
+      CareStatus.dueSoon => (
           const Color(0xFFFF9800),
           PhosphorIcons.drop(PhosphorIconsStyle.fill),
           'À arroser bientôt',
         ),
-      WateringStatus.overdue => (
+      CareStatus.overdue => (
           const Color(0xFFE53935),
           PhosphorIcons.dropHalfBottom(PhosphorIconsStyle.fill),
           'Arrosage en retard',

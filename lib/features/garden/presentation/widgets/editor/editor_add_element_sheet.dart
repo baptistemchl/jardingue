@@ -12,7 +12,7 @@ import '../../../../../core/providers/database_providers.dart';
 import '../../../../../core/utils/plant_emoji_mapper.dart';
 import '../../../../plants/presentation/widgets/user_plant_form_sheet.dart';
 import '../../../domain/models/amendment_type.dart';
-import '../../../domain/models/watering_helpers.dart';
+import '../../../domain/models/care_helpers.dart';
 import '../../../domain/models/zone_type.dart';
 import 'dimension_input.dart';
 import 'previous_crop_picker.dart';
