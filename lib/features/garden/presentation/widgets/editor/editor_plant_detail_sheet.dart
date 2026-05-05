@@ -258,6 +258,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                     id: gpId,
                     plantedAt: newDate,
                   );
+              if (!mounted) return;
               ref.invalidate(gardenPlantsProvider(gardenId));
               ref.invalidate(gardenPlantEventsProvider(gpId));
             },
@@ -275,6 +276,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                     id: gpId,
                     sowedAt: newDate,
                   );
+              if (!mounted) return;
               ref.invalidate(gardenPlantsProvider(gardenId));
               ref.invalidate(gardenPlantEventsProvider(gpId));
             },
@@ -292,6 +294,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                   id: gpId,
                   wateringFrequencyDays: freq,
                 );
+            if (!mounted) return;
             ref.invalidate(gardenPlantsProvider(gardenId));
             ref.invalidate(careRemindersProvider(CareKind.watering));
           },

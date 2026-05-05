@@ -343,12 +343,12 @@ class _UserPlantFormSheetState
           antagonists: _antagonistIds,
         );
       }
+      if (!mounted) return;
       // Invalide les providers qui montrent les listes pour
       // refléter le nouvel ajout/édition.
       ref.invalidate(filteredPlantsProvider);
       ref.invalidate(allPlantsSortedProvider);
       ref.invalidate(userPlantsListProvider);
-      if (!mounted) return;
       // Le caller (ex. sheet d'ajout au potager) peut récupérer
       // l'ID pour chaîner directement sur la plante fraîchement
       // créée sans forcer l'utilisateur à re-rechercher.
@@ -398,12 +398,12 @@ class _UserPlantFormSheetState
     setState(() => _saving = true);
     try {
       await repo.deleteUserPlant(p.id);
+      if (!mounted) return;
       // Invalide tous les providers susceptibles d'afficher la plante
       // ou ses traces (potager, suivi, planning).
       ref.invalidate(filteredPlantsProvider);
       ref.invalidate(allPlantsSortedProvider);
       ref.invalidate(userPlantsListProvider);
-      if (!mounted) return;
       Navigator.of(context).pop();
     } catch (e) {
       if (!mounted) return;

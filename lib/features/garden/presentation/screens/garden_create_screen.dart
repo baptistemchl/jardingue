@@ -78,6 +78,11 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
       _errorMessage = null;
     });
 
+    // Capture les providers avant tout await : le bottom sheet peut être
+    // fermé pendant le chargement, ce qui dispose `ref` et fait crasher
+    // tout `ref.read` ultérieur (assertNotDisposed).
+    final notifier = ref.read(gardenNotifierProvider.notifier);
+
     try {
       if (isEditing) {
         // Vérifie que les éléments existants tiennent
@@ -107,26 +112,22 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
           return;
         }
 
-        await ref
-            .read(gardenNotifierProvider.notifier)
-            .updateGarden(
-              id: widget.garden!.id,
-              name: _nameController.text.trim(),
-              widthMeters: _widthMeters,
-              heightMeters: _heightMeters,
-              year: Patch(_year),
-              previousGardenId: Patch(_previousGardenId),
-            );
+        await notifier.updateGarden(
+          id: widget.garden!.id,
+          name: _nameController.text.trim(),
+          widthMeters: _widthMeters,
+          heightMeters: _heightMeters,
+          year: Patch(_year),
+          previousGardenId: Patch(_previousGardenId),
+        );
       } else {
-        await ref
-            .read(gardenNotifierProvider.notifier)
-            .createGarden(
-              name: _nameController.text.trim(),
-              widthMeters: _widthMeters,
-              heightMeters: _heightMeters,
-              year: _year,
-              previousGardenId: _previousGardenId,
-            );
+        await notifier.createGarden(
+          name: _nameController.text.trim(),
+          widthMeters: _widthMeters,
+          heightMeters: _heightMeters,
+          year: _year,
+          previousGardenId: _previousGardenId,
+        );
       }
 
       if (mounted) {

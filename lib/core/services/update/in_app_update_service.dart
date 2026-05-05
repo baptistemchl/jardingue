@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
 import '../crash_reporting/crash_reporting_service.dart';
 
@@ -25,12 +26,14 @@ class InAppUpdateService {
         await InAppUpdate.completeFlexibleUpdate();
       }
     } catch (e, st) {
-      // Error -6 = device state prevents install (low battery, low disk space)
-      // This is expected and not actionable — just log, don't report.
-      final isDeviceState = e.toString().contains('-6');
-      if (isDeviceState) {
+      // Toute PlatformException provient de Play Services et n'est pas
+      // actionnable côté app : binding échoué, API indispo, device state,
+      // pas de Play Store, sideload, etc. On se contente de logger.
+      // Seules les erreurs Dart inattendues (cast, null, etc.) sont
+      // remontées car elles révéleraient un vrai bug.
+      if (e is PlatformException) {
         CrashReportingService.log(
-          'Update skipped: device state prevents install',
+          'Update skipped (${e.code}): ${e.message}',
         );
       } else {
         CrashReportingService.recordError(e, st,

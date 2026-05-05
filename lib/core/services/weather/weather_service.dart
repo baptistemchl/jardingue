@@ -200,10 +200,14 @@ class WeatherService {
     } on DioException catch (e, st) {
       final code = e.response?.statusCode;
       // 429 (rate-limit) et 5xx (serveur) sont transitoires et non actionnables.
-      final isTransient = code != null && (code == 429 || code >= 500);
-      if (isTransient) {
+      final isTransientServer = code != null && (code == 429 || code >= 500);
+      // Pas de `badResponse` = pas de réponse HTTP = pur problème réseau côté
+      // utilisateur (DNS, timeout, no internet, cert, cancel). Non-actionnable.
+      final isNetwork = e.type != DioExceptionType.badResponse;
+      if (isTransientServer || isNetwork) {
         CrashReportingService.log(
-          'Météo: erreur serveur transitoire ($code)',
+          'Météo: erreur réseau (${e.type.name}'
+          '${code != null ? ', $code' : ''})',
         );
       } else {
         CrashReportingService.recordError(e, st,
