@@ -170,6 +170,8 @@ class _PlantChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // SelectedPlant ne porte pas le `customEmoji` (provider planning,
+    // pas Drift) → on retombe sur la déduction nom + catégorie.
     final emoji = PlantEmojiMapper.fromName(
       plant.commonName,
       categoryCode: plant.categoryCode,

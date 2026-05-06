@@ -37,10 +37,7 @@ extension PlantHelpers on Plant {
   }
 
   String get emoji {
-    return PlantEmojiMapper.fromName(
-      commonName,
-      categoryCode: categoryCode,
-    );
+    return PlantEmojiMapper.forPlant(this);
   }
 
   String get sunIcon {

@@ -192,10 +192,7 @@ class PlanningStateNotifier
       plantDataList.add(PlantData(
         id: plant.id,
         commonName: plant.commonName,
-        emoji: PlantEmojiMapper.fromName(
-          plant.commonName,
-          categoryCode: plant.categoryCode,
-        ),
+        emoji: PlantEmojiMapper.forPlant(plant),
         sowingCalendar: plant.sowingCalendar,
         plantingCalendar: plant.plantingCalendar,
         harvestCalendar: plant.harvestCalendar,

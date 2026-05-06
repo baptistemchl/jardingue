@@ -198,10 +198,7 @@ class _PlantTileState extends State<_PlantTile> {
         child: Row(
           children: [
             Text(
-              PlantEmojiMapper.fromName(
-                widget.plant.commonName,
-                categoryCode: widget.plant.categoryCode,
-              ),
+              PlantEmojiMapper.forPlant(widget.plant),
               style: const TextStyle(fontSize: 22),
             ),
             const SizedBox(width: 12),

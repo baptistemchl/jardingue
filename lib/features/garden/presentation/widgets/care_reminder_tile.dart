@@ -23,8 +23,7 @@ class CareReminderTile extends ConsumerWidget {
     final loc = AppLocalizations.of(context)!;
     final plant = reminder.gardenPlant.plant;
     final emoji = plant != null
-        ? PlantEmojiMapper.fromName(plant.commonName,
-            categoryCode: plant.categoryCode)
+        ? PlantEmojiMapper.forPlant(plant)
         : '🌱';
     final name = reminder.gardenPlant.name;
 

@@ -201,11 +201,7 @@ class _PlantSelectorSheetState
                 .contains(plant.id);
 
             final emoji =
-                PlantEmojiMapper.fromName(
-              plant.commonName,
-              categoryCode:
-                  plant.categoryCode,
-            );
+                PlantEmojiMapper.forPlant(plant);
 
             return ListTile(
               leading: Container(

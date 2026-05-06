@@ -379,6 +379,17 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
         type: DriftSqlType.int,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _customEmojiMeta = const VerificationMeta(
+    'customEmoji',
+  );
+  @override
+  late final GeneratedColumn<String> customEmoji = GeneratedColumn<String>(
+    'custom_emoji',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isUserModifiedMeta = const VerificationMeta(
     'isUserModified',
   );
@@ -454,6 +465,7 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
     practicalTips,
     rotationFamily,
     fertilizationFrequencyDays,
+    customEmoji,
     isUserModified,
     createdAt,
     updatedAt,
@@ -751,6 +763,15 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
         ),
       );
     }
+    if (data.containsKey('custom_emoji')) {
+      context.handle(
+        _customEmojiMeta,
+        customEmoji.isAcceptableOrUnknown(
+          data['custom_emoji']!,
+          _customEmojiMeta,
+        ),
+      );
+    }
     if (data.containsKey('is_user_modified')) {
       context.handle(
         _isUserModifiedMeta,
@@ -917,6 +938,10 @@ class $PlantsTable extends Plants with TableInfo<$PlantsTable, Plant> {
         DriftSqlType.int,
         data['${effectivePrefix}fertilization_frequency_days'],
       ),
+      customEmoji: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}custom_emoji'],
+      ),
       isUserModified: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_user_modified'],
@@ -973,6 +998,7 @@ class Plant extends DataClass implements Insertable<Plant> {
   final String? practicalTips;
   final String? rotationFamily;
   final int? fertilizationFrequencyDays;
+  final String? customEmoji;
   final bool isUserModified;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -1011,6 +1037,7 @@ class Plant extends DataClass implements Insertable<Plant> {
     this.practicalTips,
     this.rotationFamily,
     this.fertilizationFrequencyDays,
+    this.customEmoji,
     required this.isUserModified,
     required this.createdAt,
     required this.updatedAt,
@@ -1126,6 +1153,9 @@ class Plant extends DataClass implements Insertable<Plant> {
         fertilizationFrequencyDays,
       );
     }
+    if (!nullToAbsent || customEmoji != null) {
+      map['custom_emoji'] = Variable<String>(customEmoji);
+    }
     map['is_user_modified'] = Variable<bool>(isUserModified);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1234,6 +1264,9 @@ class Plant extends DataClass implements Insertable<Plant> {
           fertilizationFrequencyDays == null && nullToAbsent
           ? const Value.absent()
           : Value(fertilizationFrequencyDays),
+      customEmoji: customEmoji == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customEmoji),
       isUserModified: Value(isUserModified),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -1302,6 +1335,7 @@ class Plant extends DataClass implements Insertable<Plant> {
       fertilizationFrequencyDays: serializer.fromJson<int?>(
         json['fertilizationFrequencyDays'],
       ),
+      customEmoji: serializer.fromJson<String?>(json['customEmoji']),
       isUserModified: serializer.fromJson<bool>(json['isUserModified']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -1357,6 +1391,7 @@ class Plant extends DataClass implements Insertable<Plant> {
       'fertilizationFrequencyDays': serializer.toJson<int?>(
         fertilizationFrequencyDays,
       ),
+      'customEmoji': serializer.toJson<String?>(customEmoji),
       'isUserModified': serializer.toJson<bool>(isUserModified),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -1398,6 +1433,7 @@ class Plant extends DataClass implements Insertable<Plant> {
     Value<String?> practicalTips = const Value.absent(),
     Value<String?> rotationFamily = const Value.absent(),
     Value<int?> fertilizationFrequencyDays = const Value.absent(),
+    Value<String?> customEmoji = const Value.absent(),
     bool? isUserModified,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -1482,6 +1518,7 @@ class Plant extends DataClass implements Insertable<Plant> {
     fertilizationFrequencyDays: fertilizationFrequencyDays.present
         ? fertilizationFrequencyDays.value
         : this.fertilizationFrequencyDays,
+    customEmoji: customEmoji.present ? customEmoji.value : this.customEmoji,
     isUserModified: isUserModified ?? this.isUserModified,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -1578,6 +1615,9 @@ class Plant extends DataClass implements Insertable<Plant> {
       fertilizationFrequencyDays: data.fertilizationFrequencyDays.present
           ? data.fertilizationFrequencyDays.value
           : this.fertilizationFrequencyDays,
+      customEmoji: data.customEmoji.present
+          ? data.customEmoji.value
+          : this.customEmoji,
       isUserModified: data.isUserModified.present
           ? data.isUserModified.value
           : this.isUserModified,
@@ -1623,6 +1663,7 @@ class Plant extends DataClass implements Insertable<Plant> {
           ..write('practicalTips: $practicalTips, ')
           ..write('rotationFamily: $rotationFamily, ')
           ..write('fertilizationFrequencyDays: $fertilizationFrequencyDays, ')
+          ..write('customEmoji: $customEmoji, ')
           ..write('isUserModified: $isUserModified, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1666,6 +1707,7 @@ class Plant extends DataClass implements Insertable<Plant> {
     practicalTips,
     rotationFamily,
     fertilizationFrequencyDays,
+    customEmoji,
     isUserModified,
     createdAt,
     updatedAt,
@@ -1708,6 +1750,7 @@ class Plant extends DataClass implements Insertable<Plant> {
           other.practicalTips == this.practicalTips &&
           other.rotationFamily == this.rotationFamily &&
           other.fertilizationFrequencyDays == this.fertilizationFrequencyDays &&
+          other.customEmoji == this.customEmoji &&
           other.isUserModified == this.isUserModified &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -1748,6 +1791,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
   final Value<String?> practicalTips;
   final Value<String?> rotationFamily;
   final Value<int?> fertilizationFrequencyDays;
+  final Value<String?> customEmoji;
   final Value<bool> isUserModified;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1786,6 +1830,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     this.practicalTips = const Value.absent(),
     this.rotationFamily = const Value.absent(),
     this.fertilizationFrequencyDays = const Value.absent(),
+    this.customEmoji = const Value.absent(),
     this.isUserModified = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1825,6 +1870,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     this.practicalTips = const Value.absent(),
     this.rotationFamily = const Value.absent(),
     this.fertilizationFrequencyDays = const Value.absent(),
+    this.customEmoji = const Value.absent(),
     this.isUserModified = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1864,6 +1910,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     Expression<String>? practicalTips,
     Expression<String>? rotationFamily,
     Expression<int>? fertilizationFrequencyDays,
+    Expression<String>? customEmoji,
     Expression<bool>? isUserModified,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1914,6 +1961,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
       if (rotationFamily != null) 'rotation_family': rotationFamily,
       if (fertilizationFrequencyDays != null)
         'fertilization_frequency_days': fertilizationFrequencyDays,
+      if (customEmoji != null) 'custom_emoji': customEmoji,
       if (isUserModified != null) 'is_user_modified': isUserModified,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1955,6 +2003,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
     Value<String?>? practicalTips,
     Value<String?>? rotationFamily,
     Value<int?>? fertilizationFrequencyDays,
+    Value<String?>? customEmoji,
     Value<bool>? isUserModified,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -2000,6 +2049,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
       rotationFamily: rotationFamily ?? this.rotationFamily,
       fertilizationFrequencyDays:
           fertilizationFrequencyDays ?? this.fertilizationFrequencyDays,
+      customEmoji: customEmoji ?? this.customEmoji,
       isUserModified: isUserModified ?? this.isUserModified,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -2127,6 +2177,9 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
         fertilizationFrequencyDays.value,
       );
     }
+    if (customEmoji.present) {
+      map['custom_emoji'] = Variable<String>(customEmoji.value);
+    }
     if (isUserModified.present) {
       map['is_user_modified'] = Variable<bool>(isUserModified.value);
     }
@@ -2176,6 +2229,7 @@ class PlantsCompanion extends UpdateCompanion<Plant> {
           ..write('practicalTips: $practicalTips, ')
           ..write('rotationFamily: $rotationFamily, ')
           ..write('fertilizationFrequencyDays: $fertilizationFrequencyDays, ')
+          ..write('customEmoji: $customEmoji, ')
           ..write('isUserModified: $isUserModified, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -9104,6 +9158,7 @@ typedef $$PlantsTableCreateCompanionBuilder =
       Value<String?> practicalTips,
       Value<String?> rotationFamily,
       Value<int?> fertilizationFrequencyDays,
+      Value<String?> customEmoji,
       Value<bool> isUserModified,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -9144,6 +9199,7 @@ typedef $$PlantsTableUpdateCompanionBuilder =
       Value<String?> practicalTips,
       Value<String?> rotationFamily,
       Value<int?> fertilizationFrequencyDays,
+      Value<String?> customEmoji,
       Value<bool> isUserModified,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -9376,6 +9432,11 @@ class $$PlantsTableFilterComposer
 
   ColumnFilters<int> get fertilizationFrequencyDays => $composableBuilder(
     column: $table.fertilizationFrequencyDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customEmoji => $composableBuilder(
+    column: $table.customEmoji,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9625,6 +9686,11 @@ class $$PlantsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get customEmoji => $composableBuilder(
+    column: $table.customEmoji,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isUserModified => $composableBuilder(
     column: $table.isUserModified,
     builder: (column) => ColumnOrderings(column),
@@ -9808,6 +9874,11 @@ class $$PlantsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get customEmoji => $composableBuilder(
+    column: $table.customEmoji,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isUserModified => $composableBuilder(
     column: $table.isUserModified,
     builder: (column) => column,
@@ -9936,6 +10007,7 @@ class $$PlantsTableTableManager
                 Value<String?> practicalTips = const Value.absent(),
                 Value<String?> rotationFamily = const Value.absent(),
                 Value<int?> fertilizationFrequencyDays = const Value.absent(),
+                Value<String?> customEmoji = const Value.absent(),
                 Value<bool> isUserModified = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -9974,6 +10046,7 @@ class $$PlantsTableTableManager
                 practicalTips: practicalTips,
                 rotationFamily: rotationFamily,
                 fertilizationFrequencyDays: fertilizationFrequencyDays,
+                customEmoji: customEmoji,
                 isUserModified: isUserModified,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -10014,6 +10087,7 @@ class $$PlantsTableTableManager
                 Value<String?> practicalTips = const Value.absent(),
                 Value<String?> rotationFamily = const Value.absent(),
                 Value<int?> fertilizationFrequencyDays = const Value.absent(),
+                Value<String?> customEmoji = const Value.absent(),
                 Value<bool> isUserModified = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -10052,6 +10126,7 @@ class $$PlantsTableTableManager
                 practicalTips: practicalTips,
                 rotationFamily: rotationFamily,
                 fertilizationFrequencyDays: fertilizationFrequencyDays,
+                customEmoji: customEmoji,
                 isUserModified: isUserModified,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

@@ -379,10 +379,7 @@ class _State extends ConsumerState<EditorAddElementSheet> {
           bg: AppColors.primaryContainer,
           emoji: _selectedPlant == null
               ? '\u{1F331}'
-              : PlantEmojiMapper.fromName(
-                  _selectedPlant!.commonName,
-                  categoryCode: _selectedPlant!.categoryCode,
-                ),
+              : PlantEmojiMapper.forPlant(_selectedPlant!),
           title: _selectedPlant?.commonName ?? 'Plante',
           subtitle: _selectedPlant?.latinName,
         );
@@ -832,10 +829,7 @@ class _PlantListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emoji = PlantEmojiMapper.fromName(
-      plant.commonName,
-      categoryCode: plant.categoryCode,
-    );
+    final emoji = PlantEmojiMapper.forPlant(plant);
     return GestureDetector(
       onTap: onTap,
       child: Container(

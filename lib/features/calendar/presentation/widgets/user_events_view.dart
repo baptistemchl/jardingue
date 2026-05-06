@@ -394,10 +394,7 @@ class _UserEventTile extends ConsumerWidget {
     // du type (paillage, anti-limaces...) plutot que l'emoji generique 🌱.
     final String leadingEmoji;
     if (event.plant != null) {
-      leadingEmoji = PlantEmojiMapper.fromName(
-        event.plant!.commonName,
-        categoryCode: event.plant!.categoryCode,
-      );
+      leadingEmoji = PlantEmojiMapper.forPlant(event.plant!);
     } else if (type.isMaintenance) {
       leadingEmoji = type.emoji;
     } else {
@@ -578,8 +575,7 @@ class _EventDetailSheetState extends ConsumerState<_EventDetailSheet> {
     // Pour les events d'entretien sans plante, on affiche l'emoji du type
     // d'entretien ; sinon l'emoji de la plante.
     final emoji = plant != null
-        ? PlantEmojiMapper.fromName(
-            plant.commonName, categoryCode: plant.categoryCode)
+        ? PlantEmojiMapper.forPlant(plant)
         : widget.event.type.emoji;
     final date =
         '${widget.event.event.eventDate.day.toString().padLeft(2, '0')}/'

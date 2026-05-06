@@ -92,13 +92,14 @@ void main() {
       }
     });
 
-    test('schemaVersion is 15', () {
+    test('schemaVersion >= 15', () {
       final db = AppDatabase.forTesting(NativeDatabase.memory());
       try {
         // Le bump de version doit etre fait pour que la migration s'execute
         // chez les utilisateurs existants. Si on oublie, ils restent bloques
-        // a v14 sans les nouvelles colonnes.
-        expect(db.schemaVersion, 15);
+        // a v14 sans les nouvelles colonnes. On accepte >= 15 pour rester
+        // valide après les migrations ultérieures (v15->v16, etc.).
+        expect(db.schemaVersion, greaterThanOrEqualTo(15));
       } finally {
         db.close();
       }

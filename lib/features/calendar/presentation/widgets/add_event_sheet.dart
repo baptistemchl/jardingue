@@ -386,8 +386,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
           itemBuilder: (_, i) {
             final plant = plants[i];
             return _SelectionTile(
-              emoji: PlantEmojiMapper.fromName(plant.commonName,
-                  categoryCode: plant.categoryCode),
+              emoji: PlantEmojiMapper.forPlant(plant),
               title: plant.commonName,
               subtitle: plant.latinName,
               onTap: () => setState(() {
@@ -454,8 +453,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
                 itemBuilder: (_, i) {
                   final plant = plants[i];
                   return _SelectionTile(
-                    emoji: PlantEmojiMapper.fromName(plant.commonName,
-                        categoryCode: plant.categoryCode),
+                    emoji: PlantEmojiMapper.forPlant(plant),
                     title: plant.commonName,
                     subtitle: plant.latinName,
                     onTap: () => setState(() {
@@ -562,8 +560,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
       return const SizedBox.shrink();
     }
     final plant = _catalogPlant!;
-    final emoji = PlantEmojiMapper.fromName(plant.commonName,
-        categoryCode: plant.categoryCode);
+    final emoji = PlantEmojiMapper.forPlant(plant);
 
     return ListView(
       padding: const EdgeInsets.all(20),
@@ -855,9 +852,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
           itemBuilder: (_, i) {
             final gp = real[i];
             return _SelectionTile(
-              emoji: PlantEmojiMapper.fromName(
-                  gp.plant!.commonName,
-                  categoryCode: gp.plant!.categoryCode),
+              emoji: PlantEmojiMapper.forPlant(gp.plant!),
               title: gp.plant!.commonName,
               subtitle: gp.plant!.latinName,
               onTap: () => setState(() {
@@ -879,8 +874,7 @@ class _AddEventSheetState extends ConsumerState<AddEventSheet> {
       return const SizedBox.shrink();
     }
     final plant = _gardenPlantRef!;
-    final emoji = PlantEmojiMapper.fromName(plant.commonName,
-        categoryCode: plant.categoryCode);
+    final emoji = PlantEmojiMapper.forPlant(plant);
 
     return ListView(
       padding: const EdgeInsets.all(20),

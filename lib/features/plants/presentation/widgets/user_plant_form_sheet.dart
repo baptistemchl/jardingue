@@ -153,14 +153,21 @@ class _UserPlantFormSheetState
     _plantingDepthCtrl.text =
         p.plantingDepthCm?.toString() ?? '';
     _minTempCtrl.text = p.plantingMinTempC?.toString() ?? '';
-    _emoji = PlantEmojiMapper.fromName(
-      p.commonName,
-      categoryCode: p.categoryCode,
-    );
-    // En édition on suppose que l'emoji actuel reflète un choix
-    // — désactive l'auto-update pour éviter d'écraser sans
-    // demander.
-    _emojiPickedManually = true;
+    // Si l'utilisateur a déjà fixé un emoji on le restaure ; sinon
+    // on retombe sur le mapping nom/catégorie. `_emojiPickedManually`
+    // ne reflète que le choix utilisateur explicite : si on était
+    // en auto, on reste en auto pour suivre les renames.
+    final stored = p.customEmoji;
+    if (stored != null && stored.isNotEmpty) {
+      _emoji = stored;
+      _emojiPickedManually = true;
+    } else {
+      _emoji = PlantEmojiMapper.fromName(
+        p.commonName,
+        categoryCode: p.categoryCode,
+      );
+      _emojiPickedManually = false;
+    }
 
     _sunExposure = p.sunExposure;
     _soilTypeCtrl.text = p.soilType ?? '';
@@ -309,6 +316,10 @@ class _UserPlantFormSheetState
           ? null
           : _toxicityCtrl.text.trim(),
       rotationFamily: _rotationFamily?.code,
+      // Persisté uniquement si l'utilisateur a choisi un emoji à la
+      // main : sinon on laisse PlantEmojiMapper le déduire (et donc
+      // suivre un éventuel renommage de la plante par la suite).
+      customEmoji: _emojiPickedManually ? _emoji : null,
     );
   }
 
@@ -1258,10 +1269,8 @@ class _CompanionList extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    PlantEmojiMapper.fromName(
-                                      byId[id]!.commonName,
-                                      categoryCode:
-                                          byId[id]!.categoryCode,
+                                    PlantEmojiMapper.forPlant(
+                                      byId[id]!,
                                     ),
                                     style: const TextStyle(
                                       fontSize: 14,

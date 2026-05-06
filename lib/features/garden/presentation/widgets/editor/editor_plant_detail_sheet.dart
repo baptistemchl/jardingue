@@ -1573,10 +1573,7 @@ class _CompanionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final color =
         isGood ? AppColors.success : AppColors.error;
-    final emoji = PlantEmojiMapper.fromName(
-      plant.commonName,
-      categoryCode: plant.categoryCode,
-    );
+    final emoji = PlantEmojiMapper.forPlant(plant);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 10,

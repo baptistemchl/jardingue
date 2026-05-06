@@ -183,6 +183,7 @@ class DriftPlantRepository implements PlantRepository {
       practicalTips: Value(i.practicalTips),
       toxicity: Value(i.toxicity),
       rotationFamily: Value(i.rotationFamily),
+      customEmoji: Value(i.customEmoji),
       isUserModified: const Value(true),
       updatedAt: Value(DateTime.now()),
     );

@@ -231,6 +231,7 @@ class BackupRepositoryImpl implements BackupRepository {
               'toxicity': p.toxicity,
               'practicalTips': p.practicalTips,
               'rotationFamily': p.rotationFamily,
+              'customEmoji': p.customEmoji,
               'createdAt':
                   p.createdAt.toIso8601String(),
               'updatedAt':
@@ -489,6 +490,11 @@ class BackupRepositoryImpl implements BackupRepository {
               ),
               rotationFamily: Value(
                 r['rotationFamily'] as String?,
+              ),
+              // customEmoji absent des backups < v1.6.2 → laissé null,
+              // PlantEmojiMapper retombera sur la déduction nom/catégorie.
+              customEmoji: Value(
+                r['customEmoji'] as String?,
               ),
               isUserModified: const Value(true),
               createdAt: Value(

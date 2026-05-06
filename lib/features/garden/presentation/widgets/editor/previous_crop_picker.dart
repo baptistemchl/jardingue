@@ -245,10 +245,7 @@ class _PlantPickerSheetState extends State<_PlantPickerSheet> {
                 return ListTile(
                   dense: true,
                   leading: Text(
-                    PlantEmojiMapper.fromName(
-                      p.commonName,
-                      categoryCode: p.categoryCode,
-                    ),
+                    PlantEmojiMapper.forPlant(p),
                     style: const TextStyle(fontSize: 22),
                   ),
                   title: Text(p.commonName, style: AppTypography.bodySmall),
@@ -322,10 +319,7 @@ class _PickerButton extends StatelessWidget {
                   : Row(
                       children: [
                         Text(
-                          PlantEmojiMapper.fromName(
-                            effective!.commonName,
-                            categoryCode: effective!.categoryCode,
-                          ),
+                          PlantEmojiMapper.forPlant(effective!),
                           style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(width: 6),

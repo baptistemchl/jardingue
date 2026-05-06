@@ -86,6 +86,11 @@ class Plants extends Table {
   // le GardenPlant (sinon: defaultFertilizationFrequencyDays(categoryCode)).
   IntColumn get fertilizationFrequencyDays => integer().nullable()();
 
+  // Emoji choisi manuellement par l'utilisateur (v16). Quand non null,
+  // remplace l'emoji déduit de commonName/categoryCode dans
+  // PlantEmojiMapper. Réservé aux plantes user (isUserModified=true).
+  TextColumn get customEmoji => text().nullable()();
+
   // Métadonnées
   BoolColumn get isUserModified =>
       boolean().withDefault(const Constant(false))();

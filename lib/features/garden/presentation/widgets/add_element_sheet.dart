@@ -293,7 +293,7 @@ class _AddElementSheetState extends ConsumerState<AddElementSheet> {
   Widget _buildConfiguration() {
     final isPlant = _step == 1;
     final emoji = isPlant
-        ? PlantEmojiMapper.fromName(_selectedPlant!.commonName, categoryCode: _selectedPlant!.categoryCode)
+        ? PlantEmojiMapper.forPlant(_selectedPlant!)
         : _selectedZone!.emoji;
     final name = isPlant ? _selectedPlant!.commonName : _selectedZone!.label;
     final color = isPlant ? AppColors.primary : Color(_selectedZone!.color);
@@ -568,7 +568,7 @@ class _PlantCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(PlantEmojiMapper.fromName(plant.commonName, categoryCode: plant.categoryCode), style: const TextStyle(fontSize: 32)),
+            Text(PlantEmojiMapper.forPlant(plant), style: const TextStyle(fontSize: 32)),
             const SizedBox(height: 4),
             Text(
               plant.commonName,

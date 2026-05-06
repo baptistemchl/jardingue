@@ -42,6 +42,10 @@ class UserPlantInput {
   final String? toxicity;
   final String? rotationFamily;
 
+  // Emoji choisi manuellement par l'utilisateur. Null = laisser
+  // PlantEmojiMapper déduire depuis commonName/categoryCode.
+  final String? customEmoji;
+
   const UserPlantInput({
     required this.commonName,
     required this.categoryCode,
@@ -66,5 +70,6 @@ class UserPlantInput {
     this.practicalTips,
     this.toxicity,
     this.rotationFamily,
+    this.customEmoji,
   });
 }

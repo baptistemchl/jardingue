@@ -289,11 +289,7 @@ class _FilterContent extends ConsumerWidget {
                     const SizedBox(width: 6),
                     _Chip(
                       label: p.name,
-                      emoji: PlantEmojiMapper
-                          .fromName(
-                        p.name,
-                        categoryCode: p.cat,
-                      ),
+                      emoji: p.emoji,
                       isSelected: ref.watch(
                             calendarPlantFilterProvider,
                           ) ==
@@ -326,22 +322,30 @@ class _FilterContent extends ConsumerWidget {
 }
 
 /// Fusionne plants planification + plants suivis,
-/// dédupliqués par ID.
-List<({int id, String name, String? cat})>
+/// dédupliqués par ID. L'emoji est résolu côté merge :
+/// pour les plantes suivies (= objets Plant complets) on
+/// passe par `forPlant` pour respecter le `customEmoji` ;
+/// pour les plantes purement planifiées (SelectedPlant ne
+/// porte pas la colonne) on retombe sur la déduction par
+/// nom + catégorie.
+List<({int id, String name, String emoji})>
     _mergedPlants(
   List<SelectedPlant> planning,
   List<Plant> tracked,
 ) {
   final seen = <int>{};
   final result =
-      <({int id, String name, String? cat})>[];
+      <({int id, String name, String emoji})>[];
 
   for (final p in planning) {
     if (seen.add(p.plantId)) {
       result.add((
         id: p.plantId,
         name: p.commonName,
-        cat: p.categoryCode,
+        emoji: PlantEmojiMapper.fromName(
+          p.commonName,
+          categoryCode: p.categoryCode,
+        ),
       ));
     }
   }
@@ -350,7 +354,7 @@ List<({int id, String name, String? cat})>
       result.add((
         id: p.id,
         name: p.commonName,
-        cat: p.categoryCode,
+        emoji: PlantEmojiMapper.forPlant(p),
       ));
     }
   }

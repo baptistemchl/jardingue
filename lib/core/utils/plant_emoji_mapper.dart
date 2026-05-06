@@ -1,5 +1,7 @@
 import 'dart:io' show Platform;
 
+import '../services/database/database.dart';
+
 /// Mapping centralisé des emojis pour les plantes.
 /// Utilise le nom commun pour trouver l'emoji le plus
 /// pertinent, avec fallback sur le code catégorie.
@@ -183,6 +185,21 @@ class PlantEmojiMapper {
   };
 
   static const fallback = '\u{1F331}';
+
+  /// Retourne l'emoji d'une plante. Priorise le `customEmoji`
+  /// stocké (= choix manuel de l'utilisateur, plante user) puis
+  /// retombe sur la déduction par nom + catégorie. Préférer
+  /// cette méthode partout où on dispose d'un objet [Plant].
+  static String forPlant(Plant plant) {
+    final custom = plant.customEmoji;
+    if (custom != null && custom.isNotEmpty) {
+      return _withFallback(custom);
+    }
+    return fromName(
+      plant.commonName,
+      categoryCode: plant.categoryCode,
+    );
+  }
 
   /// Retourne l'emoji correspondant au nom commun de
   /// la plante, avec fallback sur la categorie.

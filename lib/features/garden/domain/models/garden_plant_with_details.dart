@@ -34,10 +34,7 @@ class GardenPlantWithDetails {
   String get emoji {
     if (isZone) return zoneType?.emoji ?? '\u{2B1B}';
     if (plant == null) return PlantEmojiMapper.fallback;
-    return PlantEmojiMapper.fromName(
-      plant!.commonName,
-      categoryCode: plant!.categoryCode,
-    );
+    return PlantEmojiMapper.forPlant(plant!);
   }
 
   String get name {

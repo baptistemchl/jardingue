@@ -48,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration {
@@ -160,6 +160,15 @@ class AppDatabase extends _$AppDatabase {
           await _safeAddColumn(
               m, gardenPlants, gardenPlants.fertilizingFrequencyDays);
           await _safeCreateTable(m, pheromoneTraps);
+        }
+        // Migration v15 -> v16 : emoji personnalisé sur les plantes user.
+        // Ajoute la colonne `custom_emoji` (nullable). Quand renseignée,
+        // PlantEmojiMapper.forPlant la préfère au mapping nom/catégorie,
+        // ce qui permet à l'utilisateur de fixer l'emoji depuis le sheet
+        // de création/édition (avant ce changement, le choix n'était pas
+        // persisté).
+        if (from < 16) {
+          await _safeAddColumn(m, plants, plants.customEmoji);
         }
       },
     );
