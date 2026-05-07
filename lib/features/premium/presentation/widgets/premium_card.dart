@@ -95,10 +95,12 @@ class PremiumCard extends ConsumerWidget {
 
   Widget _buildLocked(WidgetRef ref) {
     final productAsync = ref.watch(premiumProductProvider);
-    final priceLabel = productAsync.whenOrNull(
-          data: (p) => p?.price,
-        ) ??
-        '...';
+    // 3 états : chargement / produit indispo (debug, store KO,
+    // SKU non activé) / prix dispo.
+    final isLoadingPrice = productAsync.isLoading;
+    final price = productAsync.whenOrNull(data: (p) => p?.price);
+    final hasPrice = price != null && price.isNotEmpty;
+    final isUnavailable = !isLoadingPrice && !hasPrice;
 
     return Column(
       children: [
@@ -111,38 +113,162 @@ class PremiumCard extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Sauvegarde cloud',
+          'Sauvegarde cloud Premium',
           style: AppTypography.titleMedium.copyWith(
             fontWeight: FontWeight.w700,
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Sauvegardez vos potagers, verger '
-          'et historique dans le cloud.\n'
-          'Restaurez-les à tout moment.',
           textAlign: TextAlign.center,
-          style: AppTypography.bodySmall.copyWith(
-            color: AppColors.textSecondary,
-            height: 1.5,
+        ),
+        const SizedBox(height: 12),
+
+        // Prix mis en avant
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 10,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: AppColors.primary.withValues(alpha: 0.25),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                PhosphorIcons.tag(PhosphorIconsStyle.fill),
+                size: 16,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 8),
+              if (hasPrice)
+                Text(
+                  price,
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                )
+              else if (isLoadingPrice)
+                const SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                )
+              else
+                Text(
+                  'Voir le tarif',
+                  style: AppTypography.titleSmall.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              const SizedBox(width: 8),
+              Text(
+                '· achat unique',
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (isUnavailable) ...[
+          const SizedBox(height: 8),
+          Text(
+            'Tarif récupéré au moment de l\'achat. '
+            'Le Play Store affichera le prix exact avant '
+            'toute confirmation.',
+            textAlign: TextAlign.center,
+            style: AppTypography.caption.copyWith(
+              color: AppColors.textTertiary,
+              height: 1.4,
+              fontSize: 11,
+            ),
+          ),
+        ],
+        const SizedBox(height: 20),
+
+        // Liste d'avantages
+        const _Benefit(
+          icon: 'cloudCheck',
+          text: 'Sauvegarde cloud sécurisée de vos potagers, '
+              'verger et historique',
+        ),
+        const SizedBox(height: 10),
+        const _Benefit(
+          icon: 'phones',
+          text: 'Restaurez vos données sur n\'importe '
+              'quel appareil',
+        ),
+        const SizedBox(height: 10),
+        const _Benefit(
+          icon: 'shield',
+          text: 'Pas d\'abonnement : un seul paiement, '
+              'à vie',
+        ),
+        const SizedBox(height: 16),
+
+        // Mot du dev
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                PhosphorIcons.heart(PhosphorIconsStyle.duotone),
+                size: 18,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Jardingue est développé bénévolement '
+                  'par une auto-entreprise. Chaque achat '
+                  'aide à maintenir et améliorer l\'app.',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 20),
+
+        // Bouton d'achat — actif dès que le chargement est terminé.
+        // Le Play Store affiche systématiquement le prix exact dans
+        // sa fenêtre native avant toute confirmation, donc l'achat
+        // peut être lancé même si on n'a pas pu pré-récupérer le tarif.
         SizedBox(
           width: double.infinity,
           height: 50,
           child: ElevatedButton(
-            onPressed: () async {
-              try {
-                await ref
-                    .read(
-                      premiumNotifierProvider.notifier,
-                    )
-                    .purchaseWithSignIn();
-              } catch (_) {
-                // Erreur gérée par le notifier
-              }
-            },
+            onPressed: isLoadingPrice
+                ? null
+                : () async {
+                    try {
+                      await ref
+                          .read(
+                            premiumNotifierProvider.notifier,
+                          )
+                          .purchaseWithSignIn();
+                    } catch (_) {
+                      // Erreur gérée par le notifier
+                    }
+                  },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
@@ -152,11 +278,55 @@ class PremiumCard extends ConsumerWidget {
               ),
             ),
             child: Text(
-              'Débloquer pour $priceLabel',
+              hasPrice
+                  ? 'Débloquer pour $price'
+                  : isLoadingPrice
+                      ? 'Chargement du tarif...'
+                      : 'Continuer vers le Play Store',
               style: AppTypography.labelLarge.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Benefit extends StatelessWidget {
+  final String icon;
+  final String text;
+
+  const _Benefit({required this.icon, required this.text});
+
+  IconData _resolveIcon() {
+    switch (icon) {
+      case 'cloudCheck':
+        return PhosphorIcons.cloudCheck(PhosphorIconsStyle.duotone);
+      case 'phones':
+        return PhosphorIcons.devices(PhosphorIconsStyle.duotone);
+      case 'shield':
+        return PhosphorIcons.shieldCheck(PhosphorIconsStyle.duotone);
+      default:
+        return PhosphorIcons.checkCircle(PhosphorIconsStyle.duotone);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(_resolveIcon(), size: 20, color: AppColors.primary),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.4,
             ),
           ),
         ),

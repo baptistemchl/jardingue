@@ -33,14 +33,24 @@ class PurchaseDatasource {
   }
 
   /// Fetch product details for [productId].
+  ///
+  /// Renvoie `null` après 6s si le store ne répond pas (cas typique
+  /// en debug local sans Play Services), pour éviter de bloquer
+  /// l'UI sur un spinner infini.
   Future<ProductDetails?> queryProduct(
     String productId,
   ) async {
-    final response = await _iap.queryProductDetails(
-      {productId},
-    );
-    if (response.productDetails.isEmpty) return null;
-    return response.productDetails.first;
+    try {
+      final response = await _iap
+          .queryProductDetails({productId})
+          .timeout(const Duration(seconds: 6));
+      if (response.productDetails.isEmpty) return null;
+      return response.productDetails.first;
+    } on TimeoutException {
+      return null;
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Launch the native purchase flow.

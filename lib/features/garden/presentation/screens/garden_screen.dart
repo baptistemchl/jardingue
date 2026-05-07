@@ -14,6 +14,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../../../../features/premium/presentation/providers/premium_providers.dart';
 import '../../../../router/app_router.dart';
 import 'garden_create_screen.dart';
 
@@ -88,24 +89,10 @@ class GardenScreen extends ConsumerWidget {
                               ),
                             ),
 
-                            // Bouton Cloud / Premium
-                            GestureDetector(
-                              onTap: () => context.push(AppRoutes.premium),
-                              child: Container(
-                                width: 36,
-                                height: 36,
-                                margin: const EdgeInsets.only(right: 8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.background,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppColors.border),
-                                ),
-                                child: Icon(
-                                  PhosphorIcons.cloud(PhosphorIconsStyle.regular),
-                                  size: 18,
-                                  color: AppColors.primary,
-                                ),
-                              ),
+                            // Bouton Cloud / Premium (avec prix si non-premium)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: _PremiumCtaButton(),
                             ),
 
                             // Bouton A propos
@@ -267,6 +254,71 @@ class GardenScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ============================================
+// BOUTON CTA PREMIUM (HEADER)
+// ============================================
+
+/// Bouton cloud du header. Affiche un simple icône centrée quand
+/// l'utilisateur est déjà Premium, et un pill "icône + prix" sinon,
+/// pour rendre le coût visible sans avoir à entrer dans l'écran Premium.
+class _PremiumCtaButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final premium = ref.watch(premiumNotifierProvider);
+    final productAsync = ref.watch(premiumProductProvider);
+    final priceLabel = productAsync.whenOrNull(
+      data: (p) => p?.price,
+    );
+
+    final showPrice = !premium.isPremium &&
+        priceLabel != null &&
+        priceLabel.isNotEmpty;
+
+    final decoration = BoxDecoration(
+      color: AppColors.background,
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: AppColors.border),
+    );
+
+    final cloudIcon = Icon(
+      PhosphorIcons.cloud(PhosphorIconsStyle.regular),
+      size: 18,
+      color: AppColors.primary,
+    );
+
+    return GestureDetector(
+      onTap: () => context.push(AppRoutes.premium),
+      child: showPrice
+          ? Container(
+              height: 36,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: decoration,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  cloudIcon,
+                  const SizedBox(width: 6),
+                  Text(
+                    priceLabel,
+                    style: AppTypography.labelSmall.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Container(
+              width: 36,
+              height: 36,
+              decoration: decoration,
+              alignment: Alignment.center,
+              child: cloudIcon,
+            ),
     );
   }
 }

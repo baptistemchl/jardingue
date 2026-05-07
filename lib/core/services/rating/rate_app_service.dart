@@ -19,32 +19,35 @@ const _playStoreUrl =
 /// Vérifie si le bottom sheet de notation doit être affiché
 /// et l'affiche si les conditions sont remplies.
 ///
+/// Retourne `true` si la sheet a été affichée, `false` sinon —
+/// utile pour éviter d'enchaîner plusieurs sheets dans la même session.
+///
 /// Appeler dans le [initState] du widget principal.
-Future<void> maybeShowRateSheet() async {
+Future<bool> maybeShowRateSheet() async {
   final prefs = await SharedPreferences.getInstance();
 
   // L'utilisateur a dit "ne plus me le demander"
-  if (prefs.getBool(_kNeverAskAgain) ?? false) return;
+  if (prefs.getBool(_kNeverAskAgain) ?? false) return false;
 
   // Incrémenter le compteur d'ouvertures
   final openCount = (prefs.getInt(_kAppOpenCount) ?? 0) + 1;
   await prefs.setInt(_kAppOpenCount, openCount);
 
   // Pas assez d'ouvertures
-  if (openCount < _kMinOpensBeforeAsk) return;
+  if (openCount < _kMinOpensBeforeAsk) return false;
 
   // "Me le rappeler plus tard" : vérifier la date
   final remindAfterMs = prefs.getInt(_kRemindAfter);
   if (remindAfterMs != null) {
     final remindAfter = DateTime.fromMillisecondsSinceEpoch(remindAfterMs);
-    if (DateTime.now().isBefore(remindAfter)) return;
+    if (DateTime.now().isBefore(remindAfter)) return false;
   }
 
   // Attendre que l'app soit bien chargée
   await Future.delayed(const Duration(seconds: 3));
 
   final navigator = rootNavigatorKey.currentState;
-  if (navigator == null) return;
+  if (navigator == null) return false;
 
   showModalBottomSheet(
     // ignore: use_build_context_synchronously
@@ -53,6 +56,7 @@ Future<void> maybeShowRateSheet() async {
     backgroundColor: Colors.transparent,
     builder: (_) => const _RateAppSheet(),
   );
+  return true;
 }
 
 class _RateAppSheet extends StatelessWidget {

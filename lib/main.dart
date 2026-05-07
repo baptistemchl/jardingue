@@ -11,6 +11,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'core/services/crash_reporting/crash_reporting_service.dart';
 import 'core/services/crash_reporting/crashlytics_provider_observer.dart';
 import 'core/services/notifications/notification_service.dart';
+import 'core/services/premium_reminder/premium_reminder_service.dart';
 import 'core/services/rating/rate_app_service.dart';
 import 'core/services/update/in_app_update_service.dart';
 import 'core/theme/app_theme.dart';
@@ -21,16 +22,19 @@ import 'features/premium/presentation/providers/premium_providers.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'router/app_router.dart';
 
-/// Déclenche le rate sheet depuis l'intérieur de MaterialApp.
-class _RateAppTrigger extends StatefulWidget {
+/// Déclenche les bottom sheets transverses (notation, rappel premium)
+/// depuis l'intérieur de MaterialApp.
+class _SessionPromptsTrigger extends ConsumerStatefulWidget {
   final Widget child;
-  const _RateAppTrigger({required this.child});
+  const _SessionPromptsTrigger({required this.child});
 
   @override
-  State<_RateAppTrigger> createState() => _RateAppTriggerState();
+  ConsumerState<_SessionPromptsTrigger> createState() =>
+      _SessionPromptsTriggerState();
 }
 
-class _RateAppTriggerState extends State<_RateAppTrigger> {
+class _SessionPromptsTriggerState
+    extends ConsumerState<_SessionPromptsTrigger> {
   bool _triggered = false;
 
   @override
@@ -38,8 +42,14 @@ class _RateAppTriggerState extends State<_RateAppTrigger> {
     super.didChangeDependencies();
     if (!_triggered) {
       _triggered = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) maybeShowRateSheet();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        // Notation prioritaire (utilisateur engagé). Si elle ne s'affiche
+        // pas, on tente le rappel Premium afin de n'avoir au plus qu'une
+        // sheet par session.
+        final shown = await maybeShowRateSheet();
+        if (!mounted || shown) return;
+        await maybeShowPremiumReminder(ref);
       });
     }
   }
@@ -215,7 +225,8 @@ class _JardingueAppState extends ConsumerState<JardingueApp>
         Locale('fr', 'FR'),
       ],
       locale: const Locale('fr', 'FR'),
-      builder: (context, child) => _RateAppTrigger(child: child!),
+      builder: (context, child) =>
+          _SessionPromptsTrigger(child: child!),
     );
   }
 }
