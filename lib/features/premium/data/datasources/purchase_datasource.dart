@@ -59,22 +59,36 @@ class PurchaseDatasource {
   ) async {
     if (!await _iap.isAvailable()) {
       throw PurchaseException(
-        'Le service d\'achat n\'est pas disponible. '
-        'Vérifiez que le Play Store est à jour.',
+        'L\'achat sera bientôt disponible.',
       );
     }
 
-    final param = PurchaseParam(productDetails: product);
+    // Re-vérifie que le produit est *réellement* vendable juste avant
+    // d'appeler launchBillingFlow. Sans ce garde, si Play Store répond
+    // avec un PendingIntent null (compte marchand pas encore validé,
+    // produit pas encore propagé, fiscalité en cours…), la lib Google
+    // crashe en NPE dans ProxyBillingActivity.onCreate et on ne peut
+    // pas l'attraper depuis Dart.
+    final fresh = await queryProduct(product.id);
+    if (fresh == null) {
+      throw PurchaseException(
+        'L\'achat sera bientôt disponible.',
+      );
+    }
+
+    final param = PurchaseParam(productDetails: fresh);
     final completer = Completer<PurchaseDetails>();
-    _purchaseCompleter[product.id] = completer;
+    _purchaseCompleter[fresh.id] = completer;
 
     final started = await _iap.buyNonConsumable(
       purchaseParam: param,
     );
 
     if (!started) {
-      _purchaseCompleter.remove(product.id);
-      throw PurchaseException('Achat non démarré.');
+      _purchaseCompleter.remove(fresh.id);
+      throw PurchaseException(
+        'L\'achat sera bientôt disponible.',
+      );
     }
     return completer.future;
   }

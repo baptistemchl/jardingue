@@ -162,7 +162,7 @@ class PremiumCard extends ConsumerWidget {
                 )
               else
                 Text(
-                  'Voir le tarif',
+                  'Bientôt disponible',
                   style: AppTypography.titleSmall.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
@@ -182,9 +182,9 @@ class PremiumCard extends ConsumerWidget {
         if (isUnavailable) ...[
           const SizedBox(height: 8),
           Text(
-            'Tarif récupéré au moment de l\'achat. '
-            'Le Play Store affichera le prix exact avant '
-            'toute confirmation.',
+            'La validation par Google Play est en cours. '
+            'L\'achat sera disponible très prochainement, '
+            'merci pour votre patience.',
             textAlign: TextAlign.center,
             style: AppTypography.caption.copyWith(
               color: AppColors.textTertiary,
@@ -248,47 +248,65 @@ class PremiumCard extends ConsumerWidget {
         ),
         const SizedBox(height: 20),
 
-        // Bouton d'achat — actif dès que le chargement est terminé.
-        // Le Play Store affiche systématiquement le prix exact dans
-        // sa fenêtre native avant toute confirmation, donc l'achat
-        // peut être lancé même si on n'a pas pu pré-récupérer le tarif.
-        SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: isLoadingPrice
-                ? null
-                : () async {
-                    try {
-                      await ref
-                          .read(
-                            premiumNotifierProvider.notifier,
-                          )
-                          .purchaseWithSignIn();
-                    } catch (_) {
-                      // Erreur gérée par le notifier
-                    }
-                  },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+        // Bouton d'achat — actif uniquement quand le tarif est connu.
+        // Tant que la validation côté Play Console (mode de paiement +
+        // fiscalité) n'est pas terminée, queryProductDetails renvoie une
+        // liste vide : on désactive le bouton avec un libellé clair
+        // plutôt que de risquer un launchBillingFlow qui crashe en NPE
+        // dans ProxyBillingActivity côté lib Google.
+        Builder(
+          builder: (buttonContext) {
+            final canBuy = hasPrice;
+            return SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: canBuy
+                    ? () async {
+                        try {
+                          await ref
+                              .read(
+                                premiumNotifierProvider.notifier,
+                              )
+                              .purchaseWithSignIn();
+                        } catch (e) {
+                          if (!buttonContext.mounted) return;
+                          ScaffoldMessenger.of(buttonContext)
+                              .showSnackBar(
+                            SnackBar(
+                              content: Text(e.toString()),
+                              behavior:
+                                  SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor:
+                      AppColors.primary.withValues(alpha: 0.4),
+                  disabledForegroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: Text(
+                  hasPrice
+                      ? 'Débloquer pour $price'
+                      : isLoadingPrice
+                          ? 'Chargement du tarif...'
+                          : 'Bientôt disponible',
+                  style: AppTypography.labelLarge.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
-            child: Text(
-              hasPrice
-                  ? 'Débloquer pour $price'
-                  : isLoadingPrice
-                      ? 'Chargement du tarif...'
-                      : 'Continuer vers le Play Store',
-              style: AppTypography.labelLarge.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );
