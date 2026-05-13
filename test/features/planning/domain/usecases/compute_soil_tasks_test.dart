@@ -227,14 +227,6 @@ WeatherData _buildWeather({
         uvIndexMax: 5,
       ),
     ],
-    moon: MoonData.calculate(DateTime.now()),
-    gardeningAdvice: GardeningAdvice(
-      mainAdvice: 'Test',
-      tips: [],
-      goodForWatering: true,
-      goodForPlanting: true,
-      goodForHarvesting: true,
-      frostRisk: false,
-    ),
+    lunar: LunarDay.forDate(DateTime.now()),
   );
 }

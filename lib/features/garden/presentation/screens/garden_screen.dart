@@ -122,16 +122,23 @@ class GardenScreen extends ConsumerWidget {
                   ),
                 ),
 
-                // Carte météo intelligente
+                // Cards conditionnelles & non-conditionnelles
+                // Toutes les cards qui peuvent être masquées (`SizedBox.shrink()`)
+                // absorbent leur propre espacement-haut quand elles sont
+                // visibles. Les cards non-conditionnelles (météo, jardins,
+                // verger) sont espacées via un SizedBox(16) explicite par
+                // l'écran. Résultat : un écart constant de 16 px entre
+                // n'importe quel couple de cards visibles.
+
+                // Carte météo intelligente (toujours visible)
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: AppSpacing.horizontalPadding,
                     child: const SmartWeatherCard(),
                   ),
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-                // Carte rappels d'arrosage
+                // Cards conditionnelles : top-margin interne (16 px)
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: AppSpacing.horizontalPadding,
@@ -139,9 +146,6 @@ class GardenScreen extends ConsumerWidget {
                         const CareRemindersCard(kind: CareKind.watering),
                   ),
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-                // Carte rappels de fertilisation
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: AppSpacing.horizontalPadding,
@@ -149,15 +153,14 @@ class GardenScreen extends ConsumerWidget {
                         kind: CareKind.fertilizing),
                   ),
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-                // Mini-card pieges a pheromones (a renouveler)
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: AppSpacing.horizontalPadding,
                     child: const PheromoneTrapRemindersCard(compact: true),
                   ),
                 ),
+
+                // 16 px avant la card jardins (toujours visible)
                 const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
                 // Section liste des potagers (container unique)
@@ -175,7 +178,9 @@ class GardenScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+                // 16 px avant le verger
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
                 // Section verger
                 SliverPadding(

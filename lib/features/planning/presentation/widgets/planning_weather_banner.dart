@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/providers/weather_providers.dart';
+import '../../../../core/services/weather/weather_analysis/garden_analysis_ui.dart';
 import '../../../../core/theme/app_typography.dart';
 
 class PlanningWeatherBanner extends ConsumerWidget {
@@ -13,13 +14,10 @@ class PlanningWeatherBanner extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    final weather = ref.watch(
-      weatherDataProvider.select(
-        (v) => v.value,
-      ),
-    );
+    final analysisAsync = ref.watch(gardenAnalysisProvider);
+    final analysis = analysisAsync.value;
 
-    if (weather == null) {
+    if (analysis == null) {
       return _Banner(
         color: AppColors.warning,
         icon: '⚠️',
@@ -29,19 +27,11 @@ class PlanningWeatherBanner extends ConsumerWidget {
       );
     }
 
-    final condition = weather.current.condition;
-    final color = condition.isGood
-        ? AppColors.success
-        : AppColors.warning;
-
     return _Banner(
-      color: color,
-      icon: condition.icon,
-      title:
-          '${weather.current.temperatureDisplay}'
-          ' — ${condition.label}',
-      subtitle:
-          weather.gardeningAdvice.mainAdvice,
+      color: analysis.severity.color,
+      icon: analysis.lunar.dayType.emoji,
+      title: analysis.headline,
+      subtitle: analysis.summary,
     );
   }
 }

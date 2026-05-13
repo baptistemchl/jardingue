@@ -18,7 +18,6 @@ import '../widgets/weather_hourly_section.dart';
 import '../widgets/weather_location_bar.dart';
 import '../widgets/weather_moon_section.dart';
 import '../widgets/weather_planting_analysis.dart';
-import '../widgets/weather_watering_analysis.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 class WeatherScreen extends ConsumerStatefulWidget {
@@ -128,9 +127,19 @@ class _WeatherContent extends StatelessWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-              // VERDICT JARDINAGE
+              // 1) ÉTAT LUNAIRE — fondamental, lu en premier (Maria Thun)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: AppSpacing.horizontalPadding,
+                  child: WeatherLunarHeroSection(lunar: weather.lunar),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+
+              // 2) VERDICT — synthèse cascade lune × météo
               SliverToBoxAdapter(
                 child: Padding(
                   padding: AppSpacing.horizontalPadding,
@@ -140,7 +149,7 @@ class _WeatherContent extends StatelessWidget {
 
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-              // ANALYSE DÉTAILLÉE PLANTATION
+              // 3) DÉTAIL DES ACTIVITÉS
               SliverToBoxAdapter(
                 child: Padding(
                   padding: AppSpacing.horizontalPadding,
@@ -151,22 +160,9 @@ class _WeatherContent extends StatelessWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-              // ANALYSE ARROSAGE
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: AppSpacing.horizontalPadding,
-                  child: WeatherWateringAnalysisCard(
-                    analysis: analysis,
-                    weather: weather,
-                  ),
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-              // CONDITIONS DÉTAILLÉES
+              // 4) CONDITIONS MÉTÉO DÉTAILLÉES
               SliverToBoxAdapter(
                 child: Padding(
                   padding: AppSpacing.horizontalPadding,
@@ -174,9 +170,9 @@ class _WeatherContent extends StatelessWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-              // PRÉVISIONS HORAIRES
+              // 6) PRÉVISIONS HORAIRES
               SliverToBoxAdapter(
                 child: WeatherHourlySection(
                   hourlyForecast: weather.hourlyForecast,
@@ -185,7 +181,7 @@ class _WeatherContent extends StatelessWidget {
 
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-              // PRÉVISIONS 7 JOURS AVEC ANALYSE
+              // 7) PRÉVISIONS 7 JOURS
               SliverToBoxAdapter(
                 child: Padding(
                   padding: AppSpacing.horizontalPadding,
@@ -202,21 +198,11 @@ class _WeatherContent extends StatelessWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-              // PHASE DE LUNE
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: AppSpacing.horizontalPadding,
-                  child: WeatherMoonCard(moon: weather.moon),
-                ),
-              ),
-
-              // Padding bas (pas de navbar mais système)
+              // Padding bas
               SliverToBoxAdapter(
                 child: Builder(
                   builder: (context) => SizedBox(
-                    height: MediaQuery.of(context).padding.bottom + 24,
+                    height: MediaQuery.of(context).padding.bottom + 32,
                   ),
                 ),
               ),

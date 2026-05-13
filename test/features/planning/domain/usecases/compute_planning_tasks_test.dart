@@ -353,14 +353,6 @@ WeatherData _buildWeather({
         uvIndexMax: 5,
       ),
     ],
-    moon: MoonData.calculate(DateTime.now()),
-    gardeningAdvice: GardeningAdvice(
-      mainAdvice: 'Test',
-      tips: [],
-      goodForWatering: true,
-      goodForPlanting: isGood,
-      goodForHarvesting: true,
-      frostRisk: minTonight < 3,
-    ),
+    lunar: LunarDay.forDate(DateTime.now()),
   );
 }

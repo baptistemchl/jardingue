@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/services/weather/weather_analysis/garden_analysis.dart';
+import '../../../../core/services/weather/weather_analysis/garden_analysis_ui.dart';
 import '../../../../core/services/weather/weather_models.dart';
 import '../../../../core/theme/app_typography.dart';
-import 'weather_analysis_row.dart';
 
+/// Conseils du jour — déroulé des recommandations par activité.
+/// Pattern Jardingue : surface blanche, header 40×40, divider, contenu.
 class WeatherPlantingAnalysisCard extends StatelessWidget {
   final GardenAnalysis analysis;
   final WeatherData weather;
@@ -19,11 +22,7 @@ class WeatherPlantingAnalysisCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final current = weather.current;
-    final daily = weather.dailyForecast;
-
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: AppSpacing.borderRadiusXl,
@@ -32,115 +31,153 @@ class WeatherPlantingAnalysisCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                PhosphorIcons.plant(PhosphorIconsStyle.fill),
-                size: 20,
-                color: AppColors.primary,
-              ),
-              const SizedBox(width: 8),
-              Text('Analyse plantation', style: AppTypography.titleMedium),
-            ],
+          _Header(),
+          Divider(height: 1, color: AppColors.border),
+          _ActivityBlock(
+            icon: PhosphorIcons.grains(PhosphorIconsStyle.regular),
+            title: 'Semer',
+            verdict: analysis.sowing,
           ),
-          const SizedBox(height: 16),
-
-          // Température actuelle vs idéale
-          WeatherAnalysisRow(
-            label: 'Température actuelle',
-            value: current.temperatureDisplay,
-            ideal: '15-25°C',
-            status: _getTempStatus(current.temperature),
+          Divider(height: 1, color: AppColors.border, indent: 16),
+          _ActivityBlock(
+            icon: PhosphorIcons.plant(PhosphorIconsStyle.regular),
+            title: 'Repiquer / Planter',
+            verdict: analysis.planting,
           ),
-
-          // Température ressentie
-          WeatherAnalysisRow(
-            label: 'Ressenti',
-            value: current.feelsLikeDisplay,
-            ideal: '> 10°C',
-            status: current.feelsLike >= 10
-                ? GardenStatus.good
-                : (current.feelsLike >= 5
-                      ? GardenStatus.warning
-                      : GardenStatus.bad),
+          Divider(height: 1, color: AppColors.border, indent: 16),
+          _ActivityBlock(
+            icon: PhosphorIcons.basket(PhosphorIconsStyle.regular),
+            title: 'Récolter',
+            verdict: analysis.harvest,
           ),
+          Divider(height: 1, color: AppColors.border, indent: 16),
+          _ActivityBlock(
+            icon: PhosphorIcons.drop(PhosphorIconsStyle.regular),
+            title: 'Arroser',
+            verdict: analysis.watering,
+            isLast: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-          // Température min cette nuit
-          if (daily.isNotEmpty)
-            WeatherAnalysisRow(
-              label: 'Min. cette nuit',
-              value: '${daily[0].tempMin.round()}°C',
-              ideal: '> 5°C',
-              status: daily[0].tempMin >= 5
-                  ? GardenStatus.good
-                  : (daily[0].tempMin >= 0
-                        ? GardenStatus.warning
-                        : GardenStatus.bad),
+class _Header extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.primaryContainer,
+              borderRadius: BorderRadius.circular(10),
             ),
-
-          // Vent
-          WeatherAnalysisRow(
-            label: 'Vent',
-            value: current.windSpeedDisplay,
-            ideal: '< 20 km/h',
-            status: current.windSpeed < 20
-                ? GardenStatus.good
-                : (current.windSpeed < 35
-                      ? GardenStatus.warning
-                      : GardenStatus.bad),
+            child: Icon(
+              PhosphorIcons.notebook(PhosphorIconsStyle.duotone),
+              size: 22,
+              color: AppColors.primary,
+            ),
           ),
-
-          // Sol (basé sur précipitations récentes)
-          WeatherAnalysisRow(
-            label: 'Sol',
-            value: current.precipitation > 0
-                ? 'Humide'
-                : (current.humidity > 70 ? 'Correct' : 'Sec'),
-            ideal: 'Humide/frais',
-            status: current.precipitation > 5
-                ? GardenStatus.warning
-                : GardenStatus.good,
-          ),
-
-          const SizedBox(height: 12),
-          const Divider(),
-          const SizedBox(height: 12),
-
-          // Recommandations
-          Text('Recommandations', style: AppTypography.labelMedium),
-          const SizedBox(height: 8),
-          ...analysis.plantingRecommendations.map(
-            (rec) => Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    rec.startsWith('✓')
-                        ? ''
-                        : (rec.startsWith('✗') ? '' : '• '),
-                    style: AppTypography.bodySmall,
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Conseils du jour',
+                  style: AppTypography.titleSmall.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
-                  Expanded(
-                    child: Text(
-                      rec,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Détaillés par activité',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.textSecondary,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  GardenStatus _getTempStatus(double temp) {
-    if (temp >= 15 && temp <= 25) return GardenStatus.good;
-    if (temp >= 10 && temp <= 30) return GardenStatus.warning;
-    return GardenStatus.bad;
+class _ActivityBlock extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final ActivityVerdict verdict;
+  final bool isLast;
+
+  const _ActivityBlock({
+    required this.icon,
+    required this.title,
+    required this.verdict,
+    this.isLast = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = verdict.status.color;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 16, 16, isLast ? 18 : 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 22, color: color),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: AppTypography.titleSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 9, vertical: 3),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: AppSpacing.borderRadiusFull,
+                ),
+                child: Text(
+                  verdict.label,
+                  style: AppTypography.labelSmall.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (verdict.recommendations.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            ...verdict.recommendations.map(
+              (r) => Padding(
+                padding: const EdgeInsets.only(left: 32, bottom: 4),
+                child: Text(
+                  r,
+                  style: AppTypography.bodySmall.copyWith(
+                    height: 1.45,
+                    color: AppColors.textPrimary.withValues(alpha: 0.85),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }

@@ -35,9 +35,16 @@ class PheromoneTrapRemindersCard extends ConsumerWidget {
           return daysUntil <= 1;
         }).toList();
         if (relevant.isEmpty) return const SizedBox.shrink();
-        return compact
+        final card = compact
             ? _CompactCard(reminders: relevant)
             : _FullCard(reminders: relevant);
+        // En mode compact, on s'insère dans une liste hétérogène avec
+        // d'autres cards conditionnelles : on absorbe notre top-margin
+        // (16 px) pour que l'écart inter-cards reste uniforme quel que soit
+        // l'ensemble visible. En mode full, l'écran de garde encadre.
+        return compact
+            ? Padding(padding: const EdgeInsets.only(top: 16), child: card)
+            : card;
       },
       loading: () => const SizedBox.shrink(),
       error: (_, _) => const SizedBox.shrink(),

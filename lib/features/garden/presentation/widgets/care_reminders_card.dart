@@ -24,7 +24,13 @@ class CareRemindersCard extends ConsumerWidget {
     return remindersAsync.when(
       data: (reminders) {
         if (reminders.isEmpty) return const SizedBox.shrink();
-        return _Card(kind: kind, reminders: reminders);
+        // Espacement haut interne : la card n'occupe 0 px QUAND elle est
+        // masquée, ce qui garantit un écart inter-cards uniforme côté écran
+        // (l'écran ne met pas de SizedBox autour pour éviter les doublons).
+        return Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: _Card(kind: kind, reminders: reminders),
+        );
       },
       loading: () => const SizedBox.shrink(),
       error: (_, _) => const SizedBox.shrink(),

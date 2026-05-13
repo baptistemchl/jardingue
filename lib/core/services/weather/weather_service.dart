@@ -166,14 +166,9 @@ class WeatherService {
         );
       }
 
-      // Calculate moon data
-      final moon = MoonData.calculate(now);
-
-      // Generate gardening advice
-      final gardeningAdvice = GardeningAdvice.fromWeather(
-        current,
-        dailyForecast,
-      );
+      // Calendrier lunaire biodynamique complet (constellation sidérale,
+      // phase, lune montante/descendante, nœuds, apogée/périgée).
+      final lunar = LunarDay.forDate(now);
 
       final result = WeatherData(
         fetchedAt: now,
@@ -186,8 +181,7 @@ class WeatherService {
         current: current,
         hourlyForecast: hourlyForecast,
         dailyForecast: dailyForecast,
-        moon: moon,
-        gardeningAdvice: gardeningAdvice,
+        lunar: lunar,
       );
 
       // Mettre en cache
