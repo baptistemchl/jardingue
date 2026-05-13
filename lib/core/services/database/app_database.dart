@@ -48,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration {
@@ -169,6 +169,12 @@ class AppDatabase extends _$AppDatabase {
         // persisté).
         if (from < 16) {
           await _safeAddColumn(m, plants, plants.customEmoji);
+        }
+        // Migration v16 -> v17 : type de plantation utilisateur sur les arbres.
+        // Ajoute la colonne `planting_type` (nullable). Les arbres existants
+        // restent à null et sont affichés par défaut comme "Pleine terre".
+        if (from < 17) {
+          await _safeAddColumn(m, userFruitTrees, userFruitTrees.plantingType);
         }
       },
     );
@@ -1059,6 +1065,7 @@ class AppDatabase extends _$AppDatabase {
     DateTime? lastPruningDate,
     DateTime? lastHarvestDate,
     double? lastYieldKg,
+    String? plantingType,
   }) {
     return (update(userFruitTrees)..where((t) => t.id.equals(id))).write(
       UserFruitTreesCompanion(
@@ -1081,6 +1088,8 @@ class AppDatabase extends _$AppDatabase {
         lastYieldKg: lastYieldKg != null
             ? Value(lastYieldKg)
             : const Value.absent(),
+        plantingType:
+            plantingType != null ? Value(plantingType) : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       ),
     );

@@ -7421,6 +7421,17 @@ class $UserFruitTreesTable extends UserFruitTrees
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _plantingTypeMeta = const VerificationMeta(
+    'plantingType',
+  );
+  @override
+  late final GeneratedColumn<String> plantingType = GeneratedColumn<String>(
+    'planting_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _plantingDateMeta = const VerificationMeta(
     'plantingDate',
   );
@@ -7538,6 +7549,7 @@ class $UserFruitTreesTable extends UserFruitTrees
     fruitTreeId,
     nickname,
     variety,
+    plantingType,
     plantingDate,
     location,
     notes,
@@ -7585,6 +7597,15 @@ class $UserFruitTreesTable extends UserFruitTrees
       context.handle(
         _varietyMeta,
         variety.isAcceptableOrUnknown(data['variety']!, _varietyMeta),
+      );
+    }
+    if (data.containsKey('planting_type')) {
+      context.handle(
+        _plantingTypeMeta,
+        plantingType.isAcceptableOrUnknown(
+          data['planting_type']!,
+          _plantingTypeMeta,
+        ),
       );
     }
     if (data.containsKey('planting_date')) {
@@ -7687,6 +7708,10 @@ class $UserFruitTreesTable extends UserFruitTrees
         DriftSqlType.string,
         data['${effectivePrefix}variety'],
       ),
+      plantingType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}planting_type'],
+      ),
       plantingDate: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}planting_date'],
@@ -7741,6 +7766,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
   final int fruitTreeId;
   final String? nickname;
   final String? variety;
+  final String? plantingType;
   final DateTime? plantingDate;
   final String? location;
   final String? notes;
@@ -7756,6 +7782,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
     required this.fruitTreeId,
     this.nickname,
     this.variety,
+    this.plantingType,
     this.plantingDate,
     this.location,
     this.notes,
@@ -7777,6 +7804,9 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
     }
     if (!nullToAbsent || variety != null) {
       map['variety'] = Variable<String>(variety);
+    }
+    if (!nullToAbsent || plantingType != null) {
+      map['planting_type'] = Variable<String>(plantingType);
     }
     if (!nullToAbsent || plantingDate != null) {
       map['planting_date'] = Variable<DateTime>(plantingDate);
@@ -7815,6 +7845,9 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
       variety: variety == null && nullToAbsent
           ? const Value.absent()
           : Value(variety),
+      plantingType: plantingType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plantingType),
       plantingDate: plantingDate == null && nullToAbsent
           ? const Value.absent()
           : Value(plantingDate),
@@ -7852,6 +7885,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
       fruitTreeId: serializer.fromJson<int>(json['fruitTreeId']),
       nickname: serializer.fromJson<String?>(json['nickname']),
       variety: serializer.fromJson<String?>(json['variety']),
+      plantingType: serializer.fromJson<String?>(json['plantingType']),
       plantingDate: serializer.fromJson<DateTime?>(json['plantingDate']),
       location: serializer.fromJson<String?>(json['location']),
       notes: serializer.fromJson<String?>(json['notes']),
@@ -7872,6 +7906,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
       'fruitTreeId': serializer.toJson<int>(fruitTreeId),
       'nickname': serializer.toJson<String?>(nickname),
       'variety': serializer.toJson<String?>(variety),
+      'plantingType': serializer.toJson<String?>(plantingType),
       'plantingDate': serializer.toJson<DateTime?>(plantingDate),
       'location': serializer.toJson<String?>(location),
       'notes': serializer.toJson<String?>(notes),
@@ -7890,6 +7925,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
     int? fruitTreeId,
     Value<String?> nickname = const Value.absent(),
     Value<String?> variety = const Value.absent(),
+    Value<String?> plantingType = const Value.absent(),
     Value<DateTime?> plantingDate = const Value.absent(),
     Value<String?> location = const Value.absent(),
     Value<String?> notes = const Value.absent(),
@@ -7905,6 +7941,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
     fruitTreeId: fruitTreeId ?? this.fruitTreeId,
     nickname: nickname.present ? nickname.value : this.nickname,
     variety: variety.present ? variety.value : this.variety,
+    plantingType: plantingType.present ? plantingType.value : this.plantingType,
     plantingDate: plantingDate.present ? plantingDate.value : this.plantingDate,
     location: location.present ? location.value : this.location,
     notes: notes.present ? notes.value : this.notes,
@@ -7928,6 +7965,9 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
           : this.fruitTreeId,
       nickname: data.nickname.present ? data.nickname.value : this.nickname,
       variety: data.variety.present ? data.variety.value : this.variety,
+      plantingType: data.plantingType.present
+          ? data.plantingType.value
+          : this.plantingType,
       plantingDate: data.plantingDate.present
           ? data.plantingDate.value
           : this.plantingDate,
@@ -7958,6 +7998,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
           ..write('fruitTreeId: $fruitTreeId, ')
           ..write('nickname: $nickname, ')
           ..write('variety: $variety, ')
+          ..write('plantingType: $plantingType, ')
           ..write('plantingDate: $plantingDate, ')
           ..write('location: $location, ')
           ..write('notes: $notes, ')
@@ -7978,6 +8019,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
     fruitTreeId,
     nickname,
     variety,
+    plantingType,
     plantingDate,
     location,
     notes,
@@ -7997,6 +8039,7 @@ class UserFruitTree extends DataClass implements Insertable<UserFruitTree> {
           other.fruitTreeId == this.fruitTreeId &&
           other.nickname == this.nickname &&
           other.variety == this.variety &&
+          other.plantingType == this.plantingType &&
           other.plantingDate == this.plantingDate &&
           other.location == this.location &&
           other.notes == this.notes &&
@@ -8014,6 +8057,7 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
   final Value<int> fruitTreeId;
   final Value<String?> nickname;
   final Value<String?> variety;
+  final Value<String?> plantingType;
   final Value<DateTime?> plantingDate;
   final Value<String?> location;
   final Value<String?> notes;
@@ -8029,6 +8073,7 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
     this.fruitTreeId = const Value.absent(),
     this.nickname = const Value.absent(),
     this.variety = const Value.absent(),
+    this.plantingType = const Value.absent(),
     this.plantingDate = const Value.absent(),
     this.location = const Value.absent(),
     this.notes = const Value.absent(),
@@ -8045,6 +8090,7 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
     required int fruitTreeId,
     this.nickname = const Value.absent(),
     this.variety = const Value.absent(),
+    this.plantingType = const Value.absent(),
     this.plantingDate = const Value.absent(),
     this.location = const Value.absent(),
     this.notes = const Value.absent(),
@@ -8061,6 +8107,7 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
     Expression<int>? fruitTreeId,
     Expression<String>? nickname,
     Expression<String>? variety,
+    Expression<String>? plantingType,
     Expression<DateTime>? plantingDate,
     Expression<String>? location,
     Expression<String>? notes,
@@ -8077,6 +8124,7 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
       if (fruitTreeId != null) 'fruit_tree_id': fruitTreeId,
       if (nickname != null) 'nickname': nickname,
       if (variety != null) 'variety': variety,
+      if (plantingType != null) 'planting_type': plantingType,
       if (plantingDate != null) 'planting_date': plantingDate,
       if (location != null) 'location': location,
       if (notes != null) 'notes': notes,
@@ -8095,6 +8143,7 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
     Value<int>? fruitTreeId,
     Value<String?>? nickname,
     Value<String?>? variety,
+    Value<String?>? plantingType,
     Value<DateTime?>? plantingDate,
     Value<String?>? location,
     Value<String?>? notes,
@@ -8111,6 +8160,7 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
       fruitTreeId: fruitTreeId ?? this.fruitTreeId,
       nickname: nickname ?? this.nickname,
       variety: variety ?? this.variety,
+      plantingType: plantingType ?? this.plantingType,
       plantingDate: plantingDate ?? this.plantingDate,
       location: location ?? this.location,
       notes: notes ?? this.notes,
@@ -8138,6 +8188,9 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
     }
     if (variety.present) {
       map['variety'] = Variable<String>(variety.value);
+    }
+    if (plantingType.present) {
+      map['planting_type'] = Variable<String>(plantingType.value);
     }
     if (plantingDate.present) {
       map['planting_date'] = Variable<DateTime>(plantingDate.value);
@@ -8179,6 +8232,7 @@ class UserFruitTreesCompanion extends UpdateCompanion<UserFruitTree> {
           ..write('fruitTreeId: $fruitTreeId, ')
           ..write('nickname: $nickname, ')
           ..write('variety: $variety, ')
+          ..write('plantingType: $plantingType, ')
           ..write('plantingDate: $plantingDate, ')
           ..write('location: $location, ')
           ..write('notes: $notes, ')
@@ -14373,6 +14427,7 @@ typedef $$UserFruitTreesTableCreateCompanionBuilder =
       required int fruitTreeId,
       Value<String?> nickname,
       Value<String?> variety,
+      Value<String?> plantingType,
       Value<DateTime?> plantingDate,
       Value<String?> location,
       Value<String?> notes,
@@ -14390,6 +14445,7 @@ typedef $$UserFruitTreesTableUpdateCompanionBuilder =
       Value<int> fruitTreeId,
       Value<String?> nickname,
       Value<String?> variety,
+      Value<String?> plantingType,
       Value<DateTime?> plantingDate,
       Value<String?> location,
       Value<String?> notes,
@@ -14472,6 +14528,11 @@ class $$UserFruitTreesTableFilterComposer
 
   ColumnFilters<String> get variety => $composableBuilder(
     column: $table.variety,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get plantingType => $composableBuilder(
+    column: $table.plantingType,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -14598,6 +14659,11 @@ class $$UserFruitTreesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get plantingType => $composableBuilder(
+    column: $table.plantingType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get plantingDate => $composableBuilder(
     column: $table.plantingDate,
     builder: (column) => ColumnOrderings(column),
@@ -14689,6 +14755,11 @@ class $$UserFruitTreesTableAnnotationComposer
 
   GeneratedColumn<String> get variety =>
       $composableBuilder(column: $table.variety, builder: (column) => column);
+
+  GeneratedColumn<String> get plantingType => $composableBuilder(
+    column: $table.plantingType,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get plantingDate => $composableBuilder(
     column: $table.plantingDate,
@@ -14813,6 +14884,7 @@ class $$UserFruitTreesTableTableManager
                 Value<int> fruitTreeId = const Value.absent(),
                 Value<String?> nickname = const Value.absent(),
                 Value<String?> variety = const Value.absent(),
+                Value<String?> plantingType = const Value.absent(),
                 Value<DateTime?> plantingDate = const Value.absent(),
                 Value<String?> location = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
@@ -14828,6 +14900,7 @@ class $$UserFruitTreesTableTableManager
                 fruitTreeId: fruitTreeId,
                 nickname: nickname,
                 variety: variety,
+                plantingType: plantingType,
                 plantingDate: plantingDate,
                 location: location,
                 notes: notes,
@@ -14845,6 +14918,7 @@ class $$UserFruitTreesTableTableManager
                 required int fruitTreeId,
                 Value<String?> nickname = const Value.absent(),
                 Value<String?> variety = const Value.absent(),
+                Value<String?> plantingType = const Value.absent(),
                 Value<DateTime?> plantingDate = const Value.absent(),
                 Value<String?> location = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
@@ -14860,6 +14934,7 @@ class $$UserFruitTreesTableTableManager
                 fruitTreeId: fruitTreeId,
                 nickname: nickname,
                 variety: variety,
+                plantingType: plantingType,
                 plantingDate: plantingDate,
                 location: location,
                 notes: notes,

@@ -110,6 +110,10 @@ class UserFruitTrees extends Table {
 
   TextColumn get variety => text().nullable()();
 
+  // Type de plantation choisi par l'utilisateur ('ground' | 'pot' | 'espalier')
+  // Null = non renseigné (anciens arbres pré-v17), affiché comme "Pleine terre".
+  TextColumn get plantingType => text().nullable()();
+
   // Infos plantation
   DateTimeColumn get plantingDate => dateTime().nullable()();
 
