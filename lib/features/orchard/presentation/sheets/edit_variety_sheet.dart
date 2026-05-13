@@ -3,7 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_bottom_sheet.dart';
-import '../widgets/variety_autocomplete_field.dart';
+import '../widgets/variety_picker_field.dart';
 
 /// Bottom sheet d'édition inline de la variété d'un arbre du verger.
 ///
@@ -49,12 +49,16 @@ class _EditVarietySheetState extends State<EditVarietySheet> {
 
   @override
   Widget build(BuildContext context) {
+    // Padding clavier : sans ça, le bouton "Enregistrer" passe sous le
+    // clavier quand le TextField a le focus (AppBottomSheet n'absorbe
+    // pas les viewInsets car isScrollControlled est à true).
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         const AppBottomSheetHandle(),
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+          padding: EdgeInsets.fromLTRB(20, 8, 20, 20 + bottomInset),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -74,7 +78,7 @@ class _EditVarietySheetState extends State<EditVarietySheet> {
                 ],
               ),
               const SizedBox(height: 12),
-              VarietyAutocompleteField(
+              VarietyPickerField(
                 initialValue: widget.initialValue,
                 suggestions: widget.suggestions,
                 onChanged: (v) => _value = v,

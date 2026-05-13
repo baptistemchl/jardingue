@@ -6,7 +6,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/orchard_providers.dart';
 import '../../../../core/services/database/fruit_tree_import_service.dart';
-import '../../domain/models/planting_type.dart';
 import '../sheets/edit_planting_type_sheet.dart';
 import '../sheets/edit_variety_sheet.dart';
 

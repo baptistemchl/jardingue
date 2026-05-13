@@ -14,7 +14,7 @@ void main() {
     await db.close();
   });
 
-  Future<int> _insertCatalogTree() async {
+  Future<int> insertCatalogTree() async {
     return db.insertFruitTree(
       FruitTreesCompanion.insert(
         id: const Value(1),
@@ -24,7 +24,7 @@ void main() {
   }
 
   test('insert + read UserFruitTree avec plantingType=pot', () async {
-    await _insertCatalogTree();
+    await insertCatalogTree();
     final id = await db.addUserFruitTree(
       UserFruitTreesCompanion.insert(
         fruitTreeId: 1,
@@ -40,7 +40,7 @@ void main() {
   });
 
   test('insert UserFruitTree sans plantingType => null en base', () async {
-    await _insertCatalogTree();
+    await insertCatalogTree();
     final id = await db.addUserFruitTree(
       UserFruitTreesCompanion.insert(fruitTreeId: 1),
     );
@@ -51,7 +51,7 @@ void main() {
   });
 
   test('updateUserFruitTreePartial accepte plantingType', () async {
-    await _insertCatalogTree();
+    await insertCatalogTree();
     final id = await db.addUserFruitTree(
       UserFruitTreesCompanion.insert(fruitTreeId: 1),
     );

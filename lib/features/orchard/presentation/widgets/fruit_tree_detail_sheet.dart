@@ -8,9 +8,8 @@ import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/database.dart';
 import '../../../../core/providers/orchard_providers.dart';
-import '../../domain/models/planting_type.dart';
 import 'planting_type_selector.dart';
-import 'variety_autocomplete_field.dart';
+import 'variety_picker_field.dart';
 
 /// Sheet affichant les détails d'un arbre fruitier du catalogue
 /// avec possibilité de l'ajouter au verger
@@ -112,6 +111,11 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
   Widget build(BuildContext context) {
     final tree = widget.tree;
     final varieties = tree.varietiesList;
+    // Quand le clavier s'ouvre, la sheet reste ancree au bas de l'ecran et
+    // ses pixels du bas passent sous le clavier. On pousse le contenu vers
+    // le haut en ajoutant un padding interne egal a la hauteur du clavier :
+    // le ListView + le bouton sticky remontent au-dessus du clavier.
+    final keyboardH = MediaQuery.viewInsetsOf(context).bottom;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
@@ -119,7 +123,9 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
         color: AppColors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Column(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: keyboardH),
+        child: Column(
         children: [
           // Handle
           Padding(
@@ -253,6 +259,7 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
           ),
         ],
       ),
+      ),
     );
   }
 
@@ -365,7 +372,7 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
         // 2. Variété (Autocomplete avec saisie libre)
         Text('Variété (optionnel)', style: AppTypography.labelMedium),
         const SizedBox(height: 8),
-        VarietyAutocompleteField(
+        VarietyPickerField(
           suggestions: varieties,
           initialValue: _variety,
           onChanged: (v) => _variety = v,

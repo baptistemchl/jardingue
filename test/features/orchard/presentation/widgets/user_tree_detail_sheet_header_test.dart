@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:jardingue/core/providers/database_providers.dart';
 import 'package:jardingue/core/providers/orchard_providers.dart';
 import 'package:jardingue/core/services/database/app_database.dart';
-import 'package:jardingue/features/orchard/domain/models/planting_type.dart';
 import 'package:jardingue/features/orchard/presentation/widgets/user_tree_detail_sheet.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
