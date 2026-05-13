@@ -8,7 +8,7 @@ import '../../../../core/theme/app_typography.dart';
 /// issues du catalogue) tout en acceptant n'importe quel texte libre. La
 /// valeur courante est exposée via [onChanged] ; un texte vide est mappé sur
 /// `null` côté caller (variété "non renseignée").
-class VarietyAutocompleteField extends StatefulWidget {
+class VarietyAutocompleteField extends StatelessWidget {
   final List<String> suggestions;
   final String? initialValue;
   final ValueChanged<String?> onChanged;
@@ -21,28 +21,22 @@ class VarietyAutocompleteField extends StatefulWidget {
   });
 
   @override
-  State<VarietyAutocompleteField> createState() =>
-      _VarietyAutocompleteFieldState();
-}
-
-class _VarietyAutocompleteFieldState extends State<VarietyAutocompleteField> {
-  @override
   Widget build(BuildContext context) {
     return Autocomplete<String>(
-      initialValue: TextEditingValue(text: widget.initialValue ?? ''),
+      initialValue: TextEditingValue(text: initialValue ?? ''),
       optionsBuilder: (TextEditingValue value) {
-        if (value.text.isEmpty) return widget.suggestions;
+        if (value.text.isEmpty) return suggestions;
         final lower = value.text.toLowerCase();
-        return widget.suggestions
+        return suggestions
             .where((v) => v.toLowerCase().contains(lower));
       },
-      onSelected: (s) => widget.onChanged(s.isEmpty ? null : s),
+      onSelected: (s) => onChanged(s.trim().isEmpty ? null : s.trim()),
       fieldViewBuilder: (context, controller, focusNode, onSubmit) {
         return TextField(
           controller: controller,
           focusNode: focusNode,
           onChanged: (s) =>
-              widget.onChanged(s.trim().isEmpty ? null : s.trim()),
+              onChanged(s.trim().isEmpty ? null : s.trim()),
           decoration: InputDecoration(
             hintText: 'Ex: Bergeron, ou la vôtre',
             filled: true,
