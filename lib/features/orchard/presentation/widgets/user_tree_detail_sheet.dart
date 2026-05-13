@@ -5,6 +5,10 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/orchard_providers.dart';
+import '../../../../core/services/database/fruit_tree_import_service.dart';
+import '../../domain/models/planting_type.dart';
+import '../sheets/edit_planting_type_sheet.dart';
+import '../sheets/edit_variety_sheet.dart';
 
 /// Sheet affichant les détails d'un arbre du verger personnel
 /// avec édition inline de tous les champs.
@@ -38,6 +42,7 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
     DateTime? lastPruningDate,
     DateTime? lastHarvestDate,
     double? lastYieldKg,
+    PlantingType? plantingType,
   }) async {
     await ref.read(userFruitTreesNotifierProvider.notifier).updateTree(
           id: _tree.id,
@@ -50,6 +55,7 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
           lastPruningDate: lastPruningDate,
           lastHarvestDate: lastHarvestDate,
           lastYieldKg: lastYieldKg,
+          plantingType: plantingType,
         );
     // Recharger les données
     final updated =
@@ -163,14 +169,9 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
                               color: AppColors.textSecondary,
                             ),
                           ),
-                          // Variete editable
+                          // Variete editable (utilise EditVarietySheet pour l'autocomplete)
                           GestureDetector(
-                            onTap: () => _editText(
-                              title: 'Variete',
-                              currentValue: userTree.variety,
-                              hint: 'Ex: Golden, Granny Smith...',
-                              onSave: (v) => _update(variety: v),
-                            ),
+                            onTap: _onEditVariety,
                             child: Row(
                               children: [
                                 Flexible(
@@ -202,6 +203,24 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
                       icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.bold)),
                     ),
                   ],
+                ),
+
+                const SizedBox(height: 12),
+
+                // Chip type de plantation (donnée user, tappable pour editer)
+                Builder(
+                  builder: (context) {
+                    final pt =
+                        PlantingType.fromDbValue(userTree.plantingType) ??
+                            PlantingType.ground;
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: _PlantingTypeHeaderChip(
+                        plantingType: pt,
+                        onTap: _onEditPlantingType,
+                      ),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 20),
@@ -741,11 +760,85 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
       }
     }
   }
+
+  Future<void> _onEditVariety() async {
+    final result = await EditVarietySheet.show(
+      context,
+      suggestions: _tree.fruitTree.varietiesList,
+      initialValue: _tree.userTree.variety,
+    );
+    if (result == null) return; // Annulé
+    // result.value peut etre null (champ vide) — on transmet la chaine vide
+    // pour effacer cote DB (la methode partial saute si on passe null).
+    await _update(variety: result.value ?? '');
+  }
+
+  Future<void> _onEditPlantingType() async {
+    final current =
+        PlantingType.fromDbValue(_tree.userTree.plantingType) ??
+            PlantingType.ground;
+    final result = await EditPlantingTypeSheet.show(
+      context,
+      initialValue: current,
+      containerSuitable: _tree.fruitTree.containerSuitable,
+      heightAdultM: _tree.fruitTree.heightAdultM,
+    );
+    if (result == null) return;
+    await _update(plantingType: result);
+  }
 }
 
 // ============================================
 // WIDGETS
 // ============================================
+
+class _PlantingTypeHeaderChip extends StatelessWidget {
+  final PlantingType plantingType;
+  final VoidCallback onTap;
+
+  const _PlantingTypeHeaderChip({
+    required this.plantingType,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: AppColors.primaryContainer.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: 0.3),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(plantingType.emoji, style: const TextStyle(fontSize: 12)),
+            const SizedBox(width: 4),
+            Text(
+              plantingType.label,
+              style: AppTypography.caption.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              PhosphorIcons.pencilSimple(PhosphorIconsStyle.regular),
+              size: 12,
+              color: AppColors.primary.withValues(alpha: 0.7),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _HealthStatusCard extends StatelessWidget {
   final String status;
