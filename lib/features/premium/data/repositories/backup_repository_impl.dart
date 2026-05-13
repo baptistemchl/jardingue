@@ -289,6 +289,7 @@ class BackupRepositoryImpl implements BackupRepository {
               'location': t.location,
               'notes': t.notes,
               'healthStatus': t.healthStatus,
+              'plantingType': t.plantingType,
               'lastPruningDate':
                   t.lastPruningDate?.toIso8601String(),
               'lastHarvestDate':
@@ -556,6 +557,10 @@ class BackupRepositoryImpl implements BackupRepository {
                 r['healthStatus'] as String? ?? 'good',
               ),
               photos: Value(r['photos'] as String?),
+              // Absent des backups < v1.6.5 → null, affiché "Pleine terre".
+              plantingType: Value(
+                r['plantingType'] as String?,
+              ),
             ),
           );
     }
