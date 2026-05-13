@@ -29,6 +29,7 @@ abstract interface class FruitTreeRepository {
     DateTime? lastPruningDate,
     DateTime? lastHarvestDate,
     double? lastYieldKg,
+    String? plantingType,
   });
   Future<int> deleteUserFruitTree(int id);
   Future<int> countUserFruitTrees();
@@ -114,6 +115,7 @@ class DriftFruitTreeRepository implements FruitTreeRepository {
     DateTime? lastPruningDate,
     DateTime? lastHarvestDate,
     double? lastYieldKg,
+    String? plantingType,
   }) =>
       _db.updateUserFruitTreePartial(
         id: id,
@@ -126,6 +128,7 @@ class DriftFruitTreeRepository implements FruitTreeRepository {
         lastPruningDate: lastPruningDate,
         lastHarvestDate: lastHarvestDate,
         lastYieldKg: lastYieldKg,
+        plantingType: plantingType,
       );
 
   @override

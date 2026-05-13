@@ -7,6 +7,7 @@ import '../../features/orchard/data/repositories/pheromone_trap_repository.dart'
 import '../../features/orchard/domain/models/fruit_trees_filter_state.dart';
 import '../../features/orchard/domain/models/pheromone_trap_reminder.dart';
 import '../../features/orchard/domain/models/pheromone_trap_type.dart';
+import '../../features/orchard/domain/models/planting_type.dart';
 import '../../features/orchard/domain/models/user_fruit_tree_with_details.dart';
 import 'database_providers.dart';
 
@@ -14,6 +15,7 @@ import 'database_providers.dart';
 export '../../features/orchard/domain/models/fruit_trees_filter_state.dart';
 export '../../features/orchard/domain/models/pheromone_trap_reminder.dart';
 export '../../features/orchard/domain/models/pheromone_trap_type.dart';
+export '../../features/orchard/domain/models/planting_type.dart';
 export '../../features/orchard/domain/models/user_fruit_tree_with_details.dart';
 
 // ============================================
@@ -174,6 +176,7 @@ class UserFruitTreesNotifier extends Notifier<
     DateTime? plantingDate,
     String? location,
     String? notes,
+    PlantingType? plantingType,
   }) async {
     final companion = UserFruitTreesCompanion(
       fruitTreeId: Value(fruitTreeId),
@@ -182,6 +185,7 @@ class UserFruitTreesNotifier extends Notifier<
       plantingDate: Value(plantingDate),
       location: Value(location),
       notes: Value(notes),
+      plantingType: Value(plantingType?.dbValue),
     );
 
     final id = await _repo.addUserFruitTree(companion);
@@ -200,6 +204,7 @@ class UserFruitTreesNotifier extends Notifier<
     DateTime? lastPruningDate,
     DateTime? lastHarvestDate,
     double? lastYieldKg,
+    PlantingType? plantingType,
   }) async {
     await _repo.updateUserFruitTreePartial(
       id: id,
@@ -212,6 +217,7 @@ class UserFruitTreesNotifier extends Notifier<
       lastPruningDate: lastPruningDate,
       lastHarvestDate: lastHarvestDate,
       lastYieldKg: lastYieldKg,
+      plantingType: plantingType?.dbValue,
     );
     await _loadData();
   }
