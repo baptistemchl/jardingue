@@ -23,6 +23,17 @@ class FruitTreeImportService {
         debugPrint('🌳 Données obsolètes, réimport forcé...');
         return importFromAssets(forceReimport: true);
       }
+      // V17 : variétés enrichies (Abricotier passe de 4 à 6 variétés).
+      // On utilise l'Abricotier (id 12) comme sentinelle : s'il a < 6
+      // variétés en base alors qu'il en a 6 dans le JSON v17, on re-importe.
+      final abricotier = await _db.getFruitTreeById(12);
+      if (abricotier != null) {
+        final varietyCount = abricotier.varietiesList.length;
+        if (varietyCount < 6) {
+          debugPrint('🌳 Variétés v17 manquantes, réimport forcé...');
+          return importFromAssets(forceReimport: true);
+        }
+      }
       debugPrint('🌳 Base arbres fruitiers déjà peuplée ($existingCount arbres)');
       return existingCount;
     }

@@ -441,7 +441,9 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Prune d'Ente",
-        "Prune d'Agen"
+        "Prune d'Agen",
+        "Reine-Claude Verte",
+        "Quetsche d'Alsace"
       ],
       "climate_adaptation": {
         "cold": "Rusticité moyenne (-18 °C). Sensible aux gelées tardives. Réservez-le aux zones où les hivers sont modérés. Protégez les jeunes arbres les premières années.",
@@ -611,7 +613,9 @@
       "popular_varieties": [
         "Fantasia",
         "Morton",
-        "Big Top"
+        "Big Top",
+        "Nectarella",
+        "Flavortop"
       ],
       "climate_adaptation": {
         "cold": "Rusticité moyenne (-15 °C). Mêmes exigences que le pêcher. Floraison précoce très sensible aux gelées. Réservez aux zones abritées ou cultivez en espalier contre un mur au sud.",
@@ -665,7 +669,9 @@
         "Bergeron",
         "Rouge du Roussillon",
         "Polonais",
-        "Orangered"
+        "Orangered",
+        "Goldrich",
+        "Hâtif de Colomer"
       ],
       "climate_adaptation": {
         "cold": "Le bois résiste à -20 °C mais la floraison très précoce (février-mars) est détruite par les gelées. Choisissez des variétés tardives (Bergeron, Polonais) et plantez contre un mur au sud en zone froide.",
@@ -775,7 +781,9 @@
       "popular_varieties": [
         "Chasselas doré",
         "Chasselas de Moissac",
-        "Chasselas rose"
+        "Chasselas rose",
+        "Chasselas de Thomery",
+        "Chasselas Fendant"
       ],
       "climate_adaptation": {
         "cold": "Rustique (-20 °C sur bois). Réputé en Suisse et Alsace pour sa résistance. En zone froide, palissez contre un mur plein sud et buttez le point de greffe en hiver.",
@@ -1247,7 +1255,9 @@
       "popular_varieties": [
         "Fertile de Coutard",
         "Merveille de Bollwiller",
-        "Corabel"
+        "Corabel",
+        "Tonda di Giffoni",
+        "Pauetet"
       ],
       "climate_adaptation": {
         "cold": "Extrêmement rustique (-30 °C). Le noisetier pousse spontanément dans toute la France. Attention : la floraison hivernale (janvier-février) peut être compromise par le gel des chatons.",
@@ -1300,7 +1310,9 @@
       "popular_varieties": [
         "Marigoule",
         "Bouche de Bétizac",
-        "Comballe"
+        "Comballe",
+        "Marsol",
+        "Laguépie"
       ],
       "climate_adaptation": {
         "cold": "Rustique (-20 °C). Le châtaignier craint les sols calcaires et les hivers humides plus que le froid. Plantez en sol acide et bien drainé.",
@@ -1352,7 +1364,9 @@
       "popular_varieties": [
         "Ferragnes",
         "Lauranne",
-        "All-in-One"
+        "All-in-One",
+        "Ferragnès",
+        "Ferraduel"
       ],
       "climate_adaptation": {
         "cold": "Le bois résiste à -15 °C mais la floraison très précoce (février) est détruite par les gelées. Déconseillé en zone froide sauf variétés très tardives (Lauranne, Ferragnès).",
@@ -1458,7 +1472,9 @@
       "container_min_size_l": 60,
       "popular_varieties": [
         "Wonderful",
-        "Mollar de Elche"
+        "Mollar de Elche",
+        "Dente di Cavallo",
+        "Acco"
       ],
       "climate_adaptation": {
         "cold": "Résiste à -12 °C brièvement. En zone froide, cultivez exclusivement en pot (50 L) à rentrer en hiver dans un local lumineux hors gel. La fructification est compromise sous climat froid.",
@@ -1511,7 +1527,8 @@
       "popular_varieties": [
         "Champion",
         "Vranja",
-        "Portugal"
+        "Portugal",
+        "Meech's Prolific"
       ],
       "climate_adaptation": {
         "cold": "Résistant jusqu'à -25 °C mais la floraison tardive le protège naturellement. Plantez en situation abritée pour profiter au maximum de la chaleur estivale nécessaire à la maturation des coings.",
@@ -1564,7 +1581,9 @@
       "popular_varieties": [
         "Fuyu",
         "Hachiya",
-        "Rojo Brillante"
+        "Rojo Brillante",
+        "Triumph",
+        "Jiro"
       ],
       "climate_adaptation": {
         "cold": "Le bois résiste à -15 °C mais les fruits mûrissent très tard (novembre). En zone froide, choisissez des variétés non astringentes précoces (Fuyu) ou récoltez avant gel et faites mûrir à l'intérieur.",
@@ -1614,7 +1633,9 @@
       "container_min_size_l": 60,
       "popular_varieties": [
         "Monstrueuse d'Evreinoff",
-        "Nottingham"
+        "Nottingham",
+        "Royal",
+        "Dutch"
       ],
       "climate_adaptation": {
         "cold": "Très rustique (-25 °C). Les nèfles se récoltent après les premières gelées, ce qui convient parfaitement au climat froid. Arbre sans entretien particulier en zone continentale.",
@@ -2028,7 +2049,8 @@
       "popular_varieties": [
         "Jonkheer van Tets",
         "Rovada",
-        "Junifer"
+        "Junifer",
+        "Stanza"
       ],
       "climate_adaptation": {
         "cold": "Extrêmement rustique (-35 °C). Le groseillier est parfaitement adapté au froid. Arbre de climat frais par excellence, il donne ses meilleurs résultats en zone froide.",
@@ -2081,7 +2103,8 @@
       "popular_varieties": [
         "Noir de Bourgogne",
         "Géant de Boskoop",
-        "Titania"
+        "Titania",
+        "Ben Lomond"
       ],
       "climate_adaptation": {
         "cold": "Extrêmement rustique (-35 °C). Le cassis est le fruit des régions froides par excellence (Bourgogne, nord de la France). Parfaitement adapté aux hivers rigoureux.",
@@ -2133,7 +2156,8 @@
       "popular_varieties": [
         "Invicta",
         "Captivator",
-        "Hinnonmaki"
+        "Hinnonmaki",
+        "Pixwell"
       ],
       "climate_adaptation": {
         "cold": "Très rustique (-30 °C). Parfaitement adapté aux climats froids. Production excellente même en zone de montagne.",
@@ -3112,7 +3136,9 @@
       "popular_varieties": [
         "Kosui",
         "Nijisseiki",
-        "Hosui"
+        "Hosui",
+        "Shinseiki",
+        "Chojuro"
       ],
       "climate_adaptation": {
         "cold": "Bonne rusticité (-20 °C). Protégez la floraison précoce des gelées tardives. Le nashi apprécie un été suffisamment chaud pour bien mûrir, ce qui peut manquer en zone de montagne.",
@@ -3165,7 +3191,9 @@
       "popular_varieties": [
         "Douce Moën",
         "Kermerrien",
-        "Bedan"
+        "Bedan",
+        "Frequin Rouge",
+        "Antoinette"
       ],
       "climate_adaptation": {
         "cold": "Très rustique (-25 °C), parfaitement adapté aux hivers rigoureux. Les variétés cidricoles normandes et bretonnes sont sélectionnées pour les climats frais et humides.",
@@ -3218,7 +3246,9 @@
       "container_min_size_l": null,
       "popular_varieties": [
         "Plant de Blanc",
-        "Fausset"
+        "Fausset",
+        "Melon",
+        "Petit Épinette"
       ],
       "climate_adaptation": {
         "cold": "Très rustique (-20 °C). Arbre vigoureux qui supporte bien les hivers froids. Traditionnellement cultivé dans les régions fraîches de Normandie et du Maine.",
@@ -3566,7 +3596,8 @@
       "popular_varieties": [
         "Smoky",
         "Thiessen",
-        "Honeywood"
+        "Honeywood",
+        "Regent"
       ],
       "climate_adaptation": {
         "cold": "Extrêmement rustique (-35 °C). L'amélanchier est un arbuste nord-américain qui résiste aux hivers les plus rigoureux. Parfait en zone de montagne.",
@@ -4020,7 +4051,9 @@
       "container_min_size_l": 40,
       "popular_varieties": [
         "Blanka",
-        "Versaillaise blanche"
+        "Versaillaise blanche",
+        "White Versailles",
+        "Werdavia"
       ],
       "climate_adaptation": {
         "cold": "Extrêmement rustique (-35 °C). Parfaitement adapté au froid. Mêmes exigences que le groseillier rouge dont il est une variante.",
@@ -4627,7 +4660,9 @@
       "popular_varieties": [
         "Eureka",
         "Lisbon",
-        "Meyer"
+        "Meyer",
+        "Quatre Saisons",
+        "Lunario"
       ],
       "climate_adaptation": {
         "cold": "Gèle à -5 °C. Culture en pot obligatoire en zone froide : rentrez en véranda lumineuse (10-15 °C) d'octobre à mai. Ne supporte pas le gel.",
@@ -4678,7 +4713,9 @@
       "popular_varieties": [
         "Valencia",
         "Navel",
-        "Sanguinelli"
+        "Sanguinelli",
+        "Maltaise",
+        "Thomson Navel"
       ],
       "climate_adaptation": {
         "cold": "Gèle à -5 °C. Culture en pot obligatoire en zone froide : hivernez dans une orangerie lumineuse à 5-10 °C. Tradition des orangeries des châteaux français.",
@@ -4729,7 +4766,9 @@
       "popular_varieties": [
         "Clémentine",
         "Satsuma",
-        "Wilking"
+        "Wilking",
+        "Nova",
+        "Okitsu"
       ],
       "climate_adaptation": {
         "cold": "Gèle à -5 °C. Culture en pot obligatoire en zone froide, à hiverner en véranda lumineuse hors gel. Légèrement plus tolérant au froid que l'oranger.",
@@ -4779,7 +4818,9 @@
       "container_min_size_l": 50,
       "popular_varieties": [
         "Nagami",
-        "Marumi"
+        "Marumi",
+        "Meiwa",
+        "Fukushu"
       ],
       "climate_adaptation": {
         "cold": "Résiste à -10 °C, le plus rustique des agrumes. Peut survivre en pleine terre dans les zones les plus douces du climat océanique avec protection hivernale.",
@@ -5026,7 +5067,9 @@
       "popular_varieties": [
         "Bolero",
         "Flamenco",
-        "Waltz"
+        "Waltz",
+        "Goldcats",
+        "Crimson Spire"
       ],
       "climate_adaptation": {
         "cold": "Résistant à -25 °C. Sa forme étroite le rend facile à protéger avec un voile. Idéal en pot sur un balcon abrité en zone froide.",
@@ -5079,7 +5122,9 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Conférence",
-        "Williams"
+        "Williams",
+        "Comice",
+        "Guyot"
       ],
       "climate_adaptation": {
         "cold": "Rustique (-20 °C). En pot, protégez les racines du gel en entourant le contenant de voile d'hivernage. Rentrez si possible contre un mur exposé au sud.",
@@ -5133,7 +5178,9 @@
       "container_min_size_l": 80,
       "popular_varieties": [
         "Bergeron",
-        "Orangered"
+        "Orangered",
+        "Polonais",
+        "Luizet"
       ],
       "climate_adaptation": {
         "cold": "Résiste à -20 °C sur bois. Floraison plus tardive que l'abricotier classique, ce qui réduit le risque de gel. Variété Bergeron ou Tardif de Tain recommandée en zone froide.",
