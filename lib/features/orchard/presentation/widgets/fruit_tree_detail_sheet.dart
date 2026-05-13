@@ -8,6 +8,9 @@ import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/database.dart';
 import '../../../../core/providers/orchard_providers.dart';
+import '../../domain/models/planting_type.dart';
+import 'planting_type_selector.dart';
+import 'variety_autocomplete_field.dart';
 
 /// Sheet affichant les détails d'un arbre fruitier du catalogue
 /// avec possibilité de l'ajouter au verger
@@ -24,7 +27,8 @@ class FruitTreeDetailSheet extends ConsumerStatefulWidget {
 class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
   bool _showAddForm = false;
   final _nicknameController = TextEditingController();
-  String? _selectedVariety;
+  String? _variety;
+  PlantingType _plantingType = PlantingType.ground;
   DateTime? _plantingDate;
   bool _isLoading = false;
 
@@ -70,8 +74,9 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
             nickname: _nicknameController.text.trim().isEmpty
                 ? null
                 : _nicknameController.text.trim(),
-            variety: _selectedVariety,
+            variety: _variety,
             plantingDate: _plantingDate,
+            plantingType: _plantingType,
           );
 
       if (mounted) {
@@ -196,7 +201,7 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
                     if (tree.selfFertile)
                       const _Tag(emoji: '✅', label: 'Autofertile'),
                     if (tree.containerSuitable)
-                      const _Tag(emoji: '🪴', label: 'En pot'),
+                      const _Tag(emoji: '🪴', label: 'Cultivable en pot'),
                   ],
                 ),
 
@@ -345,7 +350,30 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
 
         const SizedBox(height: 20),
 
-        // Surnom
+        // 1. Type de plantation
+        Text('Type de plantation', style: AppTypography.labelMedium),
+        const SizedBox(height: 8),
+        PlantingTypeSelector(
+          selected: _plantingType,
+          onChanged: (t) => setState(() => _plantingType = t),
+          containerSuitable: widget.tree.containerSuitable,
+          heightAdultM: widget.tree.heightAdultM,
+        ),
+
+        const SizedBox(height: 20),
+
+        // 2. Variété (Autocomplete avec saisie libre)
+        Text('Variété (optionnel)', style: AppTypography.labelMedium),
+        const SizedBox(height: 8),
+        VarietyAutocompleteField(
+          suggestions: varieties,
+          initialValue: _variety,
+          onChanged: (v) => _variety = v,
+        ),
+
+        const SizedBox(height: 20),
+
+        // 3. Surnom
         Text('Surnom', style: AppTypography.labelMedium),
         const SizedBox(height: 8),
         TextField(
@@ -363,38 +391,7 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
 
         const SizedBox(height: 20),
 
-        // Variété
-        if (varieties.isNotEmpty) ...[
-          Text('Variété', style: AppTypography.labelMedium),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String?>(
-                value: _selectedVariety,
-                hint: const Text('Sélectionner une variété'),
-                isExpanded: true,
-                items: [
-                  const DropdownMenuItem(
-                    value: null,
-                    child: Text('Je ne sais pas / Autre'),
-                  ),
-                  ...varieties.map(
-                    (v) => DropdownMenuItem(value: v, child: Text(v)),
-                  ),
-                ],
-                onChanged: (v) => setState(() => _selectedVariety = v),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-        ],
-
-        // Date de plantation
+        // 4. Date de plantation
         Text('Date de plantation', style: AppTypography.labelMedium),
         const SizedBox(height: 8),
         GestureDetector(
