@@ -5244,6 +5244,66 @@
       "recommended_pheromone_traps": [
         "cherryFruitFly"
       ]
+    },
+    {
+      "id": 101,
+      "common_name": "Framboisier",
+      "latin_name": "Rubus idaeus",
+      "category": "petit_fruit",
+      "subcategory": "baies",
+      "emoji": "🫐",
+      "description": "Arbuste fruitier à cannes, framboises rouges parfumées très productives.",
+      "height_adult_m": 1.8,
+      "spread_adult_m": 1.0,
+      "growth_rate": "rapide",
+      "lifespan_years": 12,
+      "hardiness_zone": "3-8",
+      "cold_resistance_celsius": -30,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_type": "frais, profond, humifère, légèrement acide",
+      "soil_ph": "5.5-6.5",
+      "water_needs": "moyen à élevé",
+      "drought_tolerance": false,
+      "self_fertile": true,
+      "pollination_details": "Autofertile",
+      "flowering_period": "mai-juin",
+      "harvest_period": "juin-juillet (non remontants), août-octobre (remontants)",
+      "years_to_first_fruit": 2,
+      "yield_kg_per_tree": 2,
+      "planting_period": "octobre-mars (hors gel)",
+      "planting_distance_m": 0.5,
+      "pruning_training_period": "mars",
+      "pruning_maintenance_period": "après récolte (non remontants) ou février (remontants)",
+      "diseases": [
+        "didymella (brûlure des cannes)",
+        "rouille",
+        "botrytis",
+        "verticilliose"
+      ],
+      "pests": [
+        "ver de la framboise (Byturus)",
+        "pucerons",
+        "cécidomyie des écorces",
+        "drosophila suzukii"
+      ],
+      "container_suitable": true,
+      "container_min_size_l": 40,
+      "popular_varieties": [
+        "Heritage",
+        "Versailles",
+        "Zeva",
+        "Meeker",
+        "Tulameen",
+        "Fall Gold"
+      ],
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Le framboisier est l'un des petits fruits les mieux adaptés aux zones froides. Privilégiez les variétés non remontantes en altitude pour assurer la maturation. Paillez en hiver pour protéger les racines.",
+        "temperate": "Climat idéal. Plantez des cannes en automne ou fin d'hiver. Palissez les cannes sur deux fils horizontaux à 80 cm et 1,50 m. Mélangez variétés remontantes (Heritage, Zeva) et non remontantes (Meeker, Tulameen) pour étaler la récolte de juin à octobre.",
+        "hot": "Le framboisier supporte mal la chaleur sèche au-dessus de 30 °C. Plantez à mi-ombre (exposition est ou nord), paillez épais et arrosez régulièrement au pied. Préférez les variétés remontantes qui fructifient en début et fin de saison, hors canicule."
+      },
+      "toxicity": null,
+      "practical_tips": "Distinguer remontants (fructifient sur cannes de l'année, taille rase en février) et non remontants (fructifient sur cannes de l'année précédente, supprimer les cannes ayant fructifié juste après la récolte). Palisser sur des fils horizontaux pour faciliter la cueillette. Pailler généreusement (BRF, paille) pour garder le sol frais. Drageonne abondamment : installer une barrière anti-rhizome ou en cuve hors-sol. Renouveler la plantation tous les 8-10 ans.",
+      "recommended_pheromone_traps": []
     }
   ]
 }

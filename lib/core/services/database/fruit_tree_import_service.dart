@@ -34,6 +34,13 @@ class FruitTreeImportService {
           return importFromAssets(forceReimport: true);
         }
       }
+      // Framboisier ajouté en v1.7.1 (id 101). Si absent en base, on
+      // réimporte pour que les utilisateurs existants en bénéficient.
+      final framboisier = await _db.getFruitTreeById(101);
+      if (framboisier == null) {
+        debugPrint('🌳 Framboisier absent, réimport forcé...');
+        return importFromAssets(forceReimport: true);
+      }
       debugPrint('🌳 Base arbres fruitiers déjà peuplée ($existingCount arbres)');
       return existingCount;
     }

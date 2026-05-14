@@ -123,6 +123,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -139,7 +143,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -2409,6 +2414,10 @@
         {
           "common_name": "Souci",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -2419,7 +2428,8 @@
       ],
       "companion_plant_ids": [
         22,
-        98
+        98,
+        252
       ],
       "antagonistic_plant_ids": [
         2
@@ -2689,6 +2699,10 @@
         {
           "common_name": "Haricot nain",
           "companion_id": 22
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -2699,7 +2713,8 @@
       ],
       "companion_plant_ids": [
         60,
-        22
+        22,
+        252
       ],
       "antagonistic_plant_ids": [
         2
@@ -3706,6 +3721,10 @@
         {
           "common_name": "Sauge officinale",
           "companion_id": 57
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -3722,7 +3741,8 @@
         9,
         30,
         33,
-        57
+        57,
+        252
       ],
       "antagonistic_plant_ids": [
         1,
@@ -5357,6 +5377,10 @@
         {
           "common_name": "Oignon jaune",
           "companion_id": 4
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -5367,7 +5391,8 @@
       ],
       "companion_plant_ids": [
         41,
-        4
+        4,
+        252
       ],
       "antagonistic_plant_ids": [
         71
@@ -9586,6 +9611,10 @@
         {
           "common_name": "Menthe",
           "companion_id": 35
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [],
@@ -9593,7 +9622,8 @@
         8,
         9,
         14,
-        35
+        35,
+        252
       ],
       "antagonistic_plant_ids": [],
       "category_code": "fruit",
@@ -18475,6 +18505,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -18491,7 +18525,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -18635,6 +18670,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -18651,7 +18690,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -18795,6 +18835,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -18811,7 +18855,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -18955,6 +19000,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -18971,7 +19020,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -19115,6 +19165,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -19131,7 +19185,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -19275,6 +19330,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -19291,7 +19350,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -19435,6 +19495,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -19451,7 +19515,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -19595,6 +19660,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -19611,7 +19680,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -19755,6 +19825,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -19771,7 +19845,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -19915,6 +19990,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -19931,7 +20010,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -20075,6 +20155,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -20091,7 +20175,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -20235,6 +20320,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -20251,7 +20340,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -20395,6 +20485,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -20411,7 +20505,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -20555,6 +20650,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -20571,7 +20670,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -20715,6 +20815,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -20731,7 +20835,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -20875,6 +20980,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -20891,7 +21000,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -21035,6 +21145,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -21051,7 +21165,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -22147,6 +22262,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -22163,7 +22282,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -22307,6 +22427,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -22323,7 +22447,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -22467,6 +22592,10 @@
         {
           "common_name": "Œillet d'Inde",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -22483,7 +22612,8 @@
         31,
         4,
         32,
-        56
+        56,
+        252
       ],
       "antagonistic_plant_ids": [
         2,
@@ -24135,6 +24265,10 @@
         {
           "common_name": "Souci",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -24145,7 +24279,8 @@
       ],
       "companion_plant_ids": [
         22,
-        98
+        98,
+        252
       ],
       "antagonistic_plant_ids": [
         2
@@ -24283,6 +24418,10 @@
         {
           "common_name": "Souci",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -24293,7 +24432,8 @@
       ],
       "companion_plant_ids": [
         22,
-        98
+        98,
+        252
       ],
       "antagonistic_plant_ids": [
         2
@@ -24431,6 +24571,10 @@
         {
           "common_name": "Souci",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -24441,7 +24585,8 @@
       ],
       "companion_plant_ids": [
         22,
-        98
+        98,
+        252
       ],
       "antagonistic_plant_ids": [
         2
@@ -24579,6 +24724,10 @@
         {
           "common_name": "Souci",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -24589,7 +24738,8 @@
       ],
       "companion_plant_ids": [
         22,
-        98
+        98,
+        252
       ],
       "antagonistic_plant_ids": [
         2
@@ -24727,6 +24877,10 @@
         {
           "common_name": "Souci",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -24737,7 +24891,8 @@
       ],
       "companion_plant_ids": [
         22,
-        98
+        98,
+        252
       ],
       "antagonistic_plant_ids": [
         2
@@ -24875,6 +25030,10 @@
         {
           "common_name": "Souci",
           "companion_id": null
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -24885,7 +25044,8 @@
       ],
       "companion_plant_ids": [
         22,
-        98
+        98,
+        252
       ],
       "antagonistic_plant_ids": [
         2
@@ -29543,6 +29703,10 @@
         {
           "common_name": "Sauge officinale",
           "companion_id": 57
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -29559,7 +29723,8 @@
         9,
         30,
         33,
-        57
+        57,
+        252
       ],
       "antagonistic_plant_ids": [
         1,
@@ -29698,6 +29863,10 @@
         {
           "common_name": "Sauge officinale",
           "companion_id": 57
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -29714,7 +29883,8 @@
         9,
         30,
         33,
-        57
+        57,
+        252
       ],
       "antagonistic_plant_ids": [
         1,
@@ -29853,6 +30023,10 @@
         {
           "common_name": "Sauge officinale",
           "companion_id": 57
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -29869,7 +30043,8 @@
         9,
         30,
         33,
-        57
+        57,
+        252
       ],
       "antagonistic_plant_ids": [
         1,
@@ -30290,6 +30465,10 @@
         {
           "common_name": "Oignon jaune",
           "companion_id": 4
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
         }
       ],
       "plants_antagonists": [
@@ -30300,7 +30479,8 @@
       ],
       "companion_plant_ids": [
         41,
-        4
+        4,
+        252
       ],
       "antagonistic_plant_ids": [
         71
@@ -34584,6 +34764,308 @@
         "frequency_days": 21,
         "type": "compost mûr / engrais organique",
         "notes": "Plante gourmande : apporter du compost ou un engrais organique régulièrement, surtout pendant la phase de fructification."
+      }
+    },
+    {
+      "common_name": "Framboisier",
+      "latin_name": "Rubus idaeus",
+      "spacing_cm_between_plants": 50,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 5,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol profond, humifère, légèrement acide, bien drainé. Paillage épais (BRF, paille) recommandé.",
+      "red_flags": "Sensible à la verticilliose et au mildiou commun avec les solanacées : éviter de planter après tomate ou pomme de terre. Drageonne fortement : prévoir une barrière anti-rhizome.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "plantation des cannes : octobre-mars (hors gel)",
+      "harvest_period": "juin-juillet (non remontants) ou août-octobre (remontants)",
+      "sowing_recommendation": "Multiplication par drageons ou plants achetés en racines nues à l'automne.",
+      "cultivation_greenhouse": "Pas indispensable. Possible en pot pour les balcons.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Temps doux, sol ressuyé, hors gel.",
+      "planting_advice": "Planter les cannes à 50 cm sur le rang, palisser sur deux fils horizontaux à 80 cm et 1,50 m. Rabattre les cannes à 30 cm après plantation.",
+      "care_advice": "Pailler généreusement. Pour les non remontants : supprimer les cannes ayant fructifié juste après la récolte. Pour les remontants : rabattre toutes les cannes au ras du sol en février.",
+      "id": 251,
+      "main_destroyers": [
+        "ver de la framboise (Byturus)",
+        "pucerons",
+        "drosophila suzukii",
+        "didymella",
+        "rouille"
+      ],
+      "growing_zone": "Soleil à mi-ombre (4-6 h/jour)",
+      "watering": "Arrosages réguliers en été, surtout en période de fructification. Sol toujours frais sans excès.",
+      "soil_type": "Sol profond, humifère, légèrement acide, bien drainé.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": 18,
+          "light": "Moyenne",
+          "humidity": "Modérée",
+          "frost_risk": "Multiplication par drageons ou plants, pas par semis.",
+          "note": "Le framboisier se plante en cannes (racines nues ou godets), pas par semis."
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Oui (hors gel)",
+          "February": "Oui (hors gel)",
+          "March": "Oui (plantation en place)",
+          "April": "Oui (godets uniquement)",
+          "May": "Non",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Oui (plantation en place)",
+          "November": "Oui (plantation en place)",
+          "December": "Oui (hors gel)"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 5,
+          "soil_temp_max_celsius": null,
+          "light": "Moyenne",
+          "humidity": "Modérée",
+          "frost_risk": "Faible (plante très rustique, jusqu'à -30 °C). Éviter la plantation par temps de gel.",
+          "note": "Plantation idéale à l'automne (racines nues) ou fin d'hiver. Pailler après plantation."
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Oui (non remontants)",
+          "July": "Oui (non remontants)",
+          "August": "Oui (remontants)",
+          "September": "Oui (remontants)",
+          "October": "Oui (remontants)",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 12,
+          "soil_temp_max_celsius": 28,
+          "light": "Moyenne",
+          "humidity": "Modérée",
+          "frost_risk": "Non (récolter par temps sec).",
+          "note": "Cueillir tous les 2-3 jours en pleine production, les fruits ne se conservent que 24 h."
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Ail",
+          "companion_id": 8
+        },
+        {
+          "common_name": "Bourrache",
+          "companion_id": 252
+        }
+      ],
+      "plants_antagonists": [
+        {
+          "common_name": "Tomate",
+          "antagonist_id": 1
+        },
+        {
+          "common_name": "Pomme de terre",
+          "antagonist_id": 2
+        }
+      ],
+      "companion_plant_ids": [
+        8,
+        252
+      ],
+      "antagonistic_plant_ids": [
+        1,
+        2
+      ],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Privilégiez les variétés non remontantes qui ont le temps de mûrir avant l'automne. Paillage épais en hiver pour protéger les racines.",
+        "temperate": "Climat idéal. Mélangez remontants (Heritage, Zeva) et non remontants (Meeker, Tulameen) pour étaler la récolte de juin à octobre. Palissez sur deux fils horizontaux.",
+        "hot": "Supporte mal les fortes chaleurs sèches. Installer à mi-ombre (exposition est), pailler abondamment et arroser régulièrement. Préférer les variétés remontantes qui produisent hors canicule."
+      },
+      "toxicity": null,
+      "practical_tips": "Distinguer remontants (taille rase en février, récolte sur cannes de l'année) et non remontants (taille des cannes ayant fructifié juste après la récolte). Drageonne abondamment : prévoir une barrière anti-rhizome ou la culture en cuve. Renouveler la plantation tous les 8-10 ans pour éviter l'épuisement du sol.",
+      "fertilization": {
+        "frequency_days": 60,
+        "type": "compost mûr + paillage organique",
+        "notes": "Apport modéré de compost mûr au printemps et après la récolte. Le paillage organique (BRF, feuilles mortes) couvre une grande partie des besoins."
+      }
+    },
+    {
+      "common_name": "Bourrache",
+      "latin_name": "Borago officinalis",
+      "spacing_cm_between_plants": 40,
+      "spacing_cm_between_rows": 50,
+      "planting_depth_cm": 1,
+      "sun_exposure": "ensoleillé à mi-ombre",
+      "soil_moisture_preference": "normal",
+      "soil_treatment_advice": "Sol ordinaire, bien drainé, même pauvre. La bourrache s'adapte à tous types de sols.",
+      "red_flags": "Plante mellifère envahissante : se ressème seule en abondance. Les feuilles piquantes peuvent irriter la peau sensible.",
+      "sowing_under_cover_period": "février-mars (sous abri pour récolte précoce)",
+      "sowing_open_ground_period": "mars-juin en place, puis juillet-août pour une récolte d'automne",
+      "transplanting_period": "avril-mai (supporte mal la transplantation, préférer le semis en place)",
+      "harvest_period": "juin-octobre (fleurs et feuilles fraîches)",
+      "sowing_recommendation": "Semer directement en place, la bourrache supporte mal la transplantation. Éclaircir à 40 cm après levée.",
+      "cultivation_greenhouse": "Inutile, plante très rustique en pleine terre.",
+      "planting_min_temp_c": 8,
+      "planting_weather_conditions": "Sol réchauffé, ressuyé, hors gel.",
+      "planting_advice": "Semer en poquets de 3-4 graines à 1 cm de profondeur. Éclaircir au stade 4 feuilles en conservant le plant le plus vigoureux.",
+      "care_advice": "Arroser modérément en cas de sécheresse prolongée. Tuteurer les sujets âgés qui s'affaissent. Couper les fleurs régulièrement pour prolonger la floraison.",
+      "id": 252,
+      "main_destroyers": [
+        "limaces sur jeunes plants",
+        "pucerons (rares)"
+      ],
+      "growing_zone": "Plein soleil à mi-ombre",
+      "watering": "Arrosages modérés, plante peu exigeante une fois installée.",
+      "soil_type": "Sol ordinaire, bien drainé, même pauvre.",
+      "sowing_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Oui (sous abri)",
+          "March": "Oui (en place)",
+          "April": "Oui (en place)",
+          "May": "Oui (en place)",
+          "June": "Oui (en place)",
+          "July": "Oui (récolte d'automne)",
+          "August": "Oui (récolte d'automne)",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 8,
+          "soil_temp_max_celsius": 25,
+          "light": "Élevée",
+          "humidity": "Modérée",
+          "frost_risk": "Faible après les Saints de Glace pour les semis en place.",
+          "note": "Lève en 7-15 jours. Se ressème spontanément d'une année sur l'autre."
+        }
+      },
+      "planting_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Oui (repiquage jeunes plants)",
+          "May": "Oui (repiquage jeunes plants)",
+          "June": "Non",
+          "July": "Non",
+          "August": "Non",
+          "September": "Non",
+          "October": "Non",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 10,
+          "soil_temp_max_celsius": null,
+          "light": "Élevée",
+          "humidity": "Modérée",
+          "frost_risk": "Non (planter après les dernières gelées).",
+          "note": "Préférer le semis direct, la bourrache supporte mal la transplantation."
+        }
+      },
+      "harvest_calendar": {
+        "monthly_period": {
+          "January": "Non",
+          "February": "Non",
+          "March": "Non",
+          "April": "Non",
+          "May": "Non",
+          "June": "Oui (fleurs et feuilles)",
+          "July": "Oui (fleurs et feuilles)",
+          "August": "Oui (fleurs et feuilles)",
+          "September": "Oui (fleurs et feuilles)",
+          "October": "Oui (selon climat)",
+          "November": "Non",
+          "December": "Non"
+        },
+        "weather_conditions": {
+          "soil_temp_min_celsius": 12,
+          "soil_temp_max_celsius": 30,
+          "light": "Élevée",
+          "humidity": "Modérée",
+          "frost_risk": "Non.",
+          "note": "Récolter les fleurs au fur et à mesure pour stimuler la floraison. Les feuilles jeunes se consomment crues ou cuites."
+        }
+      },
+      "plants_companions": [
+        {
+          "common_name": "Tomate",
+          "companion_id": 1
+        },
+        {
+          "common_name": "Courgette",
+          "companion_id": 17
+        },
+        {
+          "common_name": "Concombre",
+          "companion_id": 19
+        },
+        {
+          "common_name": "Chou pommé",
+          "companion_id": 26
+        },
+        {
+          "common_name": "Chou-fleur",
+          "companion_id": 36
+        },
+        {
+          "common_name": "Fraisier",
+          "companion_id": 71
+        },
+        {
+          "common_name": "Framboisier",
+          "companion_id": 251
+        }
+      ],
+      "plants_antagonists": [],
+      "companion_plant_ids": [
+        1,
+        17,
+        19,
+        26,
+        36,
+        71,
+        251
+      ],
+      "antagonistic_plant_ids": [],
+      "category_code": "herb",
+      "category_label": "Aromatique",
+      "climate_adaptation": {
+        "cold": "Très rustique. Semer dès que le sol est ressuyé (mars-avril). Se ressème spontanément. Les jeunes plants supportent de légères gelées.",
+        "temperate": "Climat idéal. Semer en place de mars à juin, puis en juillet-août pour une récolte d'automne. La bourrache fleurit jusqu'aux premières gelées sévères.",
+        "hot": "Bonne adaptation si le sol reste frais. Semer tôt au printemps (mars), pailler et arroser modérément en été. Floraison plus courte en zone très chaude."
+      },
+      "toxicity": "Contient des alcaloïdes pyrrolizidiniques en faible quantité : consommation occasionnelle uniquement, à éviter pendant la grossesse et l'allaitement.",
+      "practical_tips": "Plante mellifère par excellence : les abeilles raffolent de ses fleurs bleues étoilées. Excellente compagne pour la tomate, la courgette et le fraisier (attire les pollinisateurs, repousse certains nuisibles). Les fleurs comestibles décorent salades, desserts et boissons (goût d'huître). Les feuilles jeunes se consomment comme un épinard. Se ressème seule chaque année, prévoir de l'espace.",
+      "fertilization": {
+        "frequency_days": 0,
+        "type": "aucun apport spécifique",
+        "notes": "Plante peu exigeante : aucun apport nécessaire en sol de jardin classique. Un excès d'azote nuit à la floraison."
       }
     }
   ]

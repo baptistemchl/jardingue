@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -48,7 +49,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration {
@@ -175,6 +176,15 @@ class AppDatabase extends _$AppDatabase {
         // restent à null et sont affichés par défaut comme "Pleine terre".
         if (from < 17) {
           await _safeAddColumn(m, userFruitTrees, userFruitTrees.plantingType);
+        }
+        // Migration v17 -> v18 : ajout Framboisier (plants id 251 +
+        // fruit_trees id 101) et Bourrache (plants id 252) au catalogue,
+        // cross-link bourrache↔tomate/courgette/concombre/choux/fraisier.
+        // Pas de changement de schéma : le réimport est déclenché par les
+        // sentinelles `getPlantById(252) == null` dans PlantImportService
+        // et `getFruitTreeById(101) == null` dans FruitTreeImportService.
+        if (from < 18) {
+          debugPrint('🌱 Migration v18 : framboisier + bourrache');
         }
       },
     );

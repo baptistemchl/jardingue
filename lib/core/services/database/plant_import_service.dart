@@ -49,6 +49,14 @@ class PlantImportService {
             'Fertilisation absente du catalogue (v15), reimport force...');
         return importFromAssets(forceReimport: true);
       }
+      // Framboisier (id 251) + Bourrache (id 252) ajoutes en v1.7.1.
+      // La bourrache fait sentinelle : si elle manque, le framboisier
+      // manque aussi et le reimport rattrapera les deux.
+      final bourrache = await _db.getPlantById(252);
+      if (bourrache == null) {
+        debugPrint('Bourrache absente du catalogue, reimport force...');
+        return importFromAssets(forceReimport: true);
+      }
       debugPrint('Base de donnees deja peuplee ($existingCount plantes)');
       return existingCount;
     }
