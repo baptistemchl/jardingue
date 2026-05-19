@@ -3382,6 +3382,17 @@ class $GardenPlantsTable extends GardenPlants
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _customColorMeta = const VerificationMeta(
+    'customColor',
+  );
+  @override
+  late final GeneratedColumn<int> customColor = GeneratedColumn<int>(
+    'custom_color',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _fertilizingFrequencyDaysMeta =
       const VerificationMeta('fertilizingFrequencyDays');
   @override
@@ -3431,6 +3442,7 @@ class $GardenPlantsTable extends GardenPlants
     notes,
     sowedAt,
     wateringFrequencyDays,
+    customColor,
     fertilizingFrequencyDays,
     previousCropPlantId,
     createdAt,
@@ -3524,6 +3536,15 @@ class $GardenPlantsTable extends GardenPlants
         ),
       );
     }
+    if (data.containsKey('custom_color')) {
+      context.handle(
+        _customColorMeta,
+        customColor.isAcceptableOrUnknown(
+          data['custom_color']!,
+          _customColorMeta,
+        ),
+      );
+    }
     if (data.containsKey('fertilizing_frequency_days')) {
       context.handle(
         _fertilizingFrequencyDaysMeta,
@@ -3601,6 +3622,10 @@ class $GardenPlantsTable extends GardenPlants
         DriftSqlType.int,
         data['${effectivePrefix}watering_frequency_days'],
       ),
+      customColor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}custom_color'],
+      ),
       fertilizingFrequencyDays: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}fertilizing_frequency_days'],
@@ -3634,6 +3659,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
   final String? notes;
   final DateTime? sowedAt;
   final int? wateringFrequencyDays;
+  final int? customColor;
   final int? fertilizingFrequencyDays;
   final int? previousCropPlantId;
   final DateTime createdAt;
@@ -3649,6 +3675,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     this.notes,
     this.sowedAt,
     this.wateringFrequencyDays,
+    this.customColor,
     this.fertilizingFrequencyDays,
     this.previousCropPlantId,
     required this.createdAt,
@@ -3674,6 +3701,9 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     }
     if (!nullToAbsent || wateringFrequencyDays != null) {
       map['watering_frequency_days'] = Variable<int>(wateringFrequencyDays);
+    }
+    if (!nullToAbsent || customColor != null) {
+      map['custom_color'] = Variable<int>(customColor);
     }
     if (!nullToAbsent || fertilizingFrequencyDays != null) {
       map['fertilizing_frequency_days'] = Variable<int>(
@@ -3708,6 +3738,9 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
       wateringFrequencyDays: wateringFrequencyDays == null && nullToAbsent
           ? const Value.absent()
           : Value(wateringFrequencyDays),
+      customColor: customColor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customColor),
       fertilizingFrequencyDays: fertilizingFrequencyDays == null && nullToAbsent
           ? const Value.absent()
           : Value(fertilizingFrequencyDays),
@@ -3737,6 +3770,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
       wateringFrequencyDays: serializer.fromJson<int?>(
         json['wateringFrequencyDays'],
       ),
+      customColor: serializer.fromJson<int?>(json['customColor']),
       fertilizingFrequencyDays: serializer.fromJson<int?>(
         json['fertilizingFrequencyDays'],
       ),
@@ -3761,6 +3795,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
       'notes': serializer.toJson<String?>(notes),
       'sowedAt': serializer.toJson<DateTime?>(sowedAt),
       'wateringFrequencyDays': serializer.toJson<int?>(wateringFrequencyDays),
+      'customColor': serializer.toJson<int?>(customColor),
       'fertilizingFrequencyDays': serializer.toJson<int?>(
         fertilizingFrequencyDays,
       ),
@@ -3781,6 +3816,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     Value<String?> notes = const Value.absent(),
     Value<DateTime?> sowedAt = const Value.absent(),
     Value<int?> wateringFrequencyDays = const Value.absent(),
+    Value<int?> customColor = const Value.absent(),
     Value<int?> fertilizingFrequencyDays = const Value.absent(),
     Value<int?> previousCropPlantId = const Value.absent(),
     DateTime? createdAt,
@@ -3798,6 +3834,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     wateringFrequencyDays: wateringFrequencyDays.present
         ? wateringFrequencyDays.value
         : this.wateringFrequencyDays,
+    customColor: customColor.present ? customColor.value : this.customColor,
     fertilizingFrequencyDays: fertilizingFrequencyDays.present
         ? fertilizingFrequencyDays.value
         : this.fertilizingFrequencyDays,
@@ -3825,6 +3862,9 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
       wateringFrequencyDays: data.wateringFrequencyDays.present
           ? data.wateringFrequencyDays.value
           : this.wateringFrequencyDays,
+      customColor: data.customColor.present
+          ? data.customColor.value
+          : this.customColor,
       fertilizingFrequencyDays: data.fertilizingFrequencyDays.present
           ? data.fertilizingFrequencyDays.value
           : this.fertilizingFrequencyDays,
@@ -3849,6 +3889,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
           ..write('notes: $notes, ')
           ..write('sowedAt: $sowedAt, ')
           ..write('wateringFrequencyDays: $wateringFrequencyDays, ')
+          ..write('customColor: $customColor, ')
           ..write('fertilizingFrequencyDays: $fertilizingFrequencyDays, ')
           ..write('previousCropPlantId: $previousCropPlantId, ')
           ..write('createdAt: $createdAt')
@@ -3869,6 +3910,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
     notes,
     sowedAt,
     wateringFrequencyDays,
+    customColor,
     fertilizingFrequencyDays,
     previousCropPlantId,
     createdAt,
@@ -3888,6 +3930,7 @@ class GardenPlant extends DataClass implements Insertable<GardenPlant> {
           other.notes == this.notes &&
           other.sowedAt == this.sowedAt &&
           other.wateringFrequencyDays == this.wateringFrequencyDays &&
+          other.customColor == this.customColor &&
           other.fertilizingFrequencyDays == this.fertilizingFrequencyDays &&
           other.previousCropPlantId == this.previousCropPlantId &&
           other.createdAt == this.createdAt);
@@ -3905,6 +3948,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
   final Value<String?> notes;
   final Value<DateTime?> sowedAt;
   final Value<int?> wateringFrequencyDays;
+  final Value<int?> customColor;
   final Value<int?> fertilizingFrequencyDays;
   final Value<int?> previousCropPlantId;
   final Value<DateTime> createdAt;
@@ -3920,6 +3964,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
     this.notes = const Value.absent(),
     this.sowedAt = const Value.absent(),
     this.wateringFrequencyDays = const Value.absent(),
+    this.customColor = const Value.absent(),
     this.fertilizingFrequencyDays = const Value.absent(),
     this.previousCropPlantId = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -3936,6 +3981,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
     this.notes = const Value.absent(),
     this.sowedAt = const Value.absent(),
     this.wateringFrequencyDays = const Value.absent(),
+    this.customColor = const Value.absent(),
     this.fertilizingFrequencyDays = const Value.absent(),
     this.previousCropPlantId = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -3955,6 +4001,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
     Expression<String>? notes,
     Expression<DateTime>? sowedAt,
     Expression<int>? wateringFrequencyDays,
+    Expression<int>? customColor,
     Expression<int>? fertilizingFrequencyDays,
     Expression<int>? previousCropPlantId,
     Expression<DateTime>? createdAt,
@@ -3972,6 +4019,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
       if (sowedAt != null) 'sowed_at': sowedAt,
       if (wateringFrequencyDays != null)
         'watering_frequency_days': wateringFrequencyDays,
+      if (customColor != null) 'custom_color': customColor,
       if (fertilizingFrequencyDays != null)
         'fertilizing_frequency_days': fertilizingFrequencyDays,
       if (previousCropPlantId != null)
@@ -3992,6 +4040,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
     Value<String?>? notes,
     Value<DateTime?>? sowedAt,
     Value<int?>? wateringFrequencyDays,
+    Value<int?>? customColor,
     Value<int?>? fertilizingFrequencyDays,
     Value<int?>? previousCropPlantId,
     Value<DateTime>? createdAt,
@@ -4009,6 +4058,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
       sowedAt: sowedAt ?? this.sowedAt,
       wateringFrequencyDays:
           wateringFrequencyDays ?? this.wateringFrequencyDays,
+      customColor: customColor ?? this.customColor,
       fertilizingFrequencyDays:
           fertilizingFrequencyDays ?? this.fertilizingFrequencyDays,
       previousCropPlantId: previousCropPlantId ?? this.previousCropPlantId,
@@ -4054,6 +4104,9 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
         wateringFrequencyDays.value,
       );
     }
+    if (customColor.present) {
+      map['custom_color'] = Variable<int>(customColor.value);
+    }
     if (fertilizingFrequencyDays.present) {
       map['fertilizing_frequency_days'] = Variable<int>(
         fertilizingFrequencyDays.value,
@@ -4082,6 +4135,7 @@ class GardenPlantsCompanion extends UpdateCompanion<GardenPlant> {
           ..write('notes: $notes, ')
           ..write('sowedAt: $sowedAt, ')
           ..write('wateringFrequencyDays: $wateringFrequencyDays, ')
+          ..write('customColor: $customColor, ')
           ..write('fertilizingFrequencyDays: $fertilizingFrequencyDays, ')
           ..write('previousCropPlantId: $previousCropPlantId, ')
           ..write('createdAt: $createdAt')
@@ -11690,6 +11744,7 @@ typedef $$GardenPlantsTableCreateCompanionBuilder =
       Value<String?> notes,
       Value<DateTime?> sowedAt,
       Value<int?> wateringFrequencyDays,
+      Value<int?> customColor,
       Value<int?> fertilizingFrequencyDays,
       Value<int?> previousCropPlantId,
       Value<DateTime> createdAt,
@@ -11707,6 +11762,7 @@ typedef $$GardenPlantsTableUpdateCompanionBuilder =
       Value<String?> notes,
       Value<DateTime?> sowedAt,
       Value<int?> wateringFrequencyDays,
+      Value<int?> customColor,
       Value<int?> fertilizingFrequencyDays,
       Value<int?> previousCropPlantId,
       Value<DateTime> createdAt,
@@ -11845,6 +11901,11 @@ class $$GardenPlantsTableFilterComposer
 
   ColumnFilters<int> get wateringFrequencyDays => $composableBuilder(
     column: $table.wateringFrequencyDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get customColor => $composableBuilder(
+    column: $table.customColor,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12007,6 +12068,11 @@ class $$GardenPlantsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get customColor => $composableBuilder(
+    column: $table.customColor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get fertilizingFrequencyDays => $composableBuilder(
     column: $table.fertilizingFrequencyDays,
     builder: (column) => ColumnOrderings(column),
@@ -12126,6 +12192,11 @@ class $$GardenPlantsTableAnnotationComposer
 
   GeneratedColumn<int> get wateringFrequencyDays => $composableBuilder(
     column: $table.wateringFrequencyDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get customColor => $composableBuilder(
+    column: $table.customColor,
     builder: (column) => column,
   );
 
@@ -12276,6 +12347,7 @@ class $$GardenPlantsTableTableManager
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime?> sowedAt = const Value.absent(),
                 Value<int?> wateringFrequencyDays = const Value.absent(),
+                Value<int?> customColor = const Value.absent(),
                 Value<int?> fertilizingFrequencyDays = const Value.absent(),
                 Value<int?> previousCropPlantId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -12291,6 +12363,7 @@ class $$GardenPlantsTableTableManager
                 notes: notes,
                 sowedAt: sowedAt,
                 wateringFrequencyDays: wateringFrequencyDays,
+                customColor: customColor,
                 fertilizingFrequencyDays: fertilizingFrequencyDays,
                 previousCropPlantId: previousCropPlantId,
                 createdAt: createdAt,
@@ -12308,6 +12381,7 @@ class $$GardenPlantsTableTableManager
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime?> sowedAt = const Value.absent(),
                 Value<int?> wateringFrequencyDays = const Value.absent(),
+                Value<int?> customColor = const Value.absent(),
                 Value<int?> fertilizingFrequencyDays = const Value.absent(),
                 Value<int?> previousCropPlantId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -12323,6 +12397,7 @@ class $$GardenPlantsTableTableManager
                 notes: notes,
                 sowedAt: sowedAt,
                 wateringFrequencyDays: wateringFrequencyDays,
+                customColor: customColor,
                 fertilizingFrequencyDays: fertilizingFrequencyDays,
                 previousCropPlantId: previousCropPlantId,
                 createdAt: createdAt,

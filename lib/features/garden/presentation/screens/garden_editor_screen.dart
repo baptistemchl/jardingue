@@ -25,6 +25,7 @@ import '../../domain/editor_mode.dart';
 import '../../domain/models/amendment_type.dart';
 import '../widgets/garden_grid.dart';
 import '../widgets/editor/antagonist_warning_dialog.dart';
+import '../widgets/editor/color_picker_sheet.dart';
 import '../widgets/editor/companion_suggestions_sheet.dart';
 import '../widgets/editor/undo_redo_buttons.dart';
 import '../widgets/editor/editor_mode_selector.dart';
@@ -540,6 +541,23 @@ class _GardenEditorScreenState
     _actionHistory.addAction(action);
   }
 
+  /// Ouvre le color picker et applique le résultat sur l'élément.
+  Future<void> _changeElementColor(GardenPlantWithDetails element) async {
+    final result = await ColorPickerSheet.show(
+      context: context,
+      plantName: element.name,
+      plantEmoji: element.emoji,
+      currentColor: element.color,
+      hasCustomColor: element.gardenPlant.customColor != null,
+    );
+    if (result == null) return;
+    if (!mounted) return;
+    await ref.read(gardenNotifierProvider.notifier).updateGardenPlantColor(
+          gardenPlantId: element.id,
+          color: result.isReset ? null : result.color,
+        );
+  }
+
   /// Duplique un élément (plante ou zone) en envoyant la copie au panier
   /// (gridX=-1). Affiche un snackbar de confirmation.
   Future<void> _duplicateElement(GardenPlantWithDetails element) async {
@@ -743,6 +761,10 @@ class _GardenEditorScreenState
           onDuplicate: () async {
             Navigator.of(ctx, rootNavigator: true).pop();
             await _duplicateElement(element);
+          },
+          onChangeColor: () async {
+            Navigator.of(ctx, rootNavigator: true).pop();
+            await _changeElementColor(element);
           },
         ),
       );

@@ -108,6 +108,7 @@ void main() {
           onUpdate: (_, _) {},
           onDelete: () {},
           onDuplicate: () {},
+          onChangeColor: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -141,6 +142,7 @@ void main() {
           onUpdate: (_, _) {},
           onDelete: () => deleteCalled = true,
           onDuplicate: () {},
+          onChangeColor: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -180,6 +182,7 @@ void main() {
           onUpdate: (_, _) {},
           onDelete: () => deleteCalled = true,
           onDuplicate: () {},
+          onChangeColor: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -218,6 +221,7 @@ void main() {
           onUpdate: (_, _) {},
           onDelete: () {},
           onDuplicate: () {},
+          onChangeColor: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -238,6 +242,7 @@ void main() {
           onUpdate: (_, _) {},
           onDelete: () {},
           onDuplicate: () {},
+          onChangeColor: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -256,6 +261,7 @@ void main() {
           onUpdate: (_, _) {},
           onDelete: () {},
           onDuplicate: () {},
+          onChangeColor: () {},
         ),
       ));
       await tester.pumpAndSettle();

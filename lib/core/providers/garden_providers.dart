@@ -264,6 +264,26 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
     }
   }
 
+  /// Met à jour la couleur personnalisée d'un pied placé (v19).
+  /// [color] = null pour revenir à la couleur de catégorie.
+  Future<void> updateGardenPlantColor({
+    required int gardenPlantId,
+    required int? color,
+  }) async {
+    try {
+      await _repo.updateGardenPlantColor(gardenPlantId, color);
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.updateGardenPlantColor',
+        extra: {
+          'gardenPlantId': gardenPlantId,
+          'color': color ?? 'null',
+        },
+      );
+      rethrow;
+    }
+  }
+
   /// Duplique un élément du potager (plante ou zone) en le plaçant
   /// dans le panier (gridX=-1, gridY=-1). La copie hérite intégralement
   /// de l'original : dimensions, dates, notes, fréquence d'arrosage,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jardingue/features/garden/presentation/widgets/editor/color_picker_sheet.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -557,6 +558,23 @@ class _UserEventTile extends ConsumerWidget {
               ),
             );
           }
+        },
+        onChangeColor: () async {
+          Navigator.of(ctx, rootNavigator: true).pop();
+          final result = await ColorPickerSheet.show(
+            context: context,
+            plantName: element.name,
+            plantEmoji: element.emoji,
+            currentColor: element.color,
+            hasCustomColor: element.gardenPlant.customColor != null,
+          );
+          if (result == null) return;
+          await ref
+              .read(gardenNotifierProvider.notifier)
+              .updateGardenPlantColor(
+                gardenPlantId: gp.id,
+                color: result.isReset ? null : result.color,
+              );
         },
       ),
     );

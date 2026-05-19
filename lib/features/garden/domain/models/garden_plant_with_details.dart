@@ -44,6 +44,9 @@ class GardenPlantWithDetails {
 
   int get color {
     if (isZone) return zoneType?.color ?? 0xFF9E9E9E;
+    // Priorité à la couleur perso (v19), sinon fallback sur la catégorie.
+    final custom = gardenPlant.customColor;
+    if (custom != null) return custom;
     return _colorFromCategory(plant?.categoryCode);
   }
 

@@ -49,7 +49,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration {
@@ -185,6 +185,14 @@ class AppDatabase extends _$AppDatabase {
         // et `getFruitTreeById(101) == null` dans FruitTreeImportService.
         if (from < 18) {
           debugPrint('🌱 Migration v18 : framboisier + bourrache');
+        }
+        // Migration v18 -> v19 : ajout colonne customColor sur GardenPlants.
+        // Permet aux utilisateurs de choisir une couleur perso pour chaque
+        // pied placé (palette + reset). Stockée en ARGB int, null =
+        // catégorie. Sur GardenPlants (pas Plants) pour éviter les
+        // conflits au réimport catalogue.
+        if (from < 19) {
+          await _safeAddColumn(m, gardenPlants, gardenPlants.customColor);
         }
       },
     );
@@ -771,6 +779,14 @@ class AppDatabase extends _$AppDatabase {
         widthCells: Value(widthCells),
         heightCells: Value(heightCells),
       ),
+    );
+  }
+
+  /// Met à jour la couleur personnalisée d'un pied placé. [color] = null
+  /// pour revenir à la couleur de catégorie (v19).
+  Future<void> updateGardenPlantColor(int id, int? color) {
+    return (update(gardenPlants)..where((t) => t.id.equals(id))).write(
+      GardenPlantsCompanion(customColor: Value(color)),
     );
   }
 
