@@ -95,6 +95,30 @@ class GardenScreen extends ConsumerWidget {
                               child: _PremiumCtaButton(),
                             ),
 
+                            // Bouton Paramètres
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: GestureDetector(
+                                onTap: () => context.push(AppRoutes.settings),
+                                child: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.background,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: AppColors.border),
+                                  ),
+                                  child: Icon(
+                                    PhosphorIcons.gearSix(
+                                      PhosphorIconsStyle.regular,
+                                    ),
+                                    size: 18,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ),
+                            ),
+
                             // Bouton A propos
                             GestureDetector(
                               onTap: () => context.push(AppRoutes.about),
