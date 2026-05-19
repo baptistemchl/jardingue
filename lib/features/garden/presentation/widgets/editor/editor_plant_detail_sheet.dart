@@ -30,6 +30,7 @@ class EditorPlantDetailSheet
   final double maxHeightM;
   final Function(double w, double h) onUpdate;
   final VoidCallback onDelete;
+  final VoidCallback onDuplicate;
 
   const EditorPlantDetailSheet({
     super.key,
@@ -39,6 +40,7 @@ class EditorPlantDetailSheet
     required this.maxHeightM,
     required this.onUpdate,
     required this.onDelete,
+    required this.onDuplicate,
   });
 
   @override
@@ -118,8 +120,6 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                     _buildCompanions(companionsAsync),
                     _buildAntagonists(antagonistsAsync),
                     _buildNotes(),
-                    const SizedBox(height: 24),
-                    _buildDeleteButton(context),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -202,6 +202,64 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
                   ),
                 ),
               ],
+            ],
+          ),
+        ),
+        _buildActionsMenu(context),
+      ],
+    );
+  }
+
+  /// Menu kebab (⋮) avec les actions Dupliquer / Supprimer. Placé en
+  /// haut à droite du header pour éviter de scroller toute la sheet
+  /// avant d'atteindre une action.
+  Widget _buildActionsMenu(BuildContext context) {
+    return PopupMenuButton<_PlantAction>(
+      icon: Icon(
+        PhosphorIcons.dotsThreeVertical(PhosphorIconsStyle.bold),
+        color: AppColors.textSecondary,
+      ),
+      tooltip: 'Actions',
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      onSelected: (action) {
+        switch (action) {
+          case _PlantAction.duplicate:
+            widget.onDuplicate();
+          case _PlantAction.delete:
+            _confirmDelete(context);
+        }
+      },
+      itemBuilder: (ctx) => [
+        PopupMenuItem(
+          value: _PlantAction.duplicate,
+          child: Row(
+            children: [
+              Icon(
+                PhosphorIcons.copy(PhosphorIconsStyle.regular),
+                size: 18,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 12),
+              const Text('Dupliquer'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: _PlantAction.delete,
+          child: Row(
+            children: [
+              Icon(
+                PhosphorIcons.trash(PhosphorIconsStyle.regular),
+                size: 18,
+                color: AppColors.error,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                AppLocalizations.of(context)!.removeFromGarden,
+                style: TextStyle(color: AppColors.error),
+              ),
             ],
           ),
         ),
@@ -1021,24 +1079,6 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
     );
   }
 
-  Widget _buildDeleteButton(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: () => _confirmDelete(context),
-      icon: Icon(
-        PhosphorIcons.trash(PhosphorIconsStyle.regular),
-      ),
-      label: Text(AppLocalizations.of(context)!.removeFromGarden),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.error,
-        side: BorderSide(color: AppColors.error),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
-
   void _confirmDelete(BuildContext context) {
     showDialog(
       context: context,
@@ -1073,6 +1113,10 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
         '${d.year}';
   }
 }
+
+// ========== Actions du menu kebab ==========
+
+enum _PlantAction { duplicate, delete }
 
 // ========== Editable rows ==========
 

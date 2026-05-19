@@ -264,6 +264,72 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
     }
   }
 
+  /// Duplique un élément du potager (plante ou zone) en le plaçant
+  /// dans le panier (gridX=-1, gridY=-1). La copie hérite intégralement
+  /// de l'original : dimensions, dates, notes, fréquence d'arrosage,
+  /// previousCropPlantId. Les events (sowing/planting) sont recréés
+  /// avec les dates d'origine pour rester cohérents dans « Mon suivi ».
+  Future<int> duplicateGardenPlant({
+    required int gardenPlantId,
+    required int gardenId,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final existing =
+          await ref.read(gardenPlantsProvider(gardenId).future);
+      final source =
+          existing.where((e) => e.id == gardenPlantId).firstOrNull;
+      if (source == null) {
+        throw Exception('Element source introuvable');
+      }
+      final gp = source.gardenPlant;
+
+      final id = await _repo.addPlantToGarden(
+        GardenPlantsCompanion.insert(
+          gardenId: gp.gardenId,
+          plantId: gp.plantId,
+          gridX: -1,
+          gridY: -1,
+          widthCells: Value(gp.widthCells),
+          heightCells: Value(gp.heightCells),
+          plantedAt: Value(gp.plantedAt),
+          sowedAt: Value(gp.sowedAt),
+          wateringFrequencyDays: Value(gp.wateringFrequencyDays),
+          notes: Value(gp.notes),
+          previousCropPlantId: Value(gp.previousCropPlantId),
+        ),
+      );
+
+      // Recrée les events avec les mêmes dates que l'original pour que
+      // « Mon suivi » reflète une plante du même âge.
+      final eventNotifier = ref.read(gardenEventNotifierProvider.notifier);
+      if (gp.sowedAt != null) {
+        await eventNotifier.logEvent(
+          gardenPlantId: id,
+          eventType: GardenEventType.sowing,
+          date: gp.sowedAt!,
+        );
+      }
+      if (gp.plantedAt != null) {
+        await eventNotifier.logEvent(
+          gardenPlantId: id,
+          eventType: GardenEventType.planting,
+          date: gp.plantedAt!,
+        );
+      }
+
+      state = const AsyncData(null);
+      return id;
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.duplicateGardenPlant',
+        extra: {'gardenPlantId': gardenPlantId, 'gardenId': gardenId},
+      );
+      state = AsyncError(e, st);
+      rethrow;
+    }
+  }
+
   /// Ajoute une plante au potager en attente de placement (gridX=-1, gridY=-1).
   /// L'utilisateur la placera plus tard dans l'editeur.
   Future<int> addPlantPendingPlacement({

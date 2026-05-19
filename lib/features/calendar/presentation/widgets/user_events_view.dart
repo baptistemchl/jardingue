@@ -534,6 +534,30 @@ class _UserEventTile extends ConsumerWidget {
               .removePlantFromGarden(gp.id);
           ref.invalidate(gardenPlantsProvider(garden.id));
         },
+        onDuplicate: () async {
+          final messenger = ScaffoldMessenger.of(context);
+          Navigator.of(ctx, rootNavigator: true).pop();
+          try {
+            await ref.read(gardenNotifierProvider.notifier).duplicateGardenPlant(
+                  gardenPlantId: gp.id,
+                  gardenId: garden.id,
+                );
+            messenger.showSnackBar(
+              SnackBar(
+                content: Text('${element.name} dupliquée — voir le panier'),
+                duration: const Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          } catch (_) {
+            messenger.showSnackBar(
+              const SnackBar(
+                content: Text('Impossible de dupliquer'),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        },
       ),
     );
   }

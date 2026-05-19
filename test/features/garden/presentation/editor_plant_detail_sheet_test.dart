@@ -107,6 +107,7 @@ void main() {
           maxHeightM: 1.0,
           onUpdate: (_, _) {},
           onDelete: () {},
+          onDuplicate: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -139,6 +140,7 @@ void main() {
           maxHeightM: 1.0,
           onUpdate: (_, _) {},
           onDelete: () => deleteCalled = true,
+          onDuplicate: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -177,6 +179,7 @@ void main() {
           maxHeightM: 1.0,
           onUpdate: (_, _) {},
           onDelete: () => deleteCalled = true,
+          onDuplicate: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -214,6 +217,7 @@ void main() {
           maxHeightM: 1.0,
           onUpdate: (_, _) {},
           onDelete: () {},
+          onDuplicate: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -233,6 +237,7 @@ void main() {
           maxHeightM: 1.0,
           onUpdate: (_, _) {},
           onDelete: () {},
+          onDuplicate: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -250,6 +255,7 @@ void main() {
           maxHeightM: 1.0,
           onUpdate: (_, _) {},
           onDelete: () {},
+          onDuplicate: () {},
         ),
       ));
       await tester.pumpAndSettle();

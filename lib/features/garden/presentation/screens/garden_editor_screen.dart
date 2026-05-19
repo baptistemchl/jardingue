@@ -423,6 +423,34 @@ class _GardenEditorScreenState
     _actionHistory.addAction(action);
   }
 
+  /// Duplique un élément (plante ou zone) en envoyant la copie au panier
+  /// (gridX=-1). Affiche un snackbar de confirmation.
+  Future<void> _duplicateElement(GardenPlantWithDetails element) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await ref.read(gardenNotifierProvider.notifier).duplicateGardenPlant(
+            gardenPlantId: element.id,
+            gardenId: widget.gardenId,
+          );
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('${element.name} dupliquée — voir le panier'),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Impossible de dupliquer'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   // ========== Bottom sheets ==========
 
   void _showAddSheet(Garden garden) {
@@ -592,6 +620,10 @@ class _GardenEditorScreenState
           onDelete: () async {
             Navigator.of(ctx, rootNavigator: true).pop();
             await _deleteElement(element, cellSize);
+          },
+          onDuplicate: () async {
+            Navigator.of(ctx, rootNavigator: true).pop();
+            await _duplicateElement(element);
           },
         ),
       );
