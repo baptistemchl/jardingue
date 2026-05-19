@@ -176,22 +176,27 @@ final careRemindersProvider =
   // tente de pause/resume des subscriptions dans un état où le
   // bookkeeping n'est pas encore complet → assertion
   // "pausedActiveSubscriptionCount" qui crash en debug.
+  //
+  // Subtilité Riverpod 3.x : un `ref.watch` conditionnel (ternaire)
+  // crée une asymétrie de bookkeeping entre les instances de la family.
+  // Le tickerMode pause/resume compte alors un nombre de subscriptions
+  // qui ne correspond pas à celui enregistré → même assertion.
+  // → on watch TOUJOURS la météo (même pour fertilizing), et on
+  // utilise le résultat uniquement quand pertinent.
   final initFuture = ref.read(databaseInitProvider.future);
   final db = ref.watch(databaseProvider);
-  // La meteo n'a de sens que pour l'arrosage. On ne s'y abonne pas pour
-  // les autres kinds, ce qui evite des invalidations inutiles.
-  final weatherFuture = kind == CareKind.watering
-      ? ref.watch(weatherDataProvider.future)
-      : null;
+  final weatherFuture = ref.watch(weatherDataProvider.future);
 
   await initFuture;
 
-  // Hint meteo (arrosage uniquement)
+  // Hint meteo (arrosage uniquement). Pour les autres kinds, on ne
+  // consomme pas la future météo mais on reste abonné pour garder un
+  // nombre constant de subscriptions dans la family.
   CareHint? weatherHint;
   bool weatherAvailable = false;
   double precipNext24h = 0;
   int maxPrecipProb = 0;
-  if (weatherFuture != null) {
+  if (kind == CareKind.watering) {
     try {
       final weather = await weatherFuture;
       weatherAvailable = true;
