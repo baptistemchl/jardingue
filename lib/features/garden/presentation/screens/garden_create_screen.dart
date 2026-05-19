@@ -7,6 +7,8 @@ import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/providers/garden_providers.dart';
+import '../../domain/garden_template_service.dart';
+import '../../domain/models/garden_template.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 /// Écran de création/édition d'un potager (dimensions en mètres)
@@ -29,7 +31,31 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
+  /// Template sélectionné (mode création uniquement). Quand non null,
+  /// l'enregistrement passe par createGardenFromTemplate au lieu de
+  /// createGarden — toutes les plantes du modèle sont placées d'un coup.
+  GardenTemplate? _selectedTemplate;
+  int? _selectedTemplateCellSize;
+
   bool get isEditing => widget.garden != null;
+
+  void _selectTemplate(GardenTemplate template) {
+    setState(() {
+      _selectedTemplate = template;
+      _selectedTemplateCellSize = template.cellSizeCm;
+      _nameController.text = template.name;
+      _widthMeters = template.widthMeters;
+      _heightMeters = template.heightMeters;
+      _errorMessage = null;
+    });
+  }
+
+  void _clearTemplate() {
+    setState(() {
+      _selectedTemplate = null;
+      _selectedTemplateCellSize = null;
+    });
+  }
 
   @override
   void initState() {
@@ -119,6 +145,27 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
           heightMeters: _heightMeters,
           year: Patch(_year),
           previousGardenId: Patch(_previousGardenId),
+        );
+      } else if (_selectedTemplate != null) {
+        // Création à partir d'un template : on délègue tout au notifier
+        // qui crée le potager ET pose toutes les plantes pré-définies.
+        await notifier.createGardenFromTemplate(
+          name: _nameController.text.trim(),
+          widthMeters: _widthMeters,
+          heightMeters: _heightMeters,
+          cellSizeCm:
+              _selectedTemplateCellSize ?? _selectedTemplate!.cellSizeCm,
+          plants: _selectedTemplate!.plants
+              .map((p) => (
+                    plantName: p.plantName,
+                    xCells: p.xCells,
+                    yCells: p.yCells,
+                    wCells: p.wCells,
+                    hCells: p.hCells,
+                  ))
+              .toList(),
+          year: _year,
+          previousGardenId: _previousGardenId,
         );
       } else {
         await notifier.createGarden(
@@ -235,6 +282,16 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
             child: ListView(
               padding: const EdgeInsets.all(20),
               children: [
+                // Templates de potagers (mode création uniquement)
+                if (!isEditing) ...[
+                  _TemplatesSection(
+                    selectedTemplate: _selectedTemplate,
+                    onTemplateSelected: _selectTemplate,
+                    onCustomSelected: _clearTemplate,
+                  ),
+                  const SizedBox(height: 24),
+                ],
+
                 // Nom
                 Text(AppLocalizations.of(context)!.gardenName, style: AppTypography.labelMedium),
                 const SizedBox(height: 8),
@@ -790,6 +847,250 @@ class _Stat extends StatelessWidget {
           style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
         ),
       ],
+    );
+  }
+}
+
+/// Section "Démarrer avec un modèle" en haut du formulaire de création.
+/// Affiche une carrousel horizontal de templates pré-faits + une carte
+/// "Personnalisé" qui efface la sélection courante.
+class _TemplatesSection extends ConsumerWidget {
+  final GardenTemplate? selectedTemplate;
+  final ValueChanged<GardenTemplate> onTemplateSelected;
+  final VoidCallback onCustomSelected;
+
+  const _TemplatesSection({
+    required this.selectedTemplate,
+    required this.onTemplateSelected,
+    required this.onCustomSelected,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final templatesAsync = ref.watch(gardenTemplatesProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              PhosphorIcons.sparkle(PhosphorIconsStyle.fill),
+              size: 16,
+              color: AppColors.primary,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'Démarrer avec un modèle',
+              style: AppTypography.labelMedium,
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Choisissez un préréglage et toutes les plantes sont placées d\'un coup. Vous pourrez tout modifier ensuite.',
+          style: AppTypography.caption.copyWith(
+            color: AppColors.textSecondary,
+            height: 1.4,
+          ),
+        ),
+        const SizedBox(height: 14),
+        SizedBox(
+          height: 154,
+          child: templatesAsync.when(
+            loading: () => const Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+            error: (_, _) => const SizedBox.shrink(),
+            data: (templates) => ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: templates.length + 1,
+              separatorBuilder: (_, _) => const SizedBox(width: 12),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _CustomTemplateCard(
+                    selected: selectedTemplate == null,
+                    onTap: onCustomSelected,
+                  );
+                }
+                final template = templates[index - 1];
+                return _TemplateCard(
+                  template: template,
+                  selected: selectedTemplate?.id == template.id,
+                  onTap: () => onTemplateSelected(template),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TemplateCard extends StatelessWidget {
+  final GardenTemplate template;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _TemplateCard({
+    required this.template,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 168,
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: selected
+                ? AppColors.primary.withValues(alpha: 0.08)
+                : AppColors.background,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: selected
+                  ? AppColors.primary
+                  : AppColors.border,
+              width: selected ? 2 : 1,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(template.emoji,
+                      style: const TextStyle(fontSize: 28)),
+                  const Spacer(),
+                  if (selected)
+                    Icon(
+                      Icons.check_circle,
+                      size: 18,
+                      color: AppColors.primary,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                template.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.titleSmall.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${template.widthMeters.toStringAsFixed(1)} × ${template.heightMeters.toStringAsFixed(1)} m  ·  ${template.plants.length} plantes',
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  template.level,
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.primary,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CustomTemplateCard extends StatelessWidget {
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _CustomTemplateCard({
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 124,
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: selected
+                ? AppColors.primary.withValues(alpha: 0.08)
+                : AppColors.background,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: selected
+                  ? AppColors.primary
+                  : AppColors.border,
+              width: selected ? 2 : 1,
+              style: selected ? BorderStyle.solid : BorderStyle.solid,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                PhosphorIcons.plus(PhosphorIconsStyle.bold),
+                size: 32,
+                color: selected
+                    ? AppColors.primary
+                    : AppColors.textSecondary,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Personnalisé',
+                textAlign: TextAlign.center,
+                style: AppTypography.bodySmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: selected
+                      ? AppColors.primary
+                      : AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Potager vierge',
+                textAlign: TextAlign.center,
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.textSecondary,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
