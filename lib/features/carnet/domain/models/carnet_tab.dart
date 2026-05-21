@@ -8,4 +8,5 @@ enum CarnetTab {
   journal,
   stats,
   settings,
+  about,
 }

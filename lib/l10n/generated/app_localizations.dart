@@ -2473,6 +2473,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Merci d\'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.'**
   String get carnetSettingsThanksMessage;
+
+  /// No description provided for @carnetTabAbout.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos'**
+  String get carnetTabAbout;
 }
 
 class _AppLocalizationsDelegate

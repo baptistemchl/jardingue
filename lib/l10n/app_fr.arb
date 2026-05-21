@@ -506,5 +506,7 @@
   "carnetSettingsPremiumSubtitle": "Cloud, restauration multi-appareils",
   "carnetSettingsAboutTitle": "À propos de Jardingue",
   "carnetSettingsAboutSubtitle": "Crédits, contact, mentions légales",
-  "carnetSettingsThanksMessage": "Merci d'utiliser Jardingue.\nFait avec ♥ pour les jardiniers."
+  "carnetSettingsThanksMessage": "Merci d'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.",
+
+  "carnetTabAbout": "À propos"
 }

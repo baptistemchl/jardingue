@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/app_info.dart';
 import '../../../../../core/services/preferences/user_guidance_preferences.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../l10n/generated/app_localizations.dart';
@@ -61,33 +59,16 @@ class SettingsTab extends ConsumerWidget {
         _SectionHeader(label: loc.carnetSettingsMoreSection),
         const SizedBox(height: 8),
         _CarnetCard(
-          child: Column(
-            children: [
-              _NavTile(
-                icon: PhosphorIcons.cloudArrowUp(PhosphorIconsStyle.regular),
-                title: loc.carnetSettingsPremiumTitle,
-                subtitle: loc.carnetSettingsPremiumSubtitle,
-                onTap: () {
-                  ref.read(carnetUiProvider.notifier).close();
-                  context.push(AppRoutes.premium);
-                },
-              ),
-              const _CarnetDivider(),
-              _NavTile(
-                icon: PhosphorIcons.info(PhosphorIconsStyle.regular),
-                title: loc.carnetSettingsAboutTitle,
-                subtitle: loc.carnetSettingsAboutSubtitle,
-                onTap: () {
-                  ref.read(carnetUiProvider.notifier).close();
-                  context.push(AppRoutes.about);
-                },
-              ),
-            ],
+          child: _NavTile(
+            icon: PhosphorIcons.cloudArrowUp(PhosphorIconsStyle.regular),
+            title: loc.carnetSettingsPremiumTitle,
+            subtitle: loc.carnetSettingsPremiumSubtitle,
+            onTap: () {
+              ref.read(carnetUiProvider.notifier).close();
+              context.push(AppRoutes.premium);
+            },
           ),
         ),
-
-        const SizedBox(height: 28),
-        const _ThanksFooter(),
       ],
     );
   }
@@ -270,81 +251,3 @@ class _NavTile extends StatelessWidget {
   }
 }
 
-class _ThanksFooter extends StatelessWidget {
-  const _ThanksFooter();
-
-  @override
-  Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
-    return Column(
-      children: [
-        // Cœur en accent jaune sur halo vert pâle pour donner du contraste
-        // chaleureux avec le reste de la palette verte.
-        Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            color: AppColors.primaryContainer,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            PhosphorIcons.heart(PhosphorIconsStyle.fill),
-            size: 26,
-            color: AppColors.carnetAccent,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          loc.carnetSettingsThanksMessage,
-          textAlign: TextAlign.center,
-          style: AppTypography.bodySmall.copyWith(
-            color: AppColors.textPrimary,
-            fontStyle: FontStyle.italic,
-            height: 1.5,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          decoration: BoxDecoration(
-            color: AppColors.primaryContainer.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            loc.aboutVersion(AppInfo.version),
-            style: AppTypography.caption.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        GestureDetector(
-          onTap: () => launchUrl(
-            Uri.parse(loc.aboutInstagramUrl),
-            mode: LaunchMode.externalApplication,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                PhosphorIcons.instagramLogo(PhosphorIconsStyle.regular),
-                size: 13,
-                color: AppColors.primary,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                loc.aboutInstagram,
-                style: AppTypography.caption.copyWith(
-                  color: AppColors.primary,
-                  decoration: TextDecoration.underline,
-                  decorationColor: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}

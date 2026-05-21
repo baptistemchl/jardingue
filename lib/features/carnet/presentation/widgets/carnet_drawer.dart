@@ -7,6 +7,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/models/carnet_tab.dart';
 import '../providers/carnet_ui_providers.dart';
+import 'tabs/about_tab.dart';
 import 'tabs/harvests_tab.dart';
 import 'tabs/journal_tab.dart';
 import 'tabs/seedlings_tab.dart';
@@ -98,11 +99,18 @@ class _CarnetDrawerState extends ConsumerState<CarnetDrawer>
                 ref.read(carnetUiProvider.notifier).close();
               }
             },
-            child: Row(
-              children: [
-                Expanded(child: _DrawerBody(activeTab: ui.activeTab)),
-                _TabStrip(activeTab: ui.activeTab),
-              ],
+            // Material englobant pour fournir le contexte (InkWell,
+            // Switch) ET un DefaultTextStyle valide aux marque-pages
+            // — sinon les Text dans RotatedBox héritent du fallback
+            // Flutter avec underline jaune fluo.
+            child: Material(
+              type: MaterialType.transparency,
+              child: Row(
+                children: [
+                  Expanded(child: _DrawerBody(activeTab: ui.activeTab)),
+                  _TabStrip(activeTab: ui.activeTab),
+                ],
+              ),
             ),
           ),
         ),
@@ -130,6 +138,8 @@ class _TabStrip extends ConsumerWidget {
           PhosphorIcons.chartBar(PhosphorIconsStyle.regular)),
       _TabSpec(CarnetTab.settings, loc.carnetTabSettings,
           PhosphorIcons.gearSix(PhosphorIconsStyle.regular)),
+      _TabSpec(CarnetTab.about, loc.carnetTabAbout,
+          PhosphorIcons.info(PhosphorIconsStyle.regular)),
     ];
 
     return Padding(
@@ -293,6 +303,7 @@ class _DrawerBody extends ConsumerWidget {
                     CarnetTab.journal => const JournalTab(),
                     CarnetTab.stats => const StatsTab(),
                     CarnetTab.settings => const SettingsTab(),
+                    CarnetTab.about => const AboutTab(),
                   },
                 ),
               ),

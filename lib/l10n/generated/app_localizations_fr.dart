@@ -1414,4 +1414,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get carnetSettingsThanksMessage =>
       'Merci d\'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.';
+
+  @override
+  String get carnetTabAbout => 'À propos';
 }
