@@ -561,20 +561,40 @@ class _UserEventTile extends ConsumerWidget {
         },
         onChangeColor: () async {
           Navigator.of(ctx, rootNavigator: true).pop();
+          // Compte les pieds de la même espèce dans le potager parent.
+          final allInGarden = ref
+                  .read(gardenPlantsProvider(garden.id))
+                  .value ??
+              const <GardenPlantWithDetails>[];
+          final sameSpeciesCount = allInGarden
+              .where((e) =>
+                  !e.isZone &&
+                  e.gardenPlant.plantId == element.gardenPlant.plantId)
+              .length;
+
           final result = await ColorPickerSheet.show(
             context: context,
             plantName: element.name,
             plantEmoji: element.emoji,
             currentColor: element.color,
             hasCustomColor: element.gardenPlant.customColor != null,
+            sameSpeciesCount: sameSpeciesCount,
           );
           if (result == null) return;
-          await ref
-              .read(gardenNotifierProvider.notifier)
-              .updateGardenPlantColor(
-                gardenPlantId: gp.id,
-                color: result.isReset ? null : result.color,
-              );
+          final notifier = ref.read(gardenNotifierProvider.notifier);
+          final newColor = result.isReset ? null : result.color;
+          if (result.applyToAll) {
+            await notifier.updateGardenPlantsColorBySpecies(
+              gardenId: garden.id,
+              plantId: element.gardenPlant.plantId,
+              color: newColor,
+            );
+          } else {
+            await notifier.updateGardenPlantColor(
+              gardenPlantId: gp.id,
+              color: newColor,
+            );
+          }
         },
       ),
     );

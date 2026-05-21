@@ -798,6 +798,21 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  /// Bulk update : applique [color] à TOUS les pieds de l'espèce
+  /// [plantId] dans le potager [gardenId] (v19). Utilisé par le picker
+  /// quand l'utilisateur active « Appliquer à tous les X de ce potager ».
+  /// Retourne le nombre de lignes modifiées.
+  Future<int> updateGardenPlantsColorBySpecies({
+    required int gardenId,
+    required int plantId,
+    required int? color,
+  }) {
+    return (update(gardenPlants)
+          ..where((t) =>
+              t.gardenId.equals(gardenId) & t.plantId.equals(plantId)))
+        .write(GardenPlantsCompanion(customColor: Value(color)));
+  }
+
   // ============================================
   // GARDEN EVENTS QUERIES
   // ============================================
