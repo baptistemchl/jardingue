@@ -375,6 +375,9 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
           heightCells: Value(gp.heightCells),
           plantedAt: Value(gp.plantedAt),
           sowedAt: Value(gp.sowedAt),
+          // Copie aussi la couleur perso (v19) pour rester cohérent
+          // avec « tout, mêmes valeurs » du contrat de duplication.
+          customColor: Value(gp.customColor),
           wateringFrequencyDays: Value(gp.wateringFrequencyDays),
           notes: Value(gp.notes),
           previousCropPlantId: Value(gp.previousCropPlantId),

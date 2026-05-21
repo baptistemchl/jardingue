@@ -2281,6 +2281,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Lisible'**
   String get gardenCellSizeHintCoarse;
+
+  /// No description provided for @colorPickerSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez une couleur pour distinguer ce pied.'**
+  String get colorPickerSubtitle;
+
+  /// No description provided for @colorPickerReset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Couleur par défaut (catégorie)'**
+  String get colorPickerReset;
 }
 
 class _AppLocalizationsDelegate

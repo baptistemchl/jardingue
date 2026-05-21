@@ -457,5 +457,8 @@
   "gardenCellSizeValue": "{value} cm",
   "@gardenCellSizeValue": { "placeholders": { "value": { "type": "int" } } },
   "gardenCellSizeHintFine": "Précis",
-  "gardenCellSizeHintCoarse": "Lisible"
+  "gardenCellSizeHintCoarse": "Lisible",
+
+  "colorPickerSubtitle": "Choisissez une couleur pour distinguer ce pied.",
+  "colorPickerReset": "Couleur par défaut (catégorie)"
 }
