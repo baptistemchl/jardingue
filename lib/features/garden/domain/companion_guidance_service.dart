@@ -88,10 +88,14 @@ class CompanionGuidanceService {
       if (!antagonistsOfSource.contains(neighbor.gardenPlant.plantId)) continue;
 
       final neighborSpacing = neighborPlant.spacingBetweenPlants ?? 0;
-      final requiredCm = (sourceSpacing + neighborSpacing) / 2.0;
-      // Si les deux spacings sont nuls/inconnus, on ne peut pas trancher :
-      // on déclenche tout de même le warning (l'antagonisme est documenté).
-      // Choix conservateur : mieux vaut un faux positif qu'un risque rate.
+      // Moyenne des spacings × 1.5 = marge horticole (les antagonismes
+      // type mildiou se propagent au-delà du strict espacement nominal).
+      // Plancher à 50 cm pour rester utile même avec des grosses
+      // cellules : sans ce min, deux petites plantes posées côte à côte
+      // sur une grille à cellSize=100cm ne déclenchent jamais (distance
+      // centres > spacing combiné).
+      final averageSpacing = (sourceSpacing + neighborSpacing) / 2.0;
+      final requiredCm = math.max(averageSpacing * 1.5, 50.0);
       final neighborCxCm =
           (neighbor.gridX + neighbor.widthCells / 2.0) * cellSizeCm;
       final neighborCyCm =
@@ -101,7 +105,7 @@ class CompanionGuidanceService {
       final dyCm = sourceCyCm - neighborCyCm;
       final distanceCm = math.sqrt(dxCm * dxCm + dyCm * dyCm);
 
-      if (requiredCm == 0 || distanceCm < requiredCm) {
+      if (distanceCm < requiredCm) {
         conflicts.add(
           AntagonistConflict(
             neighborPlantName: neighborPlant.commonName,
