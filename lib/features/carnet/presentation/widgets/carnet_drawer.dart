@@ -172,12 +172,12 @@ class _MarquePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isActive ? AppColors.kraftTab : AppColors.kraftTabLight;
-    final fg = isActive ? Colors.white : AppColors.kraftInk;
+    final bg = isActive ? AppColors.carnetCover : AppColors.carnetCoverMuted;
+    final fg = isActive ? Colors.white : AppColors.primaryDark;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
         width: 44,
         height: 74,
@@ -189,8 +189,9 @@ class _MarquePage extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isActive ? 0.18 : 0.08),
-              blurRadius: isActive ? 10 : 4,
+              color: AppColors.primary
+                  .withValues(alpha: isActive ? 0.28 : 0.12),
+              blurRadius: isActive ? 12 : 5,
               offset: const Offset(2, 3),
             ),
           ],
@@ -228,20 +229,24 @@ class _DrawerBody extends ConsumerWidget {
     final loc = AppLocalizations.of(context)!;
     final bottomPad = MediaQuery.of(context).padding.bottom;
     final topPad = MediaQuery.of(context).padding.top;
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.kraftBackground,
+    // DecoratedBox externe pour l'ombre projetée vers la droite,
+    // Material interne pour fournir le contexte requis par InkWell,
+    // Switch et compagnie + couleur de fond du papier.
+    return DecoratedBox(
+      decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Color(0x33000000),
-            blurRadius: 24,
-            offset: Offset(6, 0),
+            color: AppColors.primary.withValues(alpha: 0.18),
+            blurRadius: 28,
+            offset: const Offset(6, 0),
           ),
         ],
       ),
-      child: Column(
+      child: Material(
+        color: AppColors.carnetPaper,
+        child: Column(
         children: [
-          // Header carnet — barre de titre kraft.
+          // Header carnet — barre de titre.
           Padding(
             padding: EdgeInsets.fromLTRB(20, topPad + 16, 12, 12),
             child: Row(
@@ -250,7 +255,7 @@ class _DrawerBody extends ConsumerWidget {
                   child: Text(
                     loc.carnetTitle,
                     style: AppTypography.titleLarge.copyWith(
-                      color: AppColors.kraftInk,
+                      color: AppColors.primary,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -260,18 +265,18 @@ class _DrawerBody extends ConsumerWidget {
                       ref.read(carnetUiProvider.notifier).close(),
                   icon: Icon(
                     PhosphorIcons.x(PhosphorIconsStyle.bold),
-                    color: AppColors.kraftInk,
+                    color: AppColors.textPrimary,
                     size: 20,
                   ),
                 ),
               ],
             ),
           ),
-          // Filet de séparation papier vergé.
+          // Filet de séparation, vert très clair.
           Container(
             height: 1,
             margin: const EdgeInsets.symmetric(horizontal: 20),
-            color: AppColors.kraftLine.withValues(alpha: 0.4),
+            color: AppColors.carnetLine,
           ),
           const SizedBox(height: 8),
           // Contenu de l'onglet actif.
@@ -294,6 +299,7 @@ class _DrawerBody extends ConsumerWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

@@ -14,8 +14,8 @@ import '../../providers/carnet_ui_providers.dart';
 /// Onglet « Réglages » du Carnet de bord.
 ///
 /// Regroupe les préférences (toggles guidance), des liens vers les
-/// écrans premium / cloud / à propos, et un pied de page avec
-/// version + remerciements.
+/// écrans premium / à propos, et un pied de page avec version +
+/// remerciements. Palette Jardingue (vert sauge + accents jaune).
 class SettingsTab extends ConsumerWidget {
   const SettingsTab({super.key});
 
@@ -29,7 +29,7 @@ class SettingsTab extends ConsumerWidget {
       children: [
         _SectionHeader(label: loc.settingsGuidanceSectionTitle),
         const SizedBox(height: 8),
-        _KraftCard(
+        _CarnetCard(
           child: prefsAsync.when(
             data: (prefs) => Column(
               children: [
@@ -41,7 +41,7 @@ class SettingsTab extends ConsumerWidget {
                       .read(userGuidancePreferencesProvider.notifier)
                       .setCompanionSuggestionsEnabled,
                 ),
-                const _KraftDivider(),
+                const _CarnetDivider(),
                 _GuidanceRow(
                   title: loc.settingsAntagonistWarningsTitle,
                   subtitle: loc.settingsAntagonistWarningsSubtitle,
@@ -60,7 +60,7 @@ class SettingsTab extends ConsumerWidget {
         const SizedBox(height: 24),
         _SectionHeader(label: loc.carnetSettingsMoreSection),
         const SizedBox(height: 8),
-        _KraftCard(
+        _CarnetCard(
           child: Column(
             children: [
               _NavTile(
@@ -72,7 +72,7 @@ class SettingsTab extends ConsumerWidget {
                   context.push(AppRoutes.premium);
                 },
               ),
-              const _KraftDivider(),
+              const _CarnetDivider(),
               _NavTile(
                 icon: PhosphorIcons.info(PhosphorIconsStyle.regular),
                 title: loc.carnetSettingsAboutTitle,
@@ -102,7 +102,7 @@ class _SectionHeader extends StatelessWidget {
     return Text(
       label.toUpperCase(),
       style: AppTypography.labelSmall.copyWith(
-        color: AppColors.kraftInk.withValues(alpha: 0.6),
+        color: AppColors.primary,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.2,
       ),
@@ -110,27 +110,25 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _KraftCard extends StatelessWidget {
+class _CarnetCard extends StatelessWidget {
   final Widget child;
-  const _KraftCard({required this.child});
+  const _CarnetCard({required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.kraftPaper,
+        color: AppColors.carnetSurface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppColors.kraftLine.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: AppColors.carnetLine),
       ),
       child: child,
     );
   }
 }
 
-class _KraftDivider extends StatelessWidget {
-  const _KraftDivider();
+class _CarnetDivider extends StatelessWidget {
+  const _CarnetDivider();
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +136,7 @@ class _KraftDivider extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Container(
         height: 1,
-        color: AppColors.kraftLine.withValues(alpha: 0.3),
+        color: AppColors.carnetLine,
       ),
     );
   }
@@ -172,14 +170,14 @@ class _GuidanceRow extends StatelessWidget {
                   title,
                   style: AppTypography.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.kraftInk,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: AppTypography.caption.copyWith(
-                    color: AppColors.kraftInk.withValues(alpha: 0.65),
+                    color: AppColors.textSecondary,
                     height: 1.4,
                   ),
                 ),
@@ -191,14 +189,14 @@ class _GuidanceRow extends StatelessWidget {
             value: value,
             onChanged: onChanged,
             activeThumbColor: Colors.white,
-            activeTrackColor: AppColors.kraftTab,
+            activeTrackColor: AppColors.primary,
             inactiveThumbColor: Colors.white,
-            inactiveTrackColor: AppColors.kraftLine,
+            inactiveTrackColor: AppColors.border,
             trackOutlineColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.selected)) {
-                return AppColors.kraftTab;
+                return AppColors.primary;
               }
-              return AppColors.kraftLine;
+              return AppColors.border;
             }),
           ),
         ],
@@ -233,10 +231,10 @@ class _NavTile extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: AppColors.kraftTab.withValues(alpha: 0.18),
+                color: AppColors.primaryContainer,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 18, color: AppColors.kraftTab),
+              child: Icon(icon, size: 18, color: AppColors.primary),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -247,14 +245,14 @@ class _NavTile extends StatelessWidget {
                     title,
                     style: AppTypography.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: AppColors.kraftInk,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
                     style: AppTypography.caption.copyWith(
-                      color: AppColors.kraftInk.withValues(alpha: 0.65),
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ],
@@ -263,7 +261,7 @@ class _NavTile extends StatelessWidget {
             Icon(
               PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
               size: 16,
-              color: AppColors.kraftInk.withValues(alpha: 0.5),
+              color: AppColors.textTertiary,
             ),
           ],
         ),
@@ -280,30 +278,47 @@ class _ThanksFooter extends StatelessWidget {
     final loc = AppLocalizations.of(context)!;
     return Column(
       children: [
-        Icon(
-          PhosphorIcons.heart(PhosphorIconsStyle.fill),
-          size: 22,
-          color: AppColors.kraftTab,
+        // Cœur en accent jaune sur halo vert pâle pour donner du contraste
+        // chaleureux avec le reste de la palette verte.
+        Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            color: AppColors.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            PhosphorIcons.heart(PhosphorIconsStyle.fill),
+            size: 26,
+            color: AppColors.carnetAccent,
+          ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         Text(
           loc.carnetSettingsThanksMessage,
           textAlign: TextAlign.center,
           style: AppTypography.bodySmall.copyWith(
-            color: AppColors.kraftInk,
+            color: AppColors.textPrimary,
             fontStyle: FontStyle.italic,
             height: 1.5,
           ),
         ),
         const SizedBox(height: 16),
-        Text(
-          loc.aboutVersion(AppInfo.version),
-          style: AppTypography.caption.copyWith(
-            color: AppColors.kraftInk.withValues(alpha: 0.55),
-            fontWeight: FontWeight.w600,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          decoration: BoxDecoration(
+            color: AppColors.primaryContainer.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            loc.aboutVersion(AppInfo.version),
+            style: AppTypography.caption.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         GestureDetector(
           onTap: () => launchUrl(
             Uri.parse(loc.aboutInstagramUrl),
@@ -315,15 +330,15 @@ class _ThanksFooter extends StatelessWidget {
               Icon(
                 PhosphorIcons.instagramLogo(PhosphorIconsStyle.regular),
                 size: 13,
-                color: AppColors.kraftTab,
+                color: AppColors.primary,
               ),
               const SizedBox(width: 6),
               Text(
                 loc.aboutInstagram,
                 style: AppTypography.caption.copyWith(
-                  color: AppColors.kraftTab,
+                  color: AppColors.primary,
                   decoration: TextDecoration.underline,
-                  decorationColor: AppColors.kraftTab,
+                  decorationColor: AppColors.primary,
                 ),
               ),
             ],

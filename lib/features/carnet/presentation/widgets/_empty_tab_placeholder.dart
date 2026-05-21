@@ -25,7 +25,7 @@ class EmptyTabPlaceholder extends StatelessWidget {
             width: 88,
             height: 88,
             decoration: BoxDecoration(
-              color: AppColors.kraftPaper,
+              color: AppColors.carnetSurface,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
@@ -38,14 +38,14 @@ class EmptyTabPlaceholder extends StatelessWidget {
             child: Icon(
               icon,
               size: 44,
-              color: AppColors.kraftTab,
+              color: AppColors.primary,
             ),
           ),
           const SizedBox(height: 20),
           Text(
             title,
             style: AppTypography.titleMedium.copyWith(
-              color: AppColors.kraftInk,
+              color: AppColors.textPrimary,
               fontWeight: FontWeight.w700,
             ),
             textAlign: TextAlign.center,
@@ -56,7 +56,7 @@ class EmptyTabPlaceholder extends StatelessWidget {
             child: Text(
               subtitle,
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.kraftInk.withValues(alpha: 0.6),
+                color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
