@@ -14,6 +14,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../../../../features/carnet/presentation/widgets/carnet_menu_button.dart';
 import '../../../../features/premium/presentation/providers/premium_providers.dart';
 import '../../../../router/app_router.dart';
 import 'garden_create_screen.dart';
@@ -87,6 +88,12 @@ class GardenScreen extends ConsumerWidget {
                                   ),
                                 ],
                               ),
+                            ),
+
+                            // Bouton Carnet de bord
+                            const Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: CarnetMenuButton(),
                             ),
 
                             // Bouton Cloud / Premium (avec prix si non-premium)

@@ -8,6 +8,7 @@ import '../../../../core/providers/planning_providers.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../../../../features/carnet/presentation/widgets/carnet_menu_button.dart';
 import '../../domain/models/planning_state.dart';
 import '../widgets/garden_task_tile.dart';
 import '../widgets/month_filter_bar.dart';
@@ -288,26 +289,34 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            'Planification',
-            style: AppTypography.headlineLarge
-                .copyWith(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w700,
+          Expanded(
+            child: Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Planification',
+                  style: AppTypography.headlineLarge
+                      .copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Année ${DateTime.now().year}',
+                  style: AppTypography.bodyMedium
+                      .copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Année ${DateTime.now().year}',
-            style:
-                AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
+          const CarnetMenuButton(),
         ],
       ),
     );

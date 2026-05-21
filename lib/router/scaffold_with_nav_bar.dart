@@ -7,7 +7,6 @@ import '../core/constants/app_colors.dart';
 import '../core/theme/app_typography.dart';
 import '../features/carnet/presentation/providers/carnet_ui_providers.dart';
 import '../features/carnet/presentation/widgets/carnet_drawer.dart';
-import '../features/carnet/presentation/widgets/carnet_handle.dart';
 import 'app_router.dart';
 
 /// Scaffold principal avec navigation bottom bar glassmorphism flottante.
@@ -30,7 +29,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
           bottomNavigationBar: const _FloatingGlassNavBar(),
         ),
         const _RightEdgeSwipeArea(),
-        const CarnetHandle(),
         const CarnetDrawer(),
       ],
     );
