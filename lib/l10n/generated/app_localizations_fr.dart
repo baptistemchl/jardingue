@@ -1312,4 +1312,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get colorPickerReset => 'Couleur par défaut (catégorie)';
+
+  @override
+  String get colorPickerCustom => 'Couleur personnalisée';
+
+  @override
+  String get colorPickerCustomDialogTitle => 'Choisir une couleur';
+
+  @override
+  String get colorPickerCustomDialogConfirm => 'Appliquer';
 }
