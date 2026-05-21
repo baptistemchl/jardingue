@@ -450,5 +450,12 @@
   "guidanceOptOutAntagonistLink": "Ne plus afficher ces avertissements",
   "guidanceOptOutCompanionSnackbar": "Suggestions désactivées. Vous pouvez les réactiver depuis l'engrenage ⚙️ en haut à droite de l'accueil.",
   "guidanceOptOutAntagonistSnackbar": "Avertissements désactivés. Vous pouvez les réactiver depuis l'engrenage ⚙️ en haut à droite de l'accueil.",
-  "guidanceOptOutUndo": "Annuler"
+  "guidanceOptOutUndo": "Annuler",
+
+  "gardenCellSizeTitle": "Précision de la grille",
+  "gardenCellSizeSubtitle": "Plus la cellule est petite, plus le placement est précis. Plus elle est grande, plus la grille est lisible.",
+  "gardenCellSizeValue": "{value} cm",
+  "@gardenCellSizeValue": { "placeholders": { "value": { "type": "int" } } },
+  "gardenCellSizeHintFine": "Précis",
+  "gardenCellSizeHintCoarse": "Lisible"
 }

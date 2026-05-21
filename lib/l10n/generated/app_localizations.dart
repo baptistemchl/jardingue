@@ -2251,6 +2251,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Annuler'**
   String get guidanceOptOutUndo;
+
+  /// No description provided for @gardenCellSizeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précision de la grille'**
+  String get gardenCellSizeTitle;
+
+  /// No description provided for @gardenCellSizeSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus la cellule est petite, plus le placement est précis. Plus elle est grande, plus la grille est lisible.'**
+  String get gardenCellSizeSubtitle;
+
+  /// No description provided for @gardenCellSizeValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{value} cm'**
+  String gardenCellSizeValue(int value);
+
+  /// No description provided for @gardenCellSizeHintFine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précis'**
+  String get gardenCellSizeHintFine;
+
+  /// No description provided for @gardenCellSizeHintCoarse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lisible'**
+  String get gardenCellSizeHintCoarse;
 }
 
 class _AppLocalizationsDelegate
