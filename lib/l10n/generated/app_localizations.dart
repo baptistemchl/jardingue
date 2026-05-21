@@ -2785,6 +2785,96 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mettre à jour'**
   String get addJournalUpdateButton;
+
+  /// No description provided for @carnetStatsHeroSeasonLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'SAISON {year}'**
+  String carnetStatsHeroSeasonLabel(int year);
+
+  /// No description provided for @carnetStatsHeroSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} récolte{count, plural, one{} other{s}} enregistrée{count, plural, one{} other{s}}'**
+  String carnetStatsHeroSubtitle(int count);
+
+  /// No description provided for @carnetStatsHeroPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} pièces'**
+  String carnetStatsHeroPieces(int count);
+
+  /// No description provided for @carnetStatsHeroBunches.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} bottes'**
+  String carnetStatsHeroBunches(int count);
+
+  /// No description provided for @carnetStatsPlantOfTheYearLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'STAR DE L\'ANNÉE'**
+  String get carnetStatsPlantOfTheYearLabel;
+
+  /// No description provided for @carnetStatsPlantOfTheYearCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} récoltes cette saison'**
+  String carnetStatsPlantOfTheYearCount(int count);
+
+  /// No description provided for @carnetStatsMonthlyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'RÉCOLTES PAR MOIS'**
+  String get carnetStatsMonthlyTitle;
+
+  /// No description provided for @carnetStatsTopPlantsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'TOP DES PLANTES'**
+  String get carnetStatsTopPlantsTitle;
+
+  /// No description provided for @carnetStatsSeedlingsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis de l\'année'**
+  String get carnetStatsSeedlingsTitle;
+
+  /// No description provided for @carnetStatsSeedlingsRingLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'taux de réussite'**
+  String get carnetStatsSeedlingsRingLabel;
+
+  /// No description provided for @carnetStatsSeedlingsTransplanted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repiqués'**
+  String get carnetStatsSeedlingsTransplanted;
+
+  /// No description provided for @carnetStatsSeedlingsFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoués'**
+  String get carnetStatsSeedlingsFailed;
+
+  /// No description provided for @carnetStatsSeedlingsInProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get carnetStatsSeedlingsInProgress;
+
+  /// No description provided for @carnetStatsCounterNotes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notes'**
+  String get carnetStatsCounterNotes;
+
+  /// No description provided for @carnetStatsCounterSeedlings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis'**
+  String get carnetStatsCounterSeedlings;
 }
 
 class _AppLocalizationsDelegate

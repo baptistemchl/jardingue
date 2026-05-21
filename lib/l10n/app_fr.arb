@@ -583,5 +583,30 @@
   "addJournalContentLabel": "Note",
   "addJournalContentHint": "Écrivez librement votre observation, idée, succès ou ennui du jour…",
   "addJournalSaveButton": "Enregistrer",
-  "addJournalUpdateButton": "Mettre à jour"
+  "addJournalUpdateButton": "Mettre à jour",
+
+  "carnetStatsHeroSeasonLabel": "SAISON {year}",
+  "@carnetStatsHeroSeasonLabel": { "placeholders": { "year": { "type": "int" } } },
+  "carnetStatsHeroSubtitle": "{count} récolte{count, plural, one{} other{s}} enregistrée{count, plural, one{} other{s}}",
+  "@carnetStatsHeroSubtitle": { "placeholders": { "count": { "type": "int" } } },
+  "carnetStatsHeroPieces": "{count} pièces",
+  "@carnetStatsHeroPieces": { "placeholders": { "count": { "type": "int" } } },
+  "carnetStatsHeroBunches": "{count} bottes",
+  "@carnetStatsHeroBunches": { "placeholders": { "count": { "type": "int" } } },
+
+  "carnetStatsPlantOfTheYearLabel": "STAR DE L'ANNÉE",
+  "carnetStatsPlantOfTheYearCount": "{count} récoltes cette saison",
+  "@carnetStatsPlantOfTheYearCount": { "placeholders": { "count": { "type": "int" } } },
+
+  "carnetStatsMonthlyTitle": "RÉCOLTES PAR MOIS",
+  "carnetStatsTopPlantsTitle": "TOP DES PLANTES",
+
+  "carnetStatsSeedlingsTitle": "Semis de l'année",
+  "carnetStatsSeedlingsRingLabel": "taux de réussite",
+  "carnetStatsSeedlingsTransplanted": "Repiqués",
+  "carnetStatsSeedlingsFailed": "Échoués",
+  "carnetStatsSeedlingsInProgress": "En cours",
+
+  "carnetStatsCounterNotes": "Notes",
+  "carnetStatsCounterSeedlings": "Semis"
 }

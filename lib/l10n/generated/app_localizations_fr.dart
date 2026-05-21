@@ -1595,4 +1595,71 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get addJournalUpdateButton => 'Mettre à jour';
+
+  @override
+  String carnetStatsHeroSeasonLabel(int year) {
+    return 'SAISON $year';
+  }
+
+  @override
+  String carnetStatsHeroSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return '$count récolte$_temp0 enregistrée$_temp1';
+  }
+
+  @override
+  String carnetStatsHeroPieces(int count) {
+    return '$count pièces';
+  }
+
+  @override
+  String carnetStatsHeroBunches(int count) {
+    return '$count bottes';
+  }
+
+  @override
+  String get carnetStatsPlantOfTheYearLabel => 'STAR DE L\'ANNÉE';
+
+  @override
+  String carnetStatsPlantOfTheYearCount(int count) {
+    return '$count récoltes cette saison';
+  }
+
+  @override
+  String get carnetStatsMonthlyTitle => 'RÉCOLTES PAR MOIS';
+
+  @override
+  String get carnetStatsTopPlantsTitle => 'TOP DES PLANTES';
+
+  @override
+  String get carnetStatsSeedlingsTitle => 'Semis de l\'année';
+
+  @override
+  String get carnetStatsSeedlingsRingLabel => 'taux de réussite';
+
+  @override
+  String get carnetStatsSeedlingsTransplanted => 'Repiqués';
+
+  @override
+  String get carnetStatsSeedlingsFailed => 'Échoués';
+
+  @override
+  String get carnetStatsSeedlingsInProgress => 'En cours';
+
+  @override
+  String get carnetStatsCounterNotes => 'Notes';
+
+  @override
+  String get carnetStatsCounterSeedlings => 'Semis';
 }
