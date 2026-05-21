@@ -159,6 +159,9 @@ class BackupRepositoryImpl implements BackupRepository {
               'wateringFrequencyDays':
                   p.wateringFrequencyDays,
               'notes': p.notes,
+              // Couleur perso (v19). Absent des backups < v1.7.3 → la
+              // restore retombe sur la couleur de catégorie.
+              'customColor': p.customColor,
               'createdAt':
                   p.createdAt.toIso8601String(),
             })
@@ -379,6 +382,12 @@ class BackupRepositoryImpl implements BackupRepository {
                 r['wateringFrequencyDays'] as int?,
               ),
               notes: Value(r['notes'] as String?),
+              // Présent uniquement dans les backups ≥ v1.7.3 (v19).
+              // Pour les backups plus anciens, la clé est absente
+              // → la restore laisse customColor à NULL (catégorie).
+              customColor: Value(
+                r['customColor'] as int?,
+              ),
             ),
           );
     }

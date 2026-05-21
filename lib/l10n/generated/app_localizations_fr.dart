@@ -1305,4 +1305,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get gardenCellSizeHintCoarse => 'Lisible';
+
+  @override
+  String get colorPickerSubtitle =>
+      'Choisissez une couleur pour distinguer ce pied.';
+
+  @override
+  String get colorPickerReset => 'Couleur par défaut (catégorie)';
 }
