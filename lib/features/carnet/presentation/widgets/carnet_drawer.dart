@@ -142,10 +142,15 @@ class _TabStrip extends ConsumerWidget {
           PhosphorIcons.info(PhosphorIconsStyle.regular)),
     ];
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 64, bottom: 64),
+    // SingleChildScrollView pour permettre le défilement si le total
+    // des 6 marque-pages dépasse la hauteur disponible (petits écrans,
+    // Galaxy Fold replié, etc.). Les paddings haut/bas restent
+    // généreux mais cèdent au scroll si nécessaire.
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(vertical: 32),
+      physics: const BouncingScrollPhysics(),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: entries.map((e) {
           final isActive = e.tab == activeTab;
           return Padding(
@@ -206,24 +211,35 @@ class _MarquePage extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(spec.icon, size: 18, color: fg),
-            const SizedBox(height: 6),
-            RotatedBox(
-              quarterTurns: 3,
-              child: Text(
-                spec.label,
-                style: AppTypography.caption.copyWith(
-                  color: fg,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
+        // Padding interne + Flexible sur le texte rotaté pour éviter
+        // que le texte vertical (qui devient la hauteur du Text après
+        // rotation) ne déborde la marque-page sur les écrans serrés
+        // ou avec une police système plus large.
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(spec.icon, size: 16, color: fg),
+              const SizedBox(height: 4),
+              Flexible(
+                child: RotatedBox(
+                  quarterTurns: 3,
+                  child: Text(
+                    spec.label,
+                    style: AppTypography.caption.copyWith(
+                      color: fg,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
