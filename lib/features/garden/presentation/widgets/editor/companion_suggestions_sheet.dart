@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/services/preferences/user_guidance_preferences.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../core/utils/plant_emoji_mapper.dart';
 import '../../../../../core/widgets/app_bottom_sheet.dart';
@@ -16,7 +18,7 @@ typedef CompanionSuggestionResult = List<int>;
 ///
 /// Le caller récupère la liste des plantIds cochés et appelle lui-même
 /// `addPlantPendingPlacement` pour chacun (le widget ne fait que de l'UI).
-class CompanionSuggestionsSheet extends StatefulWidget {
+class CompanionSuggestionsSheet extends ConsumerStatefulWidget {
   final String sourcePlantName;
   final String sourcePlantEmoji;
   final List<CompanionSuggestion> suggestions;
@@ -45,11 +47,12 @@ class CompanionSuggestionsSheet extends StatefulWidget {
   }
 
   @override
-  State<CompanionSuggestionsSheet> createState() =>
+  ConsumerState<CompanionSuggestionsSheet> createState() =>
       _CompanionSuggestionsSheetState();
 }
 
-class _CompanionSuggestionsSheetState extends State<CompanionSuggestionsSheet> {
+class _CompanionSuggestionsSheetState
+    extends ConsumerState<CompanionSuggestionsSheet> {
   late Set<int> _checked;
 
   @override
@@ -209,7 +212,57 @@ class _CompanionSuggestionsSheetState extends State<CompanionSuggestionsSheet> {
             ],
           ),
         ),
+        // Bouton discret pour désactiver la fonctionnalité directement
+        // depuis la sheet, avec snackbar explicatif pointant vers les
+        // Paramètres pour la réactiver.
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: TextButton.icon(
+            onPressed: _disableFeature,
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.textTertiary,
+            ),
+            icon: const Icon(Icons.visibility_off_outlined, size: 16),
+            label: Text(
+              'Ne plus afficher ces suggestions',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textTertiary,
+                decoration: TextDecoration.underline,
+                decorationColor: AppColors.textTertiary,
+              ),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  Future<void> _disableFeature() async {
+    // Capture le messenger et le navigator AVANT l'await, sinon le
+    // context peut être disposé entre temps (sheet en train de se fermer).
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    await ref
+        .read(userGuidancePreferencesProvider.notifier)
+        .setCompanionSuggestionsEnabled(false);
+    navigator.pop(<int>[]);
+    messenger.showSnackBar(
+      SnackBar(
+        content: const Text(
+          'Suggestions désactivées. Vous pouvez les réactiver depuis '
+          'l\'engrenage ⚙️ en haut à droite de l\'accueil.',
+        ),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 6),
+        action: SnackBarAction(
+          label: 'Annuler',
+          onPressed: () {
+            ref
+                .read(userGuidancePreferencesProvider.notifier)
+                .setCompanionSuggestionsEnabled(true);
+          },
+        ),
+      ),
     );
   }
 }

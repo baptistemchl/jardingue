@@ -218,7 +218,20 @@ class _GuidanceRow extends StatelessWidget {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: AppColors.primary,
+            // Couleurs explicites pour garantir un thumb blanc visible
+            // sur la track verte (Material 3 utilise par défaut un thumb
+            // primary sur track primary = invisible). On force aussi
+            // l'état inactif pour rester cohérent.
+            activeThumbColor: Colors.white,
+            activeTrackColor: AppColors.primary,
+            inactiveThumbColor: Colors.white,
+            inactiveTrackColor: AppColors.border,
+            trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return AppColors.primary;
+              }
+              return AppColors.border;
+            }),
           ),
         ],
       ),
