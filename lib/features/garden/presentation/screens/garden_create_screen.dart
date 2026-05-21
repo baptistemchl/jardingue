@@ -513,10 +513,13 @@ class _DimensionSlider extends StatelessWidget {
             overlayColor: AppColors.primary.withValues(alpha: 0.2),
           ),
           child: Slider(
-            value: value,
-            min: 0.5,
+            // Pas 0.1m, de 0.3m à 20.0m. 0.3m couvre une jardinière de
+            // rebord ; 20m un grand jardin familial. Le step fin permet
+            // aussi aux templates (1.2m, 0.4m, 0.9m...) de s'aligner.
+            value: value.clamp(0.3, 20.0),
+            min: 0.3,
             max: 20.0,
-            divisions: 39,
+            divisions: 197,
             onChanged: onChanged,
           ),
         ),
