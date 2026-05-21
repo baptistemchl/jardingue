@@ -128,18 +128,42 @@ class _TabStrip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = AppLocalizations.of(context)!;
     final entries = <_TabSpec>[
-      _TabSpec(CarnetTab.harvests, loc.carnetTabHarvests,
-          PhosphorIcons.basket(PhosphorIconsStyle.regular)),
-      _TabSpec(CarnetTab.seedlings, loc.carnetTabSeedlings,
-          PhosphorIcons.plant(PhosphorIconsStyle.regular)),
-      _TabSpec(CarnetTab.journal, loc.carnetTabJournal,
-          PhosphorIcons.notebook(PhosphorIconsStyle.regular)),
-      _TabSpec(CarnetTab.stats, loc.carnetTabStats,
-          PhosphorIcons.chartBar(PhosphorIconsStyle.regular)),
-      _TabSpec(CarnetTab.settings, loc.carnetTabSettings,
-          PhosphorIcons.gearSix(PhosphorIconsStyle.regular)),
-      _TabSpec(CarnetTab.about, loc.carnetTabAbout,
-          PhosphorIcons.info(PhosphorIconsStyle.regular)),
+      _TabSpec(
+        CarnetTab.harvests,
+        loc.carnetTabHarvests,
+        PhosphorIcons.basket(PhosphorIconsStyle.regular),
+        PhosphorIcons.basket(PhosphorIconsStyle.fill),
+      ),
+      _TabSpec(
+        CarnetTab.seedlings,
+        loc.carnetTabSeedlings,
+        PhosphorIcons.plant(PhosphorIconsStyle.regular),
+        PhosphorIcons.plant(PhosphorIconsStyle.fill),
+      ),
+      _TabSpec(
+        CarnetTab.journal,
+        loc.carnetTabJournal,
+        PhosphorIcons.notebook(PhosphorIconsStyle.regular),
+        PhosphorIcons.notebook(PhosphorIconsStyle.fill),
+      ),
+      _TabSpec(
+        CarnetTab.stats,
+        loc.carnetTabStats,
+        PhosphorIcons.chartBar(PhosphorIconsStyle.regular),
+        PhosphorIcons.chartBar(PhosphorIconsStyle.fill),
+      ),
+      _TabSpec(
+        CarnetTab.settings,
+        loc.carnetTabSettings,
+        PhosphorIcons.gearSix(PhosphorIconsStyle.regular),
+        PhosphorIcons.gearSix(PhosphorIconsStyle.fill),
+      ),
+      _TabSpec(
+        CarnetTab.about,
+        loc.carnetTabAbout,
+        PhosphorIcons.info(PhosphorIconsStyle.regular),
+        PhosphorIcons.info(PhosphorIconsStyle.fill),
+      ),
     ];
 
     // SingleChildScrollView pour permettre le défilement si le total
@@ -171,7 +195,8 @@ class _TabSpec {
   final CarnetTab tab;
   final String label;
   final IconData icon;
-  const _TabSpec(this.tab, this.label, this.icon);
+  final IconData activeIcon;
+  const _TabSpec(this.tab, this.label, this.icon, this.activeIcon);
 }
 
 class _MarquePage extends StatelessWidget {
@@ -189,56 +214,45 @@ class _MarquePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = isActive ? AppColors.carnetCover : AppColors.carnetCoverMuted;
     final fg = isActive ? Colors.white : AppColors.primaryDark;
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOutCubic,
-        width: 44,
-        height: 74,
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(12),
-            bottomRight: Radius.circular(12),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary
-                  .withValues(alpha: isActive ? 0.28 : 0.12),
-              blurRadius: isActive ? 12 : 5,
-              offset: const Offset(2, 3),
+    // Tooltip pour l'accessibilité — long-press affiche le label,
+    // sinon les utilisateurs découvrent chaque onglet en tapant.
+    return Tooltip(
+      message: spec.label,
+      preferBelow: false,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          width: 44,
+          height: 56,
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(12),
+              bottomRight: Radius.circular(12),
             ),
-          ],
-        ),
-        // Padding interne + Flexible sur le texte rotaté pour éviter
-        // que le texte vertical (qui devient la hauteur du Text après
-        // rotation) ne déborde la marque-page sur les écrans serrés
-        // ou avec une police système plus large.
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(spec.icon, size: 16, color: fg),
-              const SizedBox(height: 4),
-              Flexible(
-                child: RotatedBox(
-                  quarterTurns: 3,
-                  child: Text(
-                    spec.label,
-                    style: AppTypography.caption.copyWith(
-                      color: fg,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 10,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary
+                    .withValues(alpha: isActive ? 0.28 : 0.12),
+                blurRadius: isActive ? 12 : 5,
+                offset: const Offset(2, 3),
               ),
             ],
+          ),
+          child: Center(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 180),
+              transitionBuilder: (child, anim) =>
+                  ScaleTransition(scale: anim, child: child),
+              child: Icon(
+                isActive ? spec.activeIcon : spec.icon,
+                key: ValueKey(isActive),
+                size: isActive ? 22 : 20,
+                color: fg,
+              ),
+            ),
           ),
         ),
       ),
