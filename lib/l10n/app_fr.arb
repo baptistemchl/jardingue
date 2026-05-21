@@ -565,5 +565,23 @@
   "addSeedlingCountLabel": "Nombre de godets / graines (optionnel)",
   "addSeedlingCountHint": "Ex : 12",
   "addSeedlingNoteLabel": "Note (optionnel)",
-  "addSeedlingSaveButton": "Enregistrer le semis"
+  "addSeedlingSaveButton": "Enregistrer le semis",
+
+  "commonCancel": "Annuler",
+  "commonDelete": "Supprimer",
+
+  "carnetJournalAddButton": "Nouvelle note",
+  "carnetJournalEditedLabel": "modifié",
+  "carnetJournalDeleteTitle": "Supprimer cette note ?",
+  "carnetJournalDeleteMessage": "Cette action est définitive.",
+
+  "addJournalSheetTitle": "Nouvelle note",
+  "addJournalEditTitle": "Modifier la note",
+  "addJournalDateLabel": "Date",
+  "addJournalTitleLabel": "Titre (optionnel)",
+  "addJournalTitleHint": "Ex : Plantation des tomates",
+  "addJournalContentLabel": "Note",
+  "addJournalContentHint": "Écrivez librement votre observation, idée, succès ou ennui du jour…",
+  "addJournalSaveButton": "Enregistrer",
+  "addJournalUpdateButton": "Mettre à jour"
 }

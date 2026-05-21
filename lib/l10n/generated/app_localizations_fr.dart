@@ -1549,4 +1549,50 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get addSeedlingSaveButton => 'Enregistrer le semis';
+
+  @override
+  String get commonCancel => 'Annuler';
+
+  @override
+  String get commonDelete => 'Supprimer';
+
+  @override
+  String get carnetJournalAddButton => 'Nouvelle note';
+
+  @override
+  String get carnetJournalEditedLabel => 'modifié';
+
+  @override
+  String get carnetJournalDeleteTitle => 'Supprimer cette note ?';
+
+  @override
+  String get carnetJournalDeleteMessage => 'Cette action est définitive.';
+
+  @override
+  String get addJournalSheetTitle => 'Nouvelle note';
+
+  @override
+  String get addJournalEditTitle => 'Modifier la note';
+
+  @override
+  String get addJournalDateLabel => 'Date';
+
+  @override
+  String get addJournalTitleLabel => 'Titre (optionnel)';
+
+  @override
+  String get addJournalTitleHint => 'Ex : Plantation des tomates';
+
+  @override
+  String get addJournalContentLabel => 'Note';
+
+  @override
+  String get addJournalContentHint =>
+      'Écrivez librement votre observation, idée, succès ou ennui du jour…';
+
+  @override
+  String get addJournalSaveButton => 'Enregistrer';
+
+  @override
+  String get addJournalUpdateButton => 'Mettre à jour';
 }

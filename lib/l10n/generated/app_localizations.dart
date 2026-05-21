@@ -2695,6 +2695,96 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Enregistrer le semis'**
   String get addSeedlingSaveButton;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get commonCancel;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get commonDelete;
+
+  /// No description provided for @carnetJournalAddButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle note'**
+  String get carnetJournalAddButton;
+
+  /// No description provided for @carnetJournalEditedLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'modifié'**
+  String get carnetJournalEditedLabel;
+
+  /// No description provided for @carnetJournalDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette note ?'**
+  String get carnetJournalDeleteTitle;
+
+  /// No description provided for @carnetJournalDeleteMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est définitive.'**
+  String get carnetJournalDeleteMessage;
+
+  /// No description provided for @addJournalSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle note'**
+  String get addJournalSheetTitle;
+
+  /// No description provided for @addJournalEditTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la note'**
+  String get addJournalEditTitle;
+
+  /// No description provided for @addJournalDateLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get addJournalDateLabel;
+
+  /// No description provided for @addJournalTitleLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre (optionnel)'**
+  String get addJournalTitleLabel;
+
+  /// No description provided for @addJournalTitleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex : Plantation des tomates'**
+  String get addJournalTitleHint;
+
+  /// No description provided for @addJournalContentLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note'**
+  String get addJournalContentLabel;
+
+  /// No description provided for @addJournalContentHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrivez librement votre observation, idée, succès ou ennui du jour…'**
+  String get addJournalContentHint;
+
+  /// No description provided for @addJournalSaveButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get addJournalSaveButton;
+
+  /// No description provided for @addJournalUpdateButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à jour'**
+  String get addJournalUpdateButton;
 }
 
 class _AppLocalizationsDelegate

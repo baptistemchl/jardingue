@@ -1577,6 +1577,42 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deleteSeedling(int id) =>
       (delete(seedlings)..where((t) => t.id.equals(id))).go();
+
+  // ============================================
+  // JOURNAL ENTRIES (Carnet de bord — v20)
+  // ============================================
+
+  Future<int> insertJournalEntry(JournalEntriesCompanion entry) {
+    return into(journalEntries).insert(entry);
+  }
+
+  Stream<List<JournalEntry>> watchAllJournalEntries() {
+    return (select(journalEntries)
+          ..orderBy([(t) => OrderingTerm.desc(t.entryDate)]))
+        .watch();
+  }
+
+  Future<int> updateJournalEntry(
+    int id, {
+    required String content,
+    String? title,
+    String? tags,
+    DateTime? entryDate,
+  }) {
+    return (update(journalEntries)..where((t) => t.id.equals(id))).write(
+      JournalEntriesCompanion(
+        content: Value(content),
+        title: Value(title),
+        tags: Value(tags),
+        entryDate:
+            entryDate != null ? Value(entryDate) : const Value.absent(),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<int> deleteJournalEntry(int id) =>
+      (delete(journalEntries)..where((t) => t.id.equals(id))).go();
 }
 
 LazyDatabase _openConnection() {
