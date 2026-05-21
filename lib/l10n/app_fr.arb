@@ -483,5 +483,20 @@
     }
   },
   "templateCustomTitle": "Personnalisé",
-  "templateCustomSubtitle": "Potager vierge"
+  "templateCustomSubtitle": "Potager vierge",
+
+  "carnetTitle": "Carnet de bord",
+  "carnetOpenA11y": "Ouvrir le carnet de bord",
+  "carnetTabHarvests": "Récoltes",
+  "carnetTabSeedlings": "Semis",
+  "carnetTabJournal": "Carnet",
+  "carnetTabStats": "Stats",
+  "carnetHarvestsEmptyTitle": "Aucune récolte enregistrée",
+  "carnetHarvestsEmptySubtitle": "Cette section accueillera bientôt vos cueillettes, quantités et historique de la saison.",
+  "carnetSeedlingsEmptyTitle": "Aucun semis en cours",
+  "carnetSeedlingsEmptySubtitle": "Vous pourrez bientôt suivre vos semis, dates de germination et repiquages.",
+  "carnetJournalEmptyTitle": "Carnet vierge",
+  "carnetJournalEmptySubtitle": "Ajoutez vos observations, idées et anecdotes au fil des saisons.",
+  "carnetStatsEmptyTitle": "Pas encore de statistiques",
+  "carnetStatsEmptySubtitle": "Les bilans de saison s'afficheront ici dès que vous aurez enregistré des récoltes."
 }

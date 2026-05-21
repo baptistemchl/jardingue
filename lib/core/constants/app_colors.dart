@@ -139,6 +139,28 @@ abstract final class AppColors {
   static const Color sunShade = Color(0xFF8DB38B);
 
   // ============================================
+  // CARNET DE BORD (drawer kraft)
+  // ============================================
+
+  /// Fond kraft du carnet — beige naturel chaud
+  static const Color kraftBackground = Color(0xFFE9D9BD);
+
+  /// Papier intérieur (zone contenu, plus clair)
+  static const Color kraftPaper = Color(0xFFF5EBD8);
+
+  /// Encre brun foncé (titres carnet)
+  static const Color kraftInk = Color(0xFF3D2B1F);
+
+  /// Onglets marque-pages — caramel saturé
+  static const Color kraftTab = Color(0xFFC9924B);
+
+  /// Onglets marque-pages variante claire
+  static const Color kraftTabLight = Color(0xFFE2B27A);
+
+  /// Lignes de papier / divisions subtiles
+  static const Color kraftLine = Color(0xFFB8A179);
+
+  // ============================================
   // GRADIENTS
   // ============================================
 

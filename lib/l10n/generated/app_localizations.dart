@@ -2347,6 +2347,90 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Potager vierge'**
   String get templateCustomSubtitle;
+
+  /// No description provided for @carnetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet de bord'**
+  String get carnetTitle;
+
+  /// No description provided for @carnetOpenA11y.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir le carnet de bord'**
+  String get carnetOpenA11y;
+
+  /// No description provided for @carnetTabHarvests.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récoltes'**
+  String get carnetTabHarvests;
+
+  /// No description provided for @carnetTabSeedlings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis'**
+  String get carnetTabSeedlings;
+
+  /// No description provided for @carnetTabJournal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet'**
+  String get carnetTabJournal;
+
+  /// No description provided for @carnetTabStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stats'**
+  String get carnetTabStats;
+
+  /// No description provided for @carnetHarvestsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune récolte enregistrée'**
+  String get carnetHarvestsEmptyTitle;
+
+  /// No description provided for @carnetHarvestsEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette section accueillera bientôt vos cueillettes, quantités et historique de la saison.'**
+  String get carnetHarvestsEmptySubtitle;
+
+  /// No description provided for @carnetSeedlingsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun semis en cours'**
+  String get carnetSeedlingsEmptyTitle;
+
+  /// No description provided for @carnetSeedlingsEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous pourrez bientôt suivre vos semis, dates de germination et repiquages.'**
+  String get carnetSeedlingsEmptySubtitle;
+
+  /// No description provided for @carnetJournalEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet vierge'**
+  String get carnetJournalEmptyTitle;
+
+  /// No description provided for @carnetJournalEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez vos observations, idées et anecdotes au fil des saisons.'**
+  String get carnetJournalEmptySubtitle;
+
+  /// No description provided for @carnetStatsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de statistiques'**
+  String get carnetStatsEmptyTitle;
+
+  /// No description provided for @carnetStatsEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les bilans de saison s\'afficheront ici dès que vous aurez enregistré des récoltes.'**
+  String get carnetStatsEmptySubtitle;
 }
 
 class _AppLocalizationsDelegate

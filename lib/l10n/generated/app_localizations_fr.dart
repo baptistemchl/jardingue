@@ -1344,4 +1344,50 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get templateCustomSubtitle => 'Potager vierge';
+
+  @override
+  String get carnetTitle => 'Carnet de bord';
+
+  @override
+  String get carnetOpenA11y => 'Ouvrir le carnet de bord';
+
+  @override
+  String get carnetTabHarvests => 'Récoltes';
+
+  @override
+  String get carnetTabSeedlings => 'Semis';
+
+  @override
+  String get carnetTabJournal => 'Carnet';
+
+  @override
+  String get carnetTabStats => 'Stats';
+
+  @override
+  String get carnetHarvestsEmptyTitle => 'Aucune récolte enregistrée';
+
+  @override
+  String get carnetHarvestsEmptySubtitle =>
+      'Cette section accueillera bientôt vos cueillettes, quantités et historique de la saison.';
+
+  @override
+  String get carnetSeedlingsEmptyTitle => 'Aucun semis en cours';
+
+  @override
+  String get carnetSeedlingsEmptySubtitle =>
+      'Vous pourrez bientôt suivre vos semis, dates de germination et repiquages.';
+
+  @override
+  String get carnetJournalEmptyTitle => 'Carnet vierge';
+
+  @override
+  String get carnetJournalEmptySubtitle =>
+      'Ajoutez vos observations, idées et anecdotes au fil des saisons.';
+
+  @override
+  String get carnetStatsEmptyTitle => 'Pas encore de statistiques';
+
+  @override
+  String get carnetStatsEmptySubtitle =>
+      'Les bilans de saison s\'afficheront ici dès que vous aurez enregistré des récoltes.';
 }
