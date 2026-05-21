@@ -1287,4 +1287,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get guidanceOptOutUndo => 'Annuler';
+
+  @override
+  String get gardenCellSizeTitle => 'Précision de la grille';
+
+  @override
+  String get gardenCellSizeSubtitle =>
+      'Plus la cellule est petite, plus le placement est précis. Plus elle est grande, plus la grille est lisible.';
+
+  @override
+  String gardenCellSizeValue(int value) {
+    return '$value cm';
+  }
+
+  @override
+  String get gardenCellSizeHintFine => 'Précis';
+
+  @override
+  String get gardenCellSizeHintCoarse => 'Lisible';
 }
