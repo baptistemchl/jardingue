@@ -411,5 +411,44 @@
   "gardenResizeOverflow": "{count, plural, =1{Impossible de redimensionner : 1 élément dépasse du nouveau jardin.} other{Impossible de redimensionner : {count} éléments dépassent du nouveau jardin.}}",
   "@gardenResizeOverflow": {
     "placeholders": { "count": { "type": "int" } }
-  }
+  },
+
+  "settingsTitle": "Paramètres",
+  "settingsGuidanceSectionTitle": "Conseils de jardinage",
+  "settingsGuidanceSectionSubtitle": "Aide-toi des données de compagnonnage et d'incompatibilité du catalogue. Désactivé par défaut.",
+  "settingsCompanionSuggestionsTitle": "Suggérer les compagnons au dépôt",
+  "settingsCompanionSuggestionsSubtitle": "Après chaque plante posée, propose ses plantes compagnes (à ajouter au panier).",
+  "settingsAntagonistWarningsTitle": "Avertir des incompatibilités",
+  "settingsAntagonistWarningsSubtitle": "Affiche un avertissement avant de placer une plante à côté d'un antagoniste connu.",
+
+  "companionSuggestionsTitle": "Compagnons de la {plantName}",
+  "@companionSuggestionsTitle": { "placeholders": { "plantName": { "type": "String" } } },
+  "companionSuggestionsSubtitle": "Ajoute ces plantes au panier pour les placer après.",
+  "companionSuggestionsLater": "Plus tard",
+  "companionSuggestionsAddToBasket": "Ajouter au panier",
+
+  "antagonistDialogTitle": "Incompatibilité détectée",
+  "antagonistDialogConfirmQuestion": "Placer quand même ?",
+  "antagonistDialogPlace": "Placer",
+  "antagonistConflictWithReason": "{sourceName} et {neighborName} partagent {reason}.",
+  "@antagonistConflictWithReason": {
+    "placeholders": {
+      "sourceName": { "type": "String" },
+      "neighborName": { "type": "String" },
+      "reason": { "type": "String" }
+    }
+  },
+  "antagonistConflictGeneric": "{sourceName} et {neighborName} ne s'aiment pas.",
+  "@antagonistConflictGeneric": {
+    "placeholders": {
+      "sourceName": { "type": "String" },
+      "neighborName": { "type": "String" }
+    }
+  },
+
+  "guidanceOptOutCompanionLink": "Ne plus afficher ces suggestions",
+  "guidanceOptOutAntagonistLink": "Ne plus afficher ces avertissements",
+  "guidanceOptOutCompanionSnackbar": "Suggestions désactivées. Vous pouvez les réactiver depuis l'engrenage ⚙️ en haut à droite de l'accueil.",
+  "guidanceOptOutAntagonistSnackbar": "Avertissements désactivés. Vous pouvez les réactiver depuis l'engrenage ⚙️ en haut à droite de l'accueil.",
+  "guidanceOptOutUndo": "Annuler"
 }
