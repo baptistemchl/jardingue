@@ -470,5 +470,18 @@
       "count": { "type": "int" },
       "plantName": { "type": "String" }
     }
-  }
+  },
+
+  "templatesSectionTitle": "Démarrer avec un modèle",
+  "templatesSectionSubtitle": "Choisissez un préréglage et toutes les plantes sont placées d'un coup. Vous pourrez tout modifier ensuite.",
+  "templateCardDimensions": "{width} × {height} m  ·  {count} plantes",
+  "@templateCardDimensions": {
+    "placeholders": {
+      "width": { "type": "String" },
+      "height": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
+  "templateCustomTitle": "Personnalisé",
+  "templateCustomSubtitle": "Potager vierge"
 }

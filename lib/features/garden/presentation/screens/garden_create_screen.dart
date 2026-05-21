@@ -885,6 +885,7 @@ class _TemplatesSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final templatesAsync = ref.watch(gardenTemplatesProvider);
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -898,14 +899,14 @@ class _TemplatesSection extends ConsumerWidget {
             ),
             const SizedBox(width: 6),
             Text(
-              'Démarrer avec un modèle',
+              loc.templatesSectionTitle,
               style: AppTypography.labelMedium,
             ),
           ],
         ),
         const SizedBox(height: 4),
         Text(
-          'Choisissez un préréglage et toutes les plantes sont placées d\'un coup. Vous pourrez tout modifier ensuite.',
+          loc.templatesSectionSubtitle,
           style: AppTypography.caption.copyWith(
             color: AppColors.textSecondary,
             height: 1.4,
@@ -1010,7 +1011,11 @@ class _TemplateCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '${template.widthMeters.toStringAsFixed(1)} × ${template.heightMeters.toStringAsFixed(1)} m  ·  ${template.plants.length} plantes',
+                AppLocalizations.of(context)!.templateCardDimensions(
+                  template.widthMeters.toStringAsFixed(1),
+                  template.heightMeters.toStringAsFixed(1),
+                  template.plants.length,
+                ),
                 style: AppTypography.caption.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -1085,7 +1090,7 @@ class _CustomTemplateCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Personnalisé',
+                AppLocalizations.of(context)!.templateCustomTitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.bodySmall.copyWith(
                   fontWeight: FontWeight.w600,
@@ -1096,7 +1101,7 @@ class _CustomTemplateCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Potager vierge',
+                AppLocalizations.of(context)!.templateCustomSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.caption.copyWith(
                   color: AppColors.textSecondary,
