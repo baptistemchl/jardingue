@@ -40,6 +40,10 @@ class UserPlantUsageInfo {
     PheromoneTraps,
     // SelectedPlantsTable retiree en v13 — voir migration onUpgrade.
     CompletedPlanningTasks,
+    // Carnet de bord (v20)
+    Harvests,
+    Seedlings,
+    JournalEntries,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -49,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 19;
+  int get schemaVersion => 20;
 
   @override
   MigrationStrategy get migration {
@@ -193,6 +197,15 @@ class AppDatabase extends _$AppDatabase {
         // conflits au réimport catalogue.
         if (from < 19) {
           await _safeAddColumn(m, gardenPlants, gardenPlants.customColor);
+        }
+        // Migration v19 -> v20 : tables Carnet de bord (récoltes,
+        // semis, journal). _safeCreateTable est idempotent — si la
+        // table existe déjà (cas d'une migration interrompue ou d'un
+        // dev qui a stash/pop le schéma), on n'écrase rien.
+        if (from < 20) {
+          await _safeCreateTable(m, harvests);
+          await _safeCreateTable(m, seedlings);
+          await _safeCreateTable(m, journalEntries);
         }
       },
     );
@@ -350,6 +363,14 @@ class AppDatabase extends _$AppDatabase {
       'CREATE INDEX IF NOT EXISTS idx_fruit_trees_category ON fruit_trees(category)',
       // UserFruitTrees : FK
       'CREATE INDEX IF NOT EXISTS idx_user_fruit_trees_fruit_tree_id ON user_fruit_trees(fruit_tree_id)',
+      // Carnet (v20) : agrégats fréquents par potager / plante / date.
+      'CREATE INDEX IF NOT EXISTS idx_harvests_garden_id ON harvests(garden_id)',
+      'CREATE INDEX IF NOT EXISTS idx_harvests_plant_id ON harvests(plant_id)',
+      'CREATE INDEX IF NOT EXISTS idx_harvests_harvested_at ON harvests(harvested_at)',
+      'CREATE INDEX IF NOT EXISTS idx_seedlings_status ON seedlings(status)',
+      'CREATE INDEX IF NOT EXISTS idx_seedlings_garden_id ON seedlings(garden_id)',
+      'CREATE INDEX IF NOT EXISTS idx_journal_entry_date ON journal_entries(entry_date)',
+      'CREATE INDEX IF NOT EXISTS idx_journal_garden_id ON journal_entries(garden_id)',
     ];
     for (final sql in statements) {
       await customStatement(sql);
