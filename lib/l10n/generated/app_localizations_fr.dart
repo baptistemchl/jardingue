@@ -1326,4 +1326,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String colorPickerApplyToAll(int count, String plantName) {
     return 'Appliquer à tou(te)s les $count $plantName de ce potager';
   }
+
+  @override
+  String get templatesSectionTitle => 'Démarrer avec un modèle';
+
+  @override
+  String get templatesSectionSubtitle =>
+      'Choisissez un préréglage et toutes les plantes sont placées d\'un coup. Vous pourrez tout modifier ensuite.';
+
+  @override
+  String templateCardDimensions(String width, String height, int count) {
+    return '$width × $height m  ·  $count plantes';
+  }
+
+  @override
+  String get templateCustomTitle => 'Personnalisé';
+
+  @override
+  String get templateCustomSubtitle => 'Potager vierge';
 }

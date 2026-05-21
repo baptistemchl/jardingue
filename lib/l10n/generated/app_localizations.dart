@@ -2317,6 +2317,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Appliquer à tou(te)s les {count} {plantName} de ce potager'**
   String colorPickerApplyToAll(int count, String plantName);
+
+  /// No description provided for @templatesSectionTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrer avec un modèle'**
+  String get templatesSectionTitle;
+
+  /// No description provided for @templatesSectionSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un préréglage et toutes les plantes sont placées d\'un coup. Vous pourrez tout modifier ensuite.'**
+  String get templatesSectionSubtitle;
+
+  /// No description provided for @templateCardDimensions.
+  ///
+  /// In fr, this message translates to:
+  /// **'{width} × {height} m  ·  {count} plantes'**
+  String templateCardDimensions(String width, String height, int count);
+
+  /// No description provided for @templateCustomTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Personnalisé'**
+  String get templateCustomTitle;
+
+  /// No description provided for @templateCustomSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Potager vierge'**
+  String get templateCustomSubtitle;
 }
 
 class _AppLocalizationsDelegate

@@ -372,6 +372,14 @@ class AppDatabase extends _$AppDatabase {
     return (select(plants)..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
+  /// Cherche une plante par son nom commun exact. Utilisé par les
+  /// templates de potager (v19) pour résoudre les références par nom et
+  /// non par id (les ids peuvent changer aux réimports).
+  Future<Plant?> getPlantByCommonName(String commonName) {
+    return (select(plants)..where((t) => t.commonName.equals(commonName)))
+        .getSingleOrNull();
+  }
+
   Future<List<Plant>> searchPlants(String query) {
     final lowerQuery = '%${query.toLowerCase()}%';
     return (select(plants)..where(

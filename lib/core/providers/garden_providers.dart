@@ -264,6 +264,67 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
     }
   }
 
+  /// Crée un potager à partir d'un template et y pose toutes les plantes
+  /// pré-définies. Les références aux plantes dans le template sont par
+  /// nom commun ; les plantes introuvables (catalogue désynchro) sont
+  /// ignorées silencieusement (le potager est créé quand même).
+  ///
+  /// Retourne l'id du potager créé.
+  Future<int> createGardenFromTemplate({
+    required String name,
+    required double widthMeters,
+    required double heightMeters,
+    required int cellSizeCm,
+    required List<({String plantName, int xCells, int yCells, int wCells, int hCells})> plants,
+    int? year,
+    int? previousGardenId,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final widthCells = (widthMeters * 100 / cellSizeCm).ceil();
+      final heightCells = (heightMeters * 100 / cellSizeCm).ceil();
+
+      final gardenId = await _repo.createGarden(
+        GardensCompanion.insert(
+          name: name,
+          widthCells: Value(widthCells),
+          heightCells: Value(heightCells),
+          cellSizeCm: Value(cellSizeCm),
+          year: Value(year),
+          previousGardenId: Value(previousGardenId),
+        ),
+      );
+
+      final db = ref.read(databaseProvider);
+      final now = DateTime.now();
+      for (final tp in plants) {
+        final plant = await db.getPlantByCommonName(tp.plantName);
+        if (plant == null) continue;
+        await _repo.addPlantToGarden(
+          GardenPlantsCompanion.insert(
+            gardenId: gardenId,
+            plantId: plant.id,
+            gridX: tp.xCells,
+            gridY: tp.yCells,
+            widthCells: Value(tp.wCells.clamp(1, 100)),
+            heightCells: Value(tp.hCells.clamp(1, 100)),
+            plantedAt: Value(now),
+          ),
+        );
+      }
+
+      state = const AsyncData(null);
+      return gardenId;
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.createGardenFromTemplate',
+        extra: {'name': name, 'plantsCount': plants.length},
+      );
+      state = AsyncError(e, st);
+      rethrow;
+    }
+  }
+
   /// Met à jour la couleur personnalisée d'un pied placé (v19).
   /// [color] = null pour revenir à la couleur de catégorie.
   Future<void> updateGardenPlantColor({

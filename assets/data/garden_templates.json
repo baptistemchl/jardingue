@@ -1,0 +1,115 @@
+{
+  "templates": [
+    {
+      "id": "beginner_square",
+      "name": "Carré du débutant",
+      "emoji": "🌱",
+      "description": "Un petit carré 1,20 × 1,20 m, quatre légumes faciles pour démarrer sans se prendre la tête.",
+      "level": "Débutant",
+      "width_m": 1.2,
+      "height_m": 1.2,
+      "cell_size_cm": 30,
+      "plants": [
+        { "plant_name": "Laitue pommée", "x_cells": 0, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Radis French Breakfast", "x_cells": 2, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Carotte", "x_cells": 0, "y_cells": 2, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Persil", "x_cells": 2, "y_cells": 2, "w_cells": 2, "h_cells": 2 }
+      ]
+    },
+    {
+      "id": "balcony_box",
+      "name": "Jardinière de balcon",
+      "emoji": "🪴",
+      "description": "Un bac long et étroit qui tient sur un balcon ou un rebord de fenêtre. Un pied de tomate cerise et trois aromatiques.",
+      "level": "Débutant",
+      "width_m": 1.0,
+      "height_m": 0.4,
+      "cell_size_cm": 20,
+      "plants": [
+        { "plant_name": "Tomate cerise", "x_cells": 0, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Basilic", "x_cells": 2, "y_cells": 0, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Ciboulette", "x_cells": 3, "y_cells": 0, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Persil", "x_cells": 4, "y_cells": 0, "w_cells": 1, "h_cells": 2 }
+      ]
+    },
+    {
+      "id": "aromatic_garden",
+      "name": "Carré d'aromatiques",
+      "emoji": "🌿",
+      "description": "Toutes vos herbes au même endroit, à portée de main de la cuisine.",
+      "level": "Intermédiaire",
+      "width_m": 1.2,
+      "height_m": 0.9,
+      "cell_size_cm": 30,
+      "plants": [
+        { "plant_name": "Thym", "x_cells": 0, "y_cells": 0, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Romarin", "x_cells": 1, "y_cells": 0, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Sauge officinale", "x_cells": 2, "y_cells": 0, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Origan", "x_cells": 3, "y_cells": 0, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Basilic", "x_cells": 0, "y_cells": 1, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Persil", "x_cells": 1, "y_cells": 1, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Ciboulette", "x_cells": 2, "y_cells": 1, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Menthe", "x_cells": 3, "y_cells": 1, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Coriandre", "x_cells": 0, "y_cells": 2, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Aneth", "x_cells": 1, "y_cells": 2, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Estragon", "x_cells": 2, "y_cells": 2, "w_cells": 1, "h_cells": 1 },
+        { "plant_name": "Cerfeuil", "x_cells": 3, "y_cells": 2, "w_cells": 1, "h_cells": 1 }
+      ]
+    },
+    {
+      "id": "permaculture_3x2",
+      "name": "Potager en permaculture",
+      "emoji": "🌻",
+      "description": "Trois mètres sur deux, en associations bénéfiques : tomates avec basilic et œillets, courgettes, légumineuses et fleurs mellifères.",
+      "level": "Intermédiaire",
+      "width_m": 3.0,
+      "height_m": 2.0,
+      "cell_size_cm": 30,
+      "plants": [
+        { "plant_name": "Tomate", "x_cells": 0, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Basilic", "x_cells": 2, "y_cells": 0, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Tomate", "x_cells": 3, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Œillet d'Inde", "x_cells": 5, "y_cells": 0, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Bourrache", "x_cells": 6, "y_cells": 0, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Courgette", "x_cells": 7, "y_cells": 0, "w_cells": 3, "h_cells": 3 },
+        { "plant_name": "Haricot nain", "x_cells": 0, "y_cells": 3, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Laitue pommée", "x_cells": 2, "y_cells": 3, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Radis French Breakfast", "x_cells": 4, "y_cells": 3, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Ciboulette", "x_cells": 5, "y_cells": 3, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Capucine", "x_cells": 6, "y_cells": 3, "w_cells": 1, "h_cells": 2 }
+      ]
+    },
+    {
+      "id": "family_large",
+      "name": "Grand potager familial",
+      "emoji": "🥕",
+      "description": "Cinq mètres sur quatre pour nourrir une famille toute l'année : solanacées, cucurbitacées, racines, légumineuses, choux.",
+      "level": "Confirmé",
+      "width_m": 5.0,
+      "height_m": 4.0,
+      "cell_size_cm": 30,
+      "plants": [
+        { "plant_name": "Pomme de terre", "x_cells": 0, "y_cells": 0, "w_cells": 4, "h_cells": 3 },
+        { "plant_name": "Tomate", "x_cells": 4, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Basilic", "x_cells": 6, "y_cells": 0, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Tomate", "x_cells": 7, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Œillet d'Inde", "x_cells": 9, "y_cells": 0, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Aubergine", "x_cells": 10, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Poivron doux", "x_cells": 12, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Courgette", "x_cells": 14, "y_cells": 0, "w_cells": 3, "h_cells": 3 },
+        { "plant_name": "Haricot nain", "x_cells": 4, "y_cells": 3, "w_cells": 3, "h_cells": 2 },
+        { "plant_name": "Carotte", "x_cells": 7, "y_cells": 3, "w_cells": 3, "h_cells": 2 },
+        { "plant_name": "Bourrache", "x_cells": 10, "y_cells": 3, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Concombre", "x_cells": 11, "y_cells": 3, "w_cells": 3, "h_cells": 2 },
+        { "plant_name": "Chou pommé", "x_cells": 0, "y_cells": 5, "w_cells": 3, "h_cells": 3 },
+        { "plant_name": "Laitue pommée", "x_cells": 3, "y_cells": 5, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Radis French Breakfast", "x_cells": 5, "y_cells": 5, "w_cells": 2, "h_cells": 1 },
+        { "plant_name": "Persil", "x_cells": 5, "y_cells": 6, "w_cells": 2, "h_cells": 1 },
+        { "plant_name": "Oignon jaune", "x_cells": 7, "y_cells": 5, "w_cells": 3, "h_cells": 3 },
+        { "plant_name": "Poireau", "x_cells": 10, "y_cells": 5, "w_cells": 3, "h_cells": 3 },
+        { "plant_name": "Betterave rouge", "x_cells": 13, "y_cells": 5, "w_cells": 2, "h_cells": 3 },
+        { "plant_name": "Fraisier", "x_cells": 15, "y_cells": 5, "w_cells": 2, "h_cells": 3 }
+      ]
+    }
+  ]
+}
