@@ -24,6 +24,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
   late TextEditingController _nameController;
   late double _widthMeters;
   late double _heightMeters;
+  late int _cellSizeCm;
   int? _year;
   int? _previousGardenId;
   bool _isLoading = false;
@@ -37,6 +38,13 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
     _nameController = TextEditingController(text: widget.garden?.name ?? '');
     _widthMeters = widget.garden?.widthMeters ?? 3.0;
     _heightMeters = widget.garden?.heightMeters ?? 2.0;
+    // En édition, on reprend la taille existante (changer la taille de
+    // cellule sur un potager existant invaliderait les coords gridX/Y
+    // des plantes déjà posées → on cache le sélecteur dans ce cas).
+    // En création, défaut à 30 cm (lisibilité standard) — l'utilisateur
+    // peut descendre à 5/10/15 pour plus de précision dans les warnings
+    // d'antagonisme.
+    _cellSizeCm = widget.garden?.cellSizeCm ?? 30;
     _year = widget.garden?.year;
     _previousGardenId = widget.garden?.previousGardenId;
   }
@@ -125,6 +133,7 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
           name: _nameController.text.trim(),
           widthMeters: _widthMeters,
           heightMeters: _heightMeters,
+          cellSizeCm: _cellSizeCm,
           year: _year,
           previousGardenId: _previousGardenId,
         );
@@ -303,6 +312,16 @@ class _GardenCreateScreenState extends ConsumerState<GardenCreateScreen> {
                     ),
                   ],
                 ),
+
+                // Précision de la grille (création uniquement — modifier
+                // après coup invaliderait les coords des plantes posées).
+                if (!isEditing) ...[
+                  const SizedBox(height: 24),
+                  _CellSizeSelector(
+                    value: _cellSizeCm,
+                    onChanged: (v) => setState(() => _cellSizeCm = v),
+                  ),
+                ],
 
                 const SizedBox(height: 24),
 
@@ -790,6 +809,125 @@ class _Stat extends StatelessWidget {
           style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
         ),
       ],
+    );
+  }
+}
+
+/// Sélecteur de taille de cellule (précision de la grille). Chips
+/// horizontales avec 5 valeurs prédéfinies, du plus précis au plus
+/// lisible. Plus la cellule est petite, plus l'utilisateur peut placer
+/// finement les plantes (et plus les avertissements d'antagonisme se
+/// déclenchent au bon endroit).
+class _CellSizeSelector extends StatelessWidget {
+  static const _values = <int>[5, 10, 15, 30, 50];
+
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  const _CellSizeSelector({
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(loc.gardenCellSizeTitle, style: AppTypography.labelMedium),
+        const SizedBox(height: 4),
+        Text(
+          loc.gardenCellSizeSubtitle,
+          style: AppTypography.caption.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            for (final v in _values) ...[
+              Expanded(
+                child: _CellSizeChip(
+                  value: v,
+                  selected: v == value,
+                  onTap: () => onChanged(v),
+                ),
+              ),
+              if (v != _values.last) const SizedBox(width: 8),
+            ],
+          ],
+        ),
+        const SizedBox(height: 8),
+        // Petits hints alignés sur la barre de chips
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              loc.gardenCellSizeHintFine,
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textTertiary,
+                fontSize: 10,
+              ),
+            ),
+            Text(
+              loc.gardenCellSizeHintCoarse,
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textTertiary,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _CellSizeChip extends StatelessWidget {
+  final int value;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _CellSizeChip({
+    required this.value,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: selected
+                ? AppColors.primary.withValues(alpha: 0.12)
+                : AppColors.background,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selected ? AppColors.primary : AppColors.border,
+              width: selected ? 2 : 1,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              loc.gardenCellSizeValue(value),
+              style: AppTypography.labelMedium.copyWith(
+                color: selected ? AppColors.primary : AppColors.textPrimary,
+                fontWeight:
+                    selected ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

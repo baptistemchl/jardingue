@@ -2121,6 +2121,166 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{count, plural, =1{Impossible de redimensionner : 1 élément dépasse du nouveau jardin.} other{Impossible de redimensionner : {count} éléments dépassent du nouveau jardin.}}'**
   String gardenResizeOverflow(int count);
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsGuidanceSectionTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseils de jardinage'**
+  String get settingsGuidanceSectionTitle;
+
+  /// No description provided for @settingsGuidanceSectionSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide-toi des données de compagnonnage et d\'incompatibilité du catalogue. Désactivé par défaut.'**
+  String get settingsGuidanceSectionSubtitle;
+
+  /// No description provided for @settingsCompanionSuggestionsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suggérer les compagnons au dépôt'**
+  String get settingsCompanionSuggestionsTitle;
+
+  /// No description provided for @settingsCompanionSuggestionsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Après chaque plante posée, propose ses plantes compagnes (à ajouter au panier).'**
+  String get settingsCompanionSuggestionsSubtitle;
+
+  /// No description provided for @settingsAntagonistWarningsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avertir des incompatibilités'**
+  String get settingsAntagonistWarningsTitle;
+
+  /// No description provided for @settingsAntagonistWarningsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Affiche un avertissement avant de placer une plante à côté d\'un antagoniste connu.'**
+  String get settingsAntagonistWarningsSubtitle;
+
+  /// No description provided for @companionSuggestionsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compagnons de la {plantName}'**
+  String companionSuggestionsTitle(String plantName);
+
+  /// No description provided for @companionSuggestionsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoute ces plantes au panier pour les placer après.'**
+  String get companionSuggestionsSubtitle;
+
+  /// No description provided for @companionSuggestionsLater.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus tard'**
+  String get companionSuggestionsLater;
+
+  /// No description provided for @companionSuggestionsAddToBasket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter au panier'**
+  String get companionSuggestionsAddToBasket;
+
+  /// No description provided for @antagonistDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Incompatibilité détectée'**
+  String get antagonistDialogTitle;
+
+  /// No description provided for @antagonistDialogConfirmQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Placer quand même ?'**
+  String get antagonistDialogConfirmQuestion;
+
+  /// No description provided for @antagonistDialogPlace.
+  ///
+  /// In fr, this message translates to:
+  /// **'Placer'**
+  String get antagonistDialogPlace;
+
+  /// No description provided for @antagonistConflictWithReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'{sourceName} et {neighborName} partagent {reason}.'**
+  String antagonistConflictWithReason(
+    String sourceName,
+    String neighborName,
+    String reason,
+  );
+
+  /// No description provided for @antagonistConflictGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'{sourceName} et {neighborName} ne s\'aiment pas.'**
+  String antagonistConflictGeneric(String sourceName, String neighborName);
+
+  /// No description provided for @guidanceOptOutCompanionLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ne plus afficher ces suggestions'**
+  String get guidanceOptOutCompanionLink;
+
+  /// No description provided for @guidanceOptOutAntagonistLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ne plus afficher ces avertissements'**
+  String get guidanceOptOutAntagonistLink;
+
+  /// No description provided for @guidanceOptOutCompanionSnackbar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suggestions désactivées. Vous pouvez les réactiver depuis l\'engrenage ⚙️ en haut à droite de l\'accueil.'**
+  String get guidanceOptOutCompanionSnackbar;
+
+  /// No description provided for @guidanceOptOutAntagonistSnackbar.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avertissements désactivés. Vous pouvez les réactiver depuis l\'engrenage ⚙️ en haut à droite de l\'accueil.'**
+  String get guidanceOptOutAntagonistSnackbar;
+
+  /// No description provided for @guidanceOptOutUndo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get guidanceOptOutUndo;
+
+  /// No description provided for @gardenCellSizeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précision de la grille'**
+  String get gardenCellSizeTitle;
+
+  /// No description provided for @gardenCellSizeSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus la cellule est petite, plus le placement est précis. Plus elle est grande, plus la grille est lisible.'**
+  String get gardenCellSizeSubtitle;
+
+  /// No description provided for @gardenCellSizeValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{value} cm'**
+  String gardenCellSizeValue(int value);
+
+  /// No description provided for @gardenCellSizeHintFine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précis'**
+  String get gardenCellSizeHintFine;
+
+  /// No description provided for @gardenCellSizeHintCoarse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lisible'**
+  String get gardenCellSizeHintCoarse;
 }
 
 class _AppLocalizationsDelegate

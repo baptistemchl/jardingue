@@ -14,12 +14,18 @@ import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
+import '../../../../core/services/preferences/user_guidance_preferences.dart';
+import '../../../../core/providers/database_providers.dart';
 import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/providers/garden_event_providers.dart';
+import '../../../../core/utils/plant_emoji_mapper.dart';
 import '../../domain/action_history.dart';
+import '../../domain/companion_guidance_service.dart';
 import '../../domain/editor_mode.dart';
 import '../../domain/models/amendment_type.dart';
 import '../widgets/garden_grid.dart';
+import '../widgets/editor/antagonist_warning_dialog.dart';
+import '../widgets/editor/companion_suggestions_sheet.dart';
 import '../widgets/editor/undo_redo_buttons.dart';
 import '../widgets/editor/editor_mode_selector.dart';
 import '../widgets/editor/zoom_controls.dart';
@@ -368,6 +374,19 @@ class _GardenEditorScreenState
     int cellSizeCm,
   ) async {
     if (!_mode.canDrag) return;
+
+    // Avertissement d'antagonisme (opt-in, off par défaut).
+    final prefs = ref.readGuidancePrefs();
+    if (prefs.antagonistWarningsEnabled && !element.isZone) {
+      final abort = await _checkAntagonistAndMaybeAbort(
+        element: element,
+        newXMeters: newX,
+        newYMeters: newY,
+        cellSizeCm: cellSizeCm,
+      );
+      if (abort) return;
+    }
+
     final action = MoveElementAction(
       elementId: element.id,
       gardenId: widget.gardenId,
@@ -380,6 +399,104 @@ class _GardenEditorScreenState
       ref.read(gardenNotifierProvider.notifier),
     );
     _actionHistory.addAction(action);
+  }
+
+  /// Cherche les antagonistes voisins et affiche le dialog de confirmation
+  /// si nécessaire. Retourne `true` si l'utilisateur annule le placement.
+  Future<bool> _checkAntagonistAndMaybeAbort({
+    required GardenPlantWithDetails element,
+    required double newXMeters,
+    required double newYMeters,
+    required int cellSizeCm,
+  }) async {
+    final plant = element.plant;
+    if (plant == null) return false;
+
+    final antagonists = await ref.read(
+      plantAntagonistsProvider(plant.id).future,
+    );
+    if (antagonists.isEmpty) return false;
+    final antagonistIds = antagonists.map((p) => p.id).toSet();
+
+    final existing = ref
+            .read(gardenPlantsProvider(widget.gardenId))
+            .value ??
+        const <GardenPlantWithDetails>[];
+
+    final newGridX = (newXMeters * 100 / cellSizeCm).round();
+    final newGridY = (newYMeters * 100 / cellSizeCm).round();
+
+    final conflicts = const CompanionGuidanceService().findConflictsAt(
+      sourcePlant: plant,
+      sourceGridX: newGridX,
+      sourceGridY: newGridY,
+      sourceWidthCells: element.widthCells,
+      sourceHeightCells: element.heightCells,
+      existingPlants: existing,
+      antagonistsOfSource: antagonistIds,
+      cellSizeCm: cellSizeCm,
+      excludeGardenPlantId: element.id,
+    );
+    if (conflicts.isEmpty) return false;
+    if (!mounted) return false;
+
+    final confirmed = await AntagonistWarningDialog.show(
+      context: context,
+      sourcePlantName: plant.commonName,
+      conflicts: conflicts,
+    );
+    return !confirmed;
+  }
+
+  /// Affiche la bottom sheet de suggestions de compagnons après l'ajout
+  /// d'une plante (opt-in, off par défaut). Filtre les compagnons déjà
+  /// présents dans le potager. Ajoute les compagnons cochés au panier
+  /// (gridX = -1, en attente de placement).
+  Future<void> _maybeSuggestCompanions(int sourcePlantId) async {
+    final prefs = ref.readGuidancePrefs();
+    if (!prefs.companionSuggestionsEnabled) return;
+
+    final sourcePlant = await ref.read(
+      plantByIdProvider(sourcePlantId).future,
+    );
+    if (sourcePlant == null) return;
+
+    final companions = await ref.read(
+      plantCompanionsProvider(sourcePlantId).future,
+    );
+    if (companions.isEmpty) return;
+
+    final existing = ref
+            .read(gardenPlantsProvider(widget.gardenId))
+            .value ??
+        const <GardenPlantWithDetails>[];
+    final alreadyInGarden = existing
+        .where((e) => !e.isZone)
+        .map((e) => e.gardenPlant.plantId)
+        .toSet();
+
+    final suggestions = const CompanionGuidanceService().companionsToSuggest(
+      companions: companions,
+      alreadyInGardenPlantIds: alreadyInGarden,
+    );
+    if (suggestions.isEmpty) return;
+    if (!mounted) return;
+
+    final chosen = await CompanionSuggestionsSheet.show(
+      context: context,
+      sourcePlantName: sourcePlant.commonName,
+      sourcePlantEmoji: PlantEmojiMapper.forPlant(sourcePlant),
+      suggestions: suggestions,
+    );
+    if (chosen == null || chosen.isEmpty) return;
+
+    final notifier = ref.read(gardenNotifierProvider.notifier);
+    for (final plantId in chosen) {
+      await notifier.addPlantPendingPlacement(
+        gardenId: widget.gardenId,
+        plantId: plantId,
+      );
+    }
   }
 
   Future<void> _deleteElement(
@@ -488,6 +605,8 @@ class _GardenEditorScreenState
                 wateringFrequencyDays: wateringFrequencyDays,
                 previousCropPlantId: previousCropPlantId,
               );
+          // Propose les compagnons (opt-in, off par défaut).
+          await _maybeSuggestCompanions(plantId);
         },
         onZoneAdded: (zoneType, w, h) async {
           Navigator.of(ctx, rootNavigator: true).pop();

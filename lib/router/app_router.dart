@@ -6,6 +6,7 @@ import '../features/garden/presentation/screens/garden_editor_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/premium/presentation/screens/premium_screen.dart';
 import '../features/plants/presentation/screens/plants_screen.dart';
+import '../features/settings/presentation/screens/settings_screen.dart';
 import '../features/calendar/presentation/screens/calendar_screen.dart';
 import '../features/weather/presentation/screens/weather_screen.dart';
 import '../features/planning/presentation/screens/planning_screen.dart';
@@ -104,6 +105,17 @@ GoRouter buildRouter({required bool showOnboarding}) {
         pageBuilder: (context, state) => MaterialPage(
           key: state.pageKey,
           child: const AboutScreen(),
+        ),
+      ),
+
+      // Paramètres
+      GoRoute(
+        path: AppRoutes.settings,
+        name: 'settings',
+        parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const SettingsScreen(),
         ),
       ),
 
