@@ -1417,4 +1417,78 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get carnetTabAbout => 'À propos';
+
+  @override
+  String carnetHarvestsTitleYear(int year) {
+    return 'Récoltes $year';
+  }
+
+  @override
+  String carnetHarvestsSummaryLine(int plantCount, int totalHarvests) {
+    return '$plantCount plantes • $totalHarvests récoltes';
+  }
+
+  @override
+  String carnetHarvestsCardSubtitle(int count, String lastDate) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return '$count récolte$_temp0 • $lastDate';
+  }
+
+  @override
+  String get carnetHarvestsAddButton => 'Nouvelle récolte';
+
+  @override
+  String get addHarvestSheetTitle => 'Enregistrer une récolte';
+
+  @override
+  String get addHarvestPlantLabel => 'Plante';
+
+  @override
+  String get addHarvestPlantSearchHint => 'Chercher : tomate, carotte…';
+
+  @override
+  String get addHarvestPlantNoResult => 'Aucune plante trouvée.';
+
+  @override
+  String get addHarvestDateLabel => 'Date';
+
+  @override
+  String get addHarvestQuantityLabel => 'Quantité';
+
+  @override
+  String get addHarvestUnitLabel => 'Unité';
+
+  @override
+  String get addHarvestUnitGrams => 'g';
+
+  @override
+  String get addHarvestUnitKilos => 'kg';
+
+  @override
+  String get addHarvestUnitPieces => 'pièces';
+
+  @override
+  String get addHarvestUnitBunches => 'bottes';
+
+  @override
+  String get addHarvestNoteLabel => 'Note (optionnel)';
+
+  @override
+  String get addHarvestSaveButton => 'Enregistrer la récolte';
+
+  @override
+  String get dateRelativeToday => 'aujourd\'hui';
+
+  @override
+  String get dateRelativeYesterday => 'hier';
+
+  @override
+  String dateRelativeDaysAgo(int days) {
+    return 'il y a $days j';
+  }
 }

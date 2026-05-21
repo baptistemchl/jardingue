@@ -508,5 +508,42 @@
   "carnetSettingsAboutSubtitle": "Crédits, contact, mentions légales",
   "carnetSettingsThanksMessage": "Merci d'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.",
 
-  "carnetTabAbout": "À propos"
+  "carnetTabAbout": "À propos",
+
+  "carnetHarvestsTitleYear": "Récoltes {year}",
+  "@carnetHarvestsTitleYear": { "placeholders": { "year": { "type": "int" } } },
+  "carnetHarvestsSummaryLine": "{plantCount} plantes • {totalHarvests} récoltes",
+  "@carnetHarvestsSummaryLine": {
+    "placeholders": {
+      "plantCount": { "type": "int" },
+      "totalHarvests": { "type": "int" }
+    }
+  },
+  "carnetHarvestsCardSubtitle": "{count} récolte{count, plural, one{} other{s}} • {lastDate}",
+  "@carnetHarvestsCardSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "lastDate": { "type": "String" }
+    }
+  },
+  "carnetHarvestsAddButton": "Nouvelle récolte",
+
+  "addHarvestSheetTitle": "Enregistrer une récolte",
+  "addHarvestPlantLabel": "Plante",
+  "addHarvestPlantSearchHint": "Chercher : tomate, carotte…",
+  "addHarvestPlantNoResult": "Aucune plante trouvée.",
+  "addHarvestDateLabel": "Date",
+  "addHarvestQuantityLabel": "Quantité",
+  "addHarvestUnitLabel": "Unité",
+  "addHarvestUnitGrams": "g",
+  "addHarvestUnitKilos": "kg",
+  "addHarvestUnitPieces": "pièces",
+  "addHarvestUnitBunches": "bottes",
+  "addHarvestNoteLabel": "Note (optionnel)",
+  "addHarvestSaveButton": "Enregistrer la récolte",
+
+  "dateRelativeToday": "aujourd'hui",
+  "dateRelativeYesterday": "hier",
+  "dateRelativeDaysAgo": "il y a {days} j",
+  "@dateRelativeDaysAgo": { "placeholders": { "days": { "type": "int" } } }
 }

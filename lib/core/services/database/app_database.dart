@@ -1527,6 +1527,29 @@ class AppDatabase extends _$AppDatabase {
       return result;
     });
   }
+
+  // ============================================
+  // HARVESTS QUERIES (Carnet de bord — v20)
+  // ============================================
+
+  /// Insère une récolte. Retourne l'id généré.
+  Future<int> insertHarvest(HarvestsCompanion harvest) {
+    return into(harvests).insert(harvest);
+  }
+
+  /// Toutes les récoltes d'une année, triées du plus récent au plus ancien.
+  Stream<List<Harvest>> watchHarvestsForYear(int year) {
+    final start = DateTime(year, 1, 1);
+    final end = DateTime(year + 1, 1, 1);
+    return (select(harvests)
+          ..where((t) => t.harvestedAt.isBiggerOrEqualValue(start) &
+              t.harvestedAt.isSmallerThanValue(end))
+          ..orderBy([(t) => OrderingTerm.desc(t.harvestedAt)]))
+        .watch();
+  }
+
+  Future<int> deleteHarvest(int id) =>
+      (delete(harvests)..where((t) => t.id.equals(id))).go();
 }
 
 LazyDatabase _openConnection() {

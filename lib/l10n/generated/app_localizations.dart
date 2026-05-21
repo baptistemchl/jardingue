@@ -2479,6 +2479,126 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'À propos'**
   String get carnetTabAbout;
+
+  /// No description provided for @carnetHarvestsTitleYear.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récoltes {year}'**
+  String carnetHarvestsTitleYear(int year);
+
+  /// No description provided for @carnetHarvestsSummaryLine.
+  ///
+  /// In fr, this message translates to:
+  /// **'{plantCount} plantes • {totalHarvests} récoltes'**
+  String carnetHarvestsSummaryLine(int plantCount, int totalHarvests);
+
+  /// No description provided for @carnetHarvestsCardSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} récolte{count, plural, one{} other{s}} • {lastDate}'**
+  String carnetHarvestsCardSubtitle(int count, String lastDate);
+
+  /// No description provided for @carnetHarvestsAddButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle récolte'**
+  String get carnetHarvestsAddButton;
+
+  /// No description provided for @addHarvestSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer une récolte'**
+  String get addHarvestSheetTitle;
+
+  /// No description provided for @addHarvestPlantLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plante'**
+  String get addHarvestPlantLabel;
+
+  /// No description provided for @addHarvestPlantSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chercher : tomate, carotte…'**
+  String get addHarvestPlantSearchHint;
+
+  /// No description provided for @addHarvestPlantNoResult.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune plante trouvée.'**
+  String get addHarvestPlantNoResult;
+
+  /// No description provided for @addHarvestDateLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get addHarvestDateLabel;
+
+  /// No description provided for @addHarvestQuantityLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get addHarvestQuantityLabel;
+
+  /// No description provided for @addHarvestUnitLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Unité'**
+  String get addHarvestUnitLabel;
+
+  /// No description provided for @addHarvestUnitGrams.
+  ///
+  /// In fr, this message translates to:
+  /// **'g'**
+  String get addHarvestUnitGrams;
+
+  /// No description provided for @addHarvestUnitKilos.
+  ///
+  /// In fr, this message translates to:
+  /// **'kg'**
+  String get addHarvestUnitKilos;
+
+  /// No description provided for @addHarvestUnitPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'pièces'**
+  String get addHarvestUnitPieces;
+
+  /// No description provided for @addHarvestUnitBunches.
+  ///
+  /// In fr, this message translates to:
+  /// **'bottes'**
+  String get addHarvestUnitBunches;
+
+  /// No description provided for @addHarvestNoteLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note (optionnel)'**
+  String get addHarvestNoteLabel;
+
+  /// No description provided for @addHarvestSaveButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer la récolte'**
+  String get addHarvestSaveButton;
+
+  /// No description provided for @dateRelativeToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'aujourd\'hui'**
+  String get dateRelativeToday;
+
+  /// No description provided for @dateRelativeYesterday.
+  ///
+  /// In fr, this message translates to:
+  /// **'hier'**
+  String get dateRelativeYesterday;
+
+  /// No description provided for @dateRelativeDaysAgo.
+  ///
+  /// In fr, this message translates to:
+  /// **'il y a {days} j'**
+  String dateRelativeDaysAgo(int days);
 }
 
 class _AppLocalizationsDelegate
