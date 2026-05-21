@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_back_button.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../providers/premium_providers.dart';
 import '../widgets/premium_card.dart';
 import '../widgets/backup_section.dart';
@@ -272,26 +273,29 @@ class _RestorePurchasesButtonState
       return Center(
         child: TextButton(
           onPressed: () async {
+            final loc = AppLocalizations.of(context)!;
             try {
-              await ref
+              final restored = await ref
                   .read(premiumNotifierProvider.notifier)
                   .restorePurchases();
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
+                  SnackBar(
                     content: Text(
-                      'Achats restaurés avec succès.',
+                      restored
+                          ? loc.premiumRestoreSuccess
+                          : loc.premiumRestoreNothingFound,
                     ),
+                    behavior: SnackBarBehavior.floating,
                   ),
                 );
               }
             } catch (_) {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Impossible de restaurer.',
-                    ),
+                  SnackBar(
+                    content: Text(loc.premiumRestoreError),
+                    behavior: SnackBarBehavior.floating,
                   ),
                 );
               }

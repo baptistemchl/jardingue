@@ -1662,4 +1662,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get carnetStatsCounterSeedlings => 'Semis';
+
+  @override
+  String get premiumRestoreSuccess => 'Achat Premium restauré.';
+
+  @override
+  String get premiumRestoreNothingFound =>
+      'Aucun achat trouvé sur ce compte Play Store.';
+
+  @override
+  String get premiumRestoreError => 'Impossible de restaurer.';
 }

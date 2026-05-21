@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 /// Product ID — must match Play Console / App Store Connect.
@@ -37,18 +38,46 @@ class PurchaseDatasource {
   /// Renvoie `null` après 6s si le store ne répond pas (cas typique
   /// en debug local sans Play Services), pour éviter de bloquer
   /// l'UI sur un spinner infini.
+  ///
+  /// Logue en debug le détail de la réponse Play Store (productDetails,
+  /// notFoundIDs, error) pour diagnostiquer les cas « le prix ne
+  /// s'affiche jamais » → presque toujours côté config Play Console.
   Future<ProductDetails?> queryProduct(
     String productId,
   ) async {
     try {
+      final available = await _iap.isAvailable();
+      if (kDebugMode) {
+        debugPrint('[IAP] queryProduct($productId) — store available: $available');
+      }
+      if (!available) return null;
       final response = await _iap
           .queryProductDetails({productId})
           .timeout(const Duration(seconds: 6));
+      if (kDebugMode) {
+        debugPrint(
+          '[IAP] queryProductDetails response → '
+          'found: ${response.productDetails.length}, '
+          'notFoundIDs: ${response.notFoundIDs}, '
+          'error: ${response.error?.message ?? "none"}',
+        );
+        for (final pd in response.productDetails) {
+          debugPrint(
+            '[IAP]   • ${pd.id} = ${pd.price} (${pd.currencyCode}) — ${pd.title}',
+          );
+        }
+      }
       if (response.productDetails.isEmpty) return null;
       return response.productDetails.first;
     } on TimeoutException {
+      if (kDebugMode) {
+        debugPrint('[IAP] queryProduct($productId) — TIMEOUT after 6s');
+      }
       return null;
-    } catch (_) {
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint('[IAP] queryProduct($productId) — ERROR: $e\n$st');
+      }
       return null;
     }
   }

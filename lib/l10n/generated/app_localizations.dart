@@ -2875,6 +2875,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Semis'**
   String get carnetStatsCounterSeedlings;
+
+  /// No description provided for @premiumRestoreSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achat Premium restauré.'**
+  String get premiumRestoreSuccess;
+
+  /// No description provided for @premiumRestoreNothingFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun achat trouvé sur ce compte Play Store.'**
+  String get premiumRestoreNothingFound;
+
+  /// No description provided for @premiumRestoreError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de restaurer.'**
+  String get premiumRestoreError;
 }
 
 class _AppLocalizationsDelegate

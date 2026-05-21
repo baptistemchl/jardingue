@@ -608,5 +608,9 @@
   "carnetStatsSeedlingsInProgress": "En cours",
 
   "carnetStatsCounterNotes": "Notes",
-  "carnetStatsCounterSeedlings": "Semis"
+  "carnetStatsCounterSeedlings": "Semis",
+
+  "premiumRestoreSuccess": "Achat Premium restauré.",
+  "premiumRestoreNothingFound": "Aucun achat trouvé sur ce compte Play Store.",
+  "premiumRestoreError": "Impossible de restaurer."
 }

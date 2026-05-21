@@ -184,14 +184,21 @@ class PremiumNotifier extends Notifier<PremiumState> {
     }
   }
 
-  Future<void> restorePurchases() async {
+  /// Lance la restauration et retourne `true` si l'achat Premium a
+  /// effectivement été trouvé sur le compte Play Store. Permet à l'UI
+  /// d'afficher un message honnête plutôt qu'un faux « restauré » même
+  /// quand rien n'a été récupéré.
+  Future<bool> restorePurchases() async {
     try {
       CrashReportingService.log('Restauration achats en cours');
       final restored = await _repo.restorePurchases();
       if (restored.isPremium) {
         state = restored;
         CrashReportingService.log('Achats restaurés: premium');
+        return true;
       }
+      CrashReportingService.log('Restauration: aucun achat trouvé');
+      return false;
     } catch (e, st) {
       CrashReportingService.recordError(e, st,
         reason: 'PremiumNotifier.restorePurchases',
