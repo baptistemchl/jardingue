@@ -37,19 +37,20 @@ class _CarnetDrawerState extends ConsumerState<CarnetDrawer>
     final ui = ref.watch(carnetUiProvider);
     final size = MediaQuery.of(context).size;
     final drawerWidth = size.width * _drawerWidthFraction;
+    final fullWidth = drawerWidth + _tabWidth;
 
-    // Position du bord gauche du drawer (sans les tabs qui dépassent).
-    // Fermé : tout est hors écran à droite.
-    // Ouvert : aligné au bord droit + drawerWidth de large.
-    final closedX = size.width;
-    final openX = size.width - drawerWidth;
+    // Drawer slide depuis le bord gauche.
+    // Fermé : totalement hors écran à gauche (left = -fullWidth).
+    // Ouvert : aligné au bord gauche (left = 0).
+    const openX = 0.0;
+    final closedX = -fullWidth;
     final targetX = ui.isOpen ? openX : closedX;
-    final currentX = (targetX + _dragOffset).clamp(openX, closedX);
-    final progress = ((closedX - currentX) / drawerWidth).clamp(0.0, 1.0);
+    final currentX = (targetX + _dragOffset).clamp(closedX, openX);
+    final progress = ((currentX - closedX) / fullWidth).clamp(0.0, 1.0);
 
     return Stack(
       children: [
-        // Backdrop sombre + blur
+        // Backdrop sombre + blur sur tout l'écran.
         IgnorePointer(
           ignoring: !ui.isOpen,
           child: AnimatedOpacity(
@@ -69,26 +70,28 @@ class _CarnetDrawerState extends ConsumerState<CarnetDrawer>
           ),
         ),
 
-        // Drawer + marque-pages qui dépassent
+        // Drawer + marque-pages sur le côté droit du drawer
+        // (côté intérieur écran quand drawer ouvert).
         AnimatedPositioned(
           duration: _dragOffset == 0
               ? const Duration(milliseconds: 320)
               : Duration.zero,
           curve: Curves.easeOutCubic,
-          left: currentX - _tabWidth,
+          left: currentX,
           top: 0,
           bottom: 0,
-          width: drawerWidth + _tabWidth,
+          width: fullWidth,
           child: GestureDetector(
             onHorizontalDragUpdate: (d) {
               setState(() {
-                _dragOffset = (_dragOffset + d.delta.dx).clamp(0.0, drawerWidth);
+                _dragOffset =
+                    (_dragOffset + d.delta.dx).clamp(-fullWidth, 0.0);
               });
             },
             onHorizontalDragEnd: (d) {
               final v = d.velocity.pixelsPerSecond.dx;
               final shouldClose =
-                  v > 600 || _dragOffset > drawerWidth * 0.35;
+                  v < -600 || _dragOffset < -fullWidth * 0.35;
               setState(() => _dragOffset = 0);
               if (shouldClose) {
                 ref.read(carnetUiProvider.notifier).close();
@@ -96,8 +99,8 @@ class _CarnetDrawerState extends ConsumerState<CarnetDrawer>
             },
             child: Row(
               children: [
-                _TabStrip(activeTab: ui.activeTab),
                 Expanded(child: _DrawerBody(activeTab: ui.activeTab)),
+                _TabStrip(activeTab: ui.activeTab),
               ],
             ),
           ),
@@ -178,14 +181,14 @@ class _MarquePage extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(12),
-            bottomLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+            bottomRight: Radius.circular(12),
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isActive ? 0.18 : 0.08),
               blurRadius: isActive ? 10 : 4,
-              offset: const Offset(-2, 3),
+              offset: const Offset(2, 3),
             ),
           ],
         ),
@@ -229,7 +232,7 @@ class _DrawerBody extends ConsumerWidget {
           BoxShadow(
             color: Color(0x33000000),
             blurRadius: 24,
-            offset: Offset(-6, 0),
+            offset: Offset(6, 0),
           ),
         ],
       ),

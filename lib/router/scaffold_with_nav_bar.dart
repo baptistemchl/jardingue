@@ -28,24 +28,24 @@ class ScaffoldWithNavBar extends StatelessWidget {
           extendBody: true,
           bottomNavigationBar: const _FloatingGlassNavBar(),
         ),
-        const _RightEdgeSwipeArea(),
+        const _LeftEdgeSwipeArea(),
         const CarnetDrawer(),
       ],
     );
   }
 }
 
-/// Bandeau invisible de 20px sur le bord droit qui détecte un swipe
-/// vers la gauche et ouvre le Carnet de bord.
-class _RightEdgeSwipeArea extends ConsumerStatefulWidget {
-  const _RightEdgeSwipeArea();
+/// Bandeau invisible de 20px sur le bord gauche qui détecte un swipe
+/// vers la droite et ouvre le Carnet de bord.
+class _LeftEdgeSwipeArea extends ConsumerStatefulWidget {
+  const _LeftEdgeSwipeArea();
 
   @override
-  ConsumerState<_RightEdgeSwipeArea> createState() =>
-      _RightEdgeSwipeAreaState();
+  ConsumerState<_LeftEdgeSwipeArea> createState() =>
+      _LeftEdgeSwipeAreaState();
 }
 
-class _RightEdgeSwipeAreaState extends ConsumerState<_RightEdgeSwipeArea> {
+class _LeftEdgeSwipeAreaState extends ConsumerState<_LeftEdgeSwipeArea> {
   double _drag = 0;
 
   @override
@@ -54,7 +54,7 @@ class _RightEdgeSwipeAreaState extends ConsumerState<_RightEdgeSwipeArea> {
     // Désactivé quand le carnet est ouvert (sinon doublon de gestures).
     if (ui.isOpen) return const SizedBox.shrink();
     return Positioned(
-      right: 0,
+      left: 0,
       top: 0,
       bottom: 0,
       width: 20,
@@ -65,7 +65,7 @@ class _RightEdgeSwipeAreaState extends ConsumerState<_RightEdgeSwipeArea> {
         },
         onHorizontalDragStart: (_) => _drag = 0,
         onHorizontalDragEnd: (_) {
-          if (_drag < -32) {
+          if (_drag > 32) {
             ref.read(carnetUiProvider.notifier).open();
           }
           _drag = 0;
