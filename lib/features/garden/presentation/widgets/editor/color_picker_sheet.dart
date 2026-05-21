@@ -35,11 +35,15 @@ const _palette = <int>[
 /// - `ColorPickResult.color(int)` si une couleur a été choisie
 /// - `ColorPickResult.reset()` si reset (= retour catégorie)
 /// - `null` si dismiss/annulé
-class ColorPickerSheet extends StatelessWidget {
+class ColorPickerSheet extends StatefulWidget {
   final String plantName;
   final String plantEmoji;
   final int currentColor;
   final bool hasCustomColor;
+
+  /// Nombre de pieds de la même espèce dans le potager courant. Si > 1,
+  /// la sheet affiche le toggle « Appliquer à tous les X de ce potager ».
+  final int sameSpeciesCount;
 
   const ColorPickerSheet({
     super.key,
@@ -47,6 +51,7 @@ class ColorPickerSheet extends StatelessWidget {
     required this.plantEmoji,
     required this.currentColor,
     required this.hasCustomColor,
+    required this.sameSpeciesCount,
   });
 
   static Future<ColorPickResult?> show({
@@ -55,6 +60,7 @@ class ColorPickerSheet extends StatelessWidget {
     required String plantEmoji,
     required int currentColor,
     required bool hasCustomColor,
+    required int sameSpeciesCount,
   }) {
     return AppBottomSheet.show<ColorPickResult>(
       context: context,
@@ -63,9 +69,17 @@ class ColorPickerSheet extends StatelessWidget {
         plantEmoji: plantEmoji,
         currentColor: currentColor,
         hasCustomColor: hasCustomColor,
+        sameSpeciesCount: sameSpeciesCount,
       ),
     );
   }
+
+  @override
+  State<ColorPickerSheet> createState() => _ColorPickerSheetState();
+}
+
+class _ColorPickerSheetState extends State<ColorPickerSheet> {
+  bool _applyToAll = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,16 +96,16 @@ class ColorPickerSheet extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Color(currentColor).withValues(alpha: 0.2),
+                  color: Color(widget.currentColor).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: Color(currentColor),
+                    color: Color(widget.currentColor),
                     width: 2,
                   ),
                 ),
                 child: Center(
                   child: Text(
-                    plantEmoji,
+                    widget.plantEmoji,
                     style: const TextStyle(fontSize: 28),
                   ),
                 ),
@@ -102,7 +116,7 @@ class ColorPickerSheet extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      plantName,
+                      widget.plantName,
                       style: AppTypography.titleMedium.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -121,7 +135,48 @@ class ColorPickerSheet extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
+        // Toggle « Appliquer à tous les pieds de cette espèce » —
+        // visible uniquement s'il y en a au moins 2 dans le potager.
+        if (widget.sameSpeciesCount > 1)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () => setState(() => _applyToAll = !_applyToAll),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 4,
+                ),
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: _applyToAll,
+                      onChanged: (v) =>
+                          setState(() => _applyToAll = v ?? false),
+                      activeColor: AppColors.primary,
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        loc.colorPickerApplyToAll(
+                          widget.sameSpeciesCount,
+                          widget.plantName,
+                        ),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textPrimary,
+                          height: 1.35,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: GridView.builder(
@@ -137,12 +192,16 @@ class ColorPickerSheet extends StatelessWidget {
             itemBuilder: (context, index) {
               final swatchColor = _palette[index];
               final isSelected =
-                  hasCustomColor && swatchColor == currentColor;
+                  widget.hasCustomColor && swatchColor == widget.currentColor;
               return _SwatchTile(
                 color: swatchColor,
                 selected: isSelected,
-                onTap: () => Navigator.of(context)
-                    .pop(ColorPickResult.color(swatchColor)),
+                onTap: () => Navigator.of(context).pop(
+                  ColorPickResult.color(
+                    swatchColor,
+                    applyToAll: _applyToAll,
+                  ),
+                ),
               );
             },
           ),
@@ -176,14 +235,15 @@ class ColorPickerSheet extends StatelessWidget {
             ),
           ),
         ),
-        if (hasCustomColor)
+        if (widget.hasCustomColor)
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
             child: SizedBox(
               width: double.infinity,
               child: TextButton.icon(
-                onPressed: () => Navigator.of(context)
-                    .pop(const ColorPickResult.reset()),
+                onPressed: () => Navigator.of(context).pop(
+                  ColorPickResult.reset(applyToAll: _applyToAll),
+                ),
                 style: TextButton.styleFrom(
                   foregroundColor: AppColors.textSecondary,
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -208,7 +268,7 @@ class ColorPickerSheet extends StatelessWidget {
   /// couleur retenue.
   Future<void> _openCustomPicker(BuildContext context) async {
     final loc = AppLocalizations.of(context)!;
-    Color picked = Color(currentColor);
+    Color picked = Color(widget.currentColor);
 
     final confirmed = await ColorPicker(
       color: picked,
@@ -246,8 +306,11 @@ class ColorPickerSheet extends StatelessWidget {
     if (!confirmed) return;
     if (!context.mounted) return;
     Navigator.of(context).pop(
-      // ignore: deprecated_member_use
-      ColorPickResult.color(picked.value),
+      ColorPickResult.color(
+        // ignore: deprecated_member_use
+        picked.value,
+        applyToAll: _applyToAll,
+      ),
     );
   }
 }
@@ -255,11 +318,19 @@ class ColorPickerSheet extends StatelessWidget {
 /// Résultat du picker : soit une couleur choisie, soit un reset à la
 /// catégorie. Permet de différencier le cas "ne rien faire" (null
 /// retourné par la sheet dismiss) du cas "reset volontaire".
+///
+/// [applyToAll] = true quand l'utilisateur a coché « Appliquer à tous
+/// les X de ce potager » → le caller doit appliquer la couleur en bulk
+/// via `updateGardenPlantsColorBySpecies` au lieu du single update.
 class ColorPickResult {
   final int? color;
   final bool isReset;
-  const ColorPickResult.color(this.color) : isReset = false;
-  const ColorPickResult.reset()
+  final bool applyToAll;
+
+  const ColorPickResult.color(this.color, {this.applyToAll = false})
+      : isReset = false;
+
+  const ColorPickResult.reset({this.applyToAll = false})
       : color = null,
         isReset = true;
 }

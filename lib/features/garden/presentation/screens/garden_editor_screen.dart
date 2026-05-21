@@ -543,19 +543,42 @@ class _GardenEditorScreenState
 
   /// Ouvre le color picker et applique le résultat sur l'élément.
   Future<void> _changeElementColor(GardenPlantWithDetails element) async {
+    // Compte les pieds de la même espèce dans CE potager (zones exclues).
+    // Sert au toggle « Appliquer à tous les X de ce potager » dans la
+    // sheet : on ne l'affiche que s'il y a au moins 2 pieds à modifier.
+    final allInGarden = ref
+            .read(gardenPlantsProvider(widget.gardenId))
+            .value ??
+        const <GardenPlantWithDetails>[];
+    final sameSpeciesCount = allInGarden
+        .where((e) =>
+            !e.isZone && e.gardenPlant.plantId == element.gardenPlant.plantId)
+        .length;
+
     final result = await ColorPickerSheet.show(
       context: context,
       plantName: element.name,
       plantEmoji: element.emoji,
       currentColor: element.color,
       hasCustomColor: element.gardenPlant.customColor != null,
+      sameSpeciesCount: sameSpeciesCount,
     );
     if (result == null) return;
     if (!mounted) return;
-    await ref.read(gardenNotifierProvider.notifier).updateGardenPlantColor(
-          gardenPlantId: element.id,
-          color: result.isReset ? null : result.color,
-        );
+    final notifier = ref.read(gardenNotifierProvider.notifier);
+    final newColor = result.isReset ? null : result.color;
+    if (result.applyToAll) {
+      await notifier.updateGardenPlantsColorBySpecies(
+        gardenId: widget.gardenId,
+        plantId: element.gardenPlant.plantId,
+        color: newColor,
+      );
+    } else {
+      await notifier.updateGardenPlantColor(
+        gardenPlantId: element.id,
+        color: newColor,
+      );
+    }
   }
 
   /// Duplique un élément (plante ou zone) en envoyant la copie au panier

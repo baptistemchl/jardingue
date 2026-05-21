@@ -2311,6 +2311,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Appliquer'**
   String get colorPickerCustomDialogConfirm;
+
+  /// No description provided for @colorPickerApplyToAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer à tou(te)s les {count} {plantName} de ce potager'**
+  String colorPickerApplyToAll(int count, String plantName);
 }
 
 class _AppLocalizationsDelegate

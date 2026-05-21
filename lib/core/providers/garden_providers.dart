@@ -284,6 +284,32 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
     }
   }
 
+  /// Applique [color] à TOUS les pieds de l'espèce [plantId] dans le
+  /// potager [gardenId] (v19). Retourne le nombre de pieds modifiés.
+  Future<int> updateGardenPlantsColorBySpecies({
+    required int gardenId,
+    required int plantId,
+    required int? color,
+  }) async {
+    try {
+      return await _repo.updateGardenPlantsColorBySpecies(
+        gardenId: gardenId,
+        plantId: plantId,
+        color: color,
+      );
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.updateGardenPlantsColorBySpecies',
+        extra: {
+          'gardenId': gardenId,
+          'plantId': plantId,
+          'color': color ?? 'null',
+        },
+      );
+      rethrow;
+    }
+  }
+
   /// Duplique un élément du potager (plante ou zone) en le plaçant
   /// dans le panier (gridX=-1, gridY=-1). La copie hérite intégralement
   /// de l'original : dimensions, dates, notes, fréquence d'arrosage,

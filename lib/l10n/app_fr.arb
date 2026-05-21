@@ -463,5 +463,12 @@
   "colorPickerReset": "Couleur par défaut (catégorie)",
   "colorPickerCustom": "Couleur personnalisée",
   "colorPickerCustomDialogTitle": "Choisir une couleur",
-  "colorPickerCustomDialogConfirm": "Appliquer"
+  "colorPickerCustomDialogConfirm": "Appliquer",
+  "colorPickerApplyToAll": "Appliquer à tou(te)s les {count} {plantName} de ce potager",
+  "@colorPickerApplyToAll": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "plantName": { "type": "String" }
+    }
+  }
 }

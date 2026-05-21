@@ -1321,4 +1321,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get colorPickerCustomDialogConfirm => 'Appliquer';
+
+  @override
+  String colorPickerApplyToAll(int count, String plantName) {
+    return 'Appliquer à tou(te)s les $count $plantName de ce potager';
+  }
 }
