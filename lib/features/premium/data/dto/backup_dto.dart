@@ -18,6 +18,10 @@ class BackupDto {
         'eventCount': data.metadata.eventCount,
         'treeCount': data.metadata.treeCount,
         'userPlantCount': data.metadata.userPlantCount,
+        'harvestCount': data.metadata.harvestCount,
+        'seedlingCount': data.metadata.seedlingCount,
+        'journalEntryCount':
+            data.metadata.journalEntryCount,
       },
       'gardens': data.gardens,
       'gardenPlants': data.gardenPlants,
@@ -26,6 +30,10 @@ class BackupDto {
       'userPlants': data.userPlants,
       'userPlantCompanions': data.userPlantCompanions,
       'userPlantAntagonists': data.userPlantAntagonists,
+      // Carnet de bord (v1.7.4+).
+      'harvests': data.harvests,
+      'seedlings': data.seedlings,
+      'journalEntries': data.journalEntries,
     };
   }
 
@@ -48,6 +56,11 @@ class BackupDto {
           _parseList(json['userPlantCompanions']),
       userPlantAntagonists:
           _parseList(json['userPlantAntagonists']),
+      // Carnet de bord (v1.7.4+). Absents des backups antérieurs →
+      // _parseList renvoie [] → l'import devient un no-op.
+      harvests: _parseList(json['harvests']),
+      seedlings: _parseList(json['seedlings']),
+      journalEntries: _parseList(json['journalEntries']),
     );
   }
 
@@ -68,6 +81,10 @@ class BackupDto {
       eventCount: meta['eventCount'] as int? ?? 0,
       treeCount: meta['treeCount'] as int? ?? 0,
       userPlantCount: meta['userPlantCount'] as int? ?? 0,
+      harvestCount: meta['harvestCount'] as int? ?? 0,
+      seedlingCount: meta['seedlingCount'] as int? ?? 0,
+      journalEntryCount:
+          meta['journalEntryCount'] as int? ?? 0,
     );
   }
 

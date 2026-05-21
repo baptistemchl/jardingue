@@ -45,6 +45,10 @@ class BackupRepositoryImpl implements BackupRepository {
     final userPlants = await _exportUserPlants();
     final userCompanions = await _exportUserPlantCompanions();
     final userAntagonists = await _exportUserPlantAntagonists();
+    // Carnet de bord (v1.7.4+).
+    final harvests = await _exportHarvests();
+    final seedlings = await _exportSeedlings();
+    final journalEntries = await _exportJournalEntries();
 
     return BackupData(
       metadata: BackupMetadata(
@@ -54,6 +58,9 @@ class BackupRepositoryImpl implements BackupRepository {
         eventCount: events.length,
         treeCount: trees.length,
         userPlantCount: userPlants.length,
+        harvestCount: harvests.length,
+        seedlingCount: seedlings.length,
+        journalEntryCount: journalEntries.length,
       ),
       gardens: gardens,
       gardenPlants: plants,
@@ -62,6 +69,9 @@ class BackupRepositoryImpl implements BackupRepository {
       userPlants: userPlants,
       userPlantCompanions: userCompanions,
       userPlantAntagonists: userAntagonists,
+      harvests: harvests,
+      seedlings: seedlings,
+      journalEntries: journalEntries,
     );
   }
 
@@ -112,6 +122,12 @@ class BackupRepositoryImpl implements BackupRepository {
       await _importUserFruitTrees(
         data.userFruitTrees,
       );
+      // Carnet de bord (v1.7.4+) — référence GardenPlants + Plants +
+      // Gardens, donc importé APRÈS ces tables. Les backups antérieurs
+      // ont des listes vides → no-op rétrocompatible.
+      await _importHarvests(data.harvests);
+      await _importSeedlings(data.seedlings);
+      await _importJournalEntries(data.journalEntries);
       // Sauvegardes anciennes : les gardenPlants peuvent avoir ete crees
       // sans events `planting`/`sowing` associes. Sans ce backfill, les
       // plantes restaurees n'apparaissent pas dans Mon Suivi.
@@ -310,6 +326,10 @@ class BackupRepositoryImpl implements BackupRepository {
   // ── Import helpers ──
 
   Future<void> _clearUserData() async {
+    // Carnet de bord d'abord (références GardenPlants + Plants + Gardens).
+    await _db.delete(_db.harvests).go();
+    await _db.delete(_db.seedlings).go();
+    await _db.delete(_db.journalEntries).go();
     await _db.delete(_db.gardenEvents).go();
     await _db.delete(_db.gardenPlants).go();
     await _db.delete(_db.gardens).go();
@@ -570,6 +590,128 @@ class BackupRepositoryImpl implements BackupRepository {
               plantingType: Value(
                 r['plantingType'] as String?,
               ),
+            ),
+          );
+    }
+  }
+
+  // ── Carnet de bord (v1.7.4+) ──
+
+  Future<List<Map<String, dynamic>>>
+      _exportHarvests() async {
+    final rows = await _db.select(_db.harvests).get();
+    return rows
+        .map((h) => {
+              // L'id n'est pas exporté : les harvests sont
+              // ré-incrémentés à l'import. plantId pointe vers user
+              // plant (≥ 1M, préservé) ou catalogue (stable).
+              'gardenPlantId': h.gardenPlantId,
+              'plantId': h.plantId,
+              'gardenId': h.gardenId,
+              'harvestedAt': h.harvestedAt.toIso8601String(),
+              'quantity': h.quantity,
+              'unit': h.unit,
+              'note': h.note,
+              'createdAt': h.createdAt.toIso8601String(),
+            })
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>>
+      _exportSeedlings() async {
+    final rows = await _db.select(_db.seedlings).get();
+    return rows
+        .map((s) => {
+              'plantId': s.plantId,
+              'gardenId': s.gardenId,
+              'sowedAt': s.sowedAt.toIso8601String(),
+              'expectedTransplantAt':
+                  s.expectedTransplantAt?.toIso8601String(),
+              'status': s.status,
+              'count': s.count,
+              'note': s.note,
+              'createdAt': s.createdAt.toIso8601String(),
+              'updatedAt': s.updatedAt.toIso8601String(),
+            })
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>>
+      _exportJournalEntries() async {
+    final rows = await _db.select(_db.journalEntries).get();
+    return rows
+        .map((j) => {
+              'gardenId': j.gardenId,
+              'entryDate': j.entryDate.toIso8601String(),
+              'title': j.title,
+              'content': j.content,
+              'tags': j.tags,
+              'createdAt': j.createdAt.toIso8601String(),
+              'updatedAt': j.updatedAt.toIso8601String(),
+            })
+        .toList();
+  }
+
+  Future<void> _importHarvests(
+    List<Map<String, dynamic>> rows,
+  ) async {
+    for (final r in rows) {
+      await _db.into(_db.harvests).insert(
+            HarvestsCompanion.insert(
+              gardenPlantId:
+                  Value(r['gardenPlantId'] as int?),
+              plantId: r['plantId'] as int,
+              gardenId: Value(r['gardenId'] as int?),
+              harvestedAt: DateTime.parse(
+                r['harvestedAt'] as String,
+              ),
+              // quantity peut être stocké comme int ou double dans le
+              // JSON Firestore selon le scénario d'écriture.
+              quantity: (r['quantity'] as num).toDouble(),
+              unit: r['unit'] as String,
+              note: Value(r['note'] as String?),
+            ),
+          );
+    }
+  }
+
+  Future<void> _importSeedlings(
+    List<Map<String, dynamic>> rows,
+  ) async {
+    for (final r in rows) {
+      await _db.into(_db.seedlings).insert(
+            SeedlingsCompanion.insert(
+              plantId: r['plantId'] as int,
+              gardenId: Value(r['gardenId'] as int?),
+              sowedAt: DateTime.parse(
+                r['sowedAt'] as String,
+              ),
+              expectedTransplantAt: Value(
+                _parseDate(r['expectedTransplantAt']),
+              ),
+              status: Value(
+                r['status'] as String? ?? 'germinating',
+              ),
+              count: Value(r['count'] as int?),
+              note: Value(r['note'] as String?),
+            ),
+          );
+    }
+  }
+
+  Future<void> _importJournalEntries(
+    List<Map<String, dynamic>> rows,
+  ) async {
+    for (final r in rows) {
+      await _db.into(_db.journalEntries).insert(
+            JournalEntriesCompanion.insert(
+              gardenId: Value(r['gardenId'] as int?),
+              entryDate: DateTime.parse(
+                r['entryDate'] as String,
+              ),
+              title: Value(r['title'] as String?),
+              content: r['content'] as String,
+              tags: Value(r['tags'] as String?),
             ),
           );
     }

@@ -17,6 +17,11 @@ class BackupData {
   final List<Map<String, dynamic>> userPlants;
   final List<Map<String, dynamic>> userPlantCompanions;
   final List<Map<String, dynamic>> userPlantAntagonists;
+  // Carnet de bord (v1.7.4+). Absent des backups antérieurs → listes vides
+  // par défaut, l'import devient un no-op rétrocompatible.
+  final List<Map<String, dynamic>> harvests;
+  final List<Map<String, dynamic>> seedlings;
+  final List<Map<String, dynamic>> journalEntries;
 
   const BackupData({
     required this.metadata,
@@ -27,5 +32,8 @@ class BackupData {
     this.userPlants = const [],
     this.userPlantCompanions = const [],
     this.userPlantAntagonists = const [],
+    this.harvests = const [],
+    this.seedlings = const [],
+    this.journalEntries = const [],
   });
 }
