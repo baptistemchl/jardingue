@@ -10,8 +10,8 @@
       "height_m": 1.2,
       "cell_size_cm": 30,
       "plants": [
-        { "plant_name": "Laitue", "x_cells": 0, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
-        { "plant_name": "Radis rose", "x_cells": 2, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Laitue pommée", "x_cells": 0, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Radis French Breakfast", "x_cells": 2, "y_cells": 0, "w_cells": 2, "h_cells": 2 },
         { "plant_name": "Carotte", "x_cells": 0, "y_cells": 2, "w_cells": 2, "h_cells": 2 },
         { "plant_name": "Persil", "x_cells": 2, "y_cells": 2, "w_cells": 2, "h_cells": 2 }
       ]
@@ -73,8 +73,8 @@
         { "plant_name": "Bourrache", "x_cells": 6, "y_cells": 0, "w_cells": 1, "h_cells": 2 },
         { "plant_name": "Courgette", "x_cells": 7, "y_cells": 0, "w_cells": 3, "h_cells": 3 },
         { "plant_name": "Haricot nain", "x_cells": 0, "y_cells": 3, "w_cells": 2, "h_cells": 2 },
-        { "plant_name": "Laitue", "x_cells": 2, "y_cells": 3, "w_cells": 2, "h_cells": 2 },
-        { "plant_name": "Radis rose", "x_cells": 4, "y_cells": 3, "w_cells": 1, "h_cells": 2 },
+        { "plant_name": "Laitue pommée", "x_cells": 2, "y_cells": 3, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Radis French Breakfast", "x_cells": 4, "y_cells": 3, "w_cells": 1, "h_cells": 2 },
         { "plant_name": "Ciboulette", "x_cells": 5, "y_cells": 3, "w_cells": 1, "h_cells": 2 },
         { "plant_name": "Capucine", "x_cells": 6, "y_cells": 3, "w_cells": 1, "h_cells": 2 }
       ]
@@ -102,8 +102,8 @@
         { "plant_name": "Bourrache", "x_cells": 10, "y_cells": 3, "w_cells": 1, "h_cells": 2 },
         { "plant_name": "Concombre", "x_cells": 11, "y_cells": 3, "w_cells": 3, "h_cells": 2 },
         { "plant_name": "Chou pommé", "x_cells": 0, "y_cells": 5, "w_cells": 3, "h_cells": 3 },
-        { "plant_name": "Laitue", "x_cells": 3, "y_cells": 5, "w_cells": 2, "h_cells": 2 },
-        { "plant_name": "Radis rose", "x_cells": 5, "y_cells": 5, "w_cells": 2, "h_cells": 1 },
+        { "plant_name": "Laitue pommée", "x_cells": 3, "y_cells": 5, "w_cells": 2, "h_cells": 2 },
+        { "plant_name": "Radis French Breakfast", "x_cells": 5, "y_cells": 5, "w_cells": 2, "h_cells": 1 },
         { "plant_name": "Persil", "x_cells": 5, "y_cells": 6, "w_cells": 2, "h_cells": 1 },
         { "plant_name": "Oignon jaune", "x_cells": 7, "y_cells": 5, "w_cells": 3, "h_cells": 3 },
         { "plant_name": "Poireau", "x_cells": 10, "y_cells": 5, "w_cells": 3, "h_cells": 3 },
