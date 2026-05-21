@@ -31,6 +31,7 @@ class EditorPlantDetailSheet
   final Function(double w, double h) onUpdate;
   final VoidCallback onDelete;
   final VoidCallback onDuplicate;
+  final VoidCallback onChangeColor;
 
   const EditorPlantDetailSheet({
     super.key,
@@ -41,6 +42,7 @@ class EditorPlantDetailSheet
     required this.onUpdate,
     required this.onDelete,
     required this.onDuplicate,
+    required this.onChangeColor,
   });
 
   @override
@@ -227,6 +229,8 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
         switch (action) {
           case _PlantAction.duplicate:
             widget.onDuplicate();
+          case _PlantAction.changeColor:
+            widget.onChangeColor();
           case _PlantAction.delete:
             _confirmDelete(context);
         }
@@ -243,6 +247,20 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
               ),
               const SizedBox(width: 12),
               const Text('Dupliquer'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: _PlantAction.changeColor,
+          child: Row(
+            children: [
+              Icon(
+                PhosphorIcons.palette(PhosphorIconsStyle.regular),
+                size: 18,
+                color: Color(widget.element.color),
+              ),
+              const SizedBox(width: 12),
+              const Text('Changer la couleur'),
             ],
           ),
         ),
@@ -1116,7 +1134,7 @@ class _State extends ConsumerState<EditorPlantDetailSheet> {
 
 // ========== Actions du menu kebab ==========
 
-enum _PlantAction { duplicate, delete }
+enum _PlantAction { duplicate, changeColor, delete }
 
 // ========== Editable rows ==========
 

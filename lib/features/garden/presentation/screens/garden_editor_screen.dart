@@ -25,6 +25,7 @@ import '../../domain/editor_mode.dart';
 import '../../domain/models/amendment_type.dart';
 import '../widgets/garden_grid.dart';
 import '../widgets/editor/antagonist_warning_dialog.dart';
+import '../widgets/editor/color_picker_sheet.dart';
 import '../widgets/editor/companion_suggestions_sheet.dart';
 import '../widgets/editor/undo_redo_buttons.dart';
 import '../widgets/editor/editor_mode_selector.dart';
@@ -540,6 +541,46 @@ class _GardenEditorScreenState
     _actionHistory.addAction(action);
   }
 
+  /// Ouvre le color picker et applique le résultat sur l'élément.
+  Future<void> _changeElementColor(GardenPlantWithDetails element) async {
+    // Compte les pieds de la même espèce dans CE potager (zones exclues).
+    // Sert au toggle « Appliquer à tous les X de ce potager » dans la
+    // sheet : on ne l'affiche que s'il y a au moins 2 pieds à modifier.
+    final allInGarden = ref
+            .read(gardenPlantsProvider(widget.gardenId))
+            .value ??
+        const <GardenPlantWithDetails>[];
+    final sameSpeciesCount = allInGarden
+        .where((e) =>
+            !e.isZone && e.gardenPlant.plantId == element.gardenPlant.plantId)
+        .length;
+
+    final result = await ColorPickerSheet.show(
+      context: context,
+      plantName: element.name,
+      plantEmoji: element.emoji,
+      currentColor: element.color,
+      hasCustomColor: element.gardenPlant.customColor != null,
+      sameSpeciesCount: sameSpeciesCount,
+    );
+    if (result == null) return;
+    if (!mounted) return;
+    final notifier = ref.read(gardenNotifierProvider.notifier);
+    final newColor = result.isReset ? null : result.color;
+    if (result.applyToAll) {
+      await notifier.updateGardenPlantsColorBySpecies(
+        gardenId: widget.gardenId,
+        plantId: element.gardenPlant.plantId,
+        color: newColor,
+      );
+    } else {
+      await notifier.updateGardenPlantColor(
+        gardenPlantId: element.id,
+        color: newColor,
+      );
+    }
+  }
+
   /// Duplique un élément (plante ou zone) en envoyant la copie au panier
   /// (gridX=-1). Affiche un snackbar de confirmation.
   Future<void> _duplicateElement(GardenPlantWithDetails element) async {
@@ -743,6 +784,10 @@ class _GardenEditorScreenState
           onDuplicate: () async {
             Navigator.of(ctx, rootNavigator: true).pop();
             await _duplicateElement(element);
+          },
+          onChangeColor: () async {
+            Navigator.of(ctx, rootNavigator: true).pop();
+            await _changeElementColor(element);
           },
         ),
       );

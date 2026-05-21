@@ -1305,4 +1305,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get gardenCellSizeHintCoarse => 'Lisible';
+
+  @override
+  String get colorPickerSubtitle =>
+      'Choisissez une couleur pour distinguer ce pied.';
+
+  @override
+  String get colorPickerReset => 'Couleur par défaut (catégorie)';
+
+  @override
+  String get colorPickerCustom => 'Couleur personnalisée';
+
+  @override
+  String get colorPickerCustomDialogTitle => 'Choisir une couleur';
+
+  @override
+  String get colorPickerCustomDialogConfirm => 'Appliquer';
+
+  @override
+  String colorPickerApplyToAll(int count, String plantName) {
+    return 'Appliquer à tou(te)s les $count $plantName de ce potager';
+  }
 }

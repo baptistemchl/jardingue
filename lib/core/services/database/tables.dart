@@ -195,6 +195,11 @@ class GardenPlants extends Table {
 
   IntColumn get wateringFrequencyDays => integer().nullable()();
 
+  // Couleur perso choisie par l'utilisateur pour ce pied placé (v19).
+  // Stockée en ARGB int (ex: 0xFFFF5722). Quand null, on retombe sur la
+  // couleur déduite de categoryCode dans GardenPlantWithDetails.color.
+  IntColumn get customColor => integer().nullable()();
+
   // Frequence de fertilisation personnalisee par l'utilisateur (jours, v15).
   // Si null : on retombe sur Plants.fertilizationFrequencyDays puis sur
   // defaultFertilizationFrequencyDays(categoryCode).

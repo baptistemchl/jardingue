@@ -2281,6 +2281,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Lisible'**
   String get gardenCellSizeHintCoarse;
+
+  /// No description provided for @colorPickerSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez une couleur pour distinguer ce pied.'**
+  String get colorPickerSubtitle;
+
+  /// No description provided for @colorPickerReset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Couleur par défaut (catégorie)'**
+  String get colorPickerReset;
+
+  /// No description provided for @colorPickerCustom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Couleur personnalisée'**
+  String get colorPickerCustom;
+
+  /// No description provided for @colorPickerCustomDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une couleur'**
+  String get colorPickerCustomDialogTitle;
+
+  /// No description provided for @colorPickerCustomDialogConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get colorPickerCustomDialogConfirm;
+
+  /// No description provided for @colorPickerApplyToAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer à tou(te)s les {count} {plantName} de ce potager'**
+  String colorPickerApplyToAll(int count, String plantName);
 }
 
 class _AppLocalizationsDelegate

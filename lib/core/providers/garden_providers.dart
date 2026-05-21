@@ -264,6 +264,52 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
     }
   }
 
+  /// Met à jour la couleur personnalisée d'un pied placé (v19).
+  /// [color] = null pour revenir à la couleur de catégorie.
+  Future<void> updateGardenPlantColor({
+    required int gardenPlantId,
+    required int? color,
+  }) async {
+    try {
+      await _repo.updateGardenPlantColor(gardenPlantId, color);
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.updateGardenPlantColor',
+        extra: {
+          'gardenPlantId': gardenPlantId,
+          'color': color ?? 'null',
+        },
+      );
+      rethrow;
+    }
+  }
+
+  /// Applique [color] à TOUS les pieds de l'espèce [plantId] dans le
+  /// potager [gardenId] (v19). Retourne le nombre de pieds modifiés.
+  Future<int> updateGardenPlantsColorBySpecies({
+    required int gardenId,
+    required int plantId,
+    required int? color,
+  }) async {
+    try {
+      return await _repo.updateGardenPlantsColorBySpecies(
+        gardenId: gardenId,
+        plantId: plantId,
+        color: color,
+      );
+    } catch (e, st) {
+      CrashReportingService.recordError(e, st,
+        reason: 'GardenNotifier.updateGardenPlantsColorBySpecies',
+        extra: {
+          'gardenId': gardenId,
+          'plantId': plantId,
+          'color': color ?? 'null',
+        },
+      );
+      rethrow;
+    }
+  }
+
   /// Duplique un élément du potager (plante ou zone) en le plaçant
   /// dans le panier (gridX=-1, gridY=-1). La copie hérite intégralement
   /// de l'original : dimensions, dates, notes, fréquence d'arrosage,
@@ -294,6 +340,9 @@ class GardenNotifier extends Notifier<AsyncValue<void>> {
           heightCells: Value(gp.heightCells),
           plantedAt: Value(gp.plantedAt),
           sowedAt: Value(gp.sowedAt),
+          // Copie aussi la couleur perso (v19) pour rester cohérent
+          // avec « tout, mêmes valeurs » du contrat de duplication.
+          customColor: Value(gp.customColor),
           wateringFrequencyDays: Value(gp.wateringFrequencyDays),
           notes: Value(gp.notes),
           previousCropPlantId: Value(gp.previousCropPlantId),

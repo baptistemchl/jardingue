@@ -31,6 +31,12 @@ abstract interface class GardenRepository {
   Future<int> removePlantFromGarden(int id);
   Future<void> updateGardenPlantPosition(int id, int x, int y);
   Future<void> updateGardenPlantSize(int id, int w, int h);
+  Future<void> updateGardenPlantColor(int id, int? color);
+  Future<int> updateGardenPlantsColorBySpecies({
+    required int gardenId,
+    required int plantId,
+    required int? color,
+  });
   Future<void> updateGardenPlantDetails({
     required int id,
     DateTime? sowedAt,
@@ -112,6 +118,22 @@ class DriftGardenRepository implements GardenRepository {
   @override
   Future<void> updateGardenPlantSize(int id, int w, int h) =>
       _db.updateGardenPlantSize(id, w, h);
+
+  @override
+  Future<void> updateGardenPlantColor(int id, int? color) =>
+      _db.updateGardenPlantColor(id, color);
+
+  @override
+  Future<int> updateGardenPlantsColorBySpecies({
+    required int gardenId,
+    required int plantId,
+    required int? color,
+  }) =>
+      _db.updateGardenPlantsColorBySpecies(
+        gardenId: gardenId,
+        plantId: plantId,
+        color: color,
+      );
 
   @override
   Future<void> updateGardenPlantDetails({

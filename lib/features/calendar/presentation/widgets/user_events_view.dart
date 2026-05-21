@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jardingue/features/garden/presentation/widgets/editor/color_picker_sheet.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -555,6 +556,43 @@ class _UserEventTile extends ConsumerWidget {
                 content: Text('Impossible de dupliquer'),
                 behavior: SnackBarBehavior.floating,
               ),
+            );
+          }
+        },
+        onChangeColor: () async {
+          Navigator.of(ctx, rootNavigator: true).pop();
+          // Compte les pieds de la même espèce dans le potager parent.
+          final allInGarden = ref
+                  .read(gardenPlantsProvider(garden.id))
+                  .value ??
+              const <GardenPlantWithDetails>[];
+          final sameSpeciesCount = allInGarden
+              .where((e) =>
+                  !e.isZone &&
+                  e.gardenPlant.plantId == element.gardenPlant.plantId)
+              .length;
+
+          final result = await ColorPickerSheet.show(
+            context: context,
+            plantName: element.name,
+            plantEmoji: element.emoji,
+            currentColor: element.color,
+            hasCustomColor: element.gardenPlant.customColor != null,
+            sameSpeciesCount: sameSpeciesCount,
+          );
+          if (result == null) return;
+          final notifier = ref.read(gardenNotifierProvider.notifier);
+          final newColor = result.isReset ? null : result.color;
+          if (result.applyToAll) {
+            await notifier.updateGardenPlantsColorBySpecies(
+              gardenId: garden.id,
+              plantId: element.gardenPlant.plantId,
+              color: newColor,
+            );
+          } else {
+            await notifier.updateGardenPlantColor(
+              gardenPlantId: gp.id,
+              color: newColor,
             );
           }
         },

@@ -457,5 +457,18 @@
   "gardenCellSizeValue": "{value} cm",
   "@gardenCellSizeValue": { "placeholders": { "value": { "type": "int" } } },
   "gardenCellSizeHintFine": "Précis",
-  "gardenCellSizeHintCoarse": "Lisible"
+  "gardenCellSizeHintCoarse": "Lisible",
+
+  "colorPickerSubtitle": "Choisissez une couleur pour distinguer ce pied.",
+  "colorPickerReset": "Couleur par défaut (catégorie)",
+  "colorPickerCustom": "Couleur personnalisée",
+  "colorPickerCustomDialogTitle": "Choisir une couleur",
+  "colorPickerCustomDialogConfirm": "Appliquer",
+  "colorPickerApplyToAll": "Appliquer à tou(te)s les {count} {plantName} de ce potager",
+  "@colorPickerApplyToAll": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "plantName": { "type": "String" }
+    }
+  }
 }
