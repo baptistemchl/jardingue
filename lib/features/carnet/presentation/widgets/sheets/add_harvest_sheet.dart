@@ -41,7 +41,12 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
   Plant? _selectedPlant;
   DateTime _date = DateTime.now();
   HarvestUnit _unit = HarvestUnit.grams;
-  final _quantityController = TextEditingController();
+  // En mode "kilos", on combine les deux champs (kg + g) façon balance
+  // pour faciliter l'addition mentale. _qtyMainController = la valeur
+  // principale (kg, g, pièces, bottes) ; _qtyGramsController = la partie
+  // grammes complémentaire, utilisée uniquement quand unit=kilos.
+  final _qtyMainController = TextEditingController();
+  final _qtyGramsController = TextEditingController();
   final _noteController = TextEditingController();
   bool _saving = false;
 
@@ -53,19 +58,38 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
 
   @override
   void dispose() {
-    _quantityController.dispose();
+    _qtyMainController.dispose();
+    _qtyGramsController.dispose();
     _noteController.dispose();
     super.dispose();
   }
 
-  bool get _canSave =>
-      _selectedPlant != null &&
-      double.tryParse(_quantityController.text.replaceAll(',', '.')) != null;
+  /// Quantité combinée selon l'unité courante. Null si saisie invalide
+  /// ou totalement vide.
+  double? get _combinedQuantity {
+    final main = double.tryParse(
+      _qtyMainController.text.replaceAll(',', '.').trim(),
+    );
+    if (_unit == HarvestUnit.kilos) {
+      final grams = double.tryParse(
+        _qtyGramsController.text.replaceAll(',', '.').trim(),
+      );
+      // Au moins un des deux doit être saisi.
+      if (main == null && grams == null) return null;
+      return (main ?? 0) + (grams ?? 0) / 1000.0;
+    }
+    return main;
+  }
+
+  bool get _canSave {
+    if (_selectedPlant == null) return false;
+    final qty = _combinedQuantity;
+    return qty != null && qty > 0;
+  }
 
   Future<void> _save() async {
     if (!_canSave || _saving) return;
-    final qty =
-        double.parse(_quantityController.text.replaceAll(',', '.'));
+    final qty = _combinedQuantity!;
     setState(() => _saving = true);
     try {
       final db = ref.read(databaseProvider);
@@ -130,48 +154,21 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
                 onChanged: (d) => setState(() => _date = d),
               ),
               const SizedBox(height: 18),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _Label(text: loc.addHarvestQuantityLabel),
-                        const SizedBox(height: 6),
-                        TextField(
-                          controller: _quantityController,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'[0-9.,]'),
-                            ),
-                          ],
-                          onChanged: (_) => setState(() {}),
-                          decoration: _inputDecoration(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 7,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _Label(text: loc.addHarvestUnitLabel),
-                        const SizedBox(height: 6),
-                        _UnitChips(
-                          value: _unit,
-                          onChanged: (u) => setState(() => _unit = u),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              _Label(text: loc.addHarvestUnitLabel),
+              const SizedBox(height: 6),
+              _UnitChips(
+                value: _unit,
+                onChanged: (u) => setState(() => _unit = u),
+              ),
+              const SizedBox(height: 18),
+              _Label(text: loc.addHarvestQuantityLabel),
+              const SizedBox(height: 6),
+              _QuantityRow(
+                unit: _unit,
+                mainController: _qtyMainController,
+                gramsController: _qtyGramsController,
+                onChanged: () => setState(() {}),
+                decoration: _inputDecoration,
               ),
               const SizedBox(height: 18),
               _Label(text: loc.addHarvestNoteLabel),
@@ -229,6 +226,133 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+    );
+  }
+}
+
+/// Row de saisie de quantité adaptée à l'unité courante.
+///
+/// - kilos  : [   ] kg  [   ] g  (style balance, addition mentale facile)
+/// - grams  : [   ] g
+/// - pieces : [   ] pièces
+/// - bunches: [   ] bottes
+class _QuantityRow extends StatelessWidget {
+  final HarvestUnit unit;
+  final TextEditingController mainController;
+  final TextEditingController gramsController;
+  final VoidCallback onChanged;
+  final InputDecoration Function() decoration;
+
+  const _QuantityRow({
+    required this.unit,
+    required this.mainController,
+    required this.gramsController,
+    required this.onChanged,
+    required this.decoration,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    if (unit == HarvestUnit.kilos) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: _NumberField(
+              controller: mainController,
+              decimal: false,
+              onChanged: onChanged,
+              decoration: decoration,
+            ),
+          ),
+          const SizedBox(width: 6),
+          _UnitSuffix(text: loc.addHarvestUnitKilos),
+          const SizedBox(width: 10),
+          Expanded(
+            child: _NumberField(
+              controller: gramsController,
+              decimal: false,
+              onChanged: onChanged,
+              decoration: decoration,
+            ),
+          ),
+          const SizedBox(width: 6),
+          _UnitSuffix(text: loc.addHarvestUnitGrams),
+        ],
+      );
+    }
+    final suffix = switch (unit) {
+      HarvestUnit.grams => loc.addHarvestUnitGrams,
+      HarvestUnit.pieces => loc.addHarvestUnitPieces,
+      HarvestUnit.bunches => loc.addHarvestUnitBunches,
+      HarvestUnit.kilos => '', // déjà géré au-dessus
+    };
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: _NumberField(
+            controller: mainController,
+            // Pour les pièces/bottes : pas de décimales ; pour les g :
+            // l'utilisateur peut saisir 250 ou 250.5 sans souci.
+            decimal: unit == HarvestUnit.grams,
+            onChanged: onChanged,
+            decoration: decoration,
+          ),
+        ),
+        const SizedBox(width: 10),
+        _UnitSuffix(text: suffix),
+      ],
+    );
+  }
+}
+
+class _NumberField extends StatelessWidget {
+  final TextEditingController controller;
+  final bool decimal;
+  final VoidCallback onChanged;
+  final InputDecoration Function() decoration;
+
+  const _NumberField({
+    required this.controller,
+    required this.decimal,
+    required this.onChanged,
+    required this.decoration,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.numberWithOptions(decimal: decimal),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(
+          decimal ? RegExp(r'[0-9.,]') : RegExp(r'[0-9]'),
+        ),
+      ],
+      onChanged: (_) => onChanged(),
+      decoration: decoration(),
+      textAlign: TextAlign.center,
+      style: AppTypography.titleMedium.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+}
+
+class _UnitSuffix extends StatelessWidget {
+  final String text;
+  const _UnitSuffix({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: AppTypography.bodyMedium.copyWith(
+        color: AppColors.textSecondary,
+        fontWeight: FontWeight.w600,
       ),
     );
   }

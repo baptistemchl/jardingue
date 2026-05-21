@@ -223,10 +223,12 @@ class _QuantityBadge extends StatelessWidget {
       HarvestUnit.pieces => loc.addHarvestUnitPieces,
       HarvestUnit.bunches => loc.addHarvestUnitBunches,
     };
-    // Format propre : 250 → "250" ; 2.4 → "2,4" ; 2.0 → "2".
-    final formatted = quantity == quantity.roundToDouble()
-        ? quantity.toStringAsFixed(0)
-        : quantity.toStringAsFixed(1).replaceAll('.', ',');
+    // Format propre, jusqu'à 3 décimales sans zéros traînants :
+    //   250    → "250"
+    //   2.4    → "2,4"
+    //   4.345  → "4,345"
+    //   2.0    → "2"
+    final formatted = _formatQuantity(quantity);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -257,6 +259,15 @@ class _QuantityBadge extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatQuantity(double q) {
+  if (q == q.roundToDouble()) return q.toStringAsFixed(0);
+  return q
+      .toStringAsFixed(3)
+      .replaceAll(RegExp(r'0+$'), '')
+      .replaceAll(RegExp(r'\.$'), '')
+      .replaceAll('.', ',');
 }
 
 class _AddButton extends StatelessWidget {
