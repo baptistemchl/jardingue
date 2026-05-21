@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/services/preferences/user_guidance_preferences.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../core/utils/plant_emoji_mapper.dart';
 import '../../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../domain/companion_guidance_service.dart';
+import 'guidance_opt_out_link.dart';
 
 /// Résultat de la bottom sheet : ids des plantes que l'utilisateur a
 /// cochées et veut ajouter au panier (en attente de placement).
@@ -63,6 +64,7 @@ class _CompanionSuggestionsSheetState
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -81,14 +83,14 @@ class _CompanionSuggestionsSheetState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Compagnons de la ${widget.sourcePlantName}',
+                      loc.companionSuggestionsTitle(widget.sourcePlantName),
                       style: AppTypography.titleMedium.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Ajoute ces plantes au panier pour les placer après.',
+                      loc.companionSuggestionsSubtitle,
                       style: AppTypography.caption.copyWith(
                         color: AppColors.textSecondary,
                         height: 1.4,
@@ -178,7 +180,7 @@ class _CompanionSuggestionsSheetState
                     ),
                   ),
                   child: Text(
-                    'Plus tard',
+                    loc.companionSuggestionsLater,
                     style: AppTypography.labelMedium.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -201,7 +203,7 @@ class _CompanionSuggestionsSheetState
                     ),
                   ),
                   child: Text(
-                    'Ajouter au panier',
+                    loc.companionSuggestionsAddToBasket,
                     style: AppTypography.labelMedium.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -212,57 +214,16 @@ class _CompanionSuggestionsSheetState
             ],
           ),
         ),
-        // Bouton discret pour désactiver la fonctionnalité directement
-        // depuis la sheet, avec snackbar explicatif pointant vers les
-        // Paramètres pour la réactiver.
+        // Lien discret pour désactiver la fonctionnalité, partagé avec
+        // AntagonistWarningDialog (cf. GuidanceOptOutLink).
         Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: TextButton.icon(
-            onPressed: _disableFeature,
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.textTertiary,
-            ),
-            icon: const Icon(Icons.visibility_off_outlined, size: 16),
-            label: Text(
-              'Ne plus afficher ces suggestions',
-              style: AppTypography.caption.copyWith(
-                color: AppColors.textTertiary,
-                decoration: TextDecoration.underline,
-                decorationColor: AppColors.textTertiary,
-              ),
-            ),
+          child: GuidanceOptOutLink(
+            feature: GuidanceFeature.companionSuggestions,
+            onDismiss: () => Navigator.of(context).pop(<int>[]),
           ),
         ),
       ],
-    );
-  }
-
-  Future<void> _disableFeature() async {
-    // Capture le messenger et le navigator AVANT l'await, sinon le
-    // context peut être disposé entre temps (sheet en train de se fermer).
-    final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
-    await ref
-        .read(userGuidancePreferencesProvider.notifier)
-        .setCompanionSuggestionsEnabled(false);
-    navigator.pop(<int>[]);
-    messenger.showSnackBar(
-      SnackBar(
-        content: const Text(
-          'Suggestions désactivées. Vous pouvez les réactiver depuis '
-          'l\'engrenage ⚙️ en haut à droite de l\'accueil.',
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 6),
-        action: SnackBarAction(
-          label: 'Annuler',
-          onPressed: () {
-            ref
-                .read(userGuidancePreferencesProvider.notifier)
-                .setCompanionSuggestionsEnabled(true);
-          },
-        ),
-      ),
     );
   }
 }

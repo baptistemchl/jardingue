@@ -1206,4 +1206,85 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get settingsTitle => 'Paramètres';
+
+  @override
+  String get settingsGuidanceSectionTitle => 'Conseils de jardinage';
+
+  @override
+  String get settingsGuidanceSectionSubtitle =>
+      'Aide-toi des données de compagnonnage et d\'incompatibilité du catalogue. Désactivé par défaut.';
+
+  @override
+  String get settingsCompanionSuggestionsTitle =>
+      'Suggérer les compagnons au dépôt';
+
+  @override
+  String get settingsCompanionSuggestionsSubtitle =>
+      'Après chaque plante posée, propose ses plantes compagnes (à ajouter au panier).';
+
+  @override
+  String get settingsAntagonistWarningsTitle => 'Avertir des incompatibilités';
+
+  @override
+  String get settingsAntagonistWarningsSubtitle =>
+      'Affiche un avertissement avant de placer une plante à côté d\'un antagoniste connu.';
+
+  @override
+  String companionSuggestionsTitle(String plantName) {
+    return 'Compagnons de la $plantName';
+  }
+
+  @override
+  String get companionSuggestionsSubtitle =>
+      'Ajoute ces plantes au panier pour les placer après.';
+
+  @override
+  String get companionSuggestionsLater => 'Plus tard';
+
+  @override
+  String get companionSuggestionsAddToBasket => 'Ajouter au panier';
+
+  @override
+  String get antagonistDialogTitle => 'Incompatibilité détectée';
+
+  @override
+  String get antagonistDialogConfirmQuestion => 'Placer quand même ?';
+
+  @override
+  String get antagonistDialogPlace => 'Placer';
+
+  @override
+  String antagonistConflictWithReason(
+    String sourceName,
+    String neighborName,
+    String reason,
+  ) {
+    return '$sourceName et $neighborName partagent $reason.';
+  }
+
+  @override
+  String antagonistConflictGeneric(String sourceName, String neighborName) {
+    return '$sourceName et $neighborName ne s\'aiment pas.';
+  }
+
+  @override
+  String get guidanceOptOutCompanionLink => 'Ne plus afficher ces suggestions';
+
+  @override
+  String get guidanceOptOutAntagonistLink =>
+      'Ne plus afficher ces avertissements';
+
+  @override
+  String get guidanceOptOutCompanionSnackbar =>
+      'Suggestions désactivées. Vous pouvez les réactiver depuis l\'engrenage ⚙️ en haut à droite de l\'accueil.';
+
+  @override
+  String get guidanceOptOutAntagonistSnackbar =>
+      'Avertissements désactivés. Vous pouvez les réactiver depuis l\'engrenage ⚙️ en haut à droite de l\'accueil.';
+
+  @override
+  String get guidanceOptOutUndo => 'Annuler';
 }

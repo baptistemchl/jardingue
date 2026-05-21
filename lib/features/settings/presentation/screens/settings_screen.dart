@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_colors.dart';
@@ -13,6 +14,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prefsAsync = ref.watch(userGuidancePreferencesProvider);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -28,7 +30,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               children: [
                 Text(
-                  'Paramètres',
+                  loc.settingsTitle,
                   style: AppTypography.headlineLarge.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -36,10 +38,8 @@ class SettingsScreen extends ConsumerWidget {
                 const SizedBox(height: 20),
                 _SectionHeader(
                   icon: PhosphorIcons.plant(PhosphorIconsStyle.fill),
-                  title: 'Conseils de jardinage',
-                  subtitle:
-                      "Aide-toi des données de compagnonnage et "
-                      "d'incompatibilité du catalogue. Désactivé par défaut.",
+                  title: loc.settingsGuidanceSectionTitle,
+                  subtitle: loc.settingsGuidanceSectionSubtitle,
                 ),
                 const SizedBox(height: 12),
                 prefsAsync.when(
@@ -122,6 +122,7 @@ class _GuidanceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(userGuidancePreferencesProvider.notifier);
+    final loc = AppLocalizations.of(context)!;
 
     return Container(
       decoration: BoxDecoration(
@@ -132,10 +133,8 @@ class _GuidanceCard extends ConsumerWidget {
       child: Column(
         children: [
           _GuidanceRow(
-            title: 'Suggérer les compagnons au dépôt',
-            subtitle:
-                "Après chaque plante posée, propose ses plantes "
-                "compagnes (à ajouter au panier).",
+            title: loc.settingsCompanionSuggestionsTitle,
+            subtitle: loc.settingsCompanionSuggestionsSubtitle,
             value: prefs.companionSuggestionsEnabled,
             onChanged: notifier.setCompanionSuggestionsEnabled,
           ),
@@ -144,10 +143,8 @@ class _GuidanceCard extends ConsumerWidget {
             child: Divider(height: 1),
           ),
           _GuidanceRow(
-            title: "Avertir des incompatibilités",
-            subtitle:
-                "Affiche un avertissement avant de placer une plante "
-                "à côté d'un antagoniste connu.",
+            title: loc.settingsAntagonistWarningsTitle,
+            subtitle: loc.settingsAntagonistWarningsSubtitle,
             value: prefs.antagonistWarningsEnabled,
             onChanged: notifier.setAntagonistWarningsEnabled,
           ),
