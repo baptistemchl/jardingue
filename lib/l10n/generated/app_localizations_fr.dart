@@ -1491,4 +1491,62 @@ class AppLocalizationsFr extends AppLocalizations {
   String dateRelativeDaysAgo(int days) {
     return 'il y a $days j';
   }
+
+  @override
+  String get carnetSeedlingsAddButton => 'Nouveau semis';
+
+  @override
+  String get carnetSeedlingsStatusGerminating => 'En germination';
+
+  @override
+  String get carnetSeedlingsStatusReady => 'Prêts à repiquer';
+
+  @override
+  String get carnetSeedlingsStatusTransplanted => 'Repiqués';
+
+  @override
+  String get carnetSeedlingsStatusFailed => 'Échoués';
+
+  @override
+  String get carnetSeedlingsArchiveTitle => 'Archive';
+
+  @override
+  String get carnetSeedlingsUnknownPlant => 'Plante supprimée';
+
+  @override
+  String carnetSeedlingsSowedOn(String date) {
+    return 'Semé le $date';
+  }
+
+  @override
+  String carnetSeedlingsCountInline(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return '$count godet$_temp0';
+  }
+
+  @override
+  String get addSeedlingSheetTitle => 'Enregistrer un semis';
+
+  @override
+  String get addSeedlingPlantLabel => 'Plante semée';
+
+  @override
+  String get addSeedlingSowedAtLabel => 'Date du semis';
+
+  @override
+  String get addSeedlingCountLabel => 'Nombre de godets / graines (optionnel)';
+
+  @override
+  String get addSeedlingCountHint => 'Ex : 12';
+
+  @override
+  String get addSeedlingNoteLabel => 'Note (optionnel)';
+
+  @override
+  String get addSeedlingSaveButton => 'Enregistrer le semis';
 }

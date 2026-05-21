@@ -1550,6 +1550,33 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deleteHarvest(int id) =>
       (delete(harvests)..where((t) => t.id.equals(id))).go();
+
+  // ============================================
+  // SEEDLINGS QUERIES (Carnet de bord — v20)
+  // ============================================
+
+  Future<int> insertSeedling(SeedlingsCompanion seedling) {
+    return into(seedlings).insert(seedling);
+  }
+
+  /// Tous les semis triés du plus récent (createdAt desc).
+  Stream<List<Seedling>> watchAllSeedlings() {
+    return (select(seedlings)
+          ..orderBy([(t) => OrderingTerm.desc(t.sowedAt)]))
+        .watch();
+  }
+
+  Future<int> updateSeedlingStatus(int id, String status) {
+    return (update(seedlings)..where((t) => t.id.equals(id))).write(
+      SeedlingsCompanion(
+        status: Value(status),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<int> deleteSeedling(int id) =>
+      (delete(seedlings)..where((t) => t.id.equals(id))).go();
 }
 
 LazyDatabase _openConnection() {

@@ -545,5 +545,25 @@
   "dateRelativeToday": "aujourd'hui",
   "dateRelativeYesterday": "hier",
   "dateRelativeDaysAgo": "il y a {days} j",
-  "@dateRelativeDaysAgo": { "placeholders": { "days": { "type": "int" } } }
+  "@dateRelativeDaysAgo": { "placeholders": { "days": { "type": "int" } } },
+
+  "carnetSeedlingsAddButton": "Nouveau semis",
+  "carnetSeedlingsStatusGerminating": "En germination",
+  "carnetSeedlingsStatusReady": "Prêts à repiquer",
+  "carnetSeedlingsStatusTransplanted": "Repiqués",
+  "carnetSeedlingsStatusFailed": "Échoués",
+  "carnetSeedlingsArchiveTitle": "Archive",
+  "carnetSeedlingsUnknownPlant": "Plante supprimée",
+  "carnetSeedlingsSowedOn": "Semé le {date}",
+  "@carnetSeedlingsSowedOn": { "placeholders": { "date": { "type": "String" } } },
+  "carnetSeedlingsCountInline": "{count} godet{count, plural, one{} other{s}}",
+  "@carnetSeedlingsCountInline": { "placeholders": { "count": { "type": "int" } } },
+
+  "addSeedlingSheetTitle": "Enregistrer un semis",
+  "addSeedlingPlantLabel": "Plante semée",
+  "addSeedlingSowedAtLabel": "Date du semis",
+  "addSeedlingCountLabel": "Nombre de godets / graines (optionnel)",
+  "addSeedlingCountHint": "Ex : 12",
+  "addSeedlingNoteLabel": "Note (optionnel)",
+  "addSeedlingSaveButton": "Enregistrer le semis"
 }

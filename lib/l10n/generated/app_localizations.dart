@@ -2599,6 +2599,102 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'il y a {days} j'**
   String dateRelativeDaysAgo(int days);
+
+  /// No description provided for @carnetSeedlingsAddButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau semis'**
+  String get carnetSeedlingsAddButton;
+
+  /// No description provided for @carnetSeedlingsStatusGerminating.
+  ///
+  /// In fr, this message translates to:
+  /// **'En germination'**
+  String get carnetSeedlingsStatusGerminating;
+
+  /// No description provided for @carnetSeedlingsStatusReady.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prêts à repiquer'**
+  String get carnetSeedlingsStatusReady;
+
+  /// No description provided for @carnetSeedlingsStatusTransplanted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repiqués'**
+  String get carnetSeedlingsStatusTransplanted;
+
+  /// No description provided for @carnetSeedlingsStatusFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoués'**
+  String get carnetSeedlingsStatusFailed;
+
+  /// No description provided for @carnetSeedlingsArchiveTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archive'**
+  String get carnetSeedlingsArchiveTitle;
+
+  /// No description provided for @carnetSeedlingsUnknownPlant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plante supprimée'**
+  String get carnetSeedlingsUnknownPlant;
+
+  /// No description provided for @carnetSeedlingsSowedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semé le {date}'**
+  String carnetSeedlingsSowedOn(String date);
+
+  /// No description provided for @carnetSeedlingsCountInline.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} godet{count, plural, one{} other{s}}'**
+  String carnetSeedlingsCountInline(int count);
+
+  /// No description provided for @addSeedlingSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer un semis'**
+  String get addSeedlingSheetTitle;
+
+  /// No description provided for @addSeedlingPlantLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plante semée'**
+  String get addSeedlingPlantLabel;
+
+  /// No description provided for @addSeedlingSowedAtLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date du semis'**
+  String get addSeedlingSowedAtLabel;
+
+  /// No description provided for @addSeedlingCountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre de godets / graines (optionnel)'**
+  String get addSeedlingCountLabel;
+
+  /// No description provided for @addSeedlingCountHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex : 12'**
+  String get addSeedlingCountHint;
+
+  /// No description provided for @addSeedlingNoteLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note (optionnel)'**
+  String get addSeedlingNoteLabel;
+
+  /// No description provided for @addSeedlingSaveButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le semis'**
+  String get addSeedlingSaveButton;
 }
 
 class _AppLocalizationsDelegate
