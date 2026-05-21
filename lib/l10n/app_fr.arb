@@ -460,5 +460,8 @@
   "gardenCellSizeHintCoarse": "Lisible",
 
   "colorPickerSubtitle": "Choisissez une couleur pour distinguer ce pied.",
-  "colorPickerReset": "Couleur par défaut (catégorie)"
+  "colorPickerReset": "Couleur par défaut (catégorie)",
+  "colorPickerCustom": "Couleur personnalisée",
+  "colorPickerCustomDialogTitle": "Choisir une couleur",
+  "colorPickerCustomDialogConfirm": "Appliquer"
 }

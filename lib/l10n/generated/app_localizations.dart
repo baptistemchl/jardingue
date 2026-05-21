@@ -2293,6 +2293,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Couleur par défaut (catégorie)'**
   String get colorPickerReset;
+
+  /// No description provided for @colorPickerCustom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Couleur personnalisée'**
+  String get colorPickerCustom;
+
+  /// No description provided for @colorPickerCustomDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une couleur'**
+  String get colorPickerCustomDialogTitle;
+
+  /// No description provided for @colorPickerCustomDialogConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get colorPickerCustomDialogConfirm;
 }
 
 class _AppLocalizationsDelegate
