@@ -914,7 +914,11 @@ class _TemplatesSection extends ConsumerWidget {
         ),
         const SizedBox(height: 14),
         SizedBox(
-          height: 154,
+          // Hauteur fixée pour le carrousel horizontal. 184 absorbe la
+          // ligne dimensions qui peut wrapper sur 2 lignes pour les
+          // templates au nom long (« Grand potager familial ») sans
+          // déclencher d'overflow.
+          height: 184,
           child: templatesAsync.when(
             loading: () => const Center(
               child: SizedBox(
@@ -1016,8 +1020,11 @@ class _TemplateCard extends StatelessWidget {
                   template.heightMeters.toStringAsFixed(1),
                   template.plants.length,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: AppTypography.caption.copyWith(
                   color: AppColors.textSecondary,
+                  height: 1.3,
                 ),
               ),
               const Spacer(),
