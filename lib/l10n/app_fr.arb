@@ -498,5 +498,13 @@
   "carnetJournalEmptyTitle": "Carnet vierge",
   "carnetJournalEmptySubtitle": "Ajoutez vos observations, idées et anecdotes au fil des saisons.",
   "carnetStatsEmptyTitle": "Pas encore de statistiques",
-  "carnetStatsEmptySubtitle": "Les bilans de saison s'afficheront ici dès que vous aurez enregistré des récoltes."
+  "carnetStatsEmptySubtitle": "Les bilans de saison s'afficheront ici dès que vous aurez enregistré des récoltes.",
+
+  "carnetTabSettings": "Réglages",
+  "carnetSettingsMoreSection": "Plus",
+  "carnetSettingsPremiumTitle": "Sauvegarde Premium",
+  "carnetSettingsPremiumSubtitle": "Cloud, restauration multi-appareils",
+  "carnetSettingsAboutTitle": "À propos de Jardingue",
+  "carnetSettingsAboutSubtitle": "Crédits, contact, mentions légales",
+  "carnetSettingsThanksMessage": "Merci d'utiliser Jardingue.\nFait avec ♥ pour les jardiniers."
 }

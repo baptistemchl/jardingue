@@ -97,53 +97,11 @@ class GardenScreen extends ConsumerWidget {
                             ),
 
                             // Bouton Cloud / Premium (avec prix si non-premium)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: _PremiumCtaButton(),
-                            ),
-
-                            // Bouton Paramètres
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: GestureDetector(
-                                onTap: () => context.push(AppRoutes.settings),
-                                child: Container(
-                                  width: 36,
-                                  height: 36,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.background,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.border),
-                                  ),
-                                  child: Icon(
-                                    PhosphorIcons.gearSix(
-                                      PhosphorIconsStyle.regular,
-                                    ),
-                                    size: 18,
-                                    color: AppColors.textSecondary,
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            // Bouton A propos
-                            GestureDetector(
-                              onTap: () => context.push(AppRoutes.about),
-                              child: Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: AppColors.background,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppColors.border),
-                                ),
-                                child: Icon(
-                                  PhosphorIcons.info(PhosphorIconsStyle.regular),
-                                  size: 18,
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ),
+                            // Bouton Cloud / Premium (avec prix si non-premium).
+                            // Les réglages, l'à propos et la version sont
+                            // désormais dans le Carnet de bord (onglet
+                            // Réglages, accessible via le bouton burger).
+                            _PremiumCtaButton(),
                           ],
                         ),
 

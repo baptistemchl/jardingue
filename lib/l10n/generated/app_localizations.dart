@@ -2431,6 +2431,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Les bilans de saison s\'afficheront ici dès que vous aurez enregistré des récoltes.'**
   String get carnetStatsEmptySubtitle;
+
+  /// No description provided for @carnetTabSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages'**
+  String get carnetTabSettings;
+
+  /// No description provided for @carnetSettingsMoreSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus'**
+  String get carnetSettingsMoreSection;
+
+  /// No description provided for @carnetSettingsPremiumTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde Premium'**
+  String get carnetSettingsPremiumTitle;
+
+  /// No description provided for @carnetSettingsPremiumSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cloud, restauration multi-appareils'**
+  String get carnetSettingsPremiumSubtitle;
+
+  /// No description provided for @carnetSettingsAboutTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos de Jardingue'**
+  String get carnetSettingsAboutTitle;
+
+  /// No description provided for @carnetSettingsAboutSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédits, contact, mentions légales'**
+  String get carnetSettingsAboutSubtitle;
+
+  /// No description provided for @carnetSettingsThanksMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Merci d\'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.'**
+  String get carnetSettingsThanksMessage;
 }
 
 class _AppLocalizationsDelegate

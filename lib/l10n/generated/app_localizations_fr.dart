@@ -1390,4 +1390,28 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get carnetStatsEmptySubtitle =>
       'Les bilans de saison s\'afficheront ici dès que vous aurez enregistré des récoltes.';
+
+  @override
+  String get carnetTabSettings => 'Réglages';
+
+  @override
+  String get carnetSettingsMoreSection => 'Plus';
+
+  @override
+  String get carnetSettingsPremiumTitle => 'Sauvegarde Premium';
+
+  @override
+  String get carnetSettingsPremiumSubtitle =>
+      'Cloud, restauration multi-appareils';
+
+  @override
+  String get carnetSettingsAboutTitle => 'À propos de Jardingue';
+
+  @override
+  String get carnetSettingsAboutSubtitle =>
+      'Crédits, contact, mentions légales';
+
+  @override
+  String get carnetSettingsThanksMessage =>
+      'Merci d\'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.';
 }

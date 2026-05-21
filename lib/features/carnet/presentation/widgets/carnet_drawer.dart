@@ -10,6 +10,7 @@ import '../providers/carnet_ui_providers.dart';
 import 'tabs/harvests_tab.dart';
 import 'tabs/journal_tab.dart';
 import 'tabs/seedlings_tab.dart';
+import 'tabs/settings_tab.dart';
 import 'tabs/stats_tab.dart';
 
 /// Drawer "Carnet de bord" qui slide depuis le bord droit.
@@ -127,16 +128,18 @@ class _TabStrip extends ConsumerWidget {
           PhosphorIcons.notebook(PhosphorIconsStyle.regular)),
       _TabSpec(CarnetTab.stats, loc.carnetTabStats,
           PhosphorIcons.chartBar(PhosphorIconsStyle.regular)),
+      _TabSpec(CarnetTab.settings, loc.carnetTabSettings,
+          PhosphorIcons.gearSix(PhosphorIconsStyle.regular)),
     ];
 
     return Padding(
-      padding: const EdgeInsets.only(top: 72, bottom: 80),
+      padding: const EdgeInsets.only(top: 64, bottom: 64),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: entries.map((e) {
           final isActive = e.tab == activeTab;
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 3),
             child: _MarquePage(
               spec: e,
               isActive: isActive,
@@ -177,7 +180,7 @@ class _MarquePage extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOutCubic,
         width: 44,
-        height: 90,
+        height: 74,
         decoration: BoxDecoration(
           color: bg,
           borderRadius: const BorderRadius.only(
@@ -284,6 +287,7 @@ class _DrawerBody extends ConsumerWidget {
                     CarnetTab.seedlings => const SeedlingsTab(),
                     CarnetTab.journal => const JournalTab(),
                     CarnetTab.stats => const StatsTab(),
+                    CarnetTab.settings => const SettingsTab(),
                   },
                 ),
               ),

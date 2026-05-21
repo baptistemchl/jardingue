@@ -7,4 +7,5 @@ enum CarnetTab {
   seedlings,
   journal,
   stats,
+  settings,
 }
