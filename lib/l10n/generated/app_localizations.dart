@@ -3073,6 +3073,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'supprimée'**
   String get carnetPlantDeletedBadge;
+
+  /// No description provided for @addSeedlingGardenLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Potager (optionnel)'**
+  String get addSeedlingGardenLabel;
+
+  /// No description provided for @addSeedlingGardenNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun'**
+  String get addSeedlingGardenNone;
+
+  /// No description provided for @seedlingTransplantedPlacedSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repiqué dans le potager — pense à repositionner si besoin.'**
+  String get seedlingTransplantedPlacedSnack;
 }
 
 class _AppLocalizationsDelegate

@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -444,17 +445,45 @@ class _SeedlingCard extends ConsumerWidget {
       successCount: newSuccess,
     );
 
-    // Repiqué = planté : on crée l'event planting pour qu'il apparaisse
-    // dans le plan et le calendrier comme une vraie plantation.
+    // Repiqué = planté : on matérialise vraiment la plantation dans le
+    // potager si un gardenId est défini sur le semis. Sinon on
+    // n'enregistre que l'event planting (visible dans calendrier mais
+    // pas dans la grille du potager).
     if (next == SeedlingStatus.transplanted) {
+      final gardenId = seedling.gardenId;
+      int? createdGardenPlantId;
+      if (gardenId != null) {
+        final cell = await db.findFirstFreeCell(gardenId);
+        createdGardenPlantId = await db.addPlantToGarden(
+          GardenPlantsCompanion.insert(
+            gardenId: gardenId,
+            plantId: seedling.plantId,
+            gridX: cell.x,
+            gridY: cell.y,
+            plantedAt: Value(DateTime.now()),
+            notes: Value(newSuccess != null && seedling.count != null
+                ? '$newSuccess / ${seedling.count} godets repiqués'
+                : null),
+          ),
+        );
+      }
       await db.insertPlantingEventForSeedling(
         plantId: seedling.plantId,
-        gardenId: seedling.gardenId,
+        gardenId: gardenId,
         plantedAt: DateTime.now(),
         notes: newSuccess != null && seedling.count != null
             ? '$newSuccess / ${seedling.count} godets repiqués'
             : null,
       );
+      // Notification visuelle si on a placé dans le potager.
+      if (createdGardenPlantId != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(loc.seedlingTransplantedPlacedSnack),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 }

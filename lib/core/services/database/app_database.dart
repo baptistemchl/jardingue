@@ -800,6 +800,39 @@ class AppDatabase extends _$AppDatabase {
     return into(gardenPlants).insert(gardenPlant);
   }
 
+  /// Trouve la première cellule libre dans la grille d'un potager
+  /// (scan ligne par ligne, gauche → droite, haut → bas). Utilisé par
+  /// le repiquage d'un semis : on doit placer la plante quelque part
+  /// dans le potager pour qu'elle apparaisse dans le plan, et la
+  /// première cellule libre est le placement le plus prévisible. Si
+  /// aucune cellule n'est libre, retourne (0, 0) — l'utilisateur
+  /// devra repositionner manuellement.
+  Future<({int x, int y})> findFirstFreeCell(int gardenId) async {
+    final garden = await (select(gardens)
+          ..where((t) => t.id.equals(gardenId)))
+        .getSingleOrNull();
+    if (garden == null) return (x: 0, y: 0);
+    final occupied = await (select(gardenPlants)
+          ..where((t) => t.gardenId.equals(gardenId)))
+        .get();
+    for (var y = 0; y < garden.heightCells; y++) {
+      for (var x = 0; x < garden.widthCells; x++) {
+        bool isFree = true;
+        for (final gp in occupied) {
+          if (x >= gp.gridX &&
+              x < gp.gridX + gp.widthCells &&
+              y >= gp.gridY &&
+              y < gp.gridY + gp.heightCells) {
+            isFree = false;
+            break;
+          }
+        }
+        if (isFree) return (x: x, y: y);
+      }
+    }
+    return (x: 0, y: 0);
+  }
+
   Future<int> removePlantFromGarden(int id) async {
     // Supprimer les événements liés à ce gardenPlant pour éviter les orphelins
     // (visible dans "Mon suivi" sinon)

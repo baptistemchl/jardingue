@@ -663,5 +663,9 @@
   },
   "seedlingAdvanceDialogConfirm": "Confirmer",
 
-  "carnetPlantDeletedBadge": "supprimée"
+  "carnetPlantDeletedBadge": "supprimée",
+
+  "addSeedlingGardenLabel": "Potager (optionnel)",
+  "addSeedlingGardenNone": "Aucun",
+  "seedlingTransplantedPlacedSnack": "Repiqué dans le potager — pense à repositionner si besoin."
 }

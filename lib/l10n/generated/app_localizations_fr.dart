@@ -1771,4 +1771,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get carnetPlantDeletedBadge => 'supprimée';
+
+  @override
+  String get addSeedlingGardenLabel => 'Potager (optionnel)';
+
+  @override
+  String get addSeedlingGardenNone => 'Aucun';
+
+  @override
+  String get seedlingTransplantedPlacedSnack =>
+      'Repiqué dans le potager — pense à repositionner si besoin.';
 }

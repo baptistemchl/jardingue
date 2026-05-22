@@ -41,6 +41,13 @@ class FruitTreeImportService {
         debugPrint('🌳 Framboisier absent, réimport forcé...');
         return importFromAssets(forceReimport: true);
       }
+      // Fruits rouges ajoutés en v1.7.4 : Groseillier (102), Cassissier
+      // (103), Mûrier (104), Myrtillier (105). Sentinelle = Myrtillier.
+      final myrtillier = await _db.getFruitTreeById(105);
+      if (myrtillier == null) {
+        debugPrint('🌳 Fruits rouges v1.7.4 absents, réimport forcé...');
+        return importFromAssets(forceReimport: true);
+      }
       debugPrint('🌳 Base arbres fruitiers déjà peuplée ($existingCount arbres)');
       return existingCount;
     }
