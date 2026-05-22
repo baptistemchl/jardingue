@@ -638,5 +638,30 @@
   "carnetStatsActivitySowing": "Semis enregistrés",
   "carnetStatsActivityPlanting": "Plantations",
   "carnetStatsActivityMulching": "Paillages",
-  "carnetStatsActivityOtherCare": "Autres soins"
+  "carnetStatsActivityOtherCare": "Autres soins",
+
+  "carnetStatsTopSortWeight": "Poids",
+  "carnetStatsTopSortCount": "Récoltes",
+  "carnetStatsTopSortPieces": "Pièces",
+  "carnetStatsTopSortBunches": "Bottes",
+
+  "carnetSeedlingsSuccessRatio": "{success} / {total} godets",
+  "@carnetSeedlingsSuccessRatio": {
+    "placeholders": {
+      "success": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "seedlingAdvanceDialogTitle": "Passer à : {status}",
+  "@seedlingAdvanceDialogTitle": {
+    "placeholders": { "status": { "type": "String" } }
+  },
+  "seedlingAdvanceDialogPrompt": "Sur {base} godets, combien sont passés à cette étape ?",
+  "@seedlingAdvanceDialogPrompt": {
+    "placeholders": { "base": { "type": "int" } }
+  },
+  "seedlingAdvanceDialogConfirm": "Confirmer",
+
+  "carnetPlantDeletedBadge": "supprimée"
 }

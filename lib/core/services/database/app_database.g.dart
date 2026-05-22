@@ -9290,6 +9290,18 @@ class $HarvestsTable extends Harvests with TableInfo<$HarvestsTable, Harvest> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _plantNameSnapshotMeta = const VerificationMeta(
+    'plantNameSnapshot',
+  );
+  @override
+  late final GeneratedColumn<String> plantNameSnapshot =
+      GeneratedColumn<String>(
+        'plant_name_snapshot',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -9312,6 +9324,7 @@ class $HarvestsTable extends Harvests with TableInfo<$HarvestsTable, Harvest> {
     quantity,
     unit,
     note,
+    plantNameSnapshot,
     createdAt,
   ];
   @override
@@ -9385,6 +9398,15 @@ class $HarvestsTable extends Harvests with TableInfo<$HarvestsTable, Harvest> {
         note.isAcceptableOrUnknown(data['note']!, _noteMeta),
       );
     }
+    if (data.containsKey('plant_name_snapshot')) {
+      context.handle(
+        _plantNameSnapshotMeta,
+        plantNameSnapshot.isAcceptableOrUnknown(
+          data['plant_name_snapshot']!,
+          _plantNameSnapshotMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -9432,6 +9454,10 @@ class $HarvestsTable extends Harvests with TableInfo<$HarvestsTable, Harvest> {
         DriftSqlType.string,
         data['${effectivePrefix}note'],
       ),
+      plantNameSnapshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plant_name_snapshot'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -9466,6 +9492,12 @@ class Harvest extends DataClass implements Insertable<Harvest> {
   /// Unité : "g", "kg", "piece" (unités/pièces), "bunch" (botte/poignée).
   final String unit;
   final String? note;
+
+  /// Snapshot du nom de la plante au moment de la récolte (v21+).
+  /// Permet de préserver l'historique même si la Plant catalogue est
+  /// supprimée — on affiche le snapshot et un marqueur « plante
+  /// supprimée » à l'UI.
+  final String? plantNameSnapshot;
   final DateTime createdAt;
   const Harvest({
     required this.id,
@@ -9476,6 +9508,7 @@ class Harvest extends DataClass implements Insertable<Harvest> {
     required this.quantity,
     required this.unit,
     this.note,
+    this.plantNameSnapshot,
     required this.createdAt,
   });
   @override
@@ -9495,6 +9528,9 @@ class Harvest extends DataClass implements Insertable<Harvest> {
     if (!nullToAbsent || note != null) {
       map['note'] = Variable<String>(note);
     }
+    if (!nullToAbsent || plantNameSnapshot != null) {
+      map['plant_name_snapshot'] = Variable<String>(plantNameSnapshot);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -9513,6 +9549,9 @@ class Harvest extends DataClass implements Insertable<Harvest> {
       quantity: Value(quantity),
       unit: Value(unit),
       note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      plantNameSnapshot: plantNameSnapshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plantNameSnapshot),
       createdAt: Value(createdAt),
     );
   }
@@ -9531,6 +9570,9 @@ class Harvest extends DataClass implements Insertable<Harvest> {
       quantity: serializer.fromJson<double>(json['quantity']),
       unit: serializer.fromJson<String>(json['unit']),
       note: serializer.fromJson<String?>(json['note']),
+      plantNameSnapshot: serializer.fromJson<String?>(
+        json['plantNameSnapshot'],
+      ),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -9546,6 +9588,7 @@ class Harvest extends DataClass implements Insertable<Harvest> {
       'quantity': serializer.toJson<double>(quantity),
       'unit': serializer.toJson<String>(unit),
       'note': serializer.toJson<String?>(note),
+      'plantNameSnapshot': serializer.toJson<String?>(plantNameSnapshot),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -9559,6 +9602,7 @@ class Harvest extends DataClass implements Insertable<Harvest> {
     double? quantity,
     String? unit,
     Value<String?> note = const Value.absent(),
+    Value<String?> plantNameSnapshot = const Value.absent(),
     DateTime? createdAt,
   }) => Harvest(
     id: id ?? this.id,
@@ -9571,6 +9615,9 @@ class Harvest extends DataClass implements Insertable<Harvest> {
     quantity: quantity ?? this.quantity,
     unit: unit ?? this.unit,
     note: note.present ? note.value : this.note,
+    plantNameSnapshot: plantNameSnapshot.present
+        ? plantNameSnapshot.value
+        : this.plantNameSnapshot,
     createdAt: createdAt ?? this.createdAt,
   );
   Harvest copyWithCompanion(HarvestsCompanion data) {
@@ -9587,6 +9634,9 @@ class Harvest extends DataClass implements Insertable<Harvest> {
       quantity: data.quantity.present ? data.quantity.value : this.quantity,
       unit: data.unit.present ? data.unit.value : this.unit,
       note: data.note.present ? data.note.value : this.note,
+      plantNameSnapshot: data.plantNameSnapshot.present
+          ? data.plantNameSnapshot.value
+          : this.plantNameSnapshot,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -9602,6 +9652,7 @@ class Harvest extends DataClass implements Insertable<Harvest> {
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
           ..write('note: $note, ')
+          ..write('plantNameSnapshot: $plantNameSnapshot, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -9617,6 +9668,7 @@ class Harvest extends DataClass implements Insertable<Harvest> {
     quantity,
     unit,
     note,
+    plantNameSnapshot,
     createdAt,
   );
   @override
@@ -9631,6 +9683,7 @@ class Harvest extends DataClass implements Insertable<Harvest> {
           other.quantity == this.quantity &&
           other.unit == this.unit &&
           other.note == this.note &&
+          other.plantNameSnapshot == this.plantNameSnapshot &&
           other.createdAt == this.createdAt);
 }
 
@@ -9643,6 +9696,7 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
   final Value<double> quantity;
   final Value<String> unit;
   final Value<String?> note;
+  final Value<String?> plantNameSnapshot;
   final Value<DateTime> createdAt;
   const HarvestsCompanion({
     this.id = const Value.absent(),
@@ -9653,6 +9707,7 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
     this.quantity = const Value.absent(),
     this.unit = const Value.absent(),
     this.note = const Value.absent(),
+    this.plantNameSnapshot = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   HarvestsCompanion.insert({
@@ -9664,6 +9719,7 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
     required double quantity,
     required String unit,
     this.note = const Value.absent(),
+    this.plantNameSnapshot = const Value.absent(),
     this.createdAt = const Value.absent(),
   }) : plantId = Value(plantId),
        harvestedAt = Value(harvestedAt),
@@ -9678,6 +9734,7 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
     Expression<double>? quantity,
     Expression<String>? unit,
     Expression<String>? note,
+    Expression<String>? plantNameSnapshot,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
@@ -9689,6 +9746,7 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
       if (quantity != null) 'quantity': quantity,
       if (unit != null) 'unit': unit,
       if (note != null) 'note': note,
+      if (plantNameSnapshot != null) 'plant_name_snapshot': plantNameSnapshot,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -9702,6 +9760,7 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
     Value<double>? quantity,
     Value<String>? unit,
     Value<String?>? note,
+    Value<String?>? plantNameSnapshot,
     Value<DateTime>? createdAt,
   }) {
     return HarvestsCompanion(
@@ -9713,6 +9772,7 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
       quantity: quantity ?? this.quantity,
       unit: unit ?? this.unit,
       note: note ?? this.note,
+      plantNameSnapshot: plantNameSnapshot ?? this.plantNameSnapshot,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -9744,6 +9804,9 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
+    if (plantNameSnapshot.present) {
+      map['plant_name_snapshot'] = Variable<String>(plantNameSnapshot.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -9761,6 +9824,7 @@ class HarvestsCompanion extends UpdateCompanion<Harvest> {
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
           ..write('note: $note, ')
+          ..write('plantNameSnapshot: $plantNameSnapshot, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -9855,6 +9919,29 @@ class $SeedlingsTable extends Seedlings
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _successCountMeta = const VerificationMeta(
+    'successCount',
+  );
+  @override
+  late final GeneratedColumn<int> successCount = GeneratedColumn<int>(
+    'success_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _plantNameSnapshotMeta = const VerificationMeta(
+    'plantNameSnapshot',
+  );
+  @override
+  late final GeneratedColumn<String> plantNameSnapshot =
+      GeneratedColumn<String>(
+        'plant_name_snapshot',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _noteMeta = const VerificationMeta('note');
   @override
   late final GeneratedColumn<String> note = GeneratedColumn<String>(
@@ -9897,6 +9984,8 @@ class $SeedlingsTable extends Seedlings
     expectedTransplantAt,
     status,
     count,
+    successCount,
+    plantNameSnapshot,
     note,
     createdAt,
     updatedAt,
@@ -9959,6 +10048,24 @@ class $SeedlingsTable extends Seedlings
         count.isAcceptableOrUnknown(data['count']!, _countMeta),
       );
     }
+    if (data.containsKey('success_count')) {
+      context.handle(
+        _successCountMeta,
+        successCount.isAcceptableOrUnknown(
+          data['success_count']!,
+          _successCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('plant_name_snapshot')) {
+      context.handle(
+        _plantNameSnapshotMeta,
+        plantNameSnapshot.isAcceptableOrUnknown(
+          data['plant_name_snapshot']!,
+          _plantNameSnapshotMeta,
+        ),
+      );
+    }
     if (data.containsKey('note')) {
       context.handle(
         _noteMeta,
@@ -10014,6 +10121,14 @@ class $SeedlingsTable extends Seedlings
         DriftSqlType.int,
         data['${effectivePrefix}count'],
       ),
+      successCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}success_count'],
+      ),
+      plantNameSnapshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plant_name_snapshot'],
+      ),
       note: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}note'],
@@ -10053,6 +10168,14 @@ class Seedling extends DataClass implements Insertable<Seedling> {
 
   /// Nombre de godets/graines semés (info quantitative pour stats).
   final int? count;
+
+  /// Nombre de godets qui ont effectivement « réussi » au stade actuel
+  /// (germination, repiquage, etc.). Met à jour à chaque transition de
+  /// statut via le dialog. Null = pas encore renseigné. (v21+)
+  final int? successCount;
+
+  /// Snapshot du nom de la plante au moment du semis (v21+).
+  final String? plantNameSnapshot;
   final String? note;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -10064,6 +10187,8 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     this.expectedTransplantAt,
     required this.status,
     this.count,
+    this.successCount,
+    this.plantNameSnapshot,
     this.note,
     required this.createdAt,
     required this.updatedAt,
@@ -10083,6 +10208,12 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     map['status'] = Variable<String>(status);
     if (!nullToAbsent || count != null) {
       map['count'] = Variable<int>(count);
+    }
+    if (!nullToAbsent || successCount != null) {
+      map['success_count'] = Variable<int>(successCount);
+    }
+    if (!nullToAbsent || plantNameSnapshot != null) {
+      map['plant_name_snapshot'] = Variable<String>(plantNameSnapshot);
     }
     if (!nullToAbsent || note != null) {
       map['note'] = Variable<String>(note);
@@ -10107,6 +10238,12 @@ class Seedling extends DataClass implements Insertable<Seedling> {
       count: count == null && nullToAbsent
           ? const Value.absent()
           : Value(count),
+      successCount: successCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(successCount),
+      plantNameSnapshot: plantNameSnapshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plantNameSnapshot),
       note: note == null && nullToAbsent ? const Value.absent() : Value(note),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -10128,6 +10265,10 @@ class Seedling extends DataClass implements Insertable<Seedling> {
       ),
       status: serializer.fromJson<String>(json['status']),
       count: serializer.fromJson<int?>(json['count']),
+      successCount: serializer.fromJson<int?>(json['successCount']),
+      plantNameSnapshot: serializer.fromJson<String?>(
+        json['plantNameSnapshot'],
+      ),
       note: serializer.fromJson<String?>(json['note']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -10146,6 +10287,8 @@ class Seedling extends DataClass implements Insertable<Seedling> {
       ),
       'status': serializer.toJson<String>(status),
       'count': serializer.toJson<int?>(count),
+      'successCount': serializer.toJson<int?>(successCount),
+      'plantNameSnapshot': serializer.toJson<String?>(plantNameSnapshot),
       'note': serializer.toJson<String?>(note),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -10160,6 +10303,8 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     Value<DateTime?> expectedTransplantAt = const Value.absent(),
     String? status,
     Value<int?> count = const Value.absent(),
+    Value<int?> successCount = const Value.absent(),
+    Value<String?> plantNameSnapshot = const Value.absent(),
     Value<String?> note = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -10173,6 +10318,10 @@ class Seedling extends DataClass implements Insertable<Seedling> {
         : this.expectedTransplantAt,
     status: status ?? this.status,
     count: count.present ? count.value : this.count,
+    successCount: successCount.present ? successCount.value : this.successCount,
+    plantNameSnapshot: plantNameSnapshot.present
+        ? plantNameSnapshot.value
+        : this.plantNameSnapshot,
     note: note.present ? note.value : this.note,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -10188,6 +10337,12 @@ class Seedling extends DataClass implements Insertable<Seedling> {
           : this.expectedTransplantAt,
       status: data.status.present ? data.status.value : this.status,
       count: data.count.present ? data.count.value : this.count,
+      successCount: data.successCount.present
+          ? data.successCount.value
+          : this.successCount,
+      plantNameSnapshot: data.plantNameSnapshot.present
+          ? data.plantNameSnapshot.value
+          : this.plantNameSnapshot,
       note: data.note.present ? data.note.value : this.note,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -10204,6 +10359,8 @@ class Seedling extends DataClass implements Insertable<Seedling> {
           ..write('expectedTransplantAt: $expectedTransplantAt, ')
           ..write('status: $status, ')
           ..write('count: $count, ')
+          ..write('successCount: $successCount, ')
+          ..write('plantNameSnapshot: $plantNameSnapshot, ')
           ..write('note: $note, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -10220,6 +10377,8 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     expectedTransplantAt,
     status,
     count,
+    successCount,
+    plantNameSnapshot,
     note,
     createdAt,
     updatedAt,
@@ -10235,6 +10394,8 @@ class Seedling extends DataClass implements Insertable<Seedling> {
           other.expectedTransplantAt == this.expectedTransplantAt &&
           other.status == this.status &&
           other.count == this.count &&
+          other.successCount == this.successCount &&
+          other.plantNameSnapshot == this.plantNameSnapshot &&
           other.note == this.note &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -10248,6 +10409,8 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
   final Value<DateTime?> expectedTransplantAt;
   final Value<String> status;
   final Value<int?> count;
+  final Value<int?> successCount;
+  final Value<String?> plantNameSnapshot;
   final Value<String?> note;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -10259,6 +10422,8 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     this.expectedTransplantAt = const Value.absent(),
     this.status = const Value.absent(),
     this.count = const Value.absent(),
+    this.successCount = const Value.absent(),
+    this.plantNameSnapshot = const Value.absent(),
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -10271,6 +10436,8 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     this.expectedTransplantAt = const Value.absent(),
     this.status = const Value.absent(),
     this.count = const Value.absent(),
+    this.successCount = const Value.absent(),
+    this.plantNameSnapshot = const Value.absent(),
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -10284,6 +10451,8 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     Expression<DateTime>? expectedTransplantAt,
     Expression<String>? status,
     Expression<int>? count,
+    Expression<int>? successCount,
+    Expression<String>? plantNameSnapshot,
     Expression<String>? note,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -10297,6 +10466,8 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
         'expected_transplant_at': expectedTransplantAt,
       if (status != null) 'status': status,
       if (count != null) 'count': count,
+      if (successCount != null) 'success_count': successCount,
+      if (plantNameSnapshot != null) 'plant_name_snapshot': plantNameSnapshot,
       if (note != null) 'note': note,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -10311,6 +10482,8 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     Value<DateTime?>? expectedTransplantAt,
     Value<String>? status,
     Value<int?>? count,
+    Value<int?>? successCount,
+    Value<String?>? plantNameSnapshot,
     Value<String?>? note,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -10323,6 +10496,8 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
       expectedTransplantAt: expectedTransplantAt ?? this.expectedTransplantAt,
       status: status ?? this.status,
       count: count ?? this.count,
+      successCount: successCount ?? this.successCount,
+      plantNameSnapshot: plantNameSnapshot ?? this.plantNameSnapshot,
       note: note ?? this.note,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -10355,6 +10530,12 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     if (count.present) {
       map['count'] = Variable<int>(count.value);
     }
+    if (successCount.present) {
+      map['success_count'] = Variable<int>(successCount.value);
+    }
+    if (plantNameSnapshot.present) {
+      map['plant_name_snapshot'] = Variable<String>(plantNameSnapshot.value);
+    }
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
@@ -10377,6 +10558,8 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
           ..write('expectedTransplantAt: $expectedTransplantAt, ')
           ..write('status: $status, ')
           ..write('count: $count, ')
+          ..write('successCount: $successCount, ')
+          ..write('plantNameSnapshot: $plantNameSnapshot, ')
           ..write('note: $note, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -18117,6 +18300,7 @@ typedef $$HarvestsTableCreateCompanionBuilder =
       required double quantity,
       required String unit,
       Value<String?> note,
+      Value<String?> plantNameSnapshot,
       Value<DateTime> createdAt,
     });
 typedef $$HarvestsTableUpdateCompanionBuilder =
@@ -18129,6 +18313,7 @@ typedef $$HarvestsTableUpdateCompanionBuilder =
       Value<double> quantity,
       Value<String> unit,
       Value<String?> note,
+      Value<String?> plantNameSnapshot,
       Value<DateTime> createdAt,
     });
 
@@ -18222,6 +18407,11 @@ class $$HarvestsTableFilterComposer
 
   ColumnFilters<String> get note => $composableBuilder(
     column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get plantNameSnapshot => $composableBuilder(
+    column: $table.plantNameSnapshot,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -18334,6 +18524,11 @@ class $$HarvestsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get plantNameSnapshot => $composableBuilder(
+    column: $table.plantNameSnapshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -18434,6 +18629,11 @@ class $$HarvestsTableAnnotationComposer
 
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<String> get plantNameSnapshot => $composableBuilder(
+    column: $table.plantNameSnapshot,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -18548,6 +18748,7 @@ class $$HarvestsTableTableManager
                 Value<double> quantity = const Value.absent(),
                 Value<String> unit = const Value.absent(),
                 Value<String?> note = const Value.absent(),
+                Value<String?> plantNameSnapshot = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => HarvestsCompanion(
                 id: id,
@@ -18558,6 +18759,7 @@ class $$HarvestsTableTableManager
                 quantity: quantity,
                 unit: unit,
                 note: note,
+                plantNameSnapshot: plantNameSnapshot,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
@@ -18570,6 +18772,7 @@ class $$HarvestsTableTableManager
                 required double quantity,
                 required String unit,
                 Value<String?> note = const Value.absent(),
+                Value<String?> plantNameSnapshot = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => HarvestsCompanion.insert(
                 id: id,
@@ -18580,6 +18783,7 @@ class $$HarvestsTableTableManager
                 quantity: quantity,
                 unit: unit,
                 note: note,
+                plantNameSnapshot: plantNameSnapshot,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
@@ -18685,6 +18889,8 @@ typedef $$SeedlingsTableCreateCompanionBuilder =
       Value<DateTime?> expectedTransplantAt,
       Value<String> status,
       Value<int?> count,
+      Value<int?> successCount,
+      Value<String?> plantNameSnapshot,
       Value<String?> note,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -18698,6 +18904,8 @@ typedef $$SeedlingsTableUpdateCompanionBuilder =
       Value<DateTime?> expectedTransplantAt,
       Value<String> status,
       Value<int?> count,
+      Value<int?> successCount,
+      Value<String?> plantNameSnapshot,
       Value<String?> note,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -18774,6 +18982,16 @@ class $$SeedlingsTableFilterComposer
 
   ColumnFilters<int> get count => $composableBuilder(
     column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get successCount => $composableBuilder(
+    column: $table.successCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get plantNameSnapshot => $composableBuilder(
+    column: $table.plantNameSnapshot,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -18873,6 +19091,16 @@ class $$SeedlingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get successCount => $composableBuilder(
+    column: $table.successCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get plantNameSnapshot => $composableBuilder(
+    column: $table.plantNameSnapshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get note => $composableBuilder(
     column: $table.note,
     builder: (column) => ColumnOrderings(column),
@@ -18960,6 +19188,16 @@ class $$SeedlingsTableAnnotationComposer
 
   GeneratedColumn<int> get count =>
       $composableBuilder(column: $table.count, builder: (column) => column);
+
+  GeneratedColumn<int> get successCount => $composableBuilder(
+    column: $table.successCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get plantNameSnapshot => $composableBuilder(
+    column: $table.plantNameSnapshot,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
@@ -19052,6 +19290,8 @@ class $$SeedlingsTableTableManager
                 Value<DateTime?> expectedTransplantAt = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<int?> count = const Value.absent(),
+                Value<int?> successCount = const Value.absent(),
+                Value<String?> plantNameSnapshot = const Value.absent(),
                 Value<String?> note = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -19063,6 +19303,8 @@ class $$SeedlingsTableTableManager
                 expectedTransplantAt: expectedTransplantAt,
                 status: status,
                 count: count,
+                successCount: successCount,
+                plantNameSnapshot: plantNameSnapshot,
                 note: note,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -19076,6 +19318,8 @@ class $$SeedlingsTableTableManager
                 Value<DateTime?> expectedTransplantAt = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<int?> count = const Value.absent(),
+                Value<int?> successCount = const Value.absent(),
+                Value<String?> plantNameSnapshot = const Value.absent(),
                 Value<String?> note = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -19087,6 +19331,8 @@ class $$SeedlingsTableTableManager
                 expectedTransplantAt: expectedTransplantAt,
                 status: status,
                 count: count,
+                successCount: successCount,
+                plantNameSnapshot: plantNameSnapshot,
                 note: note,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

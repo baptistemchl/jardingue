@@ -241,14 +241,19 @@ class _MarquePage extends StatelessWidget {
                 topRight: Radius.circular(12),
                 bottomRight: Radius.circular(12),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary
-                      .withValues(alpha: isActive ? 0.22 : 0.12),
-                  blurRadius: isActive ? 12 : 5,
-                  offset: const Offset(2, 3),
-                ),
-              ],
+              // Pas d'ombre quand actif : l'effet « ce marque-page
+              // est physiquement attaché à la page » n'admet pas
+              // d'ombre projetée à gauche. Inactif : petite ombre
+              // douce pour le relief.
+              boxShadow: isActive
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.12),
+                        blurRadius: 5,
+                        offset: const Offset(2, 3),
+                      ),
+                    ],
             ),
             child: Center(
               child: AnimatedSwitcher(

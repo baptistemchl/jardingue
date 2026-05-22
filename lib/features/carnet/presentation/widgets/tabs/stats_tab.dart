@@ -5,6 +5,7 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../core/utils/plant_emoji_mapper.dart';
 import '../../../../../l10n/generated/app_localizations.dart';
+import '../../../domain/models/carnet_stats.dart';
 import '../../providers/stats_providers.dart';
 import '../charts/animated_counter.dart';
 import '../charts/monthly_bar_chart.dart';
@@ -323,17 +324,99 @@ class _MonthlyChartCard extends StatelessWidget {
   }
 }
 
-class _TopPlantsCard extends StatelessWidget {
+class _TopPlantsCard extends ConsumerWidget {
   final List<dynamic> plants;
   const _TopPlantsCard({required this.plants});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final loc = AppLocalizations.of(context)!;
+    final mode = ref.watch(topPlantsSortProvider);
+    final notifier = ref.read(topPlantsSortProvider.notifier);
     return _SectionCard(
       icon: PhosphorIcons.trophy(PhosphorIconsStyle.fill),
       title: loc.carnetStatsTopPlantsTitle,
-      child: TopPlantsBars(plants: plants.cast()),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 28,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.zero,
+              children: [
+                _SortChip(
+                  label: loc.carnetStatsTopSortWeight,
+                  active: mode == TopPlantsSortMode.weight,
+                  onTap: () => notifier.set(TopPlantsSortMode.weight),
+                ),
+                const SizedBox(width: 6),
+                _SortChip(
+                  label: loc.carnetStatsTopSortCount,
+                  active: mode == TopPlantsSortMode.count,
+                  onTap: () => notifier.set(TopPlantsSortMode.count),
+                ),
+                const SizedBox(width: 6),
+                _SortChip(
+                  label: loc.carnetStatsTopSortPieces,
+                  active: mode == TopPlantsSortMode.pieces,
+                  onTap: () => notifier.set(TopPlantsSortMode.pieces),
+                ),
+                const SizedBox(width: 6),
+                _SortChip(
+                  label: loc.carnetStatsTopSortBunches,
+                  active: mode == TopPlantsSortMode.bunches,
+                  onTap: () => notifier.set(TopPlantsSortMode.bunches),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          TopPlantsBars(plants: plants.cast(), sortMode: mode),
+        ],
+      ),
+    );
+  }
+}
+
+class _SortChip extends StatelessWidget {
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+  const _SortChip({
+    required this.label,
+    required this.active,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: active ? AppColors.primary : AppColors.surfaceVariant,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: active
+                  ? AppColors.primary
+                  : AppColors.border.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Text(
+            label,
+            style: AppTypography.caption.copyWith(
+              color: active ? Colors.white : AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+              fontSize: 11,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -143,15 +143,28 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
               : _noteController.text.trim(),
         );
       } else {
+        // Insert récolte + snapshot nom (préserve l'historique si le
+        // plant est supprimé plus tard) + event harvest dans
+        // GardenEvents pour linker à la planification/calendrier.
         await db.insertHarvest(HarvestsCompanion.insert(
           plantId: _selectedPlant!.id,
           harvestedAt: _date,
           quantity: qty,
           unit: _unit.code,
+          plantNameSnapshot: Value(_selectedPlant!.commonName),
           note: _noteController.text.trim().isEmpty
               ? const Value.absent()
               : Value(_noteController.text.trim()),
         ));
+        await db.insertHarvestEventForHarvest(
+          plantId: _selectedPlant!.id,
+          harvestedAt: _date,
+          quantity: qty,
+          unit: _unit.code,
+          note: _noteController.text.trim().isEmpty
+              ? null
+              : _noteController.text.trim(),
+        );
       }
       if (mounted) Navigator.pop(context);
     } finally {

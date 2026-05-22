@@ -100,11 +100,25 @@ class TopPlant {
   final String plantName;
   final String? plantCategoryCode;
   final int harvestCount;
+  final double totalKg;
+  final int totalPieces;
+  final int totalBunches;
 
   const TopPlant({
     required this.plantId,
     required this.plantName,
     required this.plantCategoryCode,
     required this.harvestCount,
+    required this.totalKg,
+    required this.totalPieces,
+    required this.totalBunches,
   });
+}
+
+/// Modes de tri du classement « TOP DES PLANTES ».
+enum TopPlantsSortMode {
+  count, // nombre de récoltes (défaut historique)
+  weight, // kg-équivalent (g converti)
+  pieces,
+  bunches,
 }

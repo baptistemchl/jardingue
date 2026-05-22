@@ -5,10 +5,17 @@ import '../../../../../core/utils/plant_emoji_mapper.dart';
 import '../../../domain/models/carnet_stats.dart';
 
 /// Top 5 plantes — barres horizontales animées avec emoji et badge
-/// "n°1" doré sur la première position.
+/// "n°1" doré sur la première position. La barre est dimensionnée
+/// selon le `sortMode` (poids / count / pièces / bottes) ; la valeur
+/// affichée à droite suit le même mode.
 class TopPlantsBars extends StatefulWidget {
   final List<TopPlant> plants;
-  const TopPlantsBars({super.key, required this.plants});
+  final TopPlantsSortMode sortMode;
+  const TopPlantsBars({
+    super.key,
+    required this.plants,
+    required this.sortMode,
+  });
 
   @override
   State<TopPlantsBars> createState() => _TopPlantsBarsState();
@@ -45,16 +52,23 @@ class _TopPlantsBarsState extends State<TopPlantsBars>
   @override
   Widget build(BuildContext context) {
     if (widget.plants.isEmpty) return const SizedBox.shrink();
-    final maxCount = widget.plants
-        .map((p) => p.harvestCount)
-        .fold<int>(0, (m, c) => c > m ? c : m);
+    // Référence (max) selon le mode actif, pour proportionner les barres.
+    double scoreOf(TopPlant p) => switch (widget.sortMode) {
+          TopPlantsSortMode.count => p.harvestCount.toDouble(),
+          TopPlantsSortMode.weight => p.totalKg,
+          TopPlantsSortMode.pieces => p.totalPieces.toDouble(),
+          TopPlantsSortMode.bunches => p.totalBunches.toDouble(),
+        };
+    final maxScore = widget.plants
+        .map(scoreOf)
+        .fold<double>(0, (m, s) => s > m ? s : m);
     return AnimatedBuilder(
       animation: _controller,
       builder: (_, _) {
         return Column(
           children: List.generate(widget.plants.length, (i) {
             final p = widget.plants[i];
-            final ratio = maxCount == 0 ? 0.0 : p.harvestCount / maxCount;
+            final ratio = maxScore == 0 ? 0.0 : scoreOf(p) / maxScore;
             final localStart = i * 0.08;
             final localT =
                 ((_controller.value - localStart) / (1 - localStart))
@@ -65,8 +79,8 @@ class _TopPlantsBarsState extends State<TopPlantsBars>
               child: _TopPlantRow(
                 rank: i + 1,
                 plant: p,
+                sortMode: widget.sortMode,
                 ratio: ratio * eased,
-                rawCount: p.harvestCount,
                 opacity: eased,
               ),
             );
@@ -82,17 +96,32 @@ class _TopPlantsBarsState extends State<TopPlantsBars>
 class _TopPlantRow extends StatelessWidget {
   final int rank;
   final TopPlant plant;
+  final TopPlantsSortMode sortMode;
   final double ratio; // 0..1
-  final int rawCount;
   final double opacity;
 
   const _TopPlantRow({
     required this.rank,
     required this.plant,
+    required this.sortMode,
     required this.ratio,
-    required this.rawCount,
     required this.opacity,
   });
+
+  String _valueLabel() {
+    switch (sortMode) {
+      case TopPlantsSortMode.count:
+        return '${plant.harvestCount}';
+      case TopPlantsSortMode.weight:
+        final kg = plant.totalKg;
+        if (kg == kg.roundToDouble()) return '${kg.toStringAsFixed(0)} kg';
+        return '${kg.toStringAsFixed(2).replaceAll('.', ',')} kg';
+      case TopPlantsSortMode.pieces:
+        return '${plant.totalPieces} u';
+      case TopPlantsSortMode.bunches:
+        return '${plant.totalBunches}';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +220,7 @@ class _TopPlantRow extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Text(
-            '$rawCount',
+            _valueLabel(),
             style: AppTypography.bodyMedium.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.primary,

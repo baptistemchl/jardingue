@@ -49,16 +49,26 @@ class _AddSeedlingSheetState extends ConsumerState<AddSeedlingSheet> {
     try {
       final db = ref.read(databaseProvider);
       final countText = _countController.text.trim();
+      // Insert semis + snapshot + event sowing dans GardenEvents pour
+      // linker à la planification.
       await db.insertSeedling(SeedlingsCompanion.insert(
         plantId: _selectedPlant!.id,
         sowedAt: _sowedAt,
         count: countText.isEmpty
             ? const Value.absent()
             : Value(int.tryParse(countText)),
+        plantNameSnapshot: Value(_selectedPlant!.commonName),
         note: _noteController.text.trim().isEmpty
             ? const Value.absent()
             : Value(_noteController.text.trim()),
       ));
+      await db.insertSowingEventForSeedling(
+        plantId: _selectedPlant!.id,
+        sowedAt: _sowedAt,
+        notes: _noteController.text.trim().isEmpty
+            ? null
+            : _noteController.text.trim(),
+      );
       if (mounted) Navigator.pop(context);
     } finally {
       if (mounted) setState(() => _saving = false);

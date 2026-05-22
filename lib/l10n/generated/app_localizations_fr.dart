@@ -1738,4 +1738,37 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get carnetStatsActivityOtherCare => 'Autres soins';
+
+  @override
+  String get carnetStatsTopSortWeight => 'Poids';
+
+  @override
+  String get carnetStatsTopSortCount => 'Récoltes';
+
+  @override
+  String get carnetStatsTopSortPieces => 'Pièces';
+
+  @override
+  String get carnetStatsTopSortBunches => 'Bottes';
+
+  @override
+  String carnetSeedlingsSuccessRatio(int success, int total) {
+    return '$success / $total godets';
+  }
+
+  @override
+  String seedlingAdvanceDialogTitle(String status) {
+    return 'Passer à : $status';
+  }
+
+  @override
+  String seedlingAdvanceDialogPrompt(int base) {
+    return 'Sur $base godets, combien sont passés à cette étape ?';
+  }
+
+  @override
+  String get seedlingAdvanceDialogConfirm => 'Confirmer';
+
+  @override
+  String get carnetPlantDeletedBadge => 'supprimée';
 }

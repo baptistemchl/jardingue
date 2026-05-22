@@ -53,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 20;
+  int get schemaVersion => 21;
 
   @override
   MigrationStrategy get migration {
@@ -206,6 +206,17 @@ class AppDatabase extends _$AppDatabase {
           await _safeCreateTable(m, harvests);
           await _safeCreateTable(m, seedlings);
           await _safeCreateTable(m, journalEntries);
+        }
+        // Migration v20 -> v21 : enrichissement Carnet
+        // - successCount sur Seedlings (suivi N/M godets viables)
+        // - plantNameSnapshot sur Harvests et Seedlings (préserve le
+        //   nom de la plante affiché si Plant supprimé du catalogue)
+        if (from < 21) {
+          await _safeAddColumn(m, seedlings, seedlings.successCount);
+          await _safeAddColumn(
+              m, seedlings, seedlings.plantNameSnapshot);
+          await _safeAddColumn(
+              m, harvests, harvests.plantNameSnapshot);
         }
       },
     );
@@ -1588,11 +1599,87 @@ class AppDatabase extends _$AppDatabase {
         .watch();
   }
 
-  Future<int> updateSeedlingStatus(int id, String status) {
+  Future<int> updateSeedlingStatus(
+    int id,
+    String status, {
+    int? successCount,
+  }) {
     return (update(seedlings)..where((t) => t.id.equals(id))).write(
       SeedlingsCompanion(
         status: Value(status),
+        successCount: successCount != null
+            ? Value(successCount)
+            : const Value.absent(),
         updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  /// Crée un event « sowing » dans GardenEvents pour pouvoir lire les
+  /// semis du Carnet depuis les autres écrans (planning, calendrier).
+  /// Appelé automatiquement après insertSeedling pour garder les deux
+  /// surfaces synchronisées sans doubler la saisie utilisateur.
+  Future<int> insertSowingEventForSeedling({
+    required int plantId,
+    int? gardenId,
+    required DateTime sowedAt,
+    String? notes,
+  }) {
+    return into(gardenEvents).insert(
+      GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        gardenId: Value(gardenId),
+        eventType: 'sowing',
+        eventDate: sowedAt,
+        notes: Value(notes),
+      ),
+    );
+  }
+
+  /// Crée un event « planting » lors d'un repiquage de semis (status
+  /// → transplanted). Permet au plan / calendrier d'afficher le
+  /// repiquage comme une vraie plantation.
+  Future<int> insertPlantingEventForSeedling({
+    required int plantId,
+    int? gardenId,
+    required DateTime plantedAt,
+    String? notes,
+  }) {
+    return into(gardenEvents).insert(
+      GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        gardenId: Value(gardenId),
+        eventType: 'planting',
+        eventDate: plantedAt,
+        notes: Value(notes),
+      ),
+    );
+  }
+
+  /// Crée un event « harvest » lors d'une récolte enregistrée dans
+  /// le carnet. Liens : plant catalogue + jardin si défini, + note
+  /// avec la quantité + unité pour traçabilité.
+  Future<int> insertHarvestEventForHarvest({
+    required int plantId,
+    int? gardenPlantId,
+    int? gardenId,
+    required DateTime harvestedAt,
+    required double quantity,
+    required String unit,
+    String? note,
+  }) {
+    return into(gardenEvents).insert(
+      GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        gardenPlantId: Value(gardenPlantId),
+        gardenId: Value(gardenId),
+        eventType: 'harvest',
+        eventDate: harvestedAt,
+        notes: Value(
+          note == null || note.isEmpty
+              ? '$quantity $unit'
+              : '$quantity $unit · $note',
+        ),
       ),
     );
   }

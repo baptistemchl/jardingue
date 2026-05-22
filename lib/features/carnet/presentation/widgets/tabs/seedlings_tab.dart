@@ -268,12 +268,19 @@ class _SeedlingCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = AppLocalizations.of(context)!;
+    // Préservation historique : si le plant catalogue est supprimé,
+    // on retombe sur le snapshot du nom saisi à la création.
+    final displayName = plant?.commonName ??
+        seedling.plantNameSnapshot ??
+        loc.carnetSeedlingsUnknownPlant;
     final emoji = plant != null
         ? PlantEmojiMapper.fromName(
             plant!.commonName,
             categoryCode: plant!.categoryCode,
           )
-        : '🌱';
+        : (seedling.plantNameSnapshot != null
+            ? PlantEmojiMapper.fromName(seedling.plantNameSnapshot!)
+            : '🌱');
     final status = SeedlingStatus.fromCode(seedling.status);
     final nextStatus = status.next;
 
@@ -294,13 +301,26 @@ class _SeedlingCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    plant?.commonName ??
-                        loc.carnetSeedlingsUnknownPlant,
-                    style: AppTypography.bodyMedium.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          displayName,
+                          style: AppTypography.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      // Badge « plante supprimée » si on n'a que le
+                      // snapshot disponible côté DB.
+                      if (plant == null &&
+                          seedling.plantNameSnapshot != null) ...[
+                        const SizedBox(width: 6),
+                        _DeletedPlantBadge(),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -316,13 +336,11 @@ class _SeedlingCard extends ConsumerWidget {
               _AdvanceButton(
                 color: statusColor,
                 nextLabel: _statusSpec(nextStatus, loc).label,
-                onTap: () async {
-                  final db = ref.read(databaseProvider);
-                  await db.updateSeedlingStatus(
-                    seedling.id,
-                    nextStatus.code,
-                  );
-                },
+                onTap: () => _advanceWithDialog(
+                  context,
+                  ref,
+                  next: nextStatus,
+                ),
               )
             else if (!archived)
               _FailButton(onTap: () async {
@@ -342,10 +360,126 @@ class _SeedlingCard extends ConsumerWidget {
     final loc = AppLocalizations.of(context)!;
     final parts = <String>[];
     parts.add(loc.carnetSeedlingsSowedOn(formatCarnetDate(s.sowedAt)));
-    if (s.count != null) {
+    // Si on a un successCount, on affiche « 5 / 12 godets » ; sinon
+    // juste le count semé initial.
+    if (s.successCount != null && s.count != null) {
+      parts.add(loc.carnetSeedlingsSuccessRatio(
+        s.successCount!,
+        s.count!,
+      ));
+    } else if (s.count != null) {
       parts.add(loc.carnetSeedlingsCountInline(s.count!));
     }
     return parts.join(' • ');
+  }
+
+  /// Dialog de transition de statut : si l'utilisateur a renseigné un
+  /// nombre de godets semés, on lui demande combien ont « réussi » à
+  /// cette étape. Si la cible est « transplanted », on crée aussi un
+  /// event planting dans GardenEvents pour lier à la planification.
+  Future<void> _advanceWithDialog(
+    BuildContext context,
+    WidgetRef ref, {
+    required SeedlingStatus next,
+  }) async {
+    final loc = AppLocalizations.of(context)!;
+    final db = ref.read(databaseProvider);
+    final baseCount = seedling.successCount ?? seedling.count;
+    int? newSuccess;
+
+    if (baseCount != null && baseCount > 0) {
+      final controller = TextEditingController(
+        text: baseCount.toString(),
+      );
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(loc.seedlingAdvanceDialogTitle(
+            _statusSpec(next, loc).label,
+          )),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                loc.seedlingAdvanceDialogPrompt(baseCount),
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  suffixText: 'godets',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(loc.commonCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.primary,
+              ),
+              child: Text(loc.seedlingAdvanceDialogConfirm),
+            ),
+          ],
+        ),
+      );
+      if (ok != true) return;
+      newSuccess = int.tryParse(controller.text.trim()) ?? baseCount;
+    }
+
+    await db.updateSeedlingStatus(
+      seedling.id,
+      next.code,
+      successCount: newSuccess,
+    );
+
+    // Repiqué = planté : on crée l'event planting pour qu'il apparaisse
+    // dans le plan et le calendrier comme une vraie plantation.
+    if (next == SeedlingStatus.transplanted) {
+      await db.insertPlantingEventForSeedling(
+        plantId: seedling.plantId,
+        gardenId: seedling.gardenId,
+        plantedAt: DateTime.now(),
+        notes: newSuccess != null && seedling.count != null
+            ? '$newSuccess / ${seedling.count} godets repiqués'
+            : null,
+      );
+    }
+  }
+}
+
+/// Mini badge affiché à côté d'un nom de plante quand la Plant FK
+/// n'est plus dans le catalogue mais que le snapshot du nom est connu.
+class _DeletedPlantBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: AppColors.error.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        loc.carnetPlantDeletedBadge,
+        style: AppTypography.caption.copyWith(
+          color: AppColors.error,
+          fontWeight: FontWeight.w600,
+          fontSize: 9,
+        ),
+      ),
+    );
   }
 }
 

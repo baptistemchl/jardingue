@@ -6,6 +6,18 @@ import 'harvest_providers.dart';
 import 'journal_providers.dart';
 import 'seedling_providers.dart';
 
+/// Mode de tri courant du classement TOP DES PLANTES.
+class TopPlantsSortNotifier extends Notifier<TopPlantsSortMode> {
+  @override
+  TopPlantsSortMode build() => TopPlantsSortMode.weight;
+  void set(TopPlantsSortMode mode) => state = mode;
+}
+
+final topPlantsSortProvider =
+    NotifierProvider<TopPlantsSortNotifier, TopPlantsSortMode>(
+  TopPlantsSortNotifier.new,
+);
+
 /// Stream brut des GardenEvents — utilisé par le carnetStatsProvider
 /// pour agréger les arrosages, fertilisations, etc.
 final allGardenEventsProvider =
@@ -36,7 +48,9 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
   int totalPieces = 0;
   int totalBunches = 0;
   final monthly = List<int>.filled(12, 0);
-  final byPlant = <int, int>{}; // plantId → count
+  // Agrégat par plante : count + totaux par unité, pour pouvoir trier
+  // selon le mode choisi par l'UI sans relire la DB.
+  final byPlant = <int, _PlantAgg>{};
   for (final h in harvests) {
     switch (h.unit) {
       case 'g':
@@ -49,12 +63,36 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
         totalBunches += h.quantity.round();
     }
     monthly[h.harvestedAt.month - 1] += 1;
-    byPlant[h.plantId] = (byPlant[h.plantId] ?? 0) + 1;
+    final agg = byPlant.putIfAbsent(h.plantId, () => _PlantAgg());
+    agg.count += 1;
+    switch (h.unit) {
+      case 'g':
+        agg.kg += h.quantity / 1000.0;
+      case 'kg':
+        agg.kg += h.quantity;
+      case 'piece':
+        agg.pieces += h.quantity.round();
+      case 'bunch':
+        agg.bunches += h.quantity.round();
+    }
   }
 
-  // Top 5 plantes par nombre de récoltes.
-  final topEntries = byPlant.entries.toList()
-    ..sort((a, b) => b.value.compareTo(a.value));
+  // Mode de tri lu en sync (Riverpod rule). Tri appliqué sur l'agrégat
+  // par plante. Le top 5 est calculé après tri pour servir la carte.
+  final sortMode = ref.watch(topPlantsSortProvider);
+  final topEntries = byPlant.entries.toList();
+  int compareDesc(num a, num b) => b.compareTo(a);
+  switch (sortMode) {
+    case TopPlantsSortMode.count:
+      topEntries.sort((a, b) => compareDesc(a.value.count, b.value.count));
+    case TopPlantsSortMode.weight:
+      topEntries.sort((a, b) => compareDesc(a.value.kg, b.value.kg));
+    case TopPlantsSortMode.pieces:
+      topEntries.sort((a, b) => compareDesc(a.value.pieces, b.value.pieces));
+    case TopPlantsSortMode.bunches:
+      topEntries
+          .sort((a, b) => compareDesc(a.value.bunches, b.value.bunches));
+  }
   final topPlants = <TopPlant>[];
   for (final entry in topEntries.take(5)) {
     final plant = plants[entry.key];
@@ -63,7 +101,10 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
       plantId: entry.key,
       plantName: plant.commonName,
       plantCategoryCode: plant.categoryCode,
-      harvestCount: entry.value,
+      harvestCount: entry.value.count,
+      totalKg: entry.value.kg,
+      totalPieces: entry.value.pieces,
+      totalBunches: entry.value.bunches,
     ));
   }
 
@@ -137,3 +178,10 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
     otherCareCount: other,
   );
 });
+
+class _PlantAgg {
+  int count = 0;
+  double kg = 0;
+  int pieces = 0;
+  int bunches = 0;
+}

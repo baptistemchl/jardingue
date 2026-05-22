@@ -612,6 +612,8 @@ class BackupRepositoryImpl implements BackupRepository {
               'quantity': h.quantity,
               'unit': h.unit,
               'note': h.note,
+              // v21+ : préserve le nom de plante même si plant supprimé.
+              'plantNameSnapshot': h.plantNameSnapshot,
               'createdAt': h.createdAt.toIso8601String(),
             })
         .toList();
@@ -629,6 +631,9 @@ class BackupRepositoryImpl implements BackupRepository {
                   s.expectedTransplantAt?.toIso8601String(),
               'status': s.status,
               'count': s.count,
+              // v21+ : N/M godets viables + snapshot nom.
+              'successCount': s.successCount,
+              'plantNameSnapshot': s.plantNameSnapshot,
               'note': s.note,
               'createdAt': s.createdAt.toIso8601String(),
               'updatedAt': s.updatedAt.toIso8601String(),
@@ -670,6 +675,10 @@ class BackupRepositoryImpl implements BackupRepository {
               quantity: (r['quantity'] as num).toDouble(),
               unit: r['unit'] as String,
               note: Value(r['note'] as String?),
+              // v21+ : absent des backups antérieurs → null.
+              plantNameSnapshot: Value(
+                r['plantNameSnapshot'] as String?,
+              ),
             ),
           );
     }
@@ -693,6 +702,11 @@ class BackupRepositoryImpl implements BackupRepository {
                 r['status'] as String? ?? 'germinating',
               ),
               count: Value(r['count'] as int?),
+              // v21+ : absents des backups antérieurs → null.
+              successCount: Value(r['successCount'] as int?),
+              plantNameSnapshot: Value(
+                r['plantNameSnapshot'] as String?,
+              ),
               note: Value(r['note'] as String?),
             ),
           );

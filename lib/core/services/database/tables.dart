@@ -269,6 +269,12 @@ class Harvests extends Table {
 
   TextColumn get note => text().nullable()();
 
+  /// Snapshot du nom de la plante au moment de la récolte (v21+).
+  /// Permet de préserver l'historique même si la Plant catalogue est
+  /// supprimée — on affiche le snapshot et un marqueur « plante
+  /// supprimée » à l'UI.
+  TextColumn get plantNameSnapshot => text().nullable()();
+
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
 
@@ -297,6 +303,14 @@ class Seedlings extends Table {
 
   /// Nombre de godets/graines semés (info quantitative pour stats).
   IntColumn get count => integer().nullable()();
+
+  /// Nombre de godets qui ont effectivement « réussi » au stade actuel
+  /// (germination, repiquage, etc.). Met à jour à chaque transition de
+  /// statut via le dialog. Null = pas encore renseigné. (v21+)
+  IntColumn get successCount => integer().nullable()();
+
+  /// Snapshot du nom de la plante au moment du semis (v21+).
+  TextColumn get plantNameSnapshot => text().nullable()();
 
   TextColumn get note => text().nullable()();
 

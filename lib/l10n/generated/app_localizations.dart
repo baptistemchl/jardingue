@@ -3019,6 +3019,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Autres soins'**
   String get carnetStatsActivityOtherCare;
+
+  /// No description provided for @carnetStatsTopSortWeight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Poids'**
+  String get carnetStatsTopSortWeight;
+
+  /// No description provided for @carnetStatsTopSortCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récoltes'**
+  String get carnetStatsTopSortCount;
+
+  /// No description provided for @carnetStatsTopSortPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces'**
+  String get carnetStatsTopSortPieces;
+
+  /// No description provided for @carnetStatsTopSortBunches.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bottes'**
+  String get carnetStatsTopSortBunches;
+
+  /// No description provided for @carnetSeedlingsSuccessRatio.
+  ///
+  /// In fr, this message translates to:
+  /// **'{success} / {total} godets'**
+  String carnetSeedlingsSuccessRatio(int success, int total);
+
+  /// No description provided for @seedlingAdvanceDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer à : {status}'**
+  String seedlingAdvanceDialogTitle(String status);
+
+  /// No description provided for @seedlingAdvanceDialogPrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur {base} godets, combien sont passés à cette étape ?'**
+  String seedlingAdvanceDialogPrompt(int base);
+
+  /// No description provided for @seedlingAdvanceDialogConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer'**
+  String get seedlingAdvanceDialogConfirm;
+
+  /// No description provided for @carnetPlantDeletedBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'supprimée'**
+  String get carnetPlantDeletedBadge;
 }
 
 class _AppLocalizationsDelegate
