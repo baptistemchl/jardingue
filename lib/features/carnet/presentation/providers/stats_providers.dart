@@ -133,6 +133,7 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
   // Activités jardin (GardenEvents) — agrégat par eventType, filtré sur
   // l'année courante. Les eventType inconnus tombent dans otherCare.
   var watering = 0,
+      wateringSeedling = 0,
       fertilizing = 0,
       sowingEv = 0,
       plantingEv = 0,
@@ -143,6 +144,8 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
     switch (ev.eventType) {
       case 'watering':
         watering++;
+      case 'watering_seedling':
+        wateringSeedling++;
       case 'fertilizing':
         fertilizing++;
       case 'sowing':
@@ -171,6 +174,7 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
     bestMonth: bestMonth,
     plantOfTheYear: topPlants.isNotEmpty ? topPlants.first : null,
     wateringCount: watering,
+    wateringSeedlingCount: wateringSeedling,
     fertilizingCount: fertilizing,
     sowingEventsCount: sowingEv,
     plantingEventsCount: plantingEv,

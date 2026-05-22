@@ -41,9 +41,10 @@ class CarnetStats {
   final TopPlant? plantOfTheYear;
 
   /// Activités du jardin (GardenEvents) — agrégats par eventType pour
-  /// l'année en cours : arrosages, fertilisations, semis, plantations,
-  /// paillages, traitements, etc.
-  final int wateringCount;
+  /// l'année en cours : arrosages (plants placés vs semis), fertili-
+  /// sations, semis, plantations, paillages, traitements, etc.
+  final int wateringCount; // arrosages sur plants placés (eventType=watering)
+  final int wateringSeedlingCount; // arrosages sur semis (carnet, eventType=watering_seedling)
   final int fertilizingCount;
   final int sowingEventsCount;
   final int plantingEventsCount;
@@ -65,6 +66,7 @@ class CarnetStats {
     required this.bestMonth,
     required this.plantOfTheYear,
     this.wateringCount = 0,
+    this.wateringSeedlingCount = 0,
     this.fertilizingCount = 0,
     this.sowingEventsCount = 0,
     this.plantingEventsCount = 0,
@@ -75,6 +77,7 @@ class CarnetStats {
   /// Total activités jardin (toutes catégories confondues).
   int get totalGardenActivities =>
       wateringCount +
+      wateringSeedlingCount +
       fertilizingCount +
       sowingEventsCount +
       plantingEventsCount +

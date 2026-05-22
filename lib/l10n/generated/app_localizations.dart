@@ -2990,6 +2990,24 @@ abstract class AppLocalizations {
   /// **'Arrosages'**
   String get carnetStatsActivityWatering;
 
+  /// No description provided for @carnetStatsActivityWateringPlants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosages (plants)'**
+  String get carnetStatsActivityWateringPlants;
+
+  /// No description provided for @carnetStatsActivityWateringSeedlings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosages (semis)'**
+  String get carnetStatsActivityWateringSeedlings;
+
+  /// No description provided for @seedlingWateredSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosage du semi enregistré 💧'**
+  String get seedlingWateredSnack;
+
   /// No description provided for @carnetStatsActivityFertilizing.
   ///
   /// In fr, this message translates to:

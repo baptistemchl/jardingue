@@ -1689,6 +1689,27 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  /// Crée un event « watering_seedling » lors d'un arrosage de semi
+  /// depuis l'onglet Semis. eventType dédié pour pouvoir compter
+  /// séparément les arrosages de semis (godets) vs les arrosages de
+  /// plants placés (gardenPlantId). Le note rappelle le statut du
+  /// semi au moment de l'arrosage pour traçabilité.
+  Future<int> insertWateringEventForSeedling({
+    required int plantId,
+    int? gardenId,
+    required String seedlingStatus,
+  }) {
+    return into(gardenEvents).insert(
+      GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        gardenId: Value(gardenId),
+        eventType: 'watering_seedling',
+        eventDate: DateTime.now(),
+        notes: Value('Arrosage semi · $seedlingStatus'),
+      ),
+    );
+  }
+
   /// Crée un event « harvest » lors d'une récolte enregistrée dans
   /// le carnet. Liens : plant catalogue + jardin si défini, + note
   /// avec la quantité + unité pour traçabilité.

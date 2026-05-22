@@ -538,9 +538,16 @@ class _GardenActivitiesCard extends StatelessWidget {
       if (stats.wateringCount > 0)
         _ActivityItem(
           icon: PhosphorIcons.dropHalf(PhosphorIconsStyle.fill),
-          label: loc.carnetStatsActivityWatering,
+          label: loc.carnetStatsActivityWateringPlants,
           value: stats.wateringCount,
           color: AppColors.info,
+        ),
+      if (stats.wateringSeedlingCount > 0)
+        _ActivityItem(
+          icon: PhosphorIcons.drop(PhosphorIconsStyle.fill),
+          label: loc.carnetStatsActivityWateringSeedlings,
+          value: stats.wateringSeedlingCount,
+          color: AppColors.primaryLight,
         ),
       if (stats.fertilizingCount > 0)
         _ActivityItem(

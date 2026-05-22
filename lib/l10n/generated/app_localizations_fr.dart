@@ -1725,6 +1725,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get carnetStatsActivityWatering => 'Arrosages';
 
   @override
+  String get carnetStatsActivityWateringPlants => 'Arrosages (plants)';
+
+  @override
+  String get carnetStatsActivityWateringSeedlings => 'Arrosages (semis)';
+
+  @override
+  String get seedlingWateredSnack => 'Arrosage du semi enregistré 💧';
+
+  @override
   String get carnetStatsActivityFertilizing => 'Fertilisations';
 
   @override

@@ -634,6 +634,9 @@
 
   "carnetStatsActivitiesTitle": "ACTIVITÉS DU JARDIN",
   "carnetStatsActivityWatering": "Arrosages",
+  "carnetStatsActivityWateringPlants": "Arrosages (plants)",
+  "carnetStatsActivityWateringSeedlings": "Arrosages (semis)",
+  "seedlingWateredSnack": "Arrosage du semi enregistré 💧",
   "carnetStatsActivityFertilizing": "Fertilisations",
   "carnetStatsActivitySowing": "Semis enregistrés",
   "carnetStatsActivityPlanting": "Plantations",

@@ -333,6 +333,13 @@ class _SeedlingCard extends ConsumerWidget {
                 ],
               ),
             ),
+            // Bouton arrosage rapide — disponible tant que le semi
+            // n'est pas archivé (transplanted/failed). Tap = enregistre
+            // un event watering_seedling + snackbar de feedback.
+            if (!archived)
+              _WaterButton(
+                onTap: () => _quickWater(context, ref),
+              ),
             if (!archived && nextStatus != null)
               _AdvanceButton(
                 color: statusColor,
@@ -372,6 +379,27 @@ class _SeedlingCard extends ConsumerWidget {
       parts.add(loc.carnetSeedlingsCountInline(s.count!));
     }
     return parts.join(' • ');
+  }
+
+  /// Enregistre un event watering_seedling pour ce semi. Pas de
+  /// dialog — un tap = un arrosage. Le snackbar confirme.
+  Future<void> _quickWater(BuildContext context, WidgetRef ref) async {
+    final loc = AppLocalizations.of(context)!;
+    final db = ref.read(databaseProvider);
+    await db.insertWateringEventForSeedling(
+      plantId: seedling.plantId,
+      gardenId: seedling.gardenId,
+      seedlingStatus: seedling.status,
+    );
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(loc.seedlingWateredSnack),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   /// Dialog de transition de statut : si l'utilisateur a renseigné un
@@ -556,6 +584,43 @@ class _AdvanceButton extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bouton 💧 compact à côté du bouton d'avancement. Tap = log un
+/// arrosage. Visuellement bleu info pour le démarquer du flow de
+/// statut (vert) et du fail (gris).
+class _WaterButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _WaterButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 6,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.info.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(
+              PhosphorIcons.dropHalf(PhosphorIconsStyle.fill),
+              size: 14,
+              color: AppColors.info,
+            ),
           ),
         ),
       ),
