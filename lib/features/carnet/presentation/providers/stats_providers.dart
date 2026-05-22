@@ -1,9 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/providers/database_providers.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../domain/models/carnet_stats.dart';
 import 'harvest_providers.dart';
 import 'journal_providers.dart';
 import 'seedling_providers.dart';
+
+/// Stream brut des GardenEvents — utilisé par le carnetStatsProvider
+/// pour agréger les arrosages, fertilisations, etc.
+final allGardenEventsProvider =
+    StreamProvider<List<GardenEvent>>((ref) {
+  final db = ref.watch(databaseProvider);
+  return (db.select(db.gardenEvents)).watch();
+});
 
 /// Stats agrégées de l'année courante (synchrones, basées sur les
 /// streams Riverpod déjà en place).
@@ -13,12 +22,14 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
   final plantsAsync = ref.watch(harvestPlantsLookupProvider);
   final seedlingsAsync = ref.watch(allSeedlingsProvider);
   final journalAsync = ref.watch(allJournalEntriesProvider);
+  final gardenEventsAsync = ref.watch(allGardenEventsProvider);
 
   // ref.watch synchrone avant tout await — Riverpod async rule.
   final harvests = harvestsAsync.value ?? const <Harvest>[];
   final plants = plantsAsync.value ?? const <int, Plant>{};
   final seedlings = seedlingsAsync.value ?? const <Seedling>[];
   final journal = journalAsync.value ?? const <JournalEntry>[];
+  final gardenEvents = gardenEventsAsync.value ?? const <GardenEvent>[];
 
   // Poids cumulé en kg-équivalent + autres unités.
   double totalKg = 0;
@@ -78,6 +89,32 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
     }
   }
 
+  // Activités jardin (GardenEvents) — agrégat par eventType, filtré sur
+  // l'année courante. Les eventType inconnus tombent dans otherCare.
+  var watering = 0,
+      fertilizing = 0,
+      sowingEv = 0,
+      plantingEv = 0,
+      mulching = 0,
+      other = 0;
+  for (final ev in gardenEvents) {
+    if (ev.eventDate.year != year) continue;
+    switch (ev.eventType) {
+      case 'watering':
+        watering++;
+      case 'fertilizing':
+        fertilizing++;
+      case 'sowing':
+        sowingEv++;
+      case 'planting':
+        plantingEv++;
+      case 'mulching':
+        mulching++;
+      default:
+        other++;
+    }
+  }
+
   return CarnetStats(
     year: year,
     totalWeightKg: totalKg,
@@ -92,5 +129,11 @@ final carnetStatsProvider = Provider<CarnetStats>((ref) {
     journalEntriesCount: yearJournal,
     bestMonth: bestMonth,
     plantOfTheYear: topPlants.isNotEmpty ? topPlants.first : null,
+    wateringCount: watering,
+    fertilizingCount: fertilizing,
+    sowingEventsCount: sowingEv,
+    plantingEventsCount: plantingEv,
+    mulchingCount: mulching,
+    otherCareCount: other,
   );
 });

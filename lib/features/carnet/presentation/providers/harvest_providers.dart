@@ -14,6 +14,54 @@ class HarvestYearNotifier extends Notifier<int> {
 final harvestYearProvider =
     NotifierProvider<HarvestYearNotifier, int>(HarvestYearNotifier.new);
 
+/// Filtres applicables sur la liste de récoltes affichée dans l'onglet.
+/// Chaque champ null = pas de filtre actif sur cette dimension.
+class HarvestFilters {
+  final int? month; // 1-12, null = tous les mois
+  final int? plantId;
+  final String? unit;
+
+  const HarvestFilters({this.month, this.plantId, this.unit});
+
+  HarvestFilters copyWith({
+    int? Function()? month,
+    int? Function()? plantId,
+    String? Function()? unit,
+  }) {
+    return HarvestFilters(
+      month: month != null ? month() : this.month,
+      plantId: plantId != null ? plantId() : this.plantId,
+      unit: unit != null ? unit() : this.unit,
+    );
+  }
+
+  bool get isEmpty => month == null && plantId == null && unit == null;
+}
+
+class HarvestFiltersNotifier extends Notifier<HarvestFilters> {
+  @override
+  HarvestFilters build() => const HarvestFilters();
+
+  void setMonth(int? value) {
+    state = state.copyWith(month: () => value);
+  }
+
+  void setPlantId(int? value) {
+    state = state.copyWith(plantId: () => value);
+  }
+
+  void setUnit(String? value) {
+    state = state.copyWith(unit: () => value);
+  }
+
+  void clear() => state = const HarvestFilters();
+}
+
+final harvestFiltersProvider =
+    NotifierProvider<HarvestFiltersNotifier, HarvestFilters>(
+  HarvestFiltersNotifier.new,
+);
+
 /// Stream brut des récoltes pour l'année sélectionnée. Recharge auto
 /// quand on change harvestYearProvider.
 final harvestsForYearProvider = StreamProvider<List<Harvest>>((ref) {
@@ -32,15 +80,29 @@ final harvestPlantsLookupProvider = FutureProvider<Map<int, Plant>>((ref) async 
 });
 
 /// Agrégat par plante × unité affiché dans l'onglet Récoltes. Trié par
-/// dernière date de récolte décroissante (plus récent en haut).
+/// dernière date de récolte décroissante (plus récent en haut). Les
+/// filtres harvestFiltersProvider sont appliqués avant agrégation.
 final harvestSummariesProvider = Provider<List<HarvestSummary>>((ref) {
   final harvestsAsync = ref.watch(harvestsForYearProvider);
   final plantsAsync = ref.watch(harvestPlantsLookupProvider);
+  final filters = ref.watch(harvestFiltersProvider);
 
   // Synchrone (ref.watch avant tout await) — Riverpod async rule.
-  final harvests = harvestsAsync.value;
+  final all = harvestsAsync.value;
   final plants = plantsAsync.value;
-  if (harvests == null || plants == null) return const [];
+  if (all == null || plants == null) return const [];
+
+  // Application des filtres avant agrégation.
+  final harvests = all.where((h) {
+    if (filters.month != null && h.harvestedAt.month != filters.month) {
+      return false;
+    }
+    if (filters.plantId != null && h.plantId != filters.plantId) {
+      return false;
+    }
+    if (filters.unit != null && h.unit != filters.unit) return false;
+    return true;
+  }).toList();
 
   // Agrégation in-memory. Le volume reste faible (qq centaines de lignes
   // par année max) donc pas la peine de faire un GROUP BY SQL.

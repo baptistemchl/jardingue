@@ -21,16 +21,25 @@ class AddHarvestSheet extends ConsumerStatefulWidget {
   /// carte de l'onglet Récoltes pour rapidement « rajouter une ligne »).
   final Plant? initialPlant;
 
-  const AddHarvestSheet({super.key, this.initialPlant});
+  /// Récolte existante à éditer. Quand non null, le sheet bascule en
+  /// mode update : valeurs pré-remplies, plante verrouillée (pas
+  /// éditable), insert remplacé par updateHarvest.
+  final Harvest? existing;
+
+  const AddHarvestSheet({super.key, this.initialPlant, this.existing});
 
   static Future<void> show(
     BuildContext context, {
     Plant? initialPlant,
+    Harvest? existing,
   }) {
     return AppBottomSheet.show(
       context: context,
       heightFraction: 0.88,
-      child: AddHarvestSheet(initialPlant: initialPlant),
+      child: AddHarvestSheet(
+        initialPlant: initialPlant,
+        existing: existing,
+      ),
     );
   }
 
@@ -51,10 +60,36 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
   final _noteController = TextEditingController();
   bool _saving = false;
 
+  bool get _isEditing => widget.existing != null;
+
   @override
   void initState() {
     super.initState();
     _selectedPlant = widget.initialPlant;
+    // Mode édition : pré-remplir les champs depuis la récolte existante.
+    final existing = widget.existing;
+    if (existing != null) {
+      _date = existing.harvestedAt;
+      _unit = HarvestUnit.fromCode(existing.unit);
+      _noteController.text = existing.note ?? '';
+      // Décomposition quantité pour le mode kilos : 4.345 → 4 kg 345 g.
+      if (_unit == HarvestUnit.kilos) {
+        final wholeKg = existing.quantity.floor();
+        final remainGrams =
+            ((existing.quantity - wholeKg) * 1000).round();
+        _qtyMainController.text =
+            wholeKg == 0 ? '' : wholeKg.toString();
+        _qtyGramsController.text =
+            remainGrams == 0 ? '' : remainGrams.toString();
+      } else {
+        // Pour les autres unités : valeur directe (entier si entier,
+        // sinon décimal avec virgule).
+        final q = existing.quantity;
+        _qtyMainController.text = q == q.roundToDouble()
+            ? q.toStringAsFixed(0)
+            : q.toStringAsFixed(2).replaceAll('.', ',');
+      }
+    }
   }
 
   @override
@@ -94,15 +129,30 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
     setState(() => _saving = true);
     try {
       final db = ref.read(databaseProvider);
-      await db.insertHarvest(HarvestsCompanion.insert(
-        plantId: _selectedPlant!.id,
-        harvestedAt: _date,
-        quantity: qty,
-        unit: _unit.code,
-        note: _noteController.text.trim().isEmpty
-            ? const Value.absent()
-            : Value(_noteController.text.trim()),
-      ));
+      final existing = widget.existing;
+      if (existing != null) {
+        // Mode édition : update sur l'id existant. La plante n'est pas
+        // modifiable (elle est verrouillée par le _PlantPicker).
+        await db.updateHarvest(
+          existing.id,
+          harvestedAt: _date,
+          quantity: qty,
+          unit: _unit.code,
+          note: _noteController.text.trim().isEmpty
+              ? null
+              : _noteController.text.trim(),
+        );
+      } else {
+        await db.insertHarvest(HarvestsCompanion.insert(
+          plantId: _selectedPlant!.id,
+          harvestedAt: _date,
+          quantity: qty,
+          unit: _unit.code,
+          note: _noteController.text.trim().isEmpty
+              ? const Value.absent()
+              : Value(_noteController.text.trim()),
+        ));
+      }
       if (mounted) Navigator.pop(context);
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -127,7 +177,9 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  loc.addHarvestSheetTitle,
+                  _isEditing
+                      ? loc.addHarvestEditTitle
+                      : loc.addHarvestSheetTitle,
                   style: AppTypography.titleLarge.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -199,7 +251,9 @@ class _AddHarvestSheetState extends ConsumerState<AddHarvestSheet> {
                           color: Colors.white,
                         ),
                       )
-                    : Text(loc.addHarvestSaveButton),
+                    : Text(_isEditing
+                        ? loc.addHarvestUpdateButton
+                        : loc.addHarvestSaveButton),
               ),
             ],
           ),

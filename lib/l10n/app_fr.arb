@@ -612,5 +612,31 @@
 
   "premiumRestoreSuccess": "Achat Premium restauré.",
   "premiumRestoreNothingFound": "Aucun achat trouvé sur ce compte Play Store.",
-  "premiumRestoreError": "Impossible de restaurer."
+  "premiumRestoreError": "Impossible de restaurer.",
+
+  "addHarvestEditTitle": "Modifier la récolte",
+  "addHarvestUpdateButton": "Mettre à jour",
+
+  "harvestHistorySheetSubtitle": "Détail des récoltes en {unit}",
+  "@harvestHistorySheetSubtitle": { "placeholders": { "unit": { "type": "String" } } },
+  "harvestHistoryDeleteTitle": "Supprimer cette récolte ?",
+  "harvestHistoryDeleteMessage": "Cette action est définitive.",
+
+  "harvestFilterMonth": "Mois",
+  "harvestFilterPlant": "Plante",
+  "harvestFilterUnit": "Unité",
+  "harvestFilterAllMonths": "Tous les mois",
+  "harvestFilterAllPlants": "Toutes les plantes",
+  "harvestFilterAllUnits": "Toutes les unités",
+  "harvestFilterNoMatchTitle": "Aucune récolte ne correspond",
+  "harvestFilterNoMatchSubtitle": "Essayez de retirer un filtre pour élargir la sélection.",
+  "harvestFilterReset": "Réinitialiser les filtres",
+
+  "carnetStatsActivitiesTitle": "ACTIVITÉS DU JARDIN",
+  "carnetStatsActivityWatering": "Arrosages",
+  "carnetStatsActivityFertilizing": "Fertilisations",
+  "carnetStatsActivitySowing": "Semis enregistrés",
+  "carnetStatsActivityPlanting": "Plantations",
+  "carnetStatsActivityMulching": "Paillages",
+  "carnetStatsActivityOtherCare": "Autres soins"
 }

@@ -212,8 +212,12 @@ class _MarquePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isActive ? AppColors.carnetCover : AppColors.carnetCoverMuted;
-    final fg = isActive ? Colors.white : AppColors.primaryDark;
+    // Effet marque-page « papier » : quand actif, la couleur du
+    // marque-page = couleur de la page (crème) → impression que cet
+    // onglet est physiquement attaché à la page ouverte. Inactif :
+    // vert sauge muted comme la couverture du carnet.
+    final bg = isActive ? AppColors.carnetPaper : AppColors.carnetCoverMuted;
+    final fg = isActive ? AppColors.primary : AppColors.primaryDark;
     // Tooltip pour l'accessibilité — long-press affiche le label,
     // sinon les utilisateurs découvrent chaque onglet en tapant.
     return Tooltip(
@@ -224,8 +228,12 @@ class _MarquePage extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeOutCubic,
-          width: 44,
+          // La marge négative à gauche fait dépasser le marque-page actif
+          // de quelques pixels dans la page (continuité visuelle) ; les
+          // inactifs gardent leur position normale.
+          width: isActive ? 48 : 44,
           height: 56,
+          margin: EdgeInsets.only(left: isActive ? -4 : 0),
           decoration: BoxDecoration(
             color: bg,
             borderRadius: const BorderRadius.only(
@@ -235,7 +243,7 @@ class _MarquePage extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 color: AppColors.primary
-                    .withValues(alpha: isActive ? 0.28 : 0.12),
+                    .withValues(alpha: isActive ? 0.22 : 0.12),
                 blurRadius: isActive ? 12 : 5,
                 offset: const Offset(2, 3),
               ),

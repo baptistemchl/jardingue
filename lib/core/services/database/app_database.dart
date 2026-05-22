@@ -1551,6 +1551,28 @@ class AppDatabase extends _$AppDatabase {
   Future<int> deleteHarvest(int id) =>
       (delete(harvests)..where((t) => t.id.equals(id))).go();
 
+  /// Met à jour une récolte existante. Tous les champs sont
+  /// optionnels — seuls ceux passés en argument sont écrits.
+  Future<int> updateHarvest(
+    int id, {
+    DateTime? harvestedAt,
+    double? quantity,
+    String? unit,
+    String? note,
+  }) {
+    return (update(harvests)..where((t) => t.id.equals(id))).write(
+      HarvestsCompanion(
+        harvestedAt: harvestedAt != null
+            ? Value(harvestedAt)
+            : const Value.absent(),
+        quantity:
+            quantity != null ? Value(quantity) : const Value.absent(),
+        unit: unit != null ? Value(unit) : const Value.absent(),
+        note: Value(note),
+      ),
+    );
+  }
+
   // ============================================
   // SEEDLINGS QUERIES (Carnet de bord — v20)
   // ============================================

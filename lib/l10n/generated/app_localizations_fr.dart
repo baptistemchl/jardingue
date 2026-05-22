@@ -1672,4 +1672,70 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get premiumRestoreError => 'Impossible de restaurer.';
+
+  @override
+  String get addHarvestEditTitle => 'Modifier la récolte';
+
+  @override
+  String get addHarvestUpdateButton => 'Mettre à jour';
+
+  @override
+  String harvestHistorySheetSubtitle(String unit) {
+    return 'Détail des récoltes en $unit';
+  }
+
+  @override
+  String get harvestHistoryDeleteTitle => 'Supprimer cette récolte ?';
+
+  @override
+  String get harvestHistoryDeleteMessage => 'Cette action est définitive.';
+
+  @override
+  String get harvestFilterMonth => 'Mois';
+
+  @override
+  String get harvestFilterPlant => 'Plante';
+
+  @override
+  String get harvestFilterUnit => 'Unité';
+
+  @override
+  String get harvestFilterAllMonths => 'Tous les mois';
+
+  @override
+  String get harvestFilterAllPlants => 'Toutes les plantes';
+
+  @override
+  String get harvestFilterAllUnits => 'Toutes les unités';
+
+  @override
+  String get harvestFilterNoMatchTitle => 'Aucune récolte ne correspond';
+
+  @override
+  String get harvestFilterNoMatchSubtitle =>
+      'Essayez de retirer un filtre pour élargir la sélection.';
+
+  @override
+  String get harvestFilterReset => 'Réinitialiser les filtres';
+
+  @override
+  String get carnetStatsActivitiesTitle => 'ACTIVITÉS DU JARDIN';
+
+  @override
+  String get carnetStatsActivityWatering => 'Arrosages';
+
+  @override
+  String get carnetStatsActivityFertilizing => 'Fertilisations';
+
+  @override
+  String get carnetStatsActivitySowing => 'Semis enregistrés';
+
+  @override
+  String get carnetStatsActivityPlanting => 'Plantations';
+
+  @override
+  String get carnetStatsActivityMulching => 'Paillages';
+
+  @override
+  String get carnetStatsActivityOtherCare => 'Autres soins';
 }

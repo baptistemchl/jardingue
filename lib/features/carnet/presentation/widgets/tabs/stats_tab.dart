@@ -52,6 +52,10 @@ class StatsTab extends ConsumerWidget {
           _SeedlingsSuccessCard(stats: stats),
           const SizedBox(height: 14),
         ],
+        if (stats.totalGardenActivities > 0) ...[
+          _GardenActivitiesCard(stats: stats),
+          const SizedBox(height: 14),
+        ],
         _MiscCountersRow(stats: stats),
       ],
     );
@@ -429,6 +433,131 @@ class _SeedStatLine extends StatelessWidget {
           style: AppTypography.bodySmall.copyWith(
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Carte « Activités du jardin » — récap des actions enregistrées dans
+/// les autres écrans (arrosages, fertilisations, semis, plantations,
+/// paillages) agrégées depuis GardenEvents pour l'année courante. Chaque
+/// activité a son icône couleur + un compteur animé.
+class _GardenActivitiesCard extends StatelessWidget {
+  final dynamic stats;
+  const _GardenActivitiesCard({required this.stats});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final items = <_ActivityItem>[
+      if (stats.wateringCount > 0)
+        _ActivityItem(
+          icon: PhosphorIcons.dropHalf(PhosphorIconsStyle.fill),
+          label: loc.carnetStatsActivityWatering,
+          value: stats.wateringCount,
+          color: AppColors.info,
+        ),
+      if (stats.fertilizingCount > 0)
+        _ActivityItem(
+          icon: PhosphorIcons.flask(PhosphorIconsStyle.fill),
+          label: loc.carnetStatsActivityFertilizing,
+          value: stats.fertilizingCount,
+          color: AppColors.secondary,
+        ),
+      if (stats.sowingEventsCount > 0)
+        _ActivityItem(
+          icon: PhosphorIcons.plant(PhosphorIconsStyle.fill),
+          label: loc.carnetStatsActivitySowing,
+          value: stats.sowingEventsCount,
+          color: AppColors.primary,
+        ),
+      if (stats.plantingEventsCount > 0)
+        _ActivityItem(
+          icon: PhosphorIcons.shovel(PhosphorIconsStyle.fill),
+          label: loc.carnetStatsActivityPlanting,
+          value: stats.plantingEventsCount,
+          color: AppColors.success,
+        ),
+      if (stats.mulchingCount > 0)
+        _ActivityItem(
+          icon: PhosphorIcons.stack(PhosphorIconsStyle.fill),
+          label: loc.carnetStatsActivityMulching,
+          value: stats.mulchingCount,
+          color: AppColors.tertiary,
+        ),
+      if (stats.otherCareCount > 0)
+        _ActivityItem(
+          icon: PhosphorIcons.heart(PhosphorIconsStyle.fill),
+          label: loc.carnetStatsActivityOtherCare,
+          value: stats.otherCareCount,
+          color: AppColors.warning,
+        ),
+    ];
+    return _SectionCard(
+      icon: PhosphorIcons.leaf(PhosphorIconsStyle.fill),
+      title: loc.carnetStatsActivitiesTitle,
+      child: Column(
+        children: [
+          for (final item in items)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: _ActivityRow(item: item),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActivityItem {
+  final IconData icon;
+  final String label;
+  final int value;
+  final Color color;
+  const _ActivityItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+}
+
+class _ActivityRow extends StatelessWidget {
+  final _ActivityItem item;
+  const _ActivityRow({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: item.color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Icon(item.icon, size: 16, color: item.color),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            item.label,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        AnimatedCounter(
+          value: item.value.toDouble(),
+          fractionDigits: 0,
+          style: AppTypography.titleSmall.copyWith(
+            fontWeight: FontWeight.w800,
+            color: item.color,
+            height: 1,
           ),
         ),
       ],

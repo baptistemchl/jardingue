@@ -2893,6 +2893,132 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible de restaurer.'**
   String get premiumRestoreError;
+
+  /// No description provided for @addHarvestEditTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la récolte'**
+  String get addHarvestEditTitle;
+
+  /// No description provided for @addHarvestUpdateButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à jour'**
+  String get addHarvestUpdateButton;
+
+  /// No description provided for @harvestHistorySheetSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail des récoltes en {unit}'**
+  String harvestHistorySheetSubtitle(String unit);
+
+  /// No description provided for @harvestHistoryDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette récolte ?'**
+  String get harvestHistoryDeleteTitle;
+
+  /// No description provided for @harvestHistoryDeleteMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est définitive.'**
+  String get harvestHistoryDeleteMessage;
+
+  /// No description provided for @harvestFilterMonth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mois'**
+  String get harvestFilterMonth;
+
+  /// No description provided for @harvestFilterPlant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plante'**
+  String get harvestFilterPlant;
+
+  /// No description provided for @harvestFilterUnit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Unité'**
+  String get harvestFilterUnit;
+
+  /// No description provided for @harvestFilterAllMonths.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les mois'**
+  String get harvestFilterAllMonths;
+
+  /// No description provided for @harvestFilterAllPlants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les plantes'**
+  String get harvestFilterAllPlants;
+
+  /// No description provided for @harvestFilterAllUnits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les unités'**
+  String get harvestFilterAllUnits;
+
+  /// No description provided for @harvestFilterNoMatchTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune récolte ne correspond'**
+  String get harvestFilterNoMatchTitle;
+
+  /// No description provided for @harvestFilterNoMatchSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essayez de retirer un filtre pour élargir la sélection.'**
+  String get harvestFilterNoMatchSubtitle;
+
+  /// No description provided for @harvestFilterReset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser les filtres'**
+  String get harvestFilterReset;
+
+  /// No description provided for @carnetStatsActivitiesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'ACTIVITÉS DU JARDIN'**
+  String get carnetStatsActivitiesTitle;
+
+  /// No description provided for @carnetStatsActivityWatering.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosages'**
+  String get carnetStatsActivityWatering;
+
+  /// No description provided for @carnetStatsActivityFertilizing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fertilisations'**
+  String get carnetStatsActivityFertilizing;
+
+  /// No description provided for @carnetStatsActivitySowing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis enregistrés'**
+  String get carnetStatsActivitySowing;
+
+  /// No description provided for @carnetStatsActivityPlanting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plantations'**
+  String get carnetStatsActivityPlanting;
+
+  /// No description provided for @carnetStatsActivityMulching.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paillages'**
+  String get carnetStatsActivityMulching;
+
+  /// No description provided for @carnetStatsActivityOtherCare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autres soins'**
+  String get carnetStatsActivityOtherCare;
 }
 
 class _AppLocalizationsDelegate
