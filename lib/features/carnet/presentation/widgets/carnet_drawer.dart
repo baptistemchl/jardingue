@@ -220,45 +220,47 @@ class _MarquePage extends StatelessWidget {
     final fg = isActive ? AppColors.primary : AppColors.primaryDark;
     // Tooltip pour l'accessibilité — long-press affiche le label,
     // sinon les utilisateurs découvrent chaque onglet en tapant.
-    return Tooltip(
-      message: spec.label,
-      preferBelow: false,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOutCubic,
-          // La marge négative à gauche fait dépasser le marque-page actif
-          // de quelques pixels dans la page (continuité visuelle) ; les
-          // inactifs gardent leur position normale.
-          width: isActive ? 48 : 44,
-          height: 56,
-          margin: EdgeInsets.only(left: isActive ? -4 : 0),
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(12),
-              bottomRight: Radius.circular(12),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary
-                    .withValues(alpha: isActive ? 0.22 : 0.12),
-                blurRadius: isActive ? 12 : 5,
-                offset: const Offset(2, 3),
+    // Transform.translate (au lieu de margin négative interdite par
+    // AnimatedContainer) pour faire dépasser le marque-page actif de
+    // 4 px vers la page → effet papier continu.
+    return Transform.translate(
+      offset: Offset(isActive ? -4 : 0, 0),
+      child: Tooltip(
+        message: spec.label,
+        preferBelow: false,
+        child: GestureDetector(
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOutCubic,
+            width: isActive ? 48 : 44,
+            height: 56,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(12),
+                bottomRight: Radius.circular(12),
               ),
-            ],
-          ),
-          child: Center(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 180),
-              transitionBuilder: (child, anim) =>
-                  ScaleTransition(scale: anim, child: child),
-              child: Icon(
-                isActive ? spec.activeIcon : spec.icon,
-                key: ValueKey(isActive),
-                size: isActive ? 22 : 20,
-                color: fg,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary
+                      .withValues(alpha: isActive ? 0.22 : 0.12),
+                  blurRadius: isActive ? 12 : 5,
+                  offset: const Offset(2, 3),
+                ),
+              ],
+            ),
+            child: Center(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 180),
+                transitionBuilder: (child, anim) =>
+                    ScaleTransition(scale: anim, child: child),
+                child: Icon(
+                  isActive ? spec.activeIcon : spec.icon,
+                  key: ValueKey(isActive),
+                  size: isActive ? 22 : 20,
+                  color: fg,
+                ),
               ),
             ),
           ),
