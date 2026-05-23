@@ -53,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 21;
+  int get schemaVersion => 22;
 
   @override
   MigrationStrategy get migration {
@@ -217,6 +217,12 @@ class AppDatabase extends _$AppDatabase {
               m, seedlings, seedlings.plantNameSnapshot);
           await _safeAddColumn(
               m, harvests, harvests.plantNameSnapshot);
+        }
+        // v21 -> v22 : remainingStock sur Seedlings, pour permettre les
+        // repiquages partiels (planter 5 sur 10 réussis, garder les
+        // autres « en stock »).
+        if (from < 22) {
+          await _safeAddColumn(m, seedlings, seedlings.remainingStock);
         }
       },
     );
@@ -1636,6 +1642,8 @@ class AppDatabase extends _$AppDatabase {
     int id,
     String status, {
     int? successCount,
+    int? remainingStock,
+    int? gardenId,
   }) {
     return (update(seedlings)..where((t) => t.id.equals(id))).write(
       SeedlingsCompanion(
@@ -1643,6 +1651,11 @@ class AppDatabase extends _$AppDatabase {
         successCount: successCount != null
             ? Value(successCount)
             : const Value.absent(),
+        remainingStock: remainingStock != null
+            ? Value(remainingStock)
+            : const Value.absent(),
+        gardenId:
+            gardenId != null ? Value(gardenId) : const Value.absent(),
         updatedAt: Value(DateTime.now()),
       ),
     );

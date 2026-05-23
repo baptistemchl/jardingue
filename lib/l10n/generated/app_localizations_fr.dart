@@ -1734,6 +1734,67 @@ class AppLocalizationsFr extends AppLocalizations {
   String get seedlingWateredSnack => 'Arrosage du semi enregistré 💧';
 
   @override
+  String get carnetHeaderHarvests => 'Mes récoltes';
+
+  @override
+  String get carnetHeaderSeedlings => 'Mes semis';
+
+  @override
+  String get carnetHeaderJournal => 'Carnet de notes';
+
+  @override
+  String get carnetHeaderStats => 'Bilan de la saison';
+
+  @override
+  String get carnetHeaderSettings => 'Réglages';
+
+  @override
+  String get carnetHeaderAbout => 'À propos de Jardingue';
+
+  @override
+  String carnetSeedlingsInStock(int remaining, int total) {
+    return '$remaining / $total en stock';
+  }
+
+  @override
+  String get seedlingTransplantDialogTitle => 'Repiquage';
+
+  @override
+  String seedlingTransplantDialogStockHint(int stock) {
+    return 'Tu as $stock plant(s) prêt(s) à repiquer.';
+  }
+
+  @override
+  String get seedlingTransplantDialogCountLabel =>
+      'Combien planter maintenant ?';
+
+  @override
+  String get seedlingTransplantDialogGardenLabel => 'Dans quel potager ?';
+
+  @override
+  String get seedlingTransplantDialogConfirm => 'Planter';
+
+  @override
+  String seedlingTransplantPartialSnack(int planted, int remaining) {
+    return '$planted repiqué(s) — reste $remaining en stock.';
+  }
+
+  @override
+  String get seedlingTransplantNoGardenSnack =>
+      'Aucun potager pour le repiquage — crée d\'abord un potager.';
+
+  @override
+  String get seedlingFailureDialogTitle => 'Déclarer des échecs';
+
+  @override
+  String seedlingFailureDialogPrompt(int available) {
+    return 'Sur $available en stock, combien ont échoué ?';
+  }
+
+  @override
+  String get seedlingFailureDialogConfirm => 'Soustraire';
+
+  @override
   String get carnetStatsActivityFertilizing => 'Fertilisations';
 
   @override

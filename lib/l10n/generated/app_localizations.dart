@@ -3008,6 +3008,108 @@ abstract class AppLocalizations {
   /// **'Arrosage du semi enregistré 💧'**
   String get seedlingWateredSnack;
 
+  /// No description provided for @carnetHeaderHarvests.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes récoltes'**
+  String get carnetHeaderHarvests;
+
+  /// No description provided for @carnetHeaderSeedlings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes semis'**
+  String get carnetHeaderSeedlings;
+
+  /// No description provided for @carnetHeaderJournal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet de notes'**
+  String get carnetHeaderJournal;
+
+  /// No description provided for @carnetHeaderStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bilan de la saison'**
+  String get carnetHeaderStats;
+
+  /// No description provided for @carnetHeaderSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages'**
+  String get carnetHeaderSettings;
+
+  /// No description provided for @carnetHeaderAbout.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos de Jardingue'**
+  String get carnetHeaderAbout;
+
+  /// No description provided for @carnetSeedlingsInStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'{remaining} / {total} en stock'**
+  String carnetSeedlingsInStock(int remaining, int total);
+
+  /// No description provided for @seedlingTransplantDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repiquage'**
+  String get seedlingTransplantDialogTitle;
+
+  /// No description provided for @seedlingTransplantDialogStockHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu as {stock} plant(s) prêt(s) à repiquer.'**
+  String seedlingTransplantDialogStockHint(int stock);
+
+  /// No description provided for @seedlingTransplantDialogCountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Combien planter maintenant ?'**
+  String get seedlingTransplantDialogCountLabel;
+
+  /// No description provided for @seedlingTransplantDialogGardenLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans quel potager ?'**
+  String get seedlingTransplantDialogGardenLabel;
+
+  /// No description provided for @seedlingTransplantDialogConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Planter'**
+  String get seedlingTransplantDialogConfirm;
+
+  /// No description provided for @seedlingTransplantPartialSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'{planted} repiqué(s) — reste {remaining} en stock.'**
+  String seedlingTransplantPartialSnack(int planted, int remaining);
+
+  /// No description provided for @seedlingTransplantNoGardenSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun potager pour le repiquage — crée d\'abord un potager.'**
+  String get seedlingTransplantNoGardenSnack;
+
+  /// No description provided for @seedlingFailureDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déclarer des échecs'**
+  String get seedlingFailureDialogTitle;
+
+  /// No description provided for @seedlingFailureDialogPrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur {available} en stock, combien ont échoué ?'**
+  String seedlingFailureDialogPrompt(int available);
+
+  /// No description provided for @seedlingFailureDialogConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Soustraire'**
+  String get seedlingFailureDialogConfirm;
+
   /// No description provided for @carnetStatsActivityFertilizing.
   ///
   /// In fr, this message translates to:

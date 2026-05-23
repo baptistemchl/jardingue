@@ -634,6 +634,8 @@ class BackupRepositoryImpl implements BackupRepository {
               // v21+ : N/M godets viables + snapshot nom.
               'successCount': s.successCount,
               'plantNameSnapshot': s.plantNameSnapshot,
+              // v22+ : stock restant pour repiquage partiel.
+              'remainingStock': s.remainingStock,
               'note': s.note,
               'createdAt': s.createdAt.toIso8601String(),
               'updatedAt': s.updatedAt.toIso8601String(),
@@ -707,6 +709,8 @@ class BackupRepositoryImpl implements BackupRepository {
               plantNameSnapshot: Value(
                 r['plantNameSnapshot'] as String?,
               ),
+              // v22+ : stock restant pour repiquage partiel.
+              remainingStock: Value(r['remainingStock'] as int?),
               note: Value(r['note'] as String?),
             ),
           );

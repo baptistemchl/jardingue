@@ -199,6 +199,20 @@ class _TabSpec {
   const _TabSpec(this.tab, this.label, this.icon, this.activeIcon);
 }
 
+/// Titre long affiché dans le header du drawer body selon l'onglet
+/// courant — précise à l'utilisateur où il est sans le forcer à lire
+/// l'icône active.
+String _tabTitle(CarnetTab tab, AppLocalizations loc) {
+  return switch (tab) {
+    CarnetTab.harvests => loc.carnetHeaderHarvests,
+    CarnetTab.seedlings => loc.carnetHeaderSeedlings,
+    CarnetTab.journal => loc.carnetHeaderJournal,
+    CarnetTab.stats => loc.carnetHeaderStats,
+    CarnetTab.settings => loc.carnetHeaderSettings,
+    CarnetTab.about => loc.carnetHeaderAbout,
+  };
+}
+
 class _MarquePage extends StatelessWidget {
   final _TabSpec spec;
   final bool isActive;
@@ -301,18 +315,35 @@ class _DrawerBody extends ConsumerWidget {
         color: AppColors.carnetPaper,
         child: Column(
         children: [
-          // Header carnet — barre de titre.
+          // Header carnet — titre différent selon l'onglet actif
+          // pour que l'utilisateur sache toujours sur quelle section
+          // il est. Le label vient de l'ARB, indexé par enum.
           Padding(
             padding: EdgeInsets.fromLTRB(20, topPad + 16, 12, 12),
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    loc.carnetTitle,
-                    style: AppTypography.titleLarge.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        loc.carnetTitle,
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.2,
+                          fontSize: 10,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        _tabTitle(activeTab, loc),
+                        style: AppTypography.titleLarge.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 IconButton(

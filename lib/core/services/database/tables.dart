@@ -309,6 +309,14 @@ class Seedlings extends Table {
   /// statut via le dialog. Null = pas encore renseigné. (v21+)
   IntColumn get successCount => integer().nullable()();
 
+  /// Stock encore disponible pour repiquage (v22+). À la germination,
+  /// remainingStock = successCount. À chaque repiquage partiel,
+  /// remainingStock diminue du nombre placé. Quand remainingStock
+  /// atteint 0, le semi passe en statut « transplanted ». Un bouton
+  /// « déclarer échecs » permet aussi de diminuer le stock entre deux
+  /// transitions. Null = jamais touché au stock.
+  IntColumn get remainingStock => integer().nullable()();
+
   /// Snapshot du nom de la plante au moment du semis (v21+).
   TextColumn get plantNameSnapshot => text().nullable()();
 

@@ -637,6 +637,45 @@
   "carnetStatsActivityWateringPlants": "Arrosages (plants)",
   "carnetStatsActivityWateringSeedlings": "Arrosages (semis)",
   "seedlingWateredSnack": "Arrosage du semi enregistré 💧",
+
+  "carnetHeaderHarvests": "Mes récoltes",
+  "carnetHeaderSeedlings": "Mes semis",
+  "carnetHeaderJournal": "Carnet de notes",
+  "carnetHeaderStats": "Bilan de la saison",
+  "carnetHeaderSettings": "Réglages",
+  "carnetHeaderAbout": "À propos de Jardingue",
+
+  "carnetSeedlingsInStock": "{remaining} / {total} en stock",
+  "@carnetSeedlingsInStock": {
+    "placeholders": {
+      "remaining": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "seedlingTransplantDialogTitle": "Repiquage",
+  "seedlingTransplantDialogStockHint": "Tu as {stock} plant(s) prêt(s) à repiquer.",
+  "@seedlingTransplantDialogStockHint": {
+    "placeholders": { "stock": { "type": "int" } }
+  },
+  "seedlingTransplantDialogCountLabel": "Combien planter maintenant ?",
+  "seedlingTransplantDialogGardenLabel": "Dans quel potager ?",
+  "seedlingTransplantDialogConfirm": "Planter",
+  "seedlingTransplantPartialSnack": "{planted} repiqué(s) — reste {remaining} en stock.",
+  "@seedlingTransplantPartialSnack": {
+    "placeholders": {
+      "planted": { "type": "int" },
+      "remaining": { "type": "int" }
+    }
+  },
+  "seedlingTransplantNoGardenSnack": "Aucun potager pour le repiquage — crée d'abord un potager.",
+
+  "seedlingFailureDialogTitle": "Déclarer des échecs",
+  "seedlingFailureDialogPrompt": "Sur {available} en stock, combien ont échoué ?",
+  "@seedlingFailureDialogPrompt": {
+    "placeholders": { "available": { "type": "int" } }
+  },
+  "seedlingFailureDialogConfirm": "Soustraire",
   "carnetStatsActivityFertilizing": "Fertilisations",
   "carnetStatsActivitySowing": "Semis enregistrés",
   "carnetStatsActivityPlanting": "Plantations",
