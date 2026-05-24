@@ -1795,6 +1795,39 @@ class AppLocalizationsFr extends AppLocalizations {
   String get seedlingFailureDialogConfirm => 'Soustraire';
 
   @override
+  String get seedlingAdvanceDialogTitleV2 => 'Bilan de l\'étape';
+
+  @override
+  String seedlingAdvanceDialogPromptV2(int base) {
+    return 'Sur $base godets, combien ont réussi ? combien ont échoué ?';
+  }
+
+  @override
+  String get seedlingAdvanceFieldSuccess => 'Réussis';
+
+  @override
+  String get seedlingAdvanceFieldFailed => 'Échoués';
+
+  @override
+  String seedlingAdvanceRemainingHint(int count) {
+    return '$count restent en attente (ni réussis, ni échoués).';
+  }
+
+  @override
+  String get seedlingTransplantFieldFailed => 'Échoués depuis';
+
+  @override
+  String carnetSeedlingsFailedInline(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return '$count échec$_temp0';
+  }
+
+  @override
   String get carnetStatsActivityFertilizing => 'Fertilisations';
 
   @override

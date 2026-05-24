@@ -636,6 +636,8 @@ class BackupRepositoryImpl implements BackupRepository {
               'plantNameSnapshot': s.plantNameSnapshot,
               // v22+ : stock restant pour repiquage partiel.
               'remainingStock': s.remainingStock,
+              // v23+ : cumul des échecs déclarés.
+              'failedCount': s.failedCount,
               'note': s.note,
               'createdAt': s.createdAt.toIso8601String(),
               'updatedAt': s.updatedAt.toIso8601String(),
@@ -711,6 +713,8 @@ class BackupRepositoryImpl implements BackupRepository {
               ),
               // v22+ : stock restant pour repiquage partiel.
               remainingStock: Value(r['remainingStock'] as int?),
+              // v23+ : cumul des échecs déclarés.
+              failedCount: Value(r['failedCount'] as int?),
               note: Value(r['note'] as String?),
             ),
           );

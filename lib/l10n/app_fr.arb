@@ -676,6 +676,23 @@
     "placeholders": { "available": { "type": "int" } }
   },
   "seedlingFailureDialogConfirm": "Soustraire",
+
+  "seedlingAdvanceDialogTitleV2": "Bilan de l'étape",
+  "seedlingAdvanceDialogPromptV2": "Sur {base} godets, combien ont réussi ? combien ont échoué ?",
+  "@seedlingAdvanceDialogPromptV2": {
+    "placeholders": { "base": { "type": "int" } }
+  },
+  "seedlingAdvanceFieldSuccess": "Réussis",
+  "seedlingAdvanceFieldFailed": "Échoués",
+  "seedlingAdvanceRemainingHint": "{count} restent en attente (ni réussis, ni échoués).",
+  "@seedlingAdvanceRemainingHint": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "seedlingTransplantFieldFailed": "Échoués depuis",
+  "carnetSeedlingsFailedInline": "{count} échec{count, plural, one{} other{s}}",
+  "@carnetSeedlingsFailedInline": {
+    "placeholders": { "count": { "type": "int" } }
+  },
   "carnetStatsActivityFertilizing": "Fertilisations",
   "carnetStatsActivitySowing": "Semis enregistrés",
   "carnetStatsActivityPlanting": "Plantations",

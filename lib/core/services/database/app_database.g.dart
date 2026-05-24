@@ -9941,6 +9941,17 @@ class $SeedlingsTable extends Seedlings
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _failedCountMeta = const VerificationMeta(
+    'failedCount',
+  );
+  @override
+  late final GeneratedColumn<int> failedCount = GeneratedColumn<int>(
+    'failed_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _plantNameSnapshotMeta = const VerificationMeta(
     'plantNameSnapshot',
   );
@@ -9997,6 +10008,7 @@ class $SeedlingsTable extends Seedlings
     count,
     successCount,
     remainingStock,
+    failedCount,
     plantNameSnapshot,
     note,
     createdAt,
@@ -10078,6 +10090,15 @@ class $SeedlingsTable extends Seedlings
         ),
       );
     }
+    if (data.containsKey('failed_count')) {
+      context.handle(
+        _failedCountMeta,
+        failedCount.isAcceptableOrUnknown(
+          data['failed_count']!,
+          _failedCountMeta,
+        ),
+      );
+    }
     if (data.containsKey('plant_name_snapshot')) {
       context.handle(
         _plantNameSnapshotMeta,
@@ -10150,6 +10171,10 @@ class $SeedlingsTable extends Seedlings
         DriftSqlType.int,
         data['${effectivePrefix}remaining_stock'],
       ),
+      failedCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}failed_count'],
+      ),
       plantNameSnapshot: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}plant_name_snapshot'],
@@ -10202,10 +10227,15 @@ class Seedling extends DataClass implements Insertable<Seedling> {
   /// Stock encore disponible pour repiquage (v22+). À la germination,
   /// remainingStock = successCount. À chaque repiquage partiel,
   /// remainingStock diminue du nombre placé. Quand remainingStock
-  /// atteint 0, le semi passe en statut « transplanted ». Un bouton
-  /// « déclarer échecs » permet aussi de diminuer le stock entre deux
-  /// transitions. Null = jamais touché au stock.
+  /// atteint 0, le semi passe en statut « transplanted ». Null =
+  /// jamais touché au stock.
   final int? remainingStock;
+
+  /// Nombre cumulé d'échecs déclarés au fil des transitions (v23+).
+  /// L'utilisateur peut renseigner les échecs à chaque dialog de
+  /// transition (germination, repiquage) — on accumule ici pour les
+  /// stats annuelles.
+  final int? failedCount;
 
   /// Snapshot du nom de la plante au moment du semis (v21+).
   final String? plantNameSnapshot;
@@ -10222,6 +10252,7 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     this.count,
     this.successCount,
     this.remainingStock,
+    this.failedCount,
     this.plantNameSnapshot,
     this.note,
     required this.createdAt,
@@ -10248,6 +10279,9 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     }
     if (!nullToAbsent || remainingStock != null) {
       map['remaining_stock'] = Variable<int>(remainingStock);
+    }
+    if (!nullToAbsent || failedCount != null) {
+      map['failed_count'] = Variable<int>(failedCount);
     }
     if (!nullToAbsent || plantNameSnapshot != null) {
       map['plant_name_snapshot'] = Variable<String>(plantNameSnapshot);
@@ -10281,6 +10315,9 @@ class Seedling extends DataClass implements Insertable<Seedling> {
       remainingStock: remainingStock == null && nullToAbsent
           ? const Value.absent()
           : Value(remainingStock),
+      failedCount: failedCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(failedCount),
       plantNameSnapshot: plantNameSnapshot == null && nullToAbsent
           ? const Value.absent()
           : Value(plantNameSnapshot),
@@ -10307,6 +10344,7 @@ class Seedling extends DataClass implements Insertable<Seedling> {
       count: serializer.fromJson<int?>(json['count']),
       successCount: serializer.fromJson<int?>(json['successCount']),
       remainingStock: serializer.fromJson<int?>(json['remainingStock']),
+      failedCount: serializer.fromJson<int?>(json['failedCount']),
       plantNameSnapshot: serializer.fromJson<String?>(
         json['plantNameSnapshot'],
       ),
@@ -10330,6 +10368,7 @@ class Seedling extends DataClass implements Insertable<Seedling> {
       'count': serializer.toJson<int?>(count),
       'successCount': serializer.toJson<int?>(successCount),
       'remainingStock': serializer.toJson<int?>(remainingStock),
+      'failedCount': serializer.toJson<int?>(failedCount),
       'plantNameSnapshot': serializer.toJson<String?>(plantNameSnapshot),
       'note': serializer.toJson<String?>(note),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -10347,6 +10386,7 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     Value<int?> count = const Value.absent(),
     Value<int?> successCount = const Value.absent(),
     Value<int?> remainingStock = const Value.absent(),
+    Value<int?> failedCount = const Value.absent(),
     Value<String?> plantNameSnapshot = const Value.absent(),
     Value<String?> note = const Value.absent(),
     DateTime? createdAt,
@@ -10365,6 +10405,7 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     remainingStock: remainingStock.present
         ? remainingStock.value
         : this.remainingStock,
+    failedCount: failedCount.present ? failedCount.value : this.failedCount,
     plantNameSnapshot: plantNameSnapshot.present
         ? plantNameSnapshot.value
         : this.plantNameSnapshot,
@@ -10389,6 +10430,9 @@ class Seedling extends DataClass implements Insertable<Seedling> {
       remainingStock: data.remainingStock.present
           ? data.remainingStock.value
           : this.remainingStock,
+      failedCount: data.failedCount.present
+          ? data.failedCount.value
+          : this.failedCount,
       plantNameSnapshot: data.plantNameSnapshot.present
           ? data.plantNameSnapshot.value
           : this.plantNameSnapshot,
@@ -10410,6 +10454,7 @@ class Seedling extends DataClass implements Insertable<Seedling> {
           ..write('count: $count, ')
           ..write('successCount: $successCount, ')
           ..write('remainingStock: $remainingStock, ')
+          ..write('failedCount: $failedCount, ')
           ..write('plantNameSnapshot: $plantNameSnapshot, ')
           ..write('note: $note, ')
           ..write('createdAt: $createdAt, ')
@@ -10429,6 +10474,7 @@ class Seedling extends DataClass implements Insertable<Seedling> {
     count,
     successCount,
     remainingStock,
+    failedCount,
     plantNameSnapshot,
     note,
     createdAt,
@@ -10447,6 +10493,7 @@ class Seedling extends DataClass implements Insertable<Seedling> {
           other.count == this.count &&
           other.successCount == this.successCount &&
           other.remainingStock == this.remainingStock &&
+          other.failedCount == this.failedCount &&
           other.plantNameSnapshot == this.plantNameSnapshot &&
           other.note == this.note &&
           other.createdAt == this.createdAt &&
@@ -10463,6 +10510,7 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
   final Value<int?> count;
   final Value<int?> successCount;
   final Value<int?> remainingStock;
+  final Value<int?> failedCount;
   final Value<String?> plantNameSnapshot;
   final Value<String?> note;
   final Value<DateTime> createdAt;
@@ -10477,6 +10525,7 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     this.count = const Value.absent(),
     this.successCount = const Value.absent(),
     this.remainingStock = const Value.absent(),
+    this.failedCount = const Value.absent(),
     this.plantNameSnapshot = const Value.absent(),
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -10492,6 +10541,7 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     this.count = const Value.absent(),
     this.successCount = const Value.absent(),
     this.remainingStock = const Value.absent(),
+    this.failedCount = const Value.absent(),
     this.plantNameSnapshot = const Value.absent(),
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -10508,6 +10558,7 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     Expression<int>? count,
     Expression<int>? successCount,
     Expression<int>? remainingStock,
+    Expression<int>? failedCount,
     Expression<String>? plantNameSnapshot,
     Expression<String>? note,
     Expression<DateTime>? createdAt,
@@ -10524,6 +10575,7 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
       if (count != null) 'count': count,
       if (successCount != null) 'success_count': successCount,
       if (remainingStock != null) 'remaining_stock': remainingStock,
+      if (failedCount != null) 'failed_count': failedCount,
       if (plantNameSnapshot != null) 'plant_name_snapshot': plantNameSnapshot,
       if (note != null) 'note': note,
       if (createdAt != null) 'created_at': createdAt,
@@ -10541,6 +10593,7 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     Value<int?>? count,
     Value<int?>? successCount,
     Value<int?>? remainingStock,
+    Value<int?>? failedCount,
     Value<String?>? plantNameSnapshot,
     Value<String?>? note,
     Value<DateTime>? createdAt,
@@ -10556,6 +10609,7 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
       count: count ?? this.count,
       successCount: successCount ?? this.successCount,
       remainingStock: remainingStock ?? this.remainingStock,
+      failedCount: failedCount ?? this.failedCount,
       plantNameSnapshot: plantNameSnapshot ?? this.plantNameSnapshot,
       note: note ?? this.note,
       createdAt: createdAt ?? this.createdAt,
@@ -10595,6 +10649,9 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
     if (remainingStock.present) {
       map['remaining_stock'] = Variable<int>(remainingStock.value);
     }
+    if (failedCount.present) {
+      map['failed_count'] = Variable<int>(failedCount.value);
+    }
     if (plantNameSnapshot.present) {
       map['plant_name_snapshot'] = Variable<String>(plantNameSnapshot.value);
     }
@@ -10622,6 +10679,7 @@ class SeedlingsCompanion extends UpdateCompanion<Seedling> {
           ..write('count: $count, ')
           ..write('successCount: $successCount, ')
           ..write('remainingStock: $remainingStock, ')
+          ..write('failedCount: $failedCount, ')
           ..write('plantNameSnapshot: $plantNameSnapshot, ')
           ..write('note: $note, ')
           ..write('createdAt: $createdAt, ')
@@ -18954,6 +19012,7 @@ typedef $$SeedlingsTableCreateCompanionBuilder =
       Value<int?> count,
       Value<int?> successCount,
       Value<int?> remainingStock,
+      Value<int?> failedCount,
       Value<String?> plantNameSnapshot,
       Value<String?> note,
       Value<DateTime> createdAt,
@@ -18970,6 +19029,7 @@ typedef $$SeedlingsTableUpdateCompanionBuilder =
       Value<int?> count,
       Value<int?> successCount,
       Value<int?> remainingStock,
+      Value<int?> failedCount,
       Value<String?> plantNameSnapshot,
       Value<String?> note,
       Value<DateTime> createdAt,
@@ -19057,6 +19117,11 @@ class $$SeedlingsTableFilterComposer
 
   ColumnFilters<int> get remainingStock => $composableBuilder(
     column: $table.remainingStock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get failedCount => $composableBuilder(
+    column: $table.failedCount,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -19171,6 +19236,11 @@ class $$SeedlingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get failedCount => $composableBuilder(
+    column: $table.failedCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get plantNameSnapshot => $composableBuilder(
     column: $table.plantNameSnapshot,
     builder: (column) => ColumnOrderings(column),
@@ -19274,6 +19344,11 @@ class $$SeedlingsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get failedCount => $composableBuilder(
+    column: $table.failedCount,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get plantNameSnapshot => $composableBuilder(
     column: $table.plantNameSnapshot,
     builder: (column) => column,
@@ -19372,6 +19447,7 @@ class $$SeedlingsTableTableManager
                 Value<int?> count = const Value.absent(),
                 Value<int?> successCount = const Value.absent(),
                 Value<int?> remainingStock = const Value.absent(),
+                Value<int?> failedCount = const Value.absent(),
                 Value<String?> plantNameSnapshot = const Value.absent(),
                 Value<String?> note = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -19386,6 +19462,7 @@ class $$SeedlingsTableTableManager
                 count: count,
                 successCount: successCount,
                 remainingStock: remainingStock,
+                failedCount: failedCount,
                 plantNameSnapshot: plantNameSnapshot,
                 note: note,
                 createdAt: createdAt,
@@ -19402,6 +19479,7 @@ class $$SeedlingsTableTableManager
                 Value<int?> count = const Value.absent(),
                 Value<int?> successCount = const Value.absent(),
                 Value<int?> remainingStock = const Value.absent(),
+                Value<int?> failedCount = const Value.absent(),
                 Value<String?> plantNameSnapshot = const Value.absent(),
                 Value<String?> note = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -19416,6 +19494,7 @@ class $$SeedlingsTableTableManager
                 count: count,
                 successCount: successCount,
                 remainingStock: remainingStock,
+                failedCount: failedCount,
                 plantNameSnapshot: plantNameSnapshot,
                 note: note,
                 createdAt: createdAt,

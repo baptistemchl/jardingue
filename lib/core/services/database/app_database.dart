@@ -53,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 22;
+  int get schemaVersion => 23;
 
   @override
   MigrationStrategy get migration {
@@ -223,6 +223,12 @@ class AppDatabase extends _$AppDatabase {
         // autres « en stock »).
         if (from < 22) {
           await _safeAddColumn(m, seedlings, seedlings.remainingStock);
+        }
+        // v22 -> v23 : failedCount sur Seedlings, pour cumuler les
+        // échecs déclarés au fil des dialogs de transition (réussite/
+        // échec saisis ensemble plutôt que via un bouton dédié).
+        if (from < 23) {
+          await _safeAddColumn(m, seedlings, seedlings.failedCount);
         }
       },
     );
@@ -1643,6 +1649,7 @@ class AppDatabase extends _$AppDatabase {
     String status, {
     int? successCount,
     int? remainingStock,
+    int? failedCount,
     int? gardenId,
   }) {
     return (update(seedlings)..where((t) => t.id.equals(id))).write(
@@ -1653,6 +1660,9 @@ class AppDatabase extends _$AppDatabase {
             : const Value.absent(),
         remainingStock: remainingStock != null
             ? Value(remainingStock)
+            : const Value.absent(),
+        failedCount: failedCount != null
+            ? Value(failedCount)
             : const Value.absent(),
         gardenId:
             gardenId != null ? Value(gardenId) : const Value.absent(),

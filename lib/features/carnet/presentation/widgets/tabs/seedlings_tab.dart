@@ -340,14 +340,6 @@ class _SeedlingCard extends ConsumerWidget {
               _WaterButton(
                 onTap: () => _quickWater(context, ref),
               ),
-            // Bouton « déclarer échecs » — visible quand on a un stock
-            // > 0 (= au moins une transition réussie). Permet de
-            // soustraire les pertes hors repiquage.
-            if (!archived &&
-                (seedling.remainingStock ?? 0) > 0)
-              _FailStockButton(
-                onTap: () => _openFailureDialog(context, ref),
-              ),
             if (!archived && nextStatus != null)
               _AdvanceButton(
                 color: statusColor,
@@ -376,8 +368,7 @@ class _SeedlingCard extends ConsumerWidget {
     final loc = AppLocalizations.of(context)!;
     final parts = <String>[];
     parts.add(loc.carnetSeedlingsSowedOn(formatCarnetDate(s.sowedAt)));
-    // Stock disponible en priorité (le plus utile pour l'utilisateur),
-    // puis ratio de réussite si pas de stock encore initialisé.
+    // Stock disponible en priorité, puis ratio si pas encore initialisé.
     if (s.remainingStock != null && s.successCount != null) {
       parts.add(loc.carnetSeedlingsInStock(
         s.remainingStock!,
@@ -391,74 +382,13 @@ class _SeedlingCard extends ConsumerWidget {
     } else if (s.count != null) {
       parts.add(loc.carnetSeedlingsCountInline(s.count!));
     }
+    // Cumul échecs si renseigné.
+    if (s.failedCount != null && s.failedCount! > 0) {
+      parts.add(loc.carnetSeedlingsFailedInline(s.failedCount!));
+    }
     return parts.join(' • ');
   }
 
-  /// Dialog "Déclarer N échecs" : permet de décrémenter le stock entre
-  /// deux repiquages (cas réel : un plant repiqué a échoué, on le
-  /// soustrait pour ne pas le repiquer à nouveau).
-  Future<void> _openFailureDialog(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    final loc = AppLocalizations.of(context)!;
-    final db = ref.read(databaseProvider);
-    final available = seedling.remainingStock ?? seedling.successCount ?? 0;
-    if (available <= 0) return;
-
-    final controller = TextEditingController(text: '1');
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(loc.seedlingFailureDialogTitle),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              loc.seedlingFailureDialogPrompt(available),
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              autofocus: true,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(loc.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
-            child: Text(loc.seedlingFailureDialogConfirm),
-          ),
-        ],
-      ),
-    );
-    if (ok != true) return;
-    final n = (int.tryParse(controller.text.trim()) ?? 0).clamp(0, available);
-    if (n == 0) return;
-    final newStock = available - n;
-    // Si tout le stock a échoué, le semi devient "failed". Sinon on
-    // décrémente juste remainingStock et le statut reste tel quel.
-    await db.updateSeedlingStatus(
-      seedling.id,
-      newStock == 0 ? SeedlingStatus.failed.code : seedling.status,
-      remainingStock: newStock,
-    );
-  }
 
   /// Enregistre un event watering_seedling pour ce semi. Pas de
   /// dialog — un tap = un arrosage. Le snackbar confirme.
@@ -481,10 +411,14 @@ class _SeedlingCard extends ConsumerWidget {
     }
   }
 
-  /// Dialog de transition de statut : si l'utilisateur a renseigné un
-  /// nombre de godets semés, on lui demande combien ont « réussi » à
-  /// cette étape. Si la cible est « transplanted », on crée aussi un
-  /// event planting dans GardenEvents pour lier à la planification.
+  /// Dialog de transition de statut. Demande deux nombres ENSEMBLE :
+  /// combien ont réussi à cette étape, combien ont échoué. Plus de
+  /// bouton « − » séparé : la déclaration d'échec se fait au moment
+  /// naturel d'une transition.
+  ///
+  /// Pour ready → transplanted : on saute le dialog de comptage et
+  /// on ouvre directement le _TransplantDialog (qui contient aussi
+  /// son propre champ échec, voir plus bas).
   Future<void> _advanceWithDialog(
     BuildContext context,
     WidgetRef ref, {
@@ -492,70 +426,29 @@ class _SeedlingCard extends ConsumerWidget {
   }) async {
     final loc = AppLocalizations.of(context)!;
     final db = ref.read(databaseProvider);
-    final baseCount = seedling.successCount ?? seedling.count;
-    int? newSuccess;
 
-    if (baseCount != null && baseCount > 0) {
-      final controller = TextEditingController(
-        text: baseCount.toString(),
-      );
-      final ok = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(loc.seedlingAdvanceDialogTitle(
-            _statusSpec(next, loc).label,
-          )),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                loc.seedlingAdvanceDialogPrompt(baseCount),
-                style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: controller,
-                keyboardType: TextInputType.number,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  suffixText: 'godets',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(loc.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
-              child: Text(loc.seedlingAdvanceDialogConfirm),
-            ),
-          ],
-        ),
-      );
-      if (ok != true) return;
-      newSuccess = int.tryParse(controller.text.trim()) ?? baseCount;
+    // Transition vers transplanted → on délègue au _TransplantDialog
+    // qui gère stock + potager + échec d'un coup.
+    if (next == SeedlingStatus.transplanted) {
+      await _openTransplantDialog(context, ref);
+      return;
     }
 
-    // Cas spécial : transition vers transplanted = repiquage. On ouvre
-    // un dialog dédié qui demande combien planter + dans quel potager.
-    if (next == SeedlingStatus.transplanted) {
-      if (!context.mounted) return;
-      await _openTransplantDialog(
-        context,
-        ref,
-        successCount: newSuccess ?? seedling.successCount,
+    final baseCount = seedling.successCount ?? seedling.count;
+    int? newSuccess;
+    int? newFailed = seedling.failedCount;
+
+    if (baseCount != null && baseCount > 0) {
+      final result = await showDialog<_AdvanceResult>(
+        context: context,
+        builder: (ctx) => _AdvanceDialog(
+          base: baseCount,
+          nextStatusLabel: _statusSpec(next, loc).label,
+        ),
       );
-      return;
+      if (result == null) return;
+      newSuccess = result.success;
+      newFailed = (seedling.failedCount ?? 0) + result.failed;
     }
 
     // Autres transitions (germinating → ready) : on initialise aussi
@@ -566,26 +459,24 @@ class _SeedlingCard extends ConsumerWidget {
       next.code,
       successCount: newSuccess,
       remainingStock: newSuccess,
+      failedCount: newFailed,
     );
   }
 
-  /// Dialog de repiquage partiel : combien de plants l'utilisateur
-  /// veut planter MAINTENANT (entre 1 et remainingStock) + dans quel
-  /// potager. Plante les N GardenPlants à des cellules libres. Si
-  /// reste > 0 après repiquage, le semi reste en statut ready avec
-  /// remainingStock mis à jour. Sinon → transplanted.
+  /// Dialog de repiquage partiel : combien planter, combien d'échecs
+  /// depuis la dernière étape, dans quel potager. Plante les N
+  /// GardenPlants à des cellules libres. Si reste > 0 après repiquage,
+  /// le semi reste en statut ready avec remainingStock mis à jour.
   Future<void> _openTransplantDialog(
     BuildContext context,
-    WidgetRef ref, {
-    int? successCount,
-  }) async {
+    WidgetRef ref,
+  ) async {
     final loc = AppLocalizations.of(context)!;
     final db = ref.read(databaseProvider);
 
     // Stock disponible : prefer remainingStock (déjà initialisé) sinon
-    // fallback sur le successCount fraîchement saisi ou stocké.
+    // fallback sur successCount ou count initial.
     final available = seedling.remainingStock ??
-        successCount ??
         seedling.successCount ??
         seedling.count ??
         1;
@@ -598,7 +489,6 @@ class _SeedlingCard extends ConsumerWidget {
       await db.updateSeedlingStatus(
         seedling.id,
         SeedlingStatus.transplanted.code,
-        successCount: successCount,
         remainingStock: 0,
       );
       if (context.mounted) {
@@ -648,16 +538,22 @@ class _SeedlingCard extends ConsumerWidget {
       notes: '${result.toPlant} plant(s) repiqué(s)',
     );
 
-    // Mise à jour du semi : stock restant, statut conservé en "ready"
-    // tant que le stock n'est pas à 0.
-    final newRemaining = available - result.toPlant;
+    // Mise à jour du semi : stock restant (= disponible − plantés −
+    // échoués). Statut "ready" tant que stock > 0, sinon →
+    // transplanted (tout repiqué) ou failed (tout perdu).
+    final newRemaining =
+        (available - result.toPlant - result.failed).clamp(0, available);
+    final newFailed = (seedling.failedCount ?? 0) + result.failed;
+    final newStatus = newRemaining > 0
+        ? SeedlingStatus.ready.code
+        : result.toPlant > 0
+            ? SeedlingStatus.transplanted.code
+            : SeedlingStatus.failed.code;
     await db.updateSeedlingStatus(
       seedling.id,
-      newRemaining > 0
-          ? SeedlingStatus.ready.code
-          : SeedlingStatus.transplanted.code,
-      successCount: successCount,
+      newStatus,
       remainingStock: newRemaining,
+      failedCount: newFailed,
       gardenId: result.gardenId,
     );
 
@@ -679,11 +575,121 @@ class _SeedlingCard extends ConsumerWidget {
 
 class _TransplantResult {
   final int toPlant;
+  final int failed;
   final int gardenId;
-  const _TransplantResult({required this.toPlant, required this.gardenId});
+  const _TransplantResult({
+    required this.toPlant,
+    required this.failed,
+    required this.gardenId,
+  });
 }
 
-/// Dialog de repiquage : slider de quantité + picker potager.
+class _AdvanceResult {
+  final int success;
+  final int failed;
+  const _AdvanceResult({required this.success, required this.failed});
+}
+
+/// Dialog de transition (germination → ready, etc.) qui demande
+/// ENSEMBLE le nombre de réussites et d'échecs à cette étape. Le
+/// total ne peut excéder le stock initial. Le reste éventuel
+/// (base - success - failed) reste « en attente » conceptuellement
+/// — mais comme on n'avance plus le statut sans repiquage, c'est OK.
+class _AdvanceDialog extends StatefulWidget {
+  final int base;
+  final String nextStatusLabel;
+  const _AdvanceDialog({required this.base, required this.nextStatusLabel});
+
+  @override
+  State<_AdvanceDialog> createState() => _AdvanceDialogState();
+}
+
+class _AdvanceDialogState extends State<_AdvanceDialog> {
+  late int _success;
+  int _failed = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _success = widget.base;
+  }
+
+  int get _max => widget.base;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final remaining = _max - _success - _failed;
+    return AlertDialog(
+      title: Text(loc.seedlingAdvanceDialogTitleV2),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            loc.seedlingAdvanceDialogPromptV2(widget.base),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _CounterRow(
+            label: loc.seedlingAdvanceFieldSuccess,
+            icon: PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
+            color: AppColors.success,
+            value: _success,
+            onChange: (v) {
+              final clamped = v.clamp(0, _max - _failed);
+              setState(() => _success = clamped);
+            },
+            max: _max,
+          ),
+          const SizedBox(height: 10),
+          _CounterRow(
+            label: loc.seedlingAdvanceFieldFailed,
+            icon: PhosphorIcons.xCircle(PhosphorIconsStyle.fill),
+            color: AppColors.error,
+            value: _failed,
+            onChange: (v) {
+              final clamped = v.clamp(0, _max - _success);
+              setState(() => _failed = clamped);
+            },
+            max: _max,
+          ),
+          if (remaining > 0) ...[
+            const SizedBox(height: 10),
+            Text(
+              loc.seedlingAdvanceRemainingHint(remaining),
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textTertiary,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(loc.commonCancel),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(
+            context,
+            _AdvanceResult(success: _success, failed: _failed),
+          ),
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.primary,
+          ),
+          child: Text(loc.seedlingAdvanceDialogConfirm),
+        ),
+      ],
+    );
+  }
+}
+
+/// Dialog de repiquage : combien planter, combien d'échecs depuis la
+/// dernière transition, dans quel potager.
 class _TransplantDialog extends StatefulWidget {
   final int availableStock;
   final List<Garden> gardens;
@@ -701,6 +707,7 @@ class _TransplantDialog extends StatefulWidget {
 
 class _TransplantDialogState extends State<_TransplantDialog> {
   late int _toPlant;
+  int _failed = 0;
   late int _gardenId;
 
   @override
@@ -713,91 +720,85 @@ class _TransplantDialogState extends State<_TransplantDialog> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final maxPlant = widget.availableStock - _failed;
     return AlertDialog(
       title: Text(loc.seedlingTransplantDialogTitle),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            loc.seedlingTransplantDialogStockHint(widget.availableStock),
-            style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            loc.seedlingTransplantDialogCountLabel,
-            style: AppTypography.labelMedium.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Row(
-            children: [
-              IconButton(
-                onPressed: _toPlant > 1
-                    ? () => setState(() => _toPlant--)
-                    : null,
-                icon: Icon(PhosphorIcons.minus(PhosphorIconsStyle.bold)),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              loc.seedlingTransplantDialogStockHint(widget.availableStock),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
               ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '$_toPlant / ${widget.availableStock}',
-                    style: AppTypography.titleLarge.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                    ),
+            ),
+            const SizedBox(height: 16),
+            _CounterRow(
+              label: loc.seedlingTransplantDialogCountLabel,
+              icon: PhosphorIcons.shovel(PhosphorIconsStyle.fill),
+              color: AppColors.primary,
+              value: _toPlant,
+              onChange: (v) {
+                final clamped = v.clamp(0, maxPlant);
+                setState(() => _toPlant = clamped);
+              },
+              max: maxPlant,
+            ),
+            const SizedBox(height: 10),
+            _CounterRow(
+              label: loc.seedlingTransplantFieldFailed,
+              icon: PhosphorIcons.xCircle(PhosphorIconsStyle.fill),
+              color: AppColors.error,
+              value: _failed,
+              onChange: (v) {
+                final clamped =
+                    v.clamp(0, widget.availableStock - _toPlant);
+                setState(() => _failed = clamped);
+              },
+              max: widget.availableStock,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              loc.seedlingTransplantDialogGardenLabel,
+              style: AppTypography.labelMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 6),
+            for (final g in widget.gardens)
+              InkWell(
+                onTap: () => setState(() => _gardenId = g.id),
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 6,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _gardenId == g.id
+                            ? PhosphorIcons.radioButton(
+                                PhosphorIconsStyle.fill,
+                              )
+                            : PhosphorIcons.circle(
+                                PhosphorIconsStyle.regular,
+                              ),
+                        size: 18,
+                        color: _gardenId == g.id
+                            ? AppColors.primary
+                            : AppColors.textTertiary,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(child: Text(g.name)),
+                    ],
                   ),
                 ),
               ),
-              IconButton(
-                onPressed: _toPlant < widget.availableStock
-                    ? () => setState(() => _toPlant++)
-                    : null,
-                icon: Icon(PhosphorIcons.plus(PhosphorIconsStyle.bold)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            loc.seedlingTransplantDialogGardenLabel,
-            style: AppTypography.labelMedium.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 6),
-          for (final g in widget.gardens)
-            InkWell(
-              onTap: () => setState(() => _gardenId = g.id),
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 4,
-                  vertical: 6,
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      _gardenId == g.id
-                          ? PhosphorIcons.radioButton(
-                              PhosphorIconsStyle.fill,
-                            )
-                          : PhosphorIcons.circle(
-                              PhosphorIconsStyle.regular,
-                            ),
-                      size: 18,
-                      color: _gardenId == g.id
-                          ? AppColors.primary
-                          : AppColors.textTertiary,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(child: Text(g.name)),
-                  ],
-                ),
-              ),
-            ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -805,14 +806,82 @@ class _TransplantDialogState extends State<_TransplantDialog> {
           child: Text(loc.commonCancel),
         ),
         FilledButton(
-          onPressed: () => Navigator.pop(
-            context,
-            _TransplantResult(toPlant: _toPlant, gardenId: _gardenId),
-          ),
+          onPressed: _toPlant + _failed > 0
+              ? () => Navigator.pop(
+                    context,
+                    _TransplantResult(
+                      toPlant: _toPlant,
+                      failed: _failed,
+                      gardenId: _gardenId,
+                    ),
+                  )
+              : null,
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
           ),
           child: Text(loc.seedlingTransplantDialogConfirm),
+        ),
+      ],
+    );
+  }
+}
+
+/// Compteur ± réutilisé par les deux dialogs (avance + repiquage)
+/// pour saisir une quantité bornée. Icône colorée à gauche, label,
+/// valeur centrale, boutons − et +.
+class _CounterRow extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final int value;
+  final int max;
+  final ValueChanged<int> onChange;
+
+  const _CounterRow({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.value,
+    required this.max,
+    required this.onChange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: color),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            label,
+            style: AppTypography.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ),
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          onPressed: value > 0 ? () => onChange(value - 1) : null,
+          icon: Icon(PhosphorIcons.minus(PhosphorIconsStyle.bold), size: 16),
+        ),
+        SizedBox(
+          width: 32,
+          child: Center(
+            child: Text(
+              '$value',
+              style: AppTypography.titleSmall.copyWith(
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+          ),
+        ),
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          onPressed: value < max ? () => onChange(value + 1) : null,
+          icon: Icon(PhosphorIcons.plus(PhosphorIconsStyle.bold), size: 16),
         ),
       ],
     );
@@ -887,41 +956,6 @@ class _AdvanceButton extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Bouton « -1 » pour soustraire des échecs du stock disponible.
-class _FailStockButton extends StatelessWidget {
-  final VoidCallback onTap;
-  const _FailStockButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 6,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.error.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(
-              PhosphorIcons.minus(PhosphorIconsStyle.bold),
-              size: 14,
-              color: AppColors.error,
-            ),
           ),
         ),
       ),

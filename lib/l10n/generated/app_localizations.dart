@@ -3110,6 +3110,48 @@ abstract class AppLocalizations {
   /// **'Soustraire'**
   String get seedlingFailureDialogConfirm;
 
+  /// No description provided for @seedlingAdvanceDialogTitleV2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bilan de l\'étape'**
+  String get seedlingAdvanceDialogTitleV2;
+
+  /// No description provided for @seedlingAdvanceDialogPromptV2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur {base} godets, combien ont réussi ? combien ont échoué ?'**
+  String seedlingAdvanceDialogPromptV2(int base);
+
+  /// No description provided for @seedlingAdvanceFieldSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réussis'**
+  String get seedlingAdvanceFieldSuccess;
+
+  /// No description provided for @seedlingAdvanceFieldFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoués'**
+  String get seedlingAdvanceFieldFailed;
+
+  /// No description provided for @seedlingAdvanceRemainingHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} restent en attente (ni réussis, ni échoués).'**
+  String seedlingAdvanceRemainingHint(int count);
+
+  /// No description provided for @seedlingTransplantFieldFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoués depuis'**
+  String get seedlingTransplantFieldFailed;
+
+  /// No description provided for @carnetSeedlingsFailedInline.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} échec{count, plural, one{} other{s}}'**
+  String carnetSeedlingsFailedInline(int count);
+
   /// No description provided for @carnetStatsActivityFertilizing.
   ///
   /// In fr, this message translates to:
