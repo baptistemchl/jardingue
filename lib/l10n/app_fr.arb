@@ -669,6 +669,7 @@
     }
   },
   "seedlingTransplantNoGardenSnack": "Aucun potager pour le repiquage — crée d'abord un potager.",
+  "seedlingTransplantNoGardenOption": "Aucun potager (plantation libre)",
 
   "seedlingFailureDialogTitle": "Déclarer des échecs",
   "seedlingFailureDialogPrompt": "Sur {available} en stock, combien ont échoué ?",

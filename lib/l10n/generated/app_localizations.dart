@@ -3092,6 +3092,12 @@ abstract class AppLocalizations {
   /// **'Aucun potager pour le repiquage — crée d\'abord un potager.'**
   String get seedlingTransplantNoGardenSnack;
 
+  /// No description provided for @seedlingTransplantNoGardenOption.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun potager (plantation libre)'**
+  String get seedlingTransplantNoGardenOption;
+
   /// No description provided for @seedlingFailureDialogTitle.
   ///
   /// In fr, this message translates to:

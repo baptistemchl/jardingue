@@ -481,26 +481,9 @@ class _SeedlingCard extends ConsumerWidget {
         seedling.count ??
         1;
 
-    // Charger la liste des potagers pour le picker.
+    // Charger la liste des potagers pour le picker. Si vide → le
+    // dialog n'aura que l'option « Aucun potager » (plantation libre).
     final gardens = await db.select(db.gardens).get();
-    if (gardens.isEmpty) {
-      // Pas de potager créé → on ne peut pas placer. On informe et on
-      // passe quand même en transplanted pour fermer le cycle.
-      await db.updateSeedlingStatus(
-        seedling.id,
-        SeedlingStatus.transplanted.code,
-        remainingStock: 0,
-      );
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(loc.seedlingTransplantNoGardenSnack),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-      return;
-    }
 
     if (!context.mounted) return;
     final result = await showDialog<_TransplantResult>(
@@ -508,34 +491,44 @@ class _SeedlingCard extends ConsumerWidget {
       builder: (ctx) => _TransplantDialog(
         availableStock: available,
         gardens: gardens,
-        defaultGardenId: seedling.gardenId ?? gardens.first.id,
+        // Pré-sélection : potager du semi sinon premier potager
+        // disponible, sinon null (= « Aucun »).
+        defaultGardenId: seedling.gardenId ??
+            (gardens.isNotEmpty ? gardens.first.id : null),
       ),
     );
     if (result == null) return;
 
-    // Place N GardenPlants dans le potager choisi. Chaque plante
-    // cherche sa propre cellule libre pour éviter les overlaps.
-    for (var i = 0; i < result.toPlant; i++) {
-      final cell = await db.findFirstFreeCell(result.gardenId);
-      await db.addPlantToGarden(
-        GardenPlantsCompanion.insert(
-          gardenId: result.gardenId,
-          plantId: seedling.plantId,
-          gridX: cell.x,
-          gridY: cell.y,
-          plantedAt: Value(DateTime.now()),
-          notes: Value('Issu d\'un semi · $available en stock'),
-        ),
-      );
+    // Place N GardenPlants UNIQUEMENT si un potager a été choisi.
+    // Quand result.gardenId est null, on est en "plantation libre"
+    // (pleine terre hors potager, jardinière non gérée, etc.) — on
+    // crée seulement l'event planting pour la traçabilité, sans
+    // matérialiser de GardenPlant dans une grille.
+    final gardenId = result.gardenId;
+    if (gardenId != null) {
+      for (var i = 0; i < result.toPlant; i++) {
+        final cell = await db.findFirstFreeCell(gardenId);
+        await db.addPlantToGarden(
+          GardenPlantsCompanion.insert(
+            gardenId: gardenId,
+            plantId: seedling.plantId,
+            gridX: cell.x,
+            gridY: cell.y,
+            plantedAt: Value(DateTime.now()),
+            notes: Value('Issu d\'un semi · $available en stock'),
+          ),
+        );
+      }
     }
 
     // Event planting pour le calendrier (1 seul, avec le nombre dans
-    // les notes).
+    // les notes). gardenId nullable accepté.
     await db.insertPlantingEventForSeedling(
       plantId: seedling.plantId,
-      gardenId: result.gardenId,
+      gardenId: gardenId,
       plantedAt: DateTime.now(),
-      notes: '${result.toPlant} plant(s) repiqué(s)',
+      notes: '${result.toPlant} plant(s) repiqué(s)'
+          '${gardenId == null ? ' · hors potager' : ''}',
     );
 
     // Mise à jour du semi : stock restant (= disponible − plantés −
@@ -576,7 +569,9 @@ class _SeedlingCard extends ConsumerWidget {
 class _TransplantResult {
   final int toPlant;
   final int failed;
-  final int gardenId;
+  // Null = plante hors potager (juste un event 'planting' enregistré
+  // pour le calendrier, pas de GardenPlant placé dans la grille).
+  final int? gardenId;
   const _TransplantResult({
     required this.toPlant,
     required this.failed,
@@ -689,11 +684,13 @@ class _AdvanceDialogState extends State<_AdvanceDialog> {
 }
 
 /// Dialog de repiquage : combien planter, combien d'échecs depuis la
-/// dernière transition, dans quel potager.
+/// dernière transition, dans quel potager (option « Aucun » dispo).
 class _TransplantDialog extends StatefulWidget {
   final int availableStock;
   final List<Garden> gardens;
-  final int defaultGardenId;
+  // Null = pré-sélectionner l'option « Aucun potager » (cas : pas de
+  // potager dans l'app, ou semi déjà sans potager).
+  final int? defaultGardenId;
 
   const _TransplantDialog({
     required this.availableStock,
@@ -708,7 +705,9 @@ class _TransplantDialog extends StatefulWidget {
 class _TransplantDialogState extends State<_TransplantDialog> {
   late int _toPlant;
   int _failed = 0;
-  late int _gardenId;
+  // Null = aucun potager (option en tête de liste). Au démarrage on
+  // pré-sélectionne le potager par défaut si disponible.
+  int? _gardenId;
 
   @override
   void initState() {
@@ -767,35 +766,21 @@ class _TransplantDialogState extends State<_TransplantDialog> {
               ),
             ),
             const SizedBox(height: 6),
+            // Option « Aucun potager » d'abord — pour les plantations
+            // libres (pleine terre hors potager, jardinière non gérée
+            // dans l'app, etc.). On crée alors un event planting seul,
+            // sans GardenPlant.
+            _GardenRadioRow(
+              label: loc.seedlingTransplantNoGardenOption,
+              selected: _gardenId == null,
+              onTap: () => setState(() => _gardenId = null),
+              isNone: true,
+            ),
             for (final g in widget.gardens)
-              InkWell(
+              _GardenRadioRow(
+                label: g.name,
+                selected: _gardenId == g.id,
                 onTap: () => setState(() => _gardenId = g.id),
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 6,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        _gardenId == g.id
-                            ? PhosphorIcons.radioButton(
-                                PhosphorIconsStyle.fill,
-                              )
-                            : PhosphorIcons.circle(
-                                PhosphorIconsStyle.regular,
-                              ),
-                        size: 18,
-                        color: _gardenId == g.id
-                            ? AppColors.primary
-                            : AppColors.textTertiary,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(child: Text(g.name)),
-                    ],
-                  ),
-                ),
               ),
           ],
         ),
@@ -822,6 +807,58 @@ class _TransplantDialogState extends State<_TransplantDialog> {
           child: Text(loc.seedlingTransplantDialogConfirm),
         ),
       ],
+    );
+  }
+}
+
+/// Ligne radio « potager » du dialog de repiquage. Variante isNone =
+/// option « Aucun potager » (italique grisée pour la démarquer).
+class _GardenRadioRow extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final bool isNone;
+
+  const _GardenRadioRow({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.isNone = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+        child: Row(
+          children: [
+            Icon(
+              selected
+                  ? PhosphorIcons.radioButton(PhosphorIconsStyle.fill)
+                  : PhosphorIcons.circle(PhosphorIconsStyle.regular),
+              size: 18,
+              color: selected
+                  ? AppColors.primary
+                  : AppColors.textTertiary,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
+                style: isNone
+                    ? AppTypography.bodyMedium.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: AppColors.textSecondary,
+                      )
+                    : null,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

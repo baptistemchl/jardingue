@@ -1784,6 +1784,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aucun potager pour le repiquage — crée d\'abord un potager.';
 
   @override
+  String get seedlingTransplantNoGardenOption =>
+      'Aucun potager (plantation libre)';
+
+  @override
   String get seedlingFailureDialogTitle => 'Déclarer des échecs';
 
   @override

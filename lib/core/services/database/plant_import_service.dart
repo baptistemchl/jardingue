@@ -57,6 +57,15 @@ class PlantImportService {
         debugPrint('Bourrache absente du catalogue, reimport force...');
         return importFromAssets(forceReimport: true);
       }
+      // Fruits rouges potager ajoutes en v1.7.4 (ids 253-261).
+      // Groseillier a maquereaux (id 261) fait sentinelle pour le lot.
+      final groseillierMaquereaux = await _db.getPlantById(261);
+      if (groseillierMaquereaux == null) {
+        debugPrint(
+          'Fruits rouges potager v1.7.4 absents, reimport force...',
+        );
+        return importFromAssets(forceReimport: true);
+      }
       debugPrint('Base de donnees deja peuplee ($existingCount plantes)');
       return existingCount;
     }

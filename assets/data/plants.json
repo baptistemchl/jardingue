@@ -35067,6 +35067,474 @@
         "type": "aucun apport spécifique",
         "notes": "Plante peu exigeante : aucun apport nécessaire en sol de jardin classique. Un excès d'azote nuit à la floraison."
       }
+    },
+    {
+      "common_name": "Fraisier remontant",
+      "latin_name": "Fragaria × ananassa (remontant)",
+      "spacing_cm_between_plants": 35,
+      "spacing_cm_between_rows": 50,
+      "planting_depth_cm": 0,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol humifère, frais, bien drainé. Apport de compost mûr à la plantation.",
+      "red_flags": "Sensible à l'oïdium et à la pourriture grise. Drageonne par stolons : maîtriser pour ne pas envahir.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "août-octobre (idéal) ou mars-avril",
+      "harvest_period": "mai à octobre (cycles successifs)",
+      "sowing_recommendation": "Multiplier par stolons ou plants achetés. Pas de semis (cultivars stériles).",
+      "cultivation_greenhouse": "Possible en serre froide pour avancer la récolte de 2-3 semaines.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Sol ressuyé, ni gelé ni détrempé.",
+      "planting_advice": "Planter le collet au ras du sol (ni enterré, ni au-dessus). Espacer 35 cm en quinconce. Pailler à la paille pour garder les fruits propres.",
+      "care_advice": "Supprimer les premiers stolons pour favoriser la fructification. Renouveler les plants tous les 3 ans.",
+      "id": 253,
+      "main_destroyers": ["limaces", "pucerons", "oiseaux", "drosophila suzukii", "oïdium"],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Arrosage régulier au pied, jamais sur les feuilles. Sol toujours frais.",
+      "soil_type": "Humifère, frais, légèrement acide, bien drainé.",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":null,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Multiplication par stolons.","note":"Le fraisier ne se sème pas, il se multiplie par stolons ou plants."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Oui","April":"Oui","May":"Non","June":"Non","July":"Non","August":"Oui (idéal)","September":"Oui (idéal)","October":"Oui","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":8,"soil_temp_max_celsius":22,"light":"Moyenne","humidity":"Modérée","frost_risk":"Faible.","note":"Plantation idéale fin d'été pour récolte dès le printemps suivant."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Oui","June":"Oui","July":"Oui","August":"Oui","September":"Oui","October":"Oui","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":12,"soil_temp_max_celsius":28,"light":"Moyenne","humidity":"Modérée","frost_risk":"Non.","note":"Cueillir au stade rouge brillant, tous les 2-3 jours."}
+      },
+      "plants_companions": [{"common_name":"Bourrache","companion_id":252}],
+      "plants_antagonists": [],
+      "companion_plant_ids": [252],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Variété idéale pour climats frais. Pailler en hiver.",
+        "temperate": "Climat idéal. Étaler la production de mai à octobre.",
+        "hot": "Souffre dès 30 °C. Mi-ombre obligatoire et paillage épais. Privilégier les variétés résistantes (Charlotte, Mara des Bois)."
+      },
+      "toxicity": null,
+      "practical_tips": "Renouveler le plant tous les 3 ans pour maintenir la productivité. Couper les stolons sauf si on souhaite multiplier. Pailler à la paille pour garder les fruits propres et réduire les limaces.",
+      "fertilization": {"frequency_days":30,"type":"compost mûr","notes":"Apport mensuel léger de mars à septembre."}
+    },
+    {
+      "common_name": "Fraisier des bois",
+      "latin_name": "Fragaria vesca",
+      "spacing_cm_between_plants": 30,
+      "spacing_cm_between_rows": 40,
+      "planting_depth_cm": 0,
+      "sun_exposure": "mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol humifère, frais, neutre à légèrement acide.",
+      "red_flags": "Petits fruits très fragiles, à consommer immédiatement après cueillette.",
+      "sowing_under_cover_period": "février-avril",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "mars-mai ou août-septembre",
+      "harvest_period": "juin à octobre",
+      "sowing_recommendation": "Semer les graines à la surface (lumière nécessaire). Lever lent (4-6 semaines).",
+      "cultivation_greenhouse": "Possible mais inutile : c'est une plante de sous-bois rustique.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Sol frais, mi-ombre idéale.",
+      "planting_advice": "Planter en bordure d'allée, sous des arbustes ou au pied de la haie. Sol toujours frais.",
+      "care_advice": "Pailler avec feuilles mortes. Très peu d'entretien : c'est une plante sauvage.",
+      "id": 254,
+      "main_destroyers": ["limaces", "oiseaux"],
+      "growing_zone": "Mi-ombre, sous-bois",
+      "watering": "Régulier, sol toujours frais.",
+      "soil_type": "Humifère, frais, légèrement acide.",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Oui (sous abri)","March":"Oui (sous abri)","April":"Oui (sous abri)","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":15,"soil_temp_max_celsius":20,"light":"Élevée","humidity":"Modérée","frost_risk":"Sous abri uniquement.","note":"Graines à la surface du substrat (lumière nécessaire)."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Oui","April":"Oui","May":"Oui","June":"Non","July":"Non","August":"Oui","September":"Oui","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":8,"soil_temp_max_celsius":22,"light":"Moyenne","humidity":"Modérée","frost_risk":"Faible.","note":"Idéal en automne pour récolte dès le printemps suivant."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Oui","July":"Oui","August":"Oui","September":"Oui","October":"Oui","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":12,"soil_temp_max_celsius":28,"light":"Moyenne","humidity":"Modérée","frost_risk":"Non.","note":"Cueillette en pleine maturité, fruits très fragiles."}
+      },
+      "plants_companions": [],
+      "plants_antagonists": [],
+      "companion_plant_ids": [],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Très rustique. Plante de sous-bois adaptée aux climats frais et humides.",
+        "temperate": "Conditions idéales. Plante de jardin facile, peu exigeante.",
+        "hot": "Difficile. Doit impérativement être à l'ombre fraîche, paillage épais."
+      },
+      "toxicity": null,
+      "practical_tips": "Idéal en bordure d'allée ou au pied d'arbustes. Multiplie facilement par stolons. Saveur intense, supérieure aux fraises cultivées.",
+      "fertilization": {"frequency_days":0,"type":"compost à la plantation","notes":"Apport minimal, plante sauvage peu exigeante."}
+    },
+    {
+      "common_name": "Mara des bois",
+      "latin_name": "Fragaria × ananassa 'Mara des Bois'",
+      "spacing_cm_between_plants": 35,
+      "spacing_cm_between_rows": 50,
+      "planting_depth_cm": 0,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol humifère, frais. Croisement entre fraisier cultivé et fraisier des bois.",
+      "red_flags": "Production moins abondante qu'un fraisier classique mais saveur exceptionnelle.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "août-octobre ou mars",
+      "harvest_period": "juin à octobre",
+      "sowing_recommendation": "Cultivar stérile : multiplication uniquement par stolons.",
+      "cultivation_greenhouse": "Pas nécessaire.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Sol ressuyé.",
+      "planting_advice": "Plantation en automne idéale. Pailler à la paille.",
+      "care_advice": "Supprimer les premiers stolons pour favoriser la fructification.",
+      "id": 255,
+      "main_destroyers": ["limaces", "pucerons", "oiseaux", "drosophila suzukii"],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Régulier au pied, sol toujours frais.",
+      "soil_type": "Humifère, frais, légèrement acide.",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":null,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Multiplication par stolons.","note":"Cultivar stérile, pas de semis."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Oui","April":"Non","May":"Non","June":"Non","July":"Non","August":"Oui (idéal)","September":"Oui (idéal)","October":"Oui","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":8,"soil_temp_max_celsius":22,"light":"Moyenne","humidity":"Modérée","frost_risk":"Faible.","note":"Plantation automnale idéale."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Oui","July":"Oui","August":"Oui","September":"Oui","October":"Oui","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":12,"soil_temp_max_celsius":28,"light":"Moyenne","humidity":"Modérée","frost_risk":"Non.","note":"Saveur de fraise des bois sur une fraise cultivée. À cueillir bien rouge."}
+      },
+      "plants_companions": [{"common_name":"Bourrache","companion_id":252}],
+      "plants_antagonists": [],
+      "companion_plant_ids": [252],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Très rustique.",
+        "temperate": "Climat idéal.",
+        "hot": "Mi-ombre indispensable, paillage épais."
+      },
+      "toxicity": null,
+      "practical_tips": "Variété remontante au goût exceptionnel rappelant la fraise des bois. Production sur cycles successifs de mai à octobre.",
+      "fertilization": {"frequency_days":30,"type":"compost mûr","notes":"Apport mensuel léger pendant la saison."}
+    },
+    {
+      "common_name": "Framboisier remontant",
+      "latin_name": "Rubus idaeus (remontant)",
+      "spacing_cm_between_plants": 50,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 5,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol humifère, frais, légèrement acide, bien drainé. Paillage épais.",
+      "red_flags": "Drageonne fortement. Variétés remontantes : taille rase en février.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "octobre-mars (hors gel)",
+      "harvest_period": "juin (sur cannes 2 ans) puis août-octobre (sur cannes de l'année)",
+      "sowing_recommendation": "Multiplication par drageons.",
+      "cultivation_greenhouse": "Pas indispensable.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Hors gel.",
+      "planting_advice": "Cannes espacées de 50 cm, palissées sur 2 fils.",
+      "care_advice": "Variantes remontantes : rabattre toutes les cannes au ras du sol en février pour récolte tardive.",
+      "id": 256,
+      "main_destroyers": ["ver de la framboise", "pucerons", "drosophila suzukii", "rouille"],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Régulier en période de fructification.",
+      "soil_type": "Humifère, frais, légèrement acide.",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":null,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Multiplication par drageons.","note":"Pas de semis."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Oui (hors gel)","February":"Oui (hors gel)","March":"Oui","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Oui","November":"Oui","December":"Oui (hors gel)"},
+        "weather_conditions": {"soil_temp_min_celsius":5,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Plante très rustique.","note":"Plantation automnale idéale."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Oui","July":"Oui","August":"Oui","September":"Oui","October":"Oui","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":12,"soil_temp_max_celsius":28,"light":"Moyenne","humidity":"Modérée","frost_risk":"Non.","note":"Double récolte possible : juin sur vieilles cannes + automne sur jeunes."}
+      },
+      "plants_companions": [{"common_name":"Ail","companion_id":8},{"common_name":"Bourrache","companion_id":252}],
+      "plants_antagonists": [{"common_name":"Tomate","antagonist_id":1}],
+      "companion_plant_ids": [8, 252],
+      "antagonistic_plant_ids": [1],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Variété idéale pour climats frais.",
+        "temperate": "Climat idéal. Double récolte juin + août-octobre.",
+        "hot": "Mi-ombre obligatoire au-dessus de 28 °C. Variétés Heritage et Polka résistantes."
+      },
+      "toxicity": null,
+      "practical_tips": "Variétés Heritage, Zeva, Polka : taille rase en février pour récolte d'automne uniquement, ou taille sélective pour double récolte juin + automne.",
+      "fertilization": {"frequency_days":60,"type":"compost + BRF","notes":"Compost au printemps, BRF en paillage permanent."}
+    },
+    {
+      "common_name": "Groseillier rouge",
+      "latin_name": "Ribes rubrum",
+      "spacing_cm_between_plants": 120,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 5,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol humifère, frais, bien drainé.",
+      "red_flags": "Sensible à l'oïdium. Fruits très acidulés, idéaux en confiture/gelée.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "octobre-mars (hors gel)",
+      "harvest_period": "juin-juillet",
+      "sowing_recommendation": "Bouturage ou plants à racines nues.",
+      "cultivation_greenhouse": "Pas nécessaire.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Hors gel.",
+      "planting_advice": "Buisson ou cordon palissé. Conduite en 5-8 branches charpentières.",
+      "care_advice": "Tailler chaque hiver : supprimer le bois de plus de 3 ans au profit des jeunes pousses.",
+      "id": 257,
+      "main_destroyers": ["pucerons", "tenthrède", "oiseaux", "oïdium"],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Modéré, sol toujours frais en été.",
+      "soil_type": "Humifère, frais, bien drainé.",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":null,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Bouturage uniquement.","note":"Multiplication par bouturage en automne."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Oui (hors gel)","February":"Oui (hors gel)","March":"Oui","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Oui","November":"Oui","December":"Oui (hors gel)"},
+        "weather_conditions": {"soil_temp_min_celsius":5,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Très rustique.","note":"Plantation automnale idéale en racines nues."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Oui","July":"Oui","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":12,"soil_temp_max_celsius":28,"light":"Moyenne","humidity":"Modérée","frost_risk":"Non.","note":"Récolter les grappes entières quand 80% sont rouges. Filet anti-oiseaux indispensable."}
+      },
+      "plants_companions": [],
+      "plants_antagonists": [],
+      "companion_plant_ids": [],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Très rustique (-30 °C). Apprécie les climats frais.",
+        "temperate": "Climat idéal.",
+        "hot": "Mi-ombre obligatoire au-dessus de 28 °C, paillage épais."
+      },
+      "toxicity": null,
+      "practical_tips": "Variétés Junifer, Versaillaise rouge, Jonkheer Van Tets. Fructifie sur le bois de 2-3 ans. Protéger les grappes des oiseaux à la maturité.",
+      "fertilization": {"frequency_days":120,"type":"compost mûr","notes":"Apport au printemps et après la récolte."}
+    },
+    {
+      "common_name": "Cassissier",
+      "latin_name": "Ribes nigrum",
+      "spacing_cm_between_plants": 150,
+      "spacing_cm_between_rows": 200,
+      "planting_depth_cm": 5,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol humifère, frais, légèrement acide.",
+      "red_flags": "Évitez de planter près des pins (hôtes de la rouille vésiculeuse). Les feuilles aromatiques font une infusion délicieuse.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "octobre-mars (hors gel)",
+      "harvest_period": "juillet",
+      "sowing_recommendation": "Bouturage en automne.",
+      "cultivation_greenhouse": "Pas nécessaire.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Hors gel.",
+      "planting_advice": "Buisson de 8-10 branches charpentières. Pailler épais.",
+      "care_advice": "Taille post-récolte : supprimer 1/3 des plus vieilles branches grises au profit des jeunes pousses.",
+      "id": 258,
+      "main_destroyers": ["pucerons", "phytopte", "rouille vésiculeuse", "oïdium"],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Régulier, sol toujours frais.",
+      "soil_type": "Humifère, frais, légèrement acide.",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":null,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Bouturage uniquement.","note":"Multiplication par bouturage."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Oui (hors gel)","February":"Oui (hors gel)","March":"Oui","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Oui","November":"Oui","December":"Oui (hors gel)"},
+        "weather_conditions": {"soil_temp_min_celsius":5,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Très rustique.","note":"Plantation automnale idéale."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Oui","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":12,"soil_temp_max_celsius":28,"light":"Moyenne","humidity":"Modérée","frost_risk":"Non.","note":"Récolter les grappes entières quand 80% des baies sont noires."}
+      },
+      "plants_companions": [],
+      "plants_antagonists": [],
+      "companion_plant_ids": [],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Excellente résistance (-25 °C).",
+        "temperate": "Climat idéal.",
+        "hot": "Mi-ombre obligatoire, sol toujours frais. Variété Andega plus tolérante."
+      },
+      "toxicity": null,
+      "practical_tips": "Variétés Noir de Bourgogne, Andega, Géant de Boskoop. Fructifie sur le bois de 1 an : taille post-récolte indispensable.",
+      "fertilization": {"frequency_days":120,"type":"compost + paillage","notes":"Riche en azote au printemps."}
+    },
+    {
+      "common_name": "Mûrier sans épines",
+      "latin_name": "Rubus fruticosus 'Thornless'",
+      "spacing_cm_between_plants": 200,
+      "spacing_cm_between_rows": 250,
+      "planting_depth_cm": 5,
+      "sun_exposure": "plein soleil",
+      "soil_moisture_preference": "normal",
+      "soil_treatment_advice": "Tout sol bien drainé. Très tolérant.",
+      "red_flags": "Les cannes peuvent atteindre 3-4 m : palissage indispensable.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "octobre-mars (hors gel)",
+      "harvest_period": "août-octobre",
+      "sowing_recommendation": "Bouturage ou marcottage.",
+      "cultivation_greenhouse": "Pas nécessaire.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Hors gel.",
+      "planting_advice": "Palisser obligatoirement sur fils horizontaux ou treillis.",
+      "care_advice": "Cannes fructifient en année 2 puis meurent : supprimer après récolte.",
+      "id": 259,
+      "main_destroyers": ["pucerons", "vers du framboisier", "oiseaux"],
+      "growing_zone": "Plein soleil",
+      "watering": "Modéré une fois installé.",
+      "soil_type": "Tout sol bien drainé.",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":null,"soil_temp_max_celsius":null,"light":"Élevée","humidity":"Modérée","frost_risk":"Bouturage uniquement.","note":"Multiplication végétative."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Oui (hors gel)","February":"Oui (hors gel)","March":"Oui","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Oui","November":"Oui","December":"Oui (hors gel)"},
+        "weather_conditions": {"soil_temp_min_celsius":5,"soil_temp_max_celsius":null,"light":"Élevée","humidity":"Modérée","frost_risk":"Rustique (-20 °C).","note":"Plantation idéale en automne."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Oui","September":"Oui","October":"Oui","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":15,"soil_temp_max_celsius":30,"light":"Élevée","humidity":"Modérée","frost_risk":"Non.","note":"Cueillir noir brillant. Production étalée sur 2 mois."}
+      },
+      "plants_companions": [],
+      "plants_antagonists": [],
+      "companion_plant_ids": [],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Rustique (-20 °C). Palisser au mur sud.",
+        "temperate": "Climat idéal. Variétés Loch Ness, Triple Crown, Chester.",
+        "hot": "Très tolérant à la chaleur une fois installé."
+      },
+      "toxicity": null,
+      "practical_tips": "Variétés sans épines fortement conseillées (Loch Ness, Chester, Black Satin). Palisser sur 2-3 fils horizontaux. Drageonne peu.",
+      "fertilization": {"frequency_days":120,"type":"compost mûr","notes":"Apport modéré au printemps."}
+    },
+    {
+      "common_name": "Myrtillier",
+      "latin_name": "Vaccinium corymbosum",
+      "spacing_cm_between_plants": 150,
+      "spacing_cm_between_rows": 200,
+      "planting_depth_cm": 5,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol IMPÉRATIVEMENT acide (pH 4.5-5.5). Terre de bruyère ou substrat acide.",
+      "red_flags": "Acidité du sol indispensable : chlorose en sol calcaire. Arroser uniquement à l'eau de pluie.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "octobre-mars",
+      "harvest_period": "juillet-septembre",
+      "sowing_recommendation": "Bouturage ou plants achetés (sol acide nécessaire).",
+      "cultivation_greenhouse": "Possible en pot de terre de bruyère.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Hors gel.",
+      "planting_advice": "Plantation en bac ou trou rempli de terre de bruyère + écorces de pin.",
+      "care_advice": "Pailler à la sciure de pin ou écorces. Arroser à l'eau non calcaire.",
+      "id": 260,
+      "main_destroyers": ["oiseaux", "drosophila suzukii", "chlorose ferrique"],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Régulier, eau de pluie obligatoire.",
+      "soil_type": "Terre de bruyère, acide (pH 4.5-5.5).",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":null,"soil_temp_max_celsius":null,"light":"Élevée","humidity":"Modérée","frost_risk":"Bouturage uniquement.","note":"Multiplication par bouturage."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Oui (hors gel)","February":"Oui (hors gel)","March":"Oui","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Oui","November":"Oui","December":"Oui (hors gel)"},
+        "weather_conditions": {"soil_temp_min_celsius":5,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Très rustique (-25 °C).","note":"Plantation automnale en terre de bruyère."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Oui","August":"Oui","September":"Oui","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":12,"soil_temp_max_celsius":28,"light":"Moyenne","humidity":"Modérée","frost_risk":"Non.","note":"Cueillir au stade bleu-noir mat (jamais brillant)."}
+      },
+      "plants_companions": [],
+      "plants_antagonists": [],
+      "companion_plant_ids": [],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Idéal en climats frais et humides (Bretagne, Massif Central).",
+        "temperate": "Bonne adaptation si sol acide. En sol calcaire, planter en bac.",
+        "hot": "Mi-ombre obligatoire, paillage épais d'écorces de pin. Variétés Sunshine Blue, Pink Lemonade."
+      },
+      "toxicity": null,
+      "practical_tips": "Acidité du sol = condition n°1. Vérifier au kit pH. Variétés Bluecrop, Patriot, Duke. Planter 2 variétés différentes pour la pollinisation croisée. Filet anti-oiseaux indispensable.",
+      "fertilization": {"frequency_days":90,"type":"engrais terre de bruyère","notes":"Apport spécifique plantes acidophiles, jamais d'amendement calcaire."}
+    },
+    {
+      "common_name": "Groseillier à maquereaux",
+      "latin_name": "Ribes uva-crispa",
+      "spacing_cm_between_plants": 120,
+      "spacing_cm_between_rows": 150,
+      "planting_depth_cm": 5,
+      "sun_exposure": "soleil à mi-ombre",
+      "soil_moisture_preference": "frais",
+      "soil_treatment_advice": "Sol humifère, frais, bien drainé.",
+      "red_flags": "Branches très épineuses : porter des gants.",
+      "sowing_under_cover_period": "",
+      "sowing_open_ground_period": "",
+      "transplanting_period": "octobre-mars",
+      "harvest_period": "juin-juillet",
+      "sowing_recommendation": "Bouturage en automne.",
+      "cultivation_greenhouse": "Pas nécessaire.",
+      "planting_min_temp_c": 5,
+      "planting_weather_conditions": "Hors gel.",
+      "planting_advice": "Buisson palissé ou cordon. Porter des gants épais (épines).",
+      "care_advice": "Tailler en hiver. Cueillir progressivement : les gros fruits verts cuits sont délicieux, les rouges crus.",
+      "id": 261,
+      "main_destroyers": ["pucerons", "sphinx du groseillier", "oïdium américain"],
+      "growing_zone": "Soleil à mi-ombre",
+      "watering": "Régulier, sol toujours frais.",
+      "soil_type": "Humifère, frais, bien drainé.",
+      "sowing_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":null,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Bouturage uniquement.","note":"Multiplication par bouturage."}
+      },
+      "planting_calendar": {
+        "monthly_period": {"January":"Oui (hors gel)","February":"Oui (hors gel)","March":"Oui","April":"Non","May":"Non","June":"Non","July":"Non","August":"Non","September":"Non","October":"Oui","November":"Oui","December":"Oui (hors gel)"},
+        "weather_conditions": {"soil_temp_min_celsius":5,"soil_temp_max_celsius":null,"light":"Moyenne","humidity":"Modérée","frost_risk":"Très rustique (-25 °C).","note":"Plantation automnale idéale."}
+      },
+      "harvest_calendar": {
+        "monthly_period": {"January":"Non","February":"Non","March":"Non","April":"Non","May":"Non","June":"Oui","July":"Oui","August":"Non","September":"Non","October":"Non","November":"Non","December":"Non"},
+        "weather_conditions": {"soil_temp_min_celsius":12,"soil_temp_max_celsius":28,"light":"Moyenne","humidity":"Modérée","frost_risk":"Non.","note":"Cueillette progressive : verts cuits, rouges crus."}
+      },
+      "plants_companions": [],
+      "plants_antagonists": [],
+      "companion_plant_ids": [],
+      "antagonistic_plant_ids": [],
+      "category_code": "fruit",
+      "category_label": "Fruit",
+      "climate_adaptation": {
+        "cold": "Très rustique (-25 °C). Apprécie les climats frais.",
+        "temperate": "Climat idéal.",
+        "hot": "Mi-ombre obligatoire."
+      },
+      "toxicity": null,
+      "practical_tips": "Variétés Hinnonmaki Rouge, Captivator, Pax (sans épines). Récolter progressivement. Branches très épineuses : taille avec gants épais.",
+      "fertilization": {"frequency_days":120,"type":"compost mûr","notes":"Apport au printemps."}
     }
   ]
 }
