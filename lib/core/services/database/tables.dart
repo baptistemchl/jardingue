@@ -239,6 +239,124 @@ class CompletedPlanningTasks extends Table {
   String get tableName => 'completed_planning_tasks';
 }
 
+/// Récoltes (Carnet de bord) — saisies datées avec quantité + unité.
+///
+/// Une récolte référence à la fois le GardenPlant (qui peut être supprimé)
+/// et le Plant catalogue (toujours conservé) pour garder l'historique
+/// nominal même quand le pied disparaît du potager. gardenId est aussi
+/// nullable pour permettre des récoltes hors potager (cueillette).
+class Harvests extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Pied précis qui a produit (nullable car peut être supprimé).
+  IntColumn get gardenPlantId =>
+      integer().nullable().references(GardenPlants, #id)();
+
+  /// Plante du catalogue (toujours conservée — clé de fallback pour l'agrégat).
+  IntColumn get plantId => integer().references(Plants, #id)();
+
+  /// Potager d'origine (nullable pour cueillette).
+  IntColumn get gardenId => integer().nullable().references(Gardens, #id)();
+
+  /// Quand la récolte a eu lieu.
+  DateTimeColumn get harvestedAt => dateTime()();
+
+  /// Quantité. Real pour permettre des poids en kg (0.250, 1.5...).
+  RealColumn get quantity => real()();
+
+  /// Unité : "g", "kg", "piece" (unités/pièces), "bunch" (botte/poignée).
+  TextColumn get unit => text()();
+
+  TextColumn get note => text().nullable()();
+
+  /// Snapshot du nom de la plante au moment de la récolte (v21+).
+  /// Permet de préserver l'historique même si la Plant catalogue est
+  /// supprimée — on affiche le snapshot et un marqueur « plante
+  /// supprimée » à l'UI.
+  TextColumn get plantNameSnapshot => text().nullable()();
+
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+/// Semis en cours (Carnet de bord) — suivi de graines avant placement final.
+///
+/// Le statut suit le cycle de vie : germinating → readyToTransplant →
+/// transplanted. failed pour les semis ratés (utile pour stats). gardenId
+/// nullable car certains semis sont en attente d'affectation à un potager.
+class Seedlings extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Plante du catalogue.
+  IntColumn get plantId => integer().references(Plants, #id)();
+
+  /// Potager d'attribution prévu (nullable = pas encore décidé).
+  IntColumn get gardenId => integer().nullable().references(Gardens, #id)();
+
+  DateTimeColumn get sowedAt => dateTime()();
+
+  /// Date prévue de repiquage (calculée ou saisie).
+  DateTimeColumn get expectedTransplantAt => dateTime().nullable()();
+
+  /// Statut courant : "germinating", "ready", "transplanted", "failed".
+  TextColumn get status =>
+      text().withDefault(const Constant('germinating'))();
+
+  /// Nombre de godets/graines semés (info quantitative pour stats).
+  IntColumn get count => integer().nullable()();
+
+  /// Nombre de godets qui ont effectivement « réussi » au stade actuel
+  /// (germination, repiquage, etc.). Met à jour à chaque transition de
+  /// statut via le dialog. Null = pas encore renseigné. (v21+)
+  IntColumn get successCount => integer().nullable()();
+
+  /// Stock encore disponible pour repiquage (v22+). À la germination,
+  /// remainingStock = successCount. À chaque repiquage partiel,
+  /// remainingStock diminue du nombre placé. Quand remainingStock
+  /// atteint 0, le semi passe en statut « transplanted ». Null =
+  /// jamais touché au stock.
+  IntColumn get remainingStock => integer().nullable()();
+
+  /// Nombre cumulé d'échecs déclarés au fil des transitions (v23+).
+  /// L'utilisateur peut renseigner les échecs à chaque dialog de
+  /// transition (germination, repiquage) — on accumule ici pour les
+  /// stats annuelles.
+  IntColumn get failedCount => integer().nullable()();
+
+  /// Snapshot du nom de la plante au moment du semis (v21+).
+  TextColumn get plantNameSnapshot => text().nullable()();
+
+  TextColumn get note => text().nullable()();
+
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+/// Carnet de notes libre (Carnet de bord) — entrées datées, optionnellement
+/// rattachées à un potager.
+class JournalEntries extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Potager associé (nullable = note générale).
+  IntColumn get gardenId => integer().nullable().references(Gardens, #id)();
+
+  /// Date de l'entrée (peut être antidatée par l'utilisateur).
+  DateTimeColumn get entryDate => dateTime()();
+
+  /// Titre court optionnel.
+  TextColumn get title => text().nullable()();
+
+  /// Contenu libre.
+  TextColumn get content => text()();
+
+  /// Tags CSV optionnels (ex: "récolte,problème,limaces").
+  TextColumn get tags => text().nullable()();
+
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+}
+
 /// Table pour les événements du jardin (semis, plantation, arrosage, récolte,
 /// entretien : engrais, paillage, anti-limaces, traitement).
 class GardenEvents extends Table {

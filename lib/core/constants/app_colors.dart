@@ -139,6 +139,28 @@ abstract final class AppColors {
   static const Color sunShade = Color(0xFF8DB38B);
 
   // ============================================
+  // CARNET DE BORD (drawer — palette Jardingue)
+  // ============================================
+
+  /// Fond des pages du carnet — blanc cassé crème
+  static const Color carnetPaper = Color(0xFFFAF8F2);
+
+  /// Surface des cartes intérieures
+  static const Color carnetSurface = Color(0xFFFFFFFF);
+
+  /// Couverture du carnet / onglets actifs — vert sauge primary
+  static const Color carnetCover = primary;
+
+  /// Onglets inactifs — vert sauge plus pâle
+  static const Color carnetCoverMuted = Color(0xFFB7CCB8);
+
+  /// Accent jaune soleil pour touches déco (cœur, étoiles)
+  static const Color carnetAccent = secondary;
+
+  /// Filets de séparation
+  static const Color carnetLine = Color(0x1F4A7C59);
+
+  // ============================================
   // GRADIENTS
   // ============================================
 

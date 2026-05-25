@@ -483,5 +483,249 @@
     }
   },
   "templateCustomTitle": "Personnalisé",
-  "templateCustomSubtitle": "Potager vierge"
+  "templateCustomSubtitle": "Potager vierge",
+
+  "carnetTitle": "Carnet de bord",
+  "carnetOpenA11y": "Ouvrir le carnet de bord",
+  "carnetTabHarvests": "Récoltes",
+  "carnetTabSeedlings": "Semis",
+  "carnetTabJournal": "Carnet",
+  "carnetTabStats": "Stats",
+  "carnetHarvestsEmptyTitle": "Aucune récolte enregistrée",
+  "carnetHarvestsEmptySubtitle": "Cette section accueillera bientôt vos cueillettes, quantités et historique de la saison.",
+  "carnetSeedlingsEmptyTitle": "Aucun semis en cours",
+  "carnetSeedlingsEmptySubtitle": "Vous pourrez bientôt suivre vos semis, dates de germination et repiquages.",
+  "carnetJournalEmptyTitle": "Carnet vierge",
+  "carnetJournalEmptySubtitle": "Ajoutez vos observations, idées et anecdotes au fil des saisons.",
+  "carnetStatsEmptyTitle": "Pas encore de statistiques",
+  "carnetStatsEmptySubtitle": "Les bilans de saison s'afficheront ici dès que vous aurez enregistré des récoltes.",
+
+  "carnetTabSettings": "Réglages",
+  "carnetSettingsMoreSection": "Plus",
+  "carnetSettingsPremiumTitle": "Sauvegarde Premium",
+  "carnetSettingsPremiumSubtitle": "Cloud, restauration multi-appareils",
+  "carnetSettingsAboutTitle": "À propos de Jardingue",
+  "carnetSettingsAboutSubtitle": "Crédits, contact, mentions légales",
+  "carnetSettingsThanksMessage": "Merci d'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.",
+
+  "carnetTabAbout": "À propos",
+
+  "carnetHarvestsTitleYear": "Récoltes {year}",
+  "@carnetHarvestsTitleYear": { "placeholders": { "year": { "type": "int" } } },
+  "carnetHarvestsSummaryLine": "{plantCount} plantes • {totalHarvests} récoltes",
+  "@carnetHarvestsSummaryLine": {
+    "placeholders": {
+      "plantCount": { "type": "int" },
+      "totalHarvests": { "type": "int" }
+    }
+  },
+  "carnetHarvestsCardSubtitle": "{count} récolte{count, plural, one{} other{s}} • {lastDate}",
+  "@carnetHarvestsCardSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "lastDate": { "type": "String" }
+    }
+  },
+  "carnetHarvestsAddButton": "Nouvelle récolte",
+
+  "addHarvestSheetTitle": "Enregistrer une récolte",
+  "addHarvestPlantLabel": "Plante",
+  "addHarvestPlantSearchHint": "Chercher : tomate, carotte…",
+  "addHarvestPlantNoResult": "Aucune plante trouvée.",
+  "addHarvestDateLabel": "Date",
+  "addHarvestQuantityLabel": "Quantité",
+  "addHarvestUnitLabel": "Unité",
+  "addHarvestUnitGrams": "g",
+  "addHarvestUnitKilos": "kg",
+  "addHarvestUnitPieces": "pièces",
+  "addHarvestUnitBunches": "bottes",
+  "addHarvestNoteLabel": "Note (optionnel)",
+  "addHarvestSaveButton": "Enregistrer la récolte",
+
+  "dateRelativeToday": "aujourd'hui",
+  "dateRelativeYesterday": "hier",
+  "dateRelativeDaysAgo": "il y a {days} j",
+  "@dateRelativeDaysAgo": { "placeholders": { "days": { "type": "int" } } },
+
+  "carnetSeedlingsAddButton": "Nouveau semis",
+  "carnetSeedlingsStatusGerminating": "En germination",
+  "carnetSeedlingsStatusReady": "Prêts à repiquer",
+  "carnetSeedlingsStatusTransplanted": "Repiqués",
+  "carnetSeedlingsStatusFailed": "Échoués",
+  "carnetSeedlingsArchiveTitle": "Archive",
+  "carnetSeedlingsUnknownPlant": "Plante supprimée",
+  "carnetSeedlingsSowedOn": "Semé le {date}",
+  "@carnetSeedlingsSowedOn": { "placeholders": { "date": { "type": "String" } } },
+  "carnetSeedlingsCountInline": "{count} godet{count, plural, one{} other{s}}",
+  "@carnetSeedlingsCountInline": { "placeholders": { "count": { "type": "int" } } },
+
+  "addSeedlingSheetTitle": "Enregistrer un semis",
+  "addSeedlingPlantLabel": "Plante semée",
+  "addSeedlingSowedAtLabel": "Date du semis",
+  "addSeedlingCountLabel": "Nombre de godets / graines (optionnel)",
+  "addSeedlingCountHint": "Ex : 12",
+  "addSeedlingNoteLabel": "Note (optionnel)",
+  "addSeedlingSaveButton": "Enregistrer le semis",
+
+  "commonCancel": "Annuler",
+  "commonDelete": "Supprimer",
+
+  "carnetJournalAddButton": "Nouvelle note",
+  "carnetJournalEditedLabel": "modifié",
+  "carnetJournalDeleteTitle": "Supprimer cette note ?",
+  "carnetJournalDeleteMessage": "Cette action est définitive.",
+
+  "addJournalSheetTitle": "Nouvelle note",
+  "addJournalEditTitle": "Modifier la note",
+  "addJournalDateLabel": "Date",
+  "addJournalTitleLabel": "Titre (optionnel)",
+  "addJournalTitleHint": "Ex : Plantation des tomates",
+  "addJournalContentLabel": "Note",
+  "addJournalContentHint": "Écrivez librement votre observation, idée, succès ou ennui du jour…",
+  "addJournalSaveButton": "Enregistrer",
+  "addJournalUpdateButton": "Mettre à jour",
+
+  "carnetStatsHeroSeasonLabel": "SAISON {year}",
+  "@carnetStatsHeroSeasonLabel": { "placeholders": { "year": { "type": "int" } } },
+  "carnetStatsHeroSubtitle": "{count} récolte{count, plural, one{} other{s}} enregistrée{count, plural, one{} other{s}}",
+  "@carnetStatsHeroSubtitle": { "placeholders": { "count": { "type": "int" } } },
+  "carnetStatsHeroPieces": "{count} pièces",
+  "@carnetStatsHeroPieces": { "placeholders": { "count": { "type": "int" } } },
+  "carnetStatsHeroBunches": "{count} bottes",
+  "@carnetStatsHeroBunches": { "placeholders": { "count": { "type": "int" } } },
+
+  "carnetStatsPlantOfTheYearLabel": "STAR DE L'ANNÉE",
+  "carnetStatsPlantOfTheYearCount": "{count} récoltes cette saison",
+  "@carnetStatsPlantOfTheYearCount": { "placeholders": { "count": { "type": "int" } } },
+
+  "carnetStatsMonthlyTitle": "RÉCOLTES PAR MOIS",
+  "carnetStatsTopPlantsTitle": "TOP DES PLANTES",
+
+  "carnetStatsSeedlingsTitle": "Semis de l'année",
+  "carnetStatsSeedlingsRingLabel": "taux de réussite",
+  "carnetStatsSeedlingsTransplanted": "Repiqués",
+  "carnetStatsSeedlingsFailed": "Échoués",
+  "carnetStatsSeedlingsInProgress": "En cours",
+
+  "carnetStatsCounterNotes": "Notes",
+  "carnetStatsCounterSeedlings": "Semis",
+
+  "premiumRestoreSuccess": "Achat Premium restauré.",
+  "premiumRestoreNothingFound": "Aucun achat trouvé sur ce compte Play Store.",
+  "premiumRestoreError": "Impossible de restaurer.",
+
+  "addHarvestEditTitle": "Modifier la récolte",
+  "addHarvestUpdateButton": "Mettre à jour",
+
+  "harvestHistorySheetSubtitle": "Détail des récoltes en {unit}",
+  "@harvestHistorySheetSubtitle": { "placeholders": { "unit": { "type": "String" } } },
+  "harvestHistoryDeleteTitle": "Supprimer cette récolte ?",
+  "harvestHistoryDeleteMessage": "Cette action est définitive.",
+
+  "harvestFilterMonth": "Mois",
+  "harvestFilterPlant": "Plante",
+  "harvestFilterUnit": "Unité",
+  "harvestFilterAllMonths": "Tous les mois",
+  "harvestFilterAllPlants": "Toutes les plantes",
+  "harvestFilterAllUnits": "Toutes les unités",
+  "harvestFilterNoMatchTitle": "Aucune récolte ne correspond",
+  "harvestFilterNoMatchSubtitle": "Essayez de retirer un filtre pour élargir la sélection.",
+  "harvestFilterReset": "Réinitialiser les filtres",
+
+  "carnetStatsActivitiesTitle": "ACTIVITÉS DU JARDIN",
+  "carnetStatsActivityWatering": "Arrosages",
+  "carnetStatsActivityWateringPlants": "Arrosages (plants)",
+  "carnetStatsActivityWateringSeedlings": "Arrosages (semis)",
+  "seedlingWateredSnack": "Arrosage du semi enregistré 💧",
+
+  "carnetHeaderHarvests": "Mes récoltes",
+  "carnetHeaderSeedlings": "Mes semis",
+  "carnetHeaderJournal": "Carnet de notes",
+  "carnetHeaderStats": "Bilan de la saison",
+  "carnetHeaderSettings": "Réglages",
+  "carnetHeaderAbout": "À propos de Jardingue",
+
+  "carnetSeedlingsInStock": "{remaining} / {total} en stock",
+  "@carnetSeedlingsInStock": {
+    "placeholders": {
+      "remaining": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "seedlingTransplantDialogTitle": "Repiquage",
+  "seedlingTransplantDialogStockHint": "Tu as {stock} plant(s) prêt(s) à repiquer.",
+  "@seedlingTransplantDialogStockHint": {
+    "placeholders": { "stock": { "type": "int" } }
+  },
+  "seedlingTransplantDialogCountLabel": "Combien planter maintenant ?",
+  "seedlingTransplantDialogGardenLabel": "Dans quel potager ?",
+  "seedlingTransplantDialogConfirm": "Planter",
+  "seedlingTransplantPartialSnack": "{planted} repiqué(s) — reste {remaining} en stock.",
+  "@seedlingTransplantPartialSnack": {
+    "placeholders": {
+      "planted": { "type": "int" },
+      "remaining": { "type": "int" }
+    }
+  },
+  "seedlingTransplantNoGardenSnack": "Aucun potager pour le repiquage — crée d'abord un potager.",
+  "seedlingTransplantNoGardenOption": "Aucun potager (plantation libre)",
+
+  "seedlingFailureDialogTitle": "Déclarer des échecs",
+  "seedlingFailureDialogPrompt": "Sur {available} en stock, combien ont échoué ?",
+  "@seedlingFailureDialogPrompt": {
+    "placeholders": { "available": { "type": "int" } }
+  },
+  "seedlingFailureDialogConfirm": "Soustraire",
+
+  "seedlingAdvanceDialogTitleV2": "Bilan de l'étape",
+  "seedlingAdvanceDialogPromptV2": "Sur {base} godets, combien ont réussi ? combien ont échoué ?",
+  "@seedlingAdvanceDialogPromptV2": {
+    "placeholders": { "base": { "type": "int" } }
+  },
+  "seedlingAdvanceFieldSuccess": "Réussis",
+  "seedlingAdvanceFieldFailed": "Échoués",
+  "seedlingAdvanceRemainingHint": "{count} restent en attente (ni réussis, ni échoués).",
+  "@seedlingAdvanceRemainingHint": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "seedlingTransplantFieldFailed": "Échoués depuis",
+  "carnetSeedlingsFailedInline": "{count} échec{count, plural, one{} other{s}}",
+  "@carnetSeedlingsFailedInline": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "carnetStatsActivityFertilizing": "Fertilisations",
+  "carnetStatsActivitySowing": "Semis enregistrés",
+  "carnetStatsActivityPlanting": "Plantations",
+  "carnetStatsActivityMulching": "Paillages",
+  "carnetStatsActivityOtherCare": "Autres soins",
+
+  "carnetStatsTopSortWeight": "Poids",
+  "carnetStatsTopSortCount": "Récoltes",
+  "carnetStatsTopSortPieces": "Pièces",
+  "carnetStatsTopSortBunches": "Bottes",
+
+  "carnetSeedlingsSuccessRatio": "{success} / {total} godets",
+  "@carnetSeedlingsSuccessRatio": {
+    "placeholders": {
+      "success": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "seedlingAdvanceDialogTitle": "Passer à : {status}",
+  "@seedlingAdvanceDialogTitle": {
+    "placeholders": { "status": { "type": "String" } }
+  },
+  "seedlingAdvanceDialogPrompt": "Sur {base} godets, combien sont passés à cette étape ?",
+  "@seedlingAdvanceDialogPrompt": {
+    "placeholders": { "base": { "type": "int" } }
+  },
+  "seedlingAdvanceDialogConfirm": "Confirmer",
+
+  "carnetPlantDeletedBadge": "supprimée",
+
+  "addSeedlingGardenLabel": "Potager (optionnel)",
+  "addSeedlingGardenNone": "Aucun",
+  "seedlingTransplantedPlacedSnack": "Repiqué dans le potager — pense à repositionner si besoin."
 }

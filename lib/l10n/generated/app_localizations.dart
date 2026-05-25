@@ -2347,6 +2347,918 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Potager vierge'**
   String get templateCustomSubtitle;
+
+  /// No description provided for @carnetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet de bord'**
+  String get carnetTitle;
+
+  /// No description provided for @carnetOpenA11y.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir le carnet de bord'**
+  String get carnetOpenA11y;
+
+  /// No description provided for @carnetTabHarvests.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récoltes'**
+  String get carnetTabHarvests;
+
+  /// No description provided for @carnetTabSeedlings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis'**
+  String get carnetTabSeedlings;
+
+  /// No description provided for @carnetTabJournal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet'**
+  String get carnetTabJournal;
+
+  /// No description provided for @carnetTabStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stats'**
+  String get carnetTabStats;
+
+  /// No description provided for @carnetHarvestsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune récolte enregistrée'**
+  String get carnetHarvestsEmptyTitle;
+
+  /// No description provided for @carnetHarvestsEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette section accueillera bientôt vos cueillettes, quantités et historique de la saison.'**
+  String get carnetHarvestsEmptySubtitle;
+
+  /// No description provided for @carnetSeedlingsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun semis en cours'**
+  String get carnetSeedlingsEmptyTitle;
+
+  /// No description provided for @carnetSeedlingsEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous pourrez bientôt suivre vos semis, dates de germination et repiquages.'**
+  String get carnetSeedlingsEmptySubtitle;
+
+  /// No description provided for @carnetJournalEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet vierge'**
+  String get carnetJournalEmptyTitle;
+
+  /// No description provided for @carnetJournalEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez vos observations, idées et anecdotes au fil des saisons.'**
+  String get carnetJournalEmptySubtitle;
+
+  /// No description provided for @carnetStatsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de statistiques'**
+  String get carnetStatsEmptyTitle;
+
+  /// No description provided for @carnetStatsEmptySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les bilans de saison s\'afficheront ici dès que vous aurez enregistré des récoltes.'**
+  String get carnetStatsEmptySubtitle;
+
+  /// No description provided for @carnetTabSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages'**
+  String get carnetTabSettings;
+
+  /// No description provided for @carnetSettingsMoreSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus'**
+  String get carnetSettingsMoreSection;
+
+  /// No description provided for @carnetSettingsPremiumTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde Premium'**
+  String get carnetSettingsPremiumTitle;
+
+  /// No description provided for @carnetSettingsPremiumSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cloud, restauration multi-appareils'**
+  String get carnetSettingsPremiumSubtitle;
+
+  /// No description provided for @carnetSettingsAboutTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos de Jardingue'**
+  String get carnetSettingsAboutTitle;
+
+  /// No description provided for @carnetSettingsAboutSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédits, contact, mentions légales'**
+  String get carnetSettingsAboutSubtitle;
+
+  /// No description provided for @carnetSettingsThanksMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Merci d\'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.'**
+  String get carnetSettingsThanksMessage;
+
+  /// No description provided for @carnetTabAbout.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos'**
+  String get carnetTabAbout;
+
+  /// No description provided for @carnetHarvestsTitleYear.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récoltes {year}'**
+  String carnetHarvestsTitleYear(int year);
+
+  /// No description provided for @carnetHarvestsSummaryLine.
+  ///
+  /// In fr, this message translates to:
+  /// **'{plantCount} plantes • {totalHarvests} récoltes'**
+  String carnetHarvestsSummaryLine(int plantCount, int totalHarvests);
+
+  /// No description provided for @carnetHarvestsCardSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} récolte{count, plural, one{} other{s}} • {lastDate}'**
+  String carnetHarvestsCardSubtitle(int count, String lastDate);
+
+  /// No description provided for @carnetHarvestsAddButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle récolte'**
+  String get carnetHarvestsAddButton;
+
+  /// No description provided for @addHarvestSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer une récolte'**
+  String get addHarvestSheetTitle;
+
+  /// No description provided for @addHarvestPlantLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plante'**
+  String get addHarvestPlantLabel;
+
+  /// No description provided for @addHarvestPlantSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chercher : tomate, carotte…'**
+  String get addHarvestPlantSearchHint;
+
+  /// No description provided for @addHarvestPlantNoResult.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune plante trouvée.'**
+  String get addHarvestPlantNoResult;
+
+  /// No description provided for @addHarvestDateLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get addHarvestDateLabel;
+
+  /// No description provided for @addHarvestQuantityLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get addHarvestQuantityLabel;
+
+  /// No description provided for @addHarvestUnitLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Unité'**
+  String get addHarvestUnitLabel;
+
+  /// No description provided for @addHarvestUnitGrams.
+  ///
+  /// In fr, this message translates to:
+  /// **'g'**
+  String get addHarvestUnitGrams;
+
+  /// No description provided for @addHarvestUnitKilos.
+  ///
+  /// In fr, this message translates to:
+  /// **'kg'**
+  String get addHarvestUnitKilos;
+
+  /// No description provided for @addHarvestUnitPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'pièces'**
+  String get addHarvestUnitPieces;
+
+  /// No description provided for @addHarvestUnitBunches.
+  ///
+  /// In fr, this message translates to:
+  /// **'bottes'**
+  String get addHarvestUnitBunches;
+
+  /// No description provided for @addHarvestNoteLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note (optionnel)'**
+  String get addHarvestNoteLabel;
+
+  /// No description provided for @addHarvestSaveButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer la récolte'**
+  String get addHarvestSaveButton;
+
+  /// No description provided for @dateRelativeToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'aujourd\'hui'**
+  String get dateRelativeToday;
+
+  /// No description provided for @dateRelativeYesterday.
+  ///
+  /// In fr, this message translates to:
+  /// **'hier'**
+  String get dateRelativeYesterday;
+
+  /// No description provided for @dateRelativeDaysAgo.
+  ///
+  /// In fr, this message translates to:
+  /// **'il y a {days} j'**
+  String dateRelativeDaysAgo(int days);
+
+  /// No description provided for @carnetSeedlingsAddButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau semis'**
+  String get carnetSeedlingsAddButton;
+
+  /// No description provided for @carnetSeedlingsStatusGerminating.
+  ///
+  /// In fr, this message translates to:
+  /// **'En germination'**
+  String get carnetSeedlingsStatusGerminating;
+
+  /// No description provided for @carnetSeedlingsStatusReady.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prêts à repiquer'**
+  String get carnetSeedlingsStatusReady;
+
+  /// No description provided for @carnetSeedlingsStatusTransplanted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repiqués'**
+  String get carnetSeedlingsStatusTransplanted;
+
+  /// No description provided for @carnetSeedlingsStatusFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoués'**
+  String get carnetSeedlingsStatusFailed;
+
+  /// No description provided for @carnetSeedlingsArchiveTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archive'**
+  String get carnetSeedlingsArchiveTitle;
+
+  /// No description provided for @carnetSeedlingsUnknownPlant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plante supprimée'**
+  String get carnetSeedlingsUnknownPlant;
+
+  /// No description provided for @carnetSeedlingsSowedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semé le {date}'**
+  String carnetSeedlingsSowedOn(String date);
+
+  /// No description provided for @carnetSeedlingsCountInline.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} godet{count, plural, one{} other{s}}'**
+  String carnetSeedlingsCountInline(int count);
+
+  /// No description provided for @addSeedlingSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer un semis'**
+  String get addSeedlingSheetTitle;
+
+  /// No description provided for @addSeedlingPlantLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plante semée'**
+  String get addSeedlingPlantLabel;
+
+  /// No description provided for @addSeedlingSowedAtLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date du semis'**
+  String get addSeedlingSowedAtLabel;
+
+  /// No description provided for @addSeedlingCountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nombre de godets / graines (optionnel)'**
+  String get addSeedlingCountLabel;
+
+  /// No description provided for @addSeedlingCountHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex : 12'**
+  String get addSeedlingCountHint;
+
+  /// No description provided for @addSeedlingNoteLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note (optionnel)'**
+  String get addSeedlingNoteLabel;
+
+  /// No description provided for @addSeedlingSaveButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le semis'**
+  String get addSeedlingSaveButton;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get commonCancel;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get commonDelete;
+
+  /// No description provided for @carnetJournalAddButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle note'**
+  String get carnetJournalAddButton;
+
+  /// No description provided for @carnetJournalEditedLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'modifié'**
+  String get carnetJournalEditedLabel;
+
+  /// No description provided for @carnetJournalDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette note ?'**
+  String get carnetJournalDeleteTitle;
+
+  /// No description provided for @carnetJournalDeleteMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est définitive.'**
+  String get carnetJournalDeleteMessage;
+
+  /// No description provided for @addJournalSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle note'**
+  String get addJournalSheetTitle;
+
+  /// No description provided for @addJournalEditTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la note'**
+  String get addJournalEditTitle;
+
+  /// No description provided for @addJournalDateLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get addJournalDateLabel;
+
+  /// No description provided for @addJournalTitleLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre (optionnel)'**
+  String get addJournalTitleLabel;
+
+  /// No description provided for @addJournalTitleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex : Plantation des tomates'**
+  String get addJournalTitleHint;
+
+  /// No description provided for @addJournalContentLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note'**
+  String get addJournalContentLabel;
+
+  /// No description provided for @addJournalContentHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrivez librement votre observation, idée, succès ou ennui du jour…'**
+  String get addJournalContentHint;
+
+  /// No description provided for @addJournalSaveButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get addJournalSaveButton;
+
+  /// No description provided for @addJournalUpdateButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à jour'**
+  String get addJournalUpdateButton;
+
+  /// No description provided for @carnetStatsHeroSeasonLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'SAISON {year}'**
+  String carnetStatsHeroSeasonLabel(int year);
+
+  /// No description provided for @carnetStatsHeroSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} récolte{count, plural, one{} other{s}} enregistrée{count, plural, one{} other{s}}'**
+  String carnetStatsHeroSubtitle(int count);
+
+  /// No description provided for @carnetStatsHeroPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} pièces'**
+  String carnetStatsHeroPieces(int count);
+
+  /// No description provided for @carnetStatsHeroBunches.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} bottes'**
+  String carnetStatsHeroBunches(int count);
+
+  /// No description provided for @carnetStatsPlantOfTheYearLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'STAR DE L\'ANNÉE'**
+  String get carnetStatsPlantOfTheYearLabel;
+
+  /// No description provided for @carnetStatsPlantOfTheYearCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} récoltes cette saison'**
+  String carnetStatsPlantOfTheYearCount(int count);
+
+  /// No description provided for @carnetStatsMonthlyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'RÉCOLTES PAR MOIS'**
+  String get carnetStatsMonthlyTitle;
+
+  /// No description provided for @carnetStatsTopPlantsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'TOP DES PLANTES'**
+  String get carnetStatsTopPlantsTitle;
+
+  /// No description provided for @carnetStatsSeedlingsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis de l\'année'**
+  String get carnetStatsSeedlingsTitle;
+
+  /// No description provided for @carnetStatsSeedlingsRingLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'taux de réussite'**
+  String get carnetStatsSeedlingsRingLabel;
+
+  /// No description provided for @carnetStatsSeedlingsTransplanted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repiqués'**
+  String get carnetStatsSeedlingsTransplanted;
+
+  /// No description provided for @carnetStatsSeedlingsFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoués'**
+  String get carnetStatsSeedlingsFailed;
+
+  /// No description provided for @carnetStatsSeedlingsInProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get carnetStatsSeedlingsInProgress;
+
+  /// No description provided for @carnetStatsCounterNotes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notes'**
+  String get carnetStatsCounterNotes;
+
+  /// No description provided for @carnetStatsCounterSeedlings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis'**
+  String get carnetStatsCounterSeedlings;
+
+  /// No description provided for @premiumRestoreSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achat Premium restauré.'**
+  String get premiumRestoreSuccess;
+
+  /// No description provided for @premiumRestoreNothingFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun achat trouvé sur ce compte Play Store.'**
+  String get premiumRestoreNothingFound;
+
+  /// No description provided for @premiumRestoreError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de restaurer.'**
+  String get premiumRestoreError;
+
+  /// No description provided for @addHarvestEditTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la récolte'**
+  String get addHarvestEditTitle;
+
+  /// No description provided for @addHarvestUpdateButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à jour'**
+  String get addHarvestUpdateButton;
+
+  /// No description provided for @harvestHistorySheetSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détail des récoltes en {unit}'**
+  String harvestHistorySheetSubtitle(String unit);
+
+  /// No description provided for @harvestHistoryDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette récolte ?'**
+  String get harvestHistoryDeleteTitle;
+
+  /// No description provided for @harvestHistoryDeleteMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est définitive.'**
+  String get harvestHistoryDeleteMessage;
+
+  /// No description provided for @harvestFilterMonth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mois'**
+  String get harvestFilterMonth;
+
+  /// No description provided for @harvestFilterPlant.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plante'**
+  String get harvestFilterPlant;
+
+  /// No description provided for @harvestFilterUnit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Unité'**
+  String get harvestFilterUnit;
+
+  /// No description provided for @harvestFilterAllMonths.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les mois'**
+  String get harvestFilterAllMonths;
+
+  /// No description provided for @harvestFilterAllPlants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les plantes'**
+  String get harvestFilterAllPlants;
+
+  /// No description provided for @harvestFilterAllUnits.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les unités'**
+  String get harvestFilterAllUnits;
+
+  /// No description provided for @harvestFilterNoMatchTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune récolte ne correspond'**
+  String get harvestFilterNoMatchTitle;
+
+  /// No description provided for @harvestFilterNoMatchSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essayez de retirer un filtre pour élargir la sélection.'**
+  String get harvestFilterNoMatchSubtitle;
+
+  /// No description provided for @harvestFilterReset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser les filtres'**
+  String get harvestFilterReset;
+
+  /// No description provided for @carnetStatsActivitiesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'ACTIVITÉS DU JARDIN'**
+  String get carnetStatsActivitiesTitle;
+
+  /// No description provided for @carnetStatsActivityWatering.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosages'**
+  String get carnetStatsActivityWatering;
+
+  /// No description provided for @carnetStatsActivityWateringPlants.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosages (plants)'**
+  String get carnetStatsActivityWateringPlants;
+
+  /// No description provided for @carnetStatsActivityWateringSeedlings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosages (semis)'**
+  String get carnetStatsActivityWateringSeedlings;
+
+  /// No description provided for @seedlingWateredSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrosage du semi enregistré 💧'**
+  String get seedlingWateredSnack;
+
+  /// No description provided for @carnetHeaderHarvests.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes récoltes'**
+  String get carnetHeaderHarvests;
+
+  /// No description provided for @carnetHeaderSeedlings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes semis'**
+  String get carnetHeaderSeedlings;
+
+  /// No description provided for @carnetHeaderJournal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet de notes'**
+  String get carnetHeaderJournal;
+
+  /// No description provided for @carnetHeaderStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bilan de la saison'**
+  String get carnetHeaderStats;
+
+  /// No description provided for @carnetHeaderSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages'**
+  String get carnetHeaderSettings;
+
+  /// No description provided for @carnetHeaderAbout.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos de Jardingue'**
+  String get carnetHeaderAbout;
+
+  /// No description provided for @carnetSeedlingsInStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'{remaining} / {total} en stock'**
+  String carnetSeedlingsInStock(int remaining, int total);
+
+  /// No description provided for @seedlingTransplantDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repiquage'**
+  String get seedlingTransplantDialogTitle;
+
+  /// No description provided for @seedlingTransplantDialogStockHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu as {stock} plant(s) prêt(s) à repiquer.'**
+  String seedlingTransplantDialogStockHint(int stock);
+
+  /// No description provided for @seedlingTransplantDialogCountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Combien planter maintenant ?'**
+  String get seedlingTransplantDialogCountLabel;
+
+  /// No description provided for @seedlingTransplantDialogGardenLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans quel potager ?'**
+  String get seedlingTransplantDialogGardenLabel;
+
+  /// No description provided for @seedlingTransplantDialogConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Planter'**
+  String get seedlingTransplantDialogConfirm;
+
+  /// No description provided for @seedlingTransplantPartialSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'{planted} repiqué(s) — reste {remaining} en stock.'**
+  String seedlingTransplantPartialSnack(int planted, int remaining);
+
+  /// No description provided for @seedlingTransplantNoGardenSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun potager pour le repiquage — crée d\'abord un potager.'**
+  String get seedlingTransplantNoGardenSnack;
+
+  /// No description provided for @seedlingTransplantNoGardenOption.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun potager (plantation libre)'**
+  String get seedlingTransplantNoGardenOption;
+
+  /// No description provided for @seedlingFailureDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déclarer des échecs'**
+  String get seedlingFailureDialogTitle;
+
+  /// No description provided for @seedlingFailureDialogPrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur {available} en stock, combien ont échoué ?'**
+  String seedlingFailureDialogPrompt(int available);
+
+  /// No description provided for @seedlingFailureDialogConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Soustraire'**
+  String get seedlingFailureDialogConfirm;
+
+  /// No description provided for @seedlingAdvanceDialogTitleV2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bilan de l\'étape'**
+  String get seedlingAdvanceDialogTitleV2;
+
+  /// No description provided for @seedlingAdvanceDialogPromptV2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur {base} godets, combien ont réussi ? combien ont échoué ?'**
+  String seedlingAdvanceDialogPromptV2(int base);
+
+  /// No description provided for @seedlingAdvanceFieldSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réussis'**
+  String get seedlingAdvanceFieldSuccess;
+
+  /// No description provided for @seedlingAdvanceFieldFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoués'**
+  String get seedlingAdvanceFieldFailed;
+
+  /// No description provided for @seedlingAdvanceRemainingHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} restent en attente (ni réussis, ni échoués).'**
+  String seedlingAdvanceRemainingHint(int count);
+
+  /// No description provided for @seedlingTransplantFieldFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoués depuis'**
+  String get seedlingTransplantFieldFailed;
+
+  /// No description provided for @carnetSeedlingsFailedInline.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} échec{count, plural, one{} other{s}}'**
+  String carnetSeedlingsFailedInline(int count);
+
+  /// No description provided for @carnetStatsActivityFertilizing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fertilisations'**
+  String get carnetStatsActivityFertilizing;
+
+  /// No description provided for @carnetStatsActivitySowing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Semis enregistrés'**
+  String get carnetStatsActivitySowing;
+
+  /// No description provided for @carnetStatsActivityPlanting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plantations'**
+  String get carnetStatsActivityPlanting;
+
+  /// No description provided for @carnetStatsActivityMulching.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paillages'**
+  String get carnetStatsActivityMulching;
+
+  /// No description provided for @carnetStatsActivityOtherCare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autres soins'**
+  String get carnetStatsActivityOtherCare;
+
+  /// No description provided for @carnetStatsTopSortWeight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Poids'**
+  String get carnetStatsTopSortWeight;
+
+  /// No description provided for @carnetStatsTopSortCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récoltes'**
+  String get carnetStatsTopSortCount;
+
+  /// No description provided for @carnetStatsTopSortPieces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièces'**
+  String get carnetStatsTopSortPieces;
+
+  /// No description provided for @carnetStatsTopSortBunches.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bottes'**
+  String get carnetStatsTopSortBunches;
+
+  /// No description provided for @carnetSeedlingsSuccessRatio.
+  ///
+  /// In fr, this message translates to:
+  /// **'{success} / {total} godets'**
+  String carnetSeedlingsSuccessRatio(int success, int total);
+
+  /// No description provided for @seedlingAdvanceDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer à : {status}'**
+  String seedlingAdvanceDialogTitle(String status);
+
+  /// No description provided for @seedlingAdvanceDialogPrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur {base} godets, combien sont passés à cette étape ?'**
+  String seedlingAdvanceDialogPrompt(int base);
+
+  /// No description provided for @seedlingAdvanceDialogConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer'**
+  String get seedlingAdvanceDialogConfirm;
+
+  /// No description provided for @carnetPlantDeletedBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'supprimée'**
+  String get carnetPlantDeletedBadge;
+
+  /// No description provided for @addSeedlingGardenLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Potager (optionnel)'**
+  String get addSeedlingGardenLabel;
+
+  /// No description provided for @addSeedlingGardenNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun'**
+  String get addSeedlingGardenNone;
+
+  /// No description provided for @seedlingTransplantedPlacedSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Repiqué dans le potager — pense à repositionner si besoin.'**
+  String get seedlingTransplantedPlacedSnack;
 }
 
 class _AppLocalizationsDelegate

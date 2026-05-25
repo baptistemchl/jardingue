@@ -12,6 +12,7 @@ import '../../../../core/providers/database_providers.dart';
 import '../../../../core/services/database/database.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../../../../features/carnet/presentation/widgets/carnet_menu_button.dart';
 import '../widgets/user_plant_form_sheet.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
@@ -149,6 +150,8 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                                 loading: () => const SizedBox.shrink(),
                                 error: (_, _) => const SizedBox.shrink(),
                               ),
+                              const SizedBox(width: 8),
+                              const CarnetMenuButton(),
                             ],
                           ),
                           const SizedBox(height: AppSpacing.xs),

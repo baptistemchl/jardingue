@@ -18,6 +18,7 @@ import '../widgets/calendar_empty_states.dart';
 import '../widgets/calendar_filter_chips.dart'
     show CalendarFilterPanel;
 import '../widgets/calendar_onboarding.dart';
+import '../../../../features/carnet/presentation/widgets/carnet_menu_button.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
 // ============================================
@@ -250,6 +251,13 @@ class _CalendarScreenState
                           ),
                         ),
                       ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        right: 16,
+                        top: 8,
+                      ),
+                      child: CarnetMenuButton(),
                     ),
                   ],
                 ),

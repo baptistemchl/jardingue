@@ -40,6 +40,10 @@ class UserPlantUsageInfo {
     PheromoneTraps,
     // SelectedPlantsTable retiree en v13 — voir migration onUpgrade.
     CompletedPlanningTasks,
+    // Carnet de bord (v20)
+    Harvests,
+    Seedlings,
+    JournalEntries,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -49,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 19;
+  int get schemaVersion => 23;
 
   @override
   MigrationStrategy get migration {
@@ -193,6 +197,38 @@ class AppDatabase extends _$AppDatabase {
         // conflits au réimport catalogue.
         if (from < 19) {
           await _safeAddColumn(m, gardenPlants, gardenPlants.customColor);
+        }
+        // Migration v19 -> v20 : tables Carnet de bord (récoltes,
+        // semis, journal). _safeCreateTable est idempotent — si la
+        // table existe déjà (cas d'une migration interrompue ou d'un
+        // dev qui a stash/pop le schéma), on n'écrase rien.
+        if (from < 20) {
+          await _safeCreateTable(m, harvests);
+          await _safeCreateTable(m, seedlings);
+          await _safeCreateTable(m, journalEntries);
+        }
+        // Migration v20 -> v21 : enrichissement Carnet
+        // - successCount sur Seedlings (suivi N/M godets viables)
+        // - plantNameSnapshot sur Harvests et Seedlings (préserve le
+        //   nom de la plante affiché si Plant supprimé du catalogue)
+        if (from < 21) {
+          await _safeAddColumn(m, seedlings, seedlings.successCount);
+          await _safeAddColumn(
+              m, seedlings, seedlings.plantNameSnapshot);
+          await _safeAddColumn(
+              m, harvests, harvests.plantNameSnapshot);
+        }
+        // v21 -> v22 : remainingStock sur Seedlings, pour permettre les
+        // repiquages partiels (planter 5 sur 10 réussis, garder les
+        // autres « en stock »).
+        if (from < 22) {
+          await _safeAddColumn(m, seedlings, seedlings.remainingStock);
+        }
+        // v22 -> v23 : failedCount sur Seedlings, pour cumuler les
+        // échecs déclarés au fil des dialogs de transition (réussite/
+        // échec saisis ensemble plutôt que via un bouton dédié).
+        if (from < 23) {
+          await _safeAddColumn(m, seedlings, seedlings.failedCount);
         }
       },
     );
@@ -350,6 +386,14 @@ class AppDatabase extends _$AppDatabase {
       'CREATE INDEX IF NOT EXISTS idx_fruit_trees_category ON fruit_trees(category)',
       // UserFruitTrees : FK
       'CREATE INDEX IF NOT EXISTS idx_user_fruit_trees_fruit_tree_id ON user_fruit_trees(fruit_tree_id)',
+      // Carnet (v20) : agrégats fréquents par potager / plante / date.
+      'CREATE INDEX IF NOT EXISTS idx_harvests_garden_id ON harvests(garden_id)',
+      'CREATE INDEX IF NOT EXISTS idx_harvests_plant_id ON harvests(plant_id)',
+      'CREATE INDEX IF NOT EXISTS idx_harvests_harvested_at ON harvests(harvested_at)',
+      'CREATE INDEX IF NOT EXISTS idx_seedlings_status ON seedlings(status)',
+      'CREATE INDEX IF NOT EXISTS idx_seedlings_garden_id ON seedlings(garden_id)',
+      'CREATE INDEX IF NOT EXISTS idx_journal_entry_date ON journal_entries(entry_date)',
+      'CREATE INDEX IF NOT EXISTS idx_journal_garden_id ON journal_entries(garden_id)',
     ];
     for (final sql in statements) {
       await customStatement(sql);
@@ -766,6 +810,39 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> addPlantToGarden(GardenPlantsCompanion gardenPlant) {
     return into(gardenPlants).insert(gardenPlant);
+  }
+
+  /// Trouve la première cellule libre dans la grille d'un potager
+  /// (scan ligne par ligne, gauche → droite, haut → bas). Utilisé par
+  /// le repiquage d'un semis : on doit placer la plante quelque part
+  /// dans le potager pour qu'elle apparaisse dans le plan, et la
+  /// première cellule libre est le placement le plus prévisible. Si
+  /// aucune cellule n'est libre, retourne (0, 0) — l'utilisateur
+  /// devra repositionner manuellement.
+  Future<({int x, int y})> findFirstFreeCell(int gardenId) async {
+    final garden = await (select(gardens)
+          ..where((t) => t.id.equals(gardenId)))
+        .getSingleOrNull();
+    if (garden == null) return (x: 0, y: 0);
+    final occupied = await (select(gardenPlants)
+          ..where((t) => t.gardenId.equals(gardenId)))
+        .get();
+    for (var y = 0; y < garden.heightCells; y++) {
+      for (var x = 0; x < garden.widthCells; x++) {
+        bool isFree = true;
+        for (final gp in occupied) {
+          if (x >= gp.gridX &&
+              x < gp.gridX + gp.widthCells &&
+              y >= gp.gridY &&
+              y < gp.gridY + gp.heightCells) {
+            isFree = false;
+            break;
+          }
+        }
+        if (isFree) return (x: x, y: y);
+      }
+    }
+    return (x: 0, y: 0);
   }
 
   Future<int> removePlantFromGarden(int id) async {
@@ -1506,6 +1583,222 @@ class AppDatabase extends _$AppDatabase {
       return result;
     });
   }
+
+  // ============================================
+  // HARVESTS QUERIES (Carnet de bord — v20)
+  // ============================================
+
+  /// Insère une récolte. Retourne l'id généré.
+  Future<int> insertHarvest(HarvestsCompanion harvest) {
+    return into(harvests).insert(harvest);
+  }
+
+  /// Toutes les récoltes d'une année, triées du plus récent au plus ancien.
+  Stream<List<Harvest>> watchHarvestsForYear(int year) {
+    final start = DateTime(year, 1, 1);
+    final end = DateTime(year + 1, 1, 1);
+    return (select(harvests)
+          ..where((t) => t.harvestedAt.isBiggerOrEqualValue(start) &
+              t.harvestedAt.isSmallerThanValue(end))
+          ..orderBy([(t) => OrderingTerm.desc(t.harvestedAt)]))
+        .watch();
+  }
+
+  Future<int> deleteHarvest(int id) =>
+      (delete(harvests)..where((t) => t.id.equals(id))).go();
+
+  /// Met à jour une récolte existante. Tous les champs sont
+  /// optionnels — seuls ceux passés en argument sont écrits.
+  Future<int> updateHarvest(
+    int id, {
+    DateTime? harvestedAt,
+    double? quantity,
+    String? unit,
+    String? note,
+  }) {
+    return (update(harvests)..where((t) => t.id.equals(id))).write(
+      HarvestsCompanion(
+        harvestedAt: harvestedAt != null
+            ? Value(harvestedAt)
+            : const Value.absent(),
+        quantity:
+            quantity != null ? Value(quantity) : const Value.absent(),
+        unit: unit != null ? Value(unit) : const Value.absent(),
+        note: Value(note),
+      ),
+    );
+  }
+
+  // ============================================
+  // SEEDLINGS QUERIES (Carnet de bord — v20)
+  // ============================================
+
+  Future<int> insertSeedling(SeedlingsCompanion seedling) {
+    return into(seedlings).insert(seedling);
+  }
+
+  /// Tous les semis triés du plus récent (createdAt desc).
+  Stream<List<Seedling>> watchAllSeedlings() {
+    return (select(seedlings)
+          ..orderBy([(t) => OrderingTerm.desc(t.sowedAt)]))
+        .watch();
+  }
+
+  Future<int> updateSeedlingStatus(
+    int id,
+    String status, {
+    int? successCount,
+    int? remainingStock,
+    int? failedCount,
+    int? gardenId,
+  }) {
+    return (update(seedlings)..where((t) => t.id.equals(id))).write(
+      SeedlingsCompanion(
+        status: Value(status),
+        successCount: successCount != null
+            ? Value(successCount)
+            : const Value.absent(),
+        remainingStock: remainingStock != null
+            ? Value(remainingStock)
+            : const Value.absent(),
+        failedCount: failedCount != null
+            ? Value(failedCount)
+            : const Value.absent(),
+        gardenId:
+            gardenId != null ? Value(gardenId) : const Value.absent(),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  /// Crée un event « sowing » dans GardenEvents pour pouvoir lire les
+  /// semis du Carnet depuis les autres écrans (planning, calendrier).
+  /// Appelé automatiquement après insertSeedling pour garder les deux
+  /// surfaces synchronisées sans doubler la saisie utilisateur.
+  Future<int> insertSowingEventForSeedling({
+    required int plantId,
+    int? gardenId,
+    required DateTime sowedAt,
+    String? notes,
+  }) {
+    return into(gardenEvents).insert(
+      GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        gardenId: Value(gardenId),
+        eventType: 'sowing',
+        eventDate: sowedAt,
+        notes: Value(notes),
+      ),
+    );
+  }
+
+  /// Crée un event « planting » lors d'un repiquage de semis (status
+  /// → transplanted). Permet au plan / calendrier d'afficher le
+  /// repiquage comme une vraie plantation.
+  Future<int> insertPlantingEventForSeedling({
+    required int plantId,
+    int? gardenId,
+    required DateTime plantedAt,
+    String? notes,
+  }) {
+    return into(gardenEvents).insert(
+      GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        gardenId: Value(gardenId),
+        eventType: 'planting',
+        eventDate: plantedAt,
+        notes: Value(notes),
+      ),
+    );
+  }
+
+  /// Crée un event « watering_seedling » lors d'un arrosage de semi
+  /// depuis l'onglet Semis. eventType dédié pour pouvoir compter
+  /// séparément les arrosages de semis (godets) vs les arrosages de
+  /// plants placés (gardenPlantId). Le note rappelle le statut du
+  /// semi au moment de l'arrosage pour traçabilité.
+  Future<int> insertWateringEventForSeedling({
+    required int plantId,
+    int? gardenId,
+    required String seedlingStatus,
+  }) {
+    return into(gardenEvents).insert(
+      GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        gardenId: Value(gardenId),
+        eventType: 'watering_seedling',
+        eventDate: DateTime.now(),
+        notes: Value('Arrosage semi · $seedlingStatus'),
+      ),
+    );
+  }
+
+  /// Crée un event « harvest » lors d'une récolte enregistrée dans
+  /// le carnet. Liens : plant catalogue + jardin si défini, + note
+  /// avec la quantité + unité pour traçabilité.
+  Future<int> insertHarvestEventForHarvest({
+    required int plantId,
+    int? gardenPlantId,
+    int? gardenId,
+    required DateTime harvestedAt,
+    required double quantity,
+    required String unit,
+    String? note,
+  }) {
+    return into(gardenEvents).insert(
+      GardenEventsCompanion.insert(
+        plantId: Value(plantId),
+        gardenPlantId: Value(gardenPlantId),
+        gardenId: Value(gardenId),
+        eventType: 'harvest',
+        eventDate: harvestedAt,
+        notes: Value(
+          note == null || note.isEmpty
+              ? '$quantity $unit'
+              : '$quantity $unit · $note',
+        ),
+      ),
+    );
+  }
+
+  Future<int> deleteSeedling(int id) =>
+      (delete(seedlings)..where((t) => t.id.equals(id))).go();
+
+  // ============================================
+  // JOURNAL ENTRIES (Carnet de bord — v20)
+  // ============================================
+
+  Future<int> insertJournalEntry(JournalEntriesCompanion entry) {
+    return into(journalEntries).insert(entry);
+  }
+
+  Stream<List<JournalEntry>> watchAllJournalEntries() {
+    return (select(journalEntries)
+          ..orderBy([(t) => OrderingTerm.desc(t.entryDate)]))
+        .watch();
+  }
+
+  Future<int> updateJournalEntry(
+    int id, {
+    required String content,
+    String? title,
+    String? tags,
+    DateTime? entryDate,
+  }) {
+    return (update(journalEntries)..where((t) => t.id.equals(id))).write(
+      JournalEntriesCompanion(
+        content: Value(content),
+        title: Value(title),
+        tags: Value(tags),
+        entryDate:
+            entryDate != null ? Value(entryDate) : const Value.absent(),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<int> deleteJournalEntry(int id) =>
+      (delete(journalEntries)..where((t) => t.id.equals(id))).go();
 }
 
 LazyDatabase _openConnection() {

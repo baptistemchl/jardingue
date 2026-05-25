@@ -1,12 +1,19 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../core/constants/app_colors.dart';
 import '../core/theme/app_typography.dart';
+import '../features/carnet/presentation/providers/carnet_ui_providers.dart';
+import '../features/carnet/presentation/widgets/carnet_drawer.dart';
 import 'app_router.dart';
 
-/// Scaffold principal avec navigation bottom bar glassmorphism flottante
+/// Scaffold principal avec navigation bottom bar glassmorphism flottante.
+///
+/// Stack par-dessus le Scaffold pour héberger le Carnet de bord
+/// (drawer slide-in depuis la droite + petit handle marque-page
+/// toujours visible + gesture swipe sur le bord droit de l'écran).
 class ScaffoldWithNavBar extends StatelessWidget {
   final Widget child;
 
@@ -14,10 +21,56 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: child,
-      extendBody: true,
-      bottomNavigationBar: const _FloatingGlassNavBar(),
+    return Stack(
+      children: [
+        Scaffold(
+          body: child,
+          extendBody: true,
+          bottomNavigationBar: const _FloatingGlassNavBar(),
+        ),
+        const _LeftEdgeSwipeArea(),
+        const CarnetDrawer(),
+      ],
+    );
+  }
+}
+
+/// Bandeau invisible de 20px sur le bord gauche qui détecte un swipe
+/// vers la droite et ouvre le Carnet de bord.
+class _LeftEdgeSwipeArea extends ConsumerStatefulWidget {
+  const _LeftEdgeSwipeArea();
+
+  @override
+  ConsumerState<_LeftEdgeSwipeArea> createState() =>
+      _LeftEdgeSwipeAreaState();
+}
+
+class _LeftEdgeSwipeAreaState extends ConsumerState<_LeftEdgeSwipeArea> {
+  double _drag = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final ui = ref.watch(carnetUiProvider);
+    // Désactivé quand le carnet est ouvert (sinon doublon de gestures).
+    if (ui.isOpen) return const SizedBox.shrink();
+    return Positioned(
+      left: 0,
+      top: 0,
+      bottom: 0,
+      width: 20,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onHorizontalDragUpdate: (d) {
+          _drag += d.delta.dx;
+        },
+        onHorizontalDragStart: (_) => _drag = 0,
+        onHorizontalDragEnd: (_) {
+          if (_drag > 32) {
+            ref.read(carnetUiProvider.notifier).open();
+          }
+          _drag = 0;
+        },
+      ),
     );
   }
 }

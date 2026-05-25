@@ -1344,4 +1344,548 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get templateCustomSubtitle => 'Potager vierge';
+
+  @override
+  String get carnetTitle => 'Carnet de bord';
+
+  @override
+  String get carnetOpenA11y => 'Ouvrir le carnet de bord';
+
+  @override
+  String get carnetTabHarvests => 'Récoltes';
+
+  @override
+  String get carnetTabSeedlings => 'Semis';
+
+  @override
+  String get carnetTabJournal => 'Carnet';
+
+  @override
+  String get carnetTabStats => 'Stats';
+
+  @override
+  String get carnetHarvestsEmptyTitle => 'Aucune récolte enregistrée';
+
+  @override
+  String get carnetHarvestsEmptySubtitle =>
+      'Cette section accueillera bientôt vos cueillettes, quantités et historique de la saison.';
+
+  @override
+  String get carnetSeedlingsEmptyTitle => 'Aucun semis en cours';
+
+  @override
+  String get carnetSeedlingsEmptySubtitle =>
+      'Vous pourrez bientôt suivre vos semis, dates de germination et repiquages.';
+
+  @override
+  String get carnetJournalEmptyTitle => 'Carnet vierge';
+
+  @override
+  String get carnetJournalEmptySubtitle =>
+      'Ajoutez vos observations, idées et anecdotes au fil des saisons.';
+
+  @override
+  String get carnetStatsEmptyTitle => 'Pas encore de statistiques';
+
+  @override
+  String get carnetStatsEmptySubtitle =>
+      'Les bilans de saison s\'afficheront ici dès que vous aurez enregistré des récoltes.';
+
+  @override
+  String get carnetTabSettings => 'Réglages';
+
+  @override
+  String get carnetSettingsMoreSection => 'Plus';
+
+  @override
+  String get carnetSettingsPremiumTitle => 'Sauvegarde Premium';
+
+  @override
+  String get carnetSettingsPremiumSubtitle =>
+      'Cloud, restauration multi-appareils';
+
+  @override
+  String get carnetSettingsAboutTitle => 'À propos de Jardingue';
+
+  @override
+  String get carnetSettingsAboutSubtitle =>
+      'Crédits, contact, mentions légales';
+
+  @override
+  String get carnetSettingsThanksMessage =>
+      'Merci d\'utiliser Jardingue.\nFait avec ♥ pour les jardiniers.';
+
+  @override
+  String get carnetTabAbout => 'À propos';
+
+  @override
+  String carnetHarvestsTitleYear(int year) {
+    return 'Récoltes $year';
+  }
+
+  @override
+  String carnetHarvestsSummaryLine(int plantCount, int totalHarvests) {
+    return '$plantCount plantes • $totalHarvests récoltes';
+  }
+
+  @override
+  String carnetHarvestsCardSubtitle(int count, String lastDate) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return '$count récolte$_temp0 • $lastDate';
+  }
+
+  @override
+  String get carnetHarvestsAddButton => 'Nouvelle récolte';
+
+  @override
+  String get addHarvestSheetTitle => 'Enregistrer une récolte';
+
+  @override
+  String get addHarvestPlantLabel => 'Plante';
+
+  @override
+  String get addHarvestPlantSearchHint => 'Chercher : tomate, carotte…';
+
+  @override
+  String get addHarvestPlantNoResult => 'Aucune plante trouvée.';
+
+  @override
+  String get addHarvestDateLabel => 'Date';
+
+  @override
+  String get addHarvestQuantityLabel => 'Quantité';
+
+  @override
+  String get addHarvestUnitLabel => 'Unité';
+
+  @override
+  String get addHarvestUnitGrams => 'g';
+
+  @override
+  String get addHarvestUnitKilos => 'kg';
+
+  @override
+  String get addHarvestUnitPieces => 'pièces';
+
+  @override
+  String get addHarvestUnitBunches => 'bottes';
+
+  @override
+  String get addHarvestNoteLabel => 'Note (optionnel)';
+
+  @override
+  String get addHarvestSaveButton => 'Enregistrer la récolte';
+
+  @override
+  String get dateRelativeToday => 'aujourd\'hui';
+
+  @override
+  String get dateRelativeYesterday => 'hier';
+
+  @override
+  String dateRelativeDaysAgo(int days) {
+    return 'il y a $days j';
+  }
+
+  @override
+  String get carnetSeedlingsAddButton => 'Nouveau semis';
+
+  @override
+  String get carnetSeedlingsStatusGerminating => 'En germination';
+
+  @override
+  String get carnetSeedlingsStatusReady => 'Prêts à repiquer';
+
+  @override
+  String get carnetSeedlingsStatusTransplanted => 'Repiqués';
+
+  @override
+  String get carnetSeedlingsStatusFailed => 'Échoués';
+
+  @override
+  String get carnetSeedlingsArchiveTitle => 'Archive';
+
+  @override
+  String get carnetSeedlingsUnknownPlant => 'Plante supprimée';
+
+  @override
+  String carnetSeedlingsSowedOn(String date) {
+    return 'Semé le $date';
+  }
+
+  @override
+  String carnetSeedlingsCountInline(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return '$count godet$_temp0';
+  }
+
+  @override
+  String get addSeedlingSheetTitle => 'Enregistrer un semis';
+
+  @override
+  String get addSeedlingPlantLabel => 'Plante semée';
+
+  @override
+  String get addSeedlingSowedAtLabel => 'Date du semis';
+
+  @override
+  String get addSeedlingCountLabel => 'Nombre de godets / graines (optionnel)';
+
+  @override
+  String get addSeedlingCountHint => 'Ex : 12';
+
+  @override
+  String get addSeedlingNoteLabel => 'Note (optionnel)';
+
+  @override
+  String get addSeedlingSaveButton => 'Enregistrer le semis';
+
+  @override
+  String get commonCancel => 'Annuler';
+
+  @override
+  String get commonDelete => 'Supprimer';
+
+  @override
+  String get carnetJournalAddButton => 'Nouvelle note';
+
+  @override
+  String get carnetJournalEditedLabel => 'modifié';
+
+  @override
+  String get carnetJournalDeleteTitle => 'Supprimer cette note ?';
+
+  @override
+  String get carnetJournalDeleteMessage => 'Cette action est définitive.';
+
+  @override
+  String get addJournalSheetTitle => 'Nouvelle note';
+
+  @override
+  String get addJournalEditTitle => 'Modifier la note';
+
+  @override
+  String get addJournalDateLabel => 'Date';
+
+  @override
+  String get addJournalTitleLabel => 'Titre (optionnel)';
+
+  @override
+  String get addJournalTitleHint => 'Ex : Plantation des tomates';
+
+  @override
+  String get addJournalContentLabel => 'Note';
+
+  @override
+  String get addJournalContentHint =>
+      'Écrivez librement votre observation, idée, succès ou ennui du jour…';
+
+  @override
+  String get addJournalSaveButton => 'Enregistrer';
+
+  @override
+  String get addJournalUpdateButton => 'Mettre à jour';
+
+  @override
+  String carnetStatsHeroSeasonLabel(int year) {
+    return 'SAISON $year';
+  }
+
+  @override
+  String carnetStatsHeroSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return '$count récolte$_temp0 enregistrée$_temp1';
+  }
+
+  @override
+  String carnetStatsHeroPieces(int count) {
+    return '$count pièces';
+  }
+
+  @override
+  String carnetStatsHeroBunches(int count) {
+    return '$count bottes';
+  }
+
+  @override
+  String get carnetStatsPlantOfTheYearLabel => 'STAR DE L\'ANNÉE';
+
+  @override
+  String carnetStatsPlantOfTheYearCount(int count) {
+    return '$count récoltes cette saison';
+  }
+
+  @override
+  String get carnetStatsMonthlyTitle => 'RÉCOLTES PAR MOIS';
+
+  @override
+  String get carnetStatsTopPlantsTitle => 'TOP DES PLANTES';
+
+  @override
+  String get carnetStatsSeedlingsTitle => 'Semis de l\'année';
+
+  @override
+  String get carnetStatsSeedlingsRingLabel => 'taux de réussite';
+
+  @override
+  String get carnetStatsSeedlingsTransplanted => 'Repiqués';
+
+  @override
+  String get carnetStatsSeedlingsFailed => 'Échoués';
+
+  @override
+  String get carnetStatsSeedlingsInProgress => 'En cours';
+
+  @override
+  String get carnetStatsCounterNotes => 'Notes';
+
+  @override
+  String get carnetStatsCounterSeedlings => 'Semis';
+
+  @override
+  String get premiumRestoreSuccess => 'Achat Premium restauré.';
+
+  @override
+  String get premiumRestoreNothingFound =>
+      'Aucun achat trouvé sur ce compte Play Store.';
+
+  @override
+  String get premiumRestoreError => 'Impossible de restaurer.';
+
+  @override
+  String get addHarvestEditTitle => 'Modifier la récolte';
+
+  @override
+  String get addHarvestUpdateButton => 'Mettre à jour';
+
+  @override
+  String harvestHistorySheetSubtitle(String unit) {
+    return 'Détail des récoltes en $unit';
+  }
+
+  @override
+  String get harvestHistoryDeleteTitle => 'Supprimer cette récolte ?';
+
+  @override
+  String get harvestHistoryDeleteMessage => 'Cette action est définitive.';
+
+  @override
+  String get harvestFilterMonth => 'Mois';
+
+  @override
+  String get harvestFilterPlant => 'Plante';
+
+  @override
+  String get harvestFilterUnit => 'Unité';
+
+  @override
+  String get harvestFilterAllMonths => 'Tous les mois';
+
+  @override
+  String get harvestFilterAllPlants => 'Toutes les plantes';
+
+  @override
+  String get harvestFilterAllUnits => 'Toutes les unités';
+
+  @override
+  String get harvestFilterNoMatchTitle => 'Aucune récolte ne correspond';
+
+  @override
+  String get harvestFilterNoMatchSubtitle =>
+      'Essayez de retirer un filtre pour élargir la sélection.';
+
+  @override
+  String get harvestFilterReset => 'Réinitialiser les filtres';
+
+  @override
+  String get carnetStatsActivitiesTitle => 'ACTIVITÉS DU JARDIN';
+
+  @override
+  String get carnetStatsActivityWatering => 'Arrosages';
+
+  @override
+  String get carnetStatsActivityWateringPlants => 'Arrosages (plants)';
+
+  @override
+  String get carnetStatsActivityWateringSeedlings => 'Arrosages (semis)';
+
+  @override
+  String get seedlingWateredSnack => 'Arrosage du semi enregistré 💧';
+
+  @override
+  String get carnetHeaderHarvests => 'Mes récoltes';
+
+  @override
+  String get carnetHeaderSeedlings => 'Mes semis';
+
+  @override
+  String get carnetHeaderJournal => 'Carnet de notes';
+
+  @override
+  String get carnetHeaderStats => 'Bilan de la saison';
+
+  @override
+  String get carnetHeaderSettings => 'Réglages';
+
+  @override
+  String get carnetHeaderAbout => 'À propos de Jardingue';
+
+  @override
+  String carnetSeedlingsInStock(int remaining, int total) {
+    return '$remaining / $total en stock';
+  }
+
+  @override
+  String get seedlingTransplantDialogTitle => 'Repiquage';
+
+  @override
+  String seedlingTransplantDialogStockHint(int stock) {
+    return 'Tu as $stock plant(s) prêt(s) à repiquer.';
+  }
+
+  @override
+  String get seedlingTransplantDialogCountLabel =>
+      'Combien planter maintenant ?';
+
+  @override
+  String get seedlingTransplantDialogGardenLabel => 'Dans quel potager ?';
+
+  @override
+  String get seedlingTransplantDialogConfirm => 'Planter';
+
+  @override
+  String seedlingTransplantPartialSnack(int planted, int remaining) {
+    return '$planted repiqué(s) — reste $remaining en stock.';
+  }
+
+  @override
+  String get seedlingTransplantNoGardenSnack =>
+      'Aucun potager pour le repiquage — crée d\'abord un potager.';
+
+  @override
+  String get seedlingTransplantNoGardenOption =>
+      'Aucun potager (plantation libre)';
+
+  @override
+  String get seedlingFailureDialogTitle => 'Déclarer des échecs';
+
+  @override
+  String seedlingFailureDialogPrompt(int available) {
+    return 'Sur $available en stock, combien ont échoué ?';
+  }
+
+  @override
+  String get seedlingFailureDialogConfirm => 'Soustraire';
+
+  @override
+  String get seedlingAdvanceDialogTitleV2 => 'Bilan de l\'étape';
+
+  @override
+  String seedlingAdvanceDialogPromptV2(int base) {
+    return 'Sur $base godets, combien ont réussi ? combien ont échoué ?';
+  }
+
+  @override
+  String get seedlingAdvanceFieldSuccess => 'Réussis';
+
+  @override
+  String get seedlingAdvanceFieldFailed => 'Échoués';
+
+  @override
+  String seedlingAdvanceRemainingHint(int count) {
+    return '$count restent en attente (ni réussis, ni échoués).';
+  }
+
+  @override
+  String get seedlingTransplantFieldFailed => 'Échoués depuis';
+
+  @override
+  String carnetSeedlingsFailedInline(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 's',
+      one: '',
+    );
+    return '$count échec$_temp0';
+  }
+
+  @override
+  String get carnetStatsActivityFertilizing => 'Fertilisations';
+
+  @override
+  String get carnetStatsActivitySowing => 'Semis enregistrés';
+
+  @override
+  String get carnetStatsActivityPlanting => 'Plantations';
+
+  @override
+  String get carnetStatsActivityMulching => 'Paillages';
+
+  @override
+  String get carnetStatsActivityOtherCare => 'Autres soins';
+
+  @override
+  String get carnetStatsTopSortWeight => 'Poids';
+
+  @override
+  String get carnetStatsTopSortCount => 'Récoltes';
+
+  @override
+  String get carnetStatsTopSortPieces => 'Pièces';
+
+  @override
+  String get carnetStatsTopSortBunches => 'Bottes';
+
+  @override
+  String carnetSeedlingsSuccessRatio(int success, int total) {
+    return '$success / $total godets';
+  }
+
+  @override
+  String seedlingAdvanceDialogTitle(String status) {
+    return 'Passer à : $status';
+  }
+
+  @override
+  String seedlingAdvanceDialogPrompt(int base) {
+    return 'Sur $base godets, combien sont passés à cette étape ?';
+  }
+
+  @override
+  String get seedlingAdvanceDialogConfirm => 'Confirmer';
+
+  @override
+  String get carnetPlantDeletedBadge => 'supprimée';
+
+  @override
+  String get addSeedlingGardenLabel => 'Potager (optionnel)';
+
+  @override
+  String get addSeedlingGardenNone => 'Aucun';
+
+  @override
+  String get seedlingTransplantedPlacedSnack =>
+      'Repiqué dans le potager — pense à repositionner si besoin.';
 }
