@@ -12,6 +12,7 @@ import 'package:printing/printing.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/widgets/app_bottom_sheet.dart';
+import '../../../../core/widgets/page_help.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/services/preferences/user_guidance_preferences.dart';
@@ -64,6 +65,19 @@ class _VisibleAmendmentsNotifier extends Notifier<Set<AmendmentType>> {
   }
 }
 
+PageHelp _buildEditorHelp(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return PageHelp(
+    pageId: 'garden_editor',
+    title: loc.pageHelpEditorTitle,
+    emoji: '🗺️',
+    why: loc.pageHelpEditorWhy,
+    how: loc.pageHelpEditorHow,
+    when: loc.pageHelpEditorWhen,
+    where: loc.pageHelpEditorWhere,
+  );
+}
+
 class GardenEditorScreen extends ConsumerStatefulWidget {
   final int gardenId;
 
@@ -94,6 +108,9 @@ class _GardenEditorScreenState
   void initState() {
     super.initState();
     _actionHistory.addListener(_onHistoryChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) maybeShowPageHelp(context, _buildEditorHelp(context));
+    });
   }
 
   @override
@@ -925,6 +942,15 @@ class _GardenEditorScreenState
         ),
         _buildElementsListButton(gardenAsync, plantsAsync),
         _buildLayersMenu(gardenAsync),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Center(
+            child: PageHelpButton(
+              help: _buildEditorHelp(context),
+              size: 28,
+            ),
+          ),
+        ),
         IconButton(
           onPressed: _resetView,
           icon: Icon(

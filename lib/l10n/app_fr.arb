@@ -137,6 +137,18 @@
   "pageHelpGardenTitle": "Mon jardin",
   "pageHelpCarnetTitle": "Carnet de bord",
   "pageHelpCalendarTitle": "Calendrier",
+  "pageHelpPlantsTitle": "Catalogue de plantes",
+  "pageHelpEditorTitle": "Plan du potager",
+
+  "pageHelpPlantsWhy": "Parcourir le catalogue complet pour trouver les bonnes variétés à planter, et créer vos propres plantes si la vôtre manque.",
+  "pageHelpPlantsHow": "Recherchez par nom ou filtrez par catégorie (légumes, fruits, aromatiques…). Tap sur une plante pour voir sa fiche détaillée et l'ajouter à un potager.",
+  "pageHelpPlantsWhen": "Au moment de planifier vos semis, d'ajouter une plante à un potager, ou de noter les caractéristiques d'une variété rare.",
+  "pageHelpPlantsWhere": "Tap sur « + Créer une plante personnalisée » juste sous la barre de recherche pour ajouter une variété qui n'existe pas dans le catalogue.",
+
+  "pageHelpEditorWhy": "Dessiner et organiser votre potager à l'échelle réelle, prévenir les antagonismes et faciliter la rotation des cultures.",
+  "pageHelpEditorHow": "Tap sur le cadenas en bas pour déverrouiller, puis ajoutez plantes et zones depuis le bouton +. Glissez pour déplacer, pincez pour zoomer.",
+  "pageHelpEditorWhen": "Au moment de la planification annuelle, ou après chaque ajout/déplacement de plante pour garder le plan à jour.",
+  "pageHelpEditorWhere": "Les boutons en haut servent à annuler, lister les éléments, gérer les calques (compagnons, amendements) et exporter le plan en PDF.",
 
   "pageHelpCalendarWhy": "Voir d'un coup d'œil les périodes de semis, plantation, floraison et récolte de tous vos plants.",
   "pageHelpCalendarHow": "Basculez entre la vue Calendrier (points colorés sur les jours) et la vue Liste (groupée par type d'activité). Sélectionnez un plant pour filtrer.",

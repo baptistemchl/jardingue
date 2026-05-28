@@ -12,9 +12,23 @@ import '../../../../core/providers/database_providers.dart';
 import '../../../../core/services/database/database.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../../../../core/widgets/page_help.dart';
 import '../../../../features/carnet/presentation/widgets/carnet_menu_button.dart';
 import '../widgets/user_plant_form_sheet.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
+
+PageHelp _buildPlantsHelp(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return PageHelp(
+    pageId: 'plants',
+    title: loc.pageHelpPlantsTitle,
+    emoji: '🌱',
+    why: loc.pageHelpPlantsWhy,
+    how: loc.pageHelpPlantsHow,
+    when: loc.pageHelpPlantsWhen,
+    where: loc.pageHelpPlantsWhere,
+  );
+}
 
 /// Écran de la liste des plantes
 class PlantsScreen extends ConsumerStatefulWidget {
@@ -44,6 +58,7 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       ref.read(plantsFilterProvider.notifier).clearFilters();
+      maybeShowPageHelp(context, _buildPlantsHelp(context));
     });
   }
 
@@ -150,6 +165,8 @@ class _PlantsScreenState extends ConsumerState<PlantsScreen> {
                                 loading: () => const SizedBox.shrink(),
                                 error: (_, _) => const SizedBox.shrink(),
                               ),
+                              const SizedBox(width: 8),
+                              PageHelpButton(help: _buildPlantsHelp(context)),
                               const SizedBox(width: 8),
                               const CarnetMenuButton(),
                             ],

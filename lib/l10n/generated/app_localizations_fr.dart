@@ -446,6 +446,44 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pageHelpCalendarTitle => 'Calendrier';
 
   @override
+  String get pageHelpPlantsTitle => 'Catalogue de plantes';
+
+  @override
+  String get pageHelpEditorTitle => 'Plan du potager';
+
+  @override
+  String get pageHelpPlantsWhy =>
+      'Parcourir le catalogue complet pour trouver les bonnes variétés à planter, et créer vos propres plantes si la vôtre manque.';
+
+  @override
+  String get pageHelpPlantsHow =>
+      'Recherchez par nom ou filtrez par catégorie (légumes, fruits, aromatiques…). Tap sur une plante pour voir sa fiche détaillée et l\'ajouter à un potager.';
+
+  @override
+  String get pageHelpPlantsWhen =>
+      'Au moment de planifier vos semis, d\'ajouter une plante à un potager, ou de noter les caractéristiques d\'une variété rare.';
+
+  @override
+  String get pageHelpPlantsWhere =>
+      'Tap sur « + Créer une plante personnalisée » juste sous la barre de recherche pour ajouter une variété qui n\'existe pas dans le catalogue.';
+
+  @override
+  String get pageHelpEditorWhy =>
+      'Dessiner et organiser votre potager à l\'échelle réelle, prévenir les antagonismes et faciliter la rotation des cultures.';
+
+  @override
+  String get pageHelpEditorHow =>
+      'Tap sur le cadenas en bas pour déverrouiller, puis ajoutez plantes et zones depuis le bouton +. Glissez pour déplacer, pincez pour zoomer.';
+
+  @override
+  String get pageHelpEditorWhen =>
+      'Au moment de la planification annuelle, ou après chaque ajout/déplacement de plante pour garder le plan à jour.';
+
+  @override
+  String get pageHelpEditorWhere =>
+      'Les boutons en haut servent à annuler, lister les éléments, gérer les calques (compagnons, amendements) et exporter le plan en PDF.';
+
+  @override
   String get pageHelpCalendarWhy =>
       'Voir d\'un coup d\'œil les périodes de semis, plantation, floraison et récolte de tous vos plants.';
 

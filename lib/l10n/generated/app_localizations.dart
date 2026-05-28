@@ -670,6 +670,66 @@ abstract class AppLocalizations {
   /// **'Calendrier'**
   String get pageHelpCalendarTitle;
 
+  /// No description provided for @pageHelpPlantsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catalogue de plantes'**
+  String get pageHelpPlantsTitle;
+
+  /// No description provided for @pageHelpEditorTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plan du potager'**
+  String get pageHelpEditorTitle;
+
+  /// No description provided for @pageHelpPlantsWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcourir le catalogue complet pour trouver les bonnes variétés à planter, et créer vos propres plantes si la vôtre manque.'**
+  String get pageHelpPlantsWhy;
+
+  /// No description provided for @pageHelpPlantsHow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recherchez par nom ou filtrez par catégorie (légumes, fruits, aromatiques…). Tap sur une plante pour voir sa fiche détaillée et l\'ajouter à un potager.'**
+  String get pageHelpPlantsHow;
+
+  /// No description provided for @pageHelpPlantsWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moment de planifier vos semis, d\'ajouter une plante à un potager, ou de noter les caractéristiques d\'une variété rare.'**
+  String get pageHelpPlantsWhen;
+
+  /// No description provided for @pageHelpPlantsWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tap sur « + Créer une plante personnalisée » juste sous la barre de recherche pour ajouter une variété qui n\'existe pas dans le catalogue.'**
+  String get pageHelpPlantsWhere;
+
+  /// No description provided for @pageHelpEditorWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dessiner et organiser votre potager à l\'échelle réelle, prévenir les antagonismes et faciliter la rotation des cultures.'**
+  String get pageHelpEditorWhy;
+
+  /// No description provided for @pageHelpEditorHow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tap sur le cadenas en bas pour déverrouiller, puis ajoutez plantes et zones depuis le bouton +. Glissez pour déplacer, pincez pour zoomer.'**
+  String get pageHelpEditorHow;
+
+  /// No description provided for @pageHelpEditorWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moment de la planification annuelle, ou après chaque ajout/déplacement de plante pour garder le plan à jour.'**
+  String get pageHelpEditorWhen;
+
+  /// No description provided for @pageHelpEditorWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les boutons en haut servent à annuler, lister les éléments, gérer les calques (compagnons, amendements) et exporter le plan en PDF.'**
+  String get pageHelpEditorWhere;
+
   /// No description provided for @pageHelpCalendarWhy.
   ///
   /// In fr, this message translates to:
