@@ -8,6 +8,7 @@ import '../../../../core/services/crash_reporting/crash_reporting_service.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/services/database/database.dart';
 import '../../../../core/providers/orchard_providers.dart';
+import 'package:jardingue/l10n/generated/app_localizations.dart';
 import 'planting_type_selector.dart';
 import 'variety_picker_field.dart';
 
@@ -29,6 +30,7 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
   String? _variety;
   PlantingType _plantingType = PlantingType.ground;
   DateTime? _plantingDate;
+  int _quantity = 1;
   bool _isLoading = false;
 
   @override
@@ -65,14 +67,20 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
   Future<void> _addToOrchard() async {
     setState(() => _isLoading = true);
 
+    // Capture le messenger/loc avant tout await : ferme tôt la sheet
+    // signifie que `context` peut être démonté avant le snackbar.
+    final messenger = ScaffoldMessenger.of(context);
+    final loc = AppLocalizations.of(context)!;
+
     try {
+      final trimmedNickname = _nicknameController.text.trim();
       await ref
           .read(userFruitTreesNotifierProvider.notifier)
-          .addTree(
+          .addTreesBatch(
             fruitTreeId: widget.tree.id,
-            nickname: _nicknameController.text.trim().isEmpty
-                ? null
-                : _nicknameController.text.trim(),
+            quantity: _quantity,
+            nicknamePrefix:
+                trimmedNickname.isEmpty ? null : trimmedNickname,
             variety: _variety,
             plantingDate: _plantingDate,
             plantingType: _plantingType,
@@ -80,10 +88,10 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           SnackBar(
             content: Text(
-              '${widget.tree.emoji} ${widget.tree.commonName} ajouté à votre verger !',
+              '${widget.tree.emoji} ${loc.orchardBatchAddedSnack(_quantity, widget.tree.commonName)}',
             ),
             backgroundColor: AppColors.success,
           ),
@@ -92,12 +100,16 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
     } catch (e, st) {
       CrashReportingService.recordError(e, st,
         reason: 'FruitTreeDetailSheet._addToOrchard',
-        extra: {'treeId': widget.tree.id, 'treeName': widget.tree.commonName},
+        extra: {
+          'treeId': widget.tree.id,
+          'treeName': widget.tree.commonName,
+          'quantity': _quantity,
+        },
       );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           SnackBar(
-            content: Text('Erreur: $e'),
+            content: Text(loc.errorWithMessage(e.toString())),
             backgroundColor: AppColors.error,
           ),
         );
@@ -326,6 +338,8 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
   }
 
   Widget _buildAddForm(List<String> varieties) {
+    final loc = AppLocalizations.of(context)!;
+    final isBatch = _quantity > 1;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -357,7 +371,24 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
 
         const SizedBox(height: 20),
 
-        // 1. Type de plantation
+        // 1. Quantité (création groupée)
+        Text(loc.orchardQuantityLabel, style: AppTypography.labelMedium),
+        const SizedBox(height: 8),
+        _QuantityStepper(
+          value: _quantity,
+          onChanged: (v) => setState(() => _quantity = v),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          loc.orchardQuantityHint(_quantity),
+          style: AppTypography.caption.copyWith(
+            color: AppColors.textTertiary,
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // 2. Type de plantation
         Text('Type de plantation', style: AppTypography.labelMedium),
         const SizedBox(height: 8),
         PlantingTypeSelector(
@@ -369,7 +400,7 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
 
         const SizedBox(height: 20),
 
-        // 2. Variété (Autocomplete avec saisie libre)
+        // 3. Variété (Autocomplete avec saisie libre)
         Text('Variété (optionnel)', style: AppTypography.labelMedium),
         const SizedBox(height: 8),
         VarietyPickerField(
@@ -380,13 +411,20 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
 
         const SizedBox(height: 20),
 
-        // 3. Surnom
-        Text('Surnom', style: AppTypography.labelMedium),
+        // 4. Surnom (préfixe en mode batch — "X #1", "X #2"…)
+        Text(
+          isBatch
+              ? loc.orchardNicknamePrefixLabel
+              : 'Surnom',
+          style: AppTypography.labelMedium,
+        ),
         const SizedBox(height: 8),
         TextField(
           controller: _nicknameController,
           decoration: InputDecoration(
-            hintText: 'Ex: Le pommier du fond',
+            hintText: isBatch
+                ? loc.orchardNicknamePrefixHint
+                : loc.orchardNicknameSingleHint,
             filled: true,
             fillColor: AppColors.background,
             border: OutlineInputBorder(
@@ -398,7 +436,7 @@ class _FruitTreeDetailSheetState extends ConsumerState<FruitTreeDetailSheet> {
 
         const SizedBox(height: 20),
 
-        // 4. Date de plantation
+        // 5. Date de plantation
         Text('Date de plantation', style: AppTypography.labelMedium),
         const SizedBox(height: 8),
         GestureDetector(
@@ -793,6 +831,95 @@ class _ClimateCard extends StatelessWidget {
                 ),
               ),
         ],
+      ),
+    );
+  }
+}
+
+/// Stepper sobre pour la quantité d'arbres à créer en batch.
+///
+/// Aligné sur le style des autres champs (fond `background`, radius 12),
+/// avec deux boutons +/− qui se désactivent visuellement aux bornes.
+class _QuantityStepper extends StatelessWidget {
+  static const _minValue = 1;
+  static const _maxValue = 50;
+
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  const _QuantityStepper({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final canDecrement = value > _minValue;
+    final canIncrement = value < _maxValue;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      child: Row(
+        children: [
+          _StepperButton(
+            icon: PhosphorIcons.minus(PhosphorIconsStyle.bold),
+            enabled: canDecrement,
+            onTap: canDecrement ? () => onChanged(value - 1) : null,
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                '$value',
+                style: AppTypography.titleMedium.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          _StepperButton(
+            icon: PhosphorIcons.plus(PhosphorIconsStyle.bold),
+            enabled: canIncrement,
+            onTap: canIncrement ? () => onChanged(value + 1) : null,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepperButton extends StatelessWidget {
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback? onTap;
+
+  const _StepperButton({
+    required this.icon,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color =
+        enabled ? AppColors.primary : AppColors.textTertiary;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        child: Container(
+          width: 44,
+          height: 44,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: enabled
+                ? AppColors.primaryContainer.withValues(alpha: 0.5)
+                : AppColors.border.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: color, size: 18),
+        ),
       ),
     );
   }

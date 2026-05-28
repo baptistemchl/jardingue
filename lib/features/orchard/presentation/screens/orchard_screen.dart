@@ -5,9 +5,10 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/orchard_providers.dart';
+import '../widgets/fruit_tree_group_card.dart';
+import '../widgets/fruit_tree_group_sheet.dart';
 import '../widgets/fruit_tree_picker_sheet.dart';
 import '../widgets/pheromone_trap_reminders_card.dart';
-import '../widgets/user_fruit_tree_card.dart';
 import '../widgets/user_tree_detail_sheet.dart';
 import 'traps_screen.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
@@ -19,6 +20,7 @@ class OrchardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userTreesAsync = ref.watch(userFruitTreesNotifierProvider);
+    final groupsAsync = ref.watch(groupedUserFruitTreesProvider);
     // Le FAB n'est utile que lorsqu'il y a déjà des arbres : sinon
     // l'empty-state propose déjà un CTA bien plus explicite (« Ajouter
     // un arbre » centré, illustré). Afficher les deux ensemble fait
@@ -139,10 +141,11 @@ class OrchardScreen extends ConsumerWidget {
                   if (hasTrees)
                     const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-                  // Liste des arbres
-                  userTreesAsync.when(
-                    data: (trees) {
-                      if (trees.isEmpty) {
+                  // Liste des groupes (arbres seuls ou groupés par
+                  // espèce + variété + type de plantation)
+                  groupsAsync.when(
+                    data: (groups) {
+                      if (groups.isEmpty) {
                         return SliverToBoxAdapter(
                           child: _EmptyState(
                             onAddTap: () => _showTreePicker(context),
@@ -157,15 +160,22 @@ class OrchardScreen extends ConsumerWidget {
                             context,
                             index,
                           ) {
-                            final tree = trees[index];
+                            final group = groups[index];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12),
-                              child: UserFruitTreeCard(
-                                tree: tree,
-                                onTap: () => _showTreeDetail(context, tree),
+                              child: FruitTreeGroupCard(
+                                group: group,
+                                onTap: () => _openGroup(context, group),
+                                onLongPress: group.isGroup
+                                    ? () => _openGroup(
+                                          context,
+                                          group,
+                                          startInSelection: true,
+                                        )
+                                    : null,
                               ),
                             );
-                          }, childCount: trees.length),
+                          }, childCount: groups.length),
                         ),
                       );
                     },
@@ -222,6 +232,25 @@ class OrchardScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => const FruitTreePickerSheet(),
+    );
+  }
+
+  void _openGroup(
+    BuildContext context,
+    FruitTreeGroup group, {
+    bool startInSelection = false,
+  }) {
+    // Si le "groupe" n'a qu'un seul arbre, on saute l'écran intermédiaire
+    // et on ouvre directement la fiche de l'arbre — cohérent avec le
+    // comportement historique d'un verger sans groupes.
+    if (group.isSingle && !startInSelection) {
+      _showTreeDetail(context, group.representative);
+      return;
+    }
+    FruitTreeGroupSheet.show(
+      context,
+      group: group,
+      startInSelection: startInSelection,
     );
   }
 

@@ -115,6 +115,243 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get orchardQuantityLabel => 'Combien d\'arbres ?';
+
+  @override
+  String orchardQuantityHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fiches seront créées',
+      one: 'Une fiche sera créée',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orchardNicknamePrefixLabel => 'Surnom (préfixe pour le groupe)';
+
+  @override
+  String get orchardNicknamePrefixHint => 'Ex: Pommier du fond';
+
+  @override
+  String get orchardNicknameSingleHint => 'Ex: Le pommier du fond';
+
+  @override
+  String orchardBatchAddedSnack(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count $name ajoutés au verger',
+      one: '$name ajouté au verger',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String orchardGroupCardCount(int count) {
+    return '×$count';
+  }
+
+  @override
+  String orchardGroupVarietyAndType(String variety, String type) {
+    return '$variety · $type';
+  }
+
+  @override
+  String orchardGroupHealthAllGood(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count arbres en bon état',
+      one: '1 arbre en bon état',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String orchardGroupHealthMixed(int healthy, int warning) {
+    return '$healthy en forme · $warning à surveiller';
+  }
+
+  @override
+  String orchardGroupHealthAlert(int healthy, int alert) {
+    return '$healthy en forme · $alert en alerte';
+  }
+
+  @override
+  String orchardGroupSheetTitle(String species, int count) {
+    return '$species · $count arbres';
+  }
+
+  @override
+  String get orchardGroupStatsHarvestTitle => 'Dernière récolte';
+
+  @override
+  String get orchardGroupStatsHarvestNone => 'Pas encore';
+
+  @override
+  String orchardGroupStatsHarvestValue(String kg) {
+    return '$kg kg cumulés';
+  }
+
+  @override
+  String get orchardGroupStatsPruningTitle => 'Dernière taille';
+
+  @override
+  String orchardGroupStatsPruningValue(String date) {
+    return '$date';
+  }
+
+  @override
+  String get orchardGroupStatsPruningNone => 'Pas encore taillé';
+
+  @override
+  String get orchardGroupActionsTitle => 'Action sur tout le groupe';
+
+  @override
+  String get orchardGroupActionPruneAll => 'Tailler tous';
+
+  @override
+  String get orchardGroupActionHarvest => 'Récolter';
+
+  @override
+  String get orchardGroupActionTreat => 'Traiter';
+
+  @override
+  String get orchardGroupActionHealth => 'État de santé';
+
+  @override
+  String orchardGroupTreesTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mes $count arbres',
+      one: 'Mon arbre',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String orchardSelectionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count arbres sélectionnés',
+      one: '1 arbre sélectionné',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orchardSelectionCancel => 'Annuler la sélection';
+
+  @override
+  String get orchardSelectionEnter => 'Sélectionner plusieurs';
+
+  @override
+  String orchardBatchPruneTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ces $count arbres',
+      one: 'cet arbre',
+    );
+    return 'Tailler $_temp0 ?';
+  }
+
+  @override
+  String get orchardBatchPruneMessage =>
+      'La date de taille d\'aujourd\'hui sera appliquée.';
+
+  @override
+  String orchardBatchPruneDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Taille enregistrée pour $count arbres',
+      one: 'Taille enregistrée',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orchardBatchHarvestTitle => 'Récolte du groupe';
+
+  @override
+  String orchardBatchHarvestMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'les $count arbres',
+      one: 'cet arbre',
+    );
+    return 'Rendement total à répartir sur $_temp0.';
+  }
+
+  @override
+  String get orchardBatchHarvestTotalLabel => 'Quantité totale (kg)';
+
+  @override
+  String orchardBatchHarvestPerTreeHint(String kg) {
+    return '$kg kg par arbre';
+  }
+
+  @override
+  String orchardBatchHarvestDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Récolte enregistrée pour $count arbres',
+      one: 'Récolte enregistrée',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orchardBatchTreatTitle => 'Appliquer un traitement';
+
+  @override
+  String orchardBatchTreatMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count arbres',
+      one: 'cet arbre',
+    );
+    return 'L\'observation sera ajoutée aux notes de $_temp0.';
+  }
+
+  @override
+  String get orchardBatchTreatHint =>
+      'Ex: Bouillie bordelaise, purin d\'ortie...';
+
+  @override
+  String orchardBatchTreatDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Traitement noté sur $count arbres',
+      one: 'Traitement noté',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orchardBatchHealthTitle => 'État de santé du groupe';
+
+  @override
+  String orchardBatchHealthDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'État mis à jour pour $count arbres',
+      one: 'État mis à jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get calendarTab => 'Calendrier';
 
   @override

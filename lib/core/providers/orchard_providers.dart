@@ -4,6 +4,7 @@ import '../services/crash_reporting/crash_reporting_service.dart';
 import '../services/database/database.dart';
 import '../../features/orchard/data/repositories/fruit_tree_repository.dart';
 import '../../features/orchard/data/repositories/pheromone_trap_repository.dart';
+import '../../features/orchard/domain/models/fruit_tree_group.dart';
 import '../../features/orchard/domain/models/fruit_trees_filter_state.dart';
 import '../../features/orchard/domain/models/pheromone_trap_reminder.dart';
 import '../../features/orchard/domain/models/pheromone_trap_type.dart';
@@ -12,6 +13,7 @@ import '../../features/orchard/domain/models/user_fruit_tree_with_details.dart';
 import 'database_providers.dart';
 
 // Re-export des modeles pour retrocompatibilite
+export '../../features/orchard/domain/models/fruit_tree_group.dart';
 export '../../features/orchard/domain/models/fruit_trees_filter_state.dart';
 export '../../features/orchard/domain/models/pheromone_trap_reminder.dart';
 export '../../features/orchard/domain/models/pheromone_trap_type.dart';
@@ -193,6 +195,86 @@ class UserFruitTreesNotifier extends Notifier<
     return id;
   }
 
+  /// Crée [quantity] arbres identiques en une opération. Si `nicknamePrefix`
+  /// est fourni, les arbres sont nommés "$prefix #1", "$prefix #2"…. Sinon
+  /// `nickname` reste null et l'affichage retombe sur le nom commun de
+  /// l'espèce. Refresh DB unique à la fin pour éviter N rebuilds.
+  Future<List<int>> addTreesBatch({
+    required int fruitTreeId,
+    required int quantity,
+    String? nicknamePrefix,
+    String? variety,
+    DateTime? plantingDate,
+    String? location,
+    String? notes,
+    PlantingType? plantingType,
+  }) async {
+    assert(quantity >= 1);
+    final ids = <int>[];
+    final hasPrefix =
+        nicknamePrefix != null && nicknamePrefix.trim().isNotEmpty;
+    for (var i = 0; i < quantity; i++) {
+      final nickname = hasPrefix
+          ? (quantity == 1
+              ? nicknamePrefix.trim()
+              : '${nicknamePrefix.trim()} #${i + 1}')
+          : null;
+      final companion = UserFruitTreesCompanion(
+        fruitTreeId: Value(fruitTreeId),
+        nickname: Value(nickname),
+        variety: Value(variety),
+        plantingDate: Value(plantingDate),
+        location: Value(location),
+        notes: Value(notes),
+        plantingType: Value(plantingType?.dbValue),
+      );
+      ids.add(await _repo.addUserFruitTree(companion));
+    }
+    await _loadData();
+    return ids;
+  }
+
+  /// Applique une mise à jour identique à plusieurs arbres en parallèle,
+  /// puis rafraîchit la liste une seule fois. Utilisé pour les actions
+  /// groupées (tailler tous, marquer récolte du groupe, etc.).
+  ///
+  /// Les champs non renseignés ne sont pas touchés (`updateUserFruitTreePartial`
+  /// ne modifie que les colonnes non-null en entrée).
+  Future<void> applyBatch({
+    required List<int> ids,
+    DateTime? lastPruningDate,
+    DateTime? lastHarvestDate,
+    double? lastYieldKg,
+    String? healthStatus,
+    String? notesAppend,
+  }) async {
+    if (ids.isEmpty) return;
+
+    for (final id in ids) {
+      // Concaténation des notes : on récupère l'existant pour append plutôt
+      // que d'écraser. Si notesAppend est null, on passe null (champ ignoré).
+      String? finalNotes;
+      if (notesAppend != null && notesAppend.trim().isNotEmpty) {
+        final current =
+            await _repo.getUserFruitTreeWithDetailsById(id);
+        final existing = current?.userTree.notes;
+        finalNotes = (existing == null || existing.isEmpty)
+            ? notesAppend.trim()
+            : '${existing.trimRight()}\n${notesAppend.trim()}';
+      }
+
+      await _repo.updateUserFruitTreePartial(
+        id: id,
+        lastPruningDate: lastPruningDate,
+        lastHarvestDate: lastHarvestDate,
+        lastYieldKg: lastYieldKg,
+        healthStatus: healthStatus,
+        notes: finalNotes,
+      );
+    }
+    await _loadData();
+  }
+
   Future<void> updateTree({
     required int id,
     String? nickname,
@@ -231,6 +313,15 @@ class UserFruitTreesNotifier extends Notifier<
 final userFruitTreesNotifierProvider = NotifierProvider<
     UserFruitTreesNotifier,
     AsyncValue<List<UserFruitTreeWithDetails>>>(UserFruitTreesNotifier.new);
+
+/// Vue groupée du verger : les arbres identiques (même espèce + variété +
+/// type de plantation) sont rassemblés en `FruitTreeGroup`. Un arbre seul
+/// dans son groupe se rend comme une carte simple côté UI.
+final groupedUserFruitTreesProvider =
+    Provider<AsyncValue<List<FruitTreeGroup>>>((ref) {
+  final treesAsync = ref.watch(userFruitTreesNotifierProvider);
+  return treesAsync.whenData(FruitTreeGroup.groupAll);
+});
 
 final userFruitTreesCountProvider =
     FutureProvider<int>((ref) async {

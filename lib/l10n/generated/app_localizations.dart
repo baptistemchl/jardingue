@@ -268,6 +268,252 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{+1 autre} other{+{count} autres}}'**
   String orchardOtherCount(int count);
 
+  /// No description provided for @orchardQuantityLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Combien d\'arbres ?'**
+  String get orchardQuantityLabel;
+
+  /// No description provided for @orchardQuantityHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Une fiche sera créée} other{{count} fiches seront créées}}'**
+  String orchardQuantityHint(int count);
+
+  /// No description provided for @orchardNicknamePrefixLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surnom (préfixe pour le groupe)'**
+  String get orchardNicknamePrefixLabel;
+
+  /// No description provided for @orchardNicknamePrefixHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex: Pommier du fond'**
+  String get orchardNicknamePrefixHint;
+
+  /// No description provided for @orchardNicknameSingleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex: Le pommier du fond'**
+  String get orchardNicknameSingleHint;
+
+  /// No description provided for @orchardBatchAddedSnack.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{{name} ajouté au verger} other{{count} {name} ajoutés au verger}}'**
+  String orchardBatchAddedSnack(int count, String name);
+
+  /// No description provided for @orchardGroupCardCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'×{count}'**
+  String orchardGroupCardCount(int count);
+
+  /// No description provided for @orchardGroupVarietyAndType.
+  ///
+  /// In fr, this message translates to:
+  /// **'{variety} · {type}'**
+  String orchardGroupVarietyAndType(String variety, String type);
+
+  /// No description provided for @orchardGroupHealthAllGood.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 arbre en bon état} other{{count} arbres en bon état}}'**
+  String orchardGroupHealthAllGood(int count);
+
+  /// No description provided for @orchardGroupHealthMixed.
+  ///
+  /// In fr, this message translates to:
+  /// **'{healthy} en forme · {warning} à surveiller'**
+  String orchardGroupHealthMixed(int healthy, int warning);
+
+  /// No description provided for @orchardGroupHealthAlert.
+  ///
+  /// In fr, this message translates to:
+  /// **'{healthy} en forme · {alert} en alerte'**
+  String orchardGroupHealthAlert(int healthy, int alert);
+
+  /// No description provided for @orchardGroupSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{species} · {count} arbres'**
+  String orchardGroupSheetTitle(String species, int count);
+
+  /// No description provided for @orchardGroupStatsHarvestTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière récolte'**
+  String get orchardGroupStatsHarvestTitle;
+
+  /// No description provided for @orchardGroupStatsHarvestNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore'**
+  String get orchardGroupStatsHarvestNone;
+
+  /// No description provided for @orchardGroupStatsHarvestValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{kg} kg cumulés'**
+  String orchardGroupStatsHarvestValue(String kg);
+
+  /// No description provided for @orchardGroupStatsPruningTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière taille'**
+  String get orchardGroupStatsPruningTitle;
+
+  /// No description provided for @orchardGroupStatsPruningValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'{date}'**
+  String orchardGroupStatsPruningValue(String date);
+
+  /// No description provided for @orchardGroupStatsPruningNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore taillé'**
+  String get orchardGroupStatsPruningNone;
+
+  /// No description provided for @orchardGroupActionsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action sur tout le groupe'**
+  String get orchardGroupActionsTitle;
+
+  /// No description provided for @orchardGroupActionPruneAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tailler tous'**
+  String get orchardGroupActionPruneAll;
+
+  /// No description provided for @orchardGroupActionHarvest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récolter'**
+  String get orchardGroupActionHarvest;
+
+  /// No description provided for @orchardGroupActionTreat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Traiter'**
+  String get orchardGroupActionTreat;
+
+  /// No description provided for @orchardGroupActionHealth.
+  ///
+  /// In fr, this message translates to:
+  /// **'État de santé'**
+  String get orchardGroupActionHealth;
+
+  /// No description provided for @orchardGroupTreesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Mon arbre} other{Mes {count} arbres}}'**
+  String orchardGroupTreesTitle(int count);
+
+  /// No description provided for @orchardSelectionCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 arbre sélectionné} other{{count} arbres sélectionnés}}'**
+  String orchardSelectionCount(int count);
+
+  /// No description provided for @orchardSelectionCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la sélection'**
+  String get orchardSelectionCancel;
+
+  /// No description provided for @orchardSelectionEnter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner plusieurs'**
+  String get orchardSelectionEnter;
+
+  /// No description provided for @orchardBatchPruneTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tailler {count, plural, =1{cet arbre} other{ces {count} arbres}} ?'**
+  String orchardBatchPruneTitle(int count);
+
+  /// No description provided for @orchardBatchPruneMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'La date de taille d\'aujourd\'hui sera appliquée.'**
+  String get orchardBatchPruneMessage;
+
+  /// No description provided for @orchardBatchPruneDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Taille enregistrée} other{Taille enregistrée pour {count} arbres}}'**
+  String orchardBatchPruneDone(int count);
+
+  /// No description provided for @orchardBatchHarvestTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récolte du groupe'**
+  String get orchardBatchHarvestTitle;
+
+  /// No description provided for @orchardBatchHarvestMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rendement total à répartir sur {count, plural, =1{cet arbre} other{les {count} arbres}}.'**
+  String orchardBatchHarvestMessage(int count);
+
+  /// No description provided for @orchardBatchHarvestTotalLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité totale (kg)'**
+  String get orchardBatchHarvestTotalLabel;
+
+  /// No description provided for @orchardBatchHarvestPerTreeHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'{kg} kg par arbre'**
+  String orchardBatchHarvestPerTreeHint(String kg);
+
+  /// No description provided for @orchardBatchHarvestDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Récolte enregistrée} other{Récolte enregistrée pour {count} arbres}}'**
+  String orchardBatchHarvestDone(int count);
+
+  /// No description provided for @orchardBatchTreatTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer un traitement'**
+  String get orchardBatchTreatTitle;
+
+  /// No description provided for @orchardBatchTreatMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'observation sera ajoutée aux notes de {count, plural, =1{cet arbre} other{{count} arbres}}.'**
+  String orchardBatchTreatMessage(int count);
+
+  /// No description provided for @orchardBatchTreatHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex: Bouillie bordelaise, purin d\'ortie...'**
+  String get orchardBatchTreatHint;
+
+  /// No description provided for @orchardBatchTreatDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{Traitement noté} other{Traitement noté sur {count} arbres}}'**
+  String orchardBatchTreatDone(int count);
+
+  /// No description provided for @orchardBatchHealthTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'État de santé du groupe'**
+  String get orchardBatchHealthTitle;
+
+  /// No description provided for @orchardBatchHealthDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{État mis à jour} other{État mis à jour pour {count} arbres}}'**
+  String orchardBatchHealthDone(int count);
+
   /// No description provided for @calendarTab.
   ///
   /// In fr, this message translates to:

@@ -15,9 +15,10 @@ class _RecordingNotifier extends UserFruitTreesNotifier {
   AsyncValue<List<UserFruitTreeWithDetails>> build() => const AsyncData([]);
 
   @override
-  Future<int> addTree({
+  Future<List<int>> addTreesBatch({
     required int fruitTreeId,
-    String? nickname,
+    required int quantity,
+    String? nicknamePrefix,
     String? variety,
     DateTime? plantingDate,
     String? location,
@@ -26,14 +27,15 @@ class _RecordingNotifier extends UserFruitTreesNotifier {
   }) async {
     addCalls.add({
       'fruitTreeId': fruitTreeId,
-      'nickname': nickname,
+      'quantity': quantity,
+      'nicknamePrefix': nicknamePrefix,
       'variety': variety,
       'plantingDate': plantingDate,
       'location': location,
       'notes': notes,
       'plantingType': plantingType,
     });
-    return 1;
+    return List<int>.generate(quantity, (i) => i + 1);
   }
 }
 
@@ -103,6 +105,7 @@ void main() {
       expect(notifier.addCalls, hasLength(1));
       final call = notifier.addCalls.first;
       expect(call['fruitTreeId'], 12);
+      expect(call['quantity'], 1);
       expect(call['variety'], 'MaVariété');
       expect(call['plantingType'], PlantingType.pot);
     },
@@ -124,6 +127,7 @@ void main() {
 
       expect(notifier.addCalls.first['plantingType'], PlantingType.ground);
       expect(notifier.addCalls.first['variety'], isNull);
+      expect(notifier.addCalls.first['quantity'], 1);
     },
   );
 }
