@@ -8,7 +8,9 @@ import '../../../../core/providers/planning_providers.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../../../../core/widgets/page_help.dart';
 import '../../../../features/carnet/presentation/widgets/carnet_menu_button.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/models/planning_state.dart';
 import '../widgets/garden_task_tile.dart';
 import '../widgets/month_filter_bar.dart';
@@ -19,14 +21,37 @@ import '../widgets/planning_weather_banner.dart';
 import '../widgets/plant_selector_sheet.dart';
 import '../widgets/selected_plants_row.dart';
 
-class PlanningScreen extends ConsumerWidget {
+PageHelp _buildPlanningHelp(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return PageHelp(
+    pageId: 'planning',
+    title: loc.pageHelpPlanningTitle,
+    emoji: '🗓️',
+    why: loc.pageHelpPlanningWhy,
+    how: loc.pageHelpPlanningHow,
+    when: loc.pageHelpPlanningWhen,
+    where: loc.pageHelpPlanningWhere,
+  );
+}
+
+class PlanningScreen extends ConsumerStatefulWidget {
   const PlanningScreen({super.key});
 
   @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+  ConsumerState<PlanningScreen> createState() => _PlanningScreenState();
+}
+
+class _PlanningScreenState extends ConsumerState<PlanningScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) maybeShowPageHelp(context, _buildPlanningHelp(context));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final stateAsync = ref.watch(
       planningStateProvider,
     );
@@ -316,6 +341,8 @@ class _Header extends StatelessWidget {
               ],
             ),
           ),
+          PageHelpButton(help: _buildPlanningHelp(context)),
+          const SizedBox(width: 8),
           const CarnetMenuButton(),
         ],
       ),

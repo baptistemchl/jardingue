@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/page_help.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../domain/models/carnet_tab.dart';
 import '../providers/carnet_ui_providers.dart';
@@ -13,6 +14,19 @@ import 'tabs/journal_tab.dart';
 import 'tabs/seedlings_tab.dart';
 import 'tabs/settings_tab.dart';
 import 'tabs/stats_tab.dart';
+
+PageHelp _buildCarnetHelp(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return PageHelp(
+    pageId: 'carnet',
+    title: loc.pageHelpCarnetTitle,
+    emoji: '📓',
+    why: loc.pageHelpCarnetWhy,
+    how: loc.pageHelpCarnetHow,
+    when: loc.pageHelpCarnetWhen,
+    where: loc.pageHelpCarnetWhere,
+  );
+}
 
 /// Drawer "Carnet de bord" qui slide depuis le bord droit.
 ///
@@ -36,6 +50,16 @@ class _CarnetDrawerState extends ConsumerState<CarnetDrawer>
 
   @override
   Widget build(BuildContext context) {
+    // Auto-show de l'aide la première fois que le carnet s'ouvre.
+    // ref.listen est sync (pas d'await ni de side-effect sur l'état du
+    // widget en cours de build), donc safe ici.
+    ref.listen(carnetUiProvider, (prev, next) {
+      final wasClosed = prev?.isOpen != true;
+      if (wasClosed && next.isOpen) {
+        maybeShowPageHelp(context, _buildCarnetHelp(context));
+      }
+    });
+
     final ui = ref.watch(carnetUiProvider);
     final size = MediaQuery.of(context).size;
     final drawerWidth = size.width * _drawerWidthFraction;
@@ -346,6 +370,8 @@ class _DrawerBody extends ConsumerWidget {
                     ],
                   ),
                 ),
+                PageHelpButton(help: _buildCarnetHelp(context), size: 28),
+                const SizedBox(width: 4),
                 IconButton(
                   onPressed: () =>
                       ref.read(carnetUiProvider.notifier).close(),

@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/orchard_providers.dart';
+import '../../../../core/widgets/page_help.dart';
 import '../widgets/fruit_tree_group_card.dart';
 import '../widgets/fruit_tree_group_sheet.dart';
 import '../widgets/fruit_tree_picker_sheet.dart';
@@ -13,12 +14,41 @@ import '../widgets/user_tree_detail_sheet.dart';
 import 'traps_screen.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
 
+PageHelp _buildOrchardHelp(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return PageHelp(
+    pageId: 'orchard',
+    title: loc.orchardTitle,
+    emoji: '🌳',
+    why: loc.pageHelpOrchardWhy,
+    how: loc.pageHelpOrchardHow,
+    when: loc.pageHelpOrchardWhen,
+    where: loc.pageHelpOrchardWhere,
+  );
+}
+
 /// Écran principal du verger - Liste des arbres de l'utilisateur
-class OrchardScreen extends ConsumerWidget {
+class OrchardScreen extends ConsumerStatefulWidget {
   const OrchardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OrchardScreen> createState() => _OrchardScreenState();
+}
+
+class _OrchardScreenState extends ConsumerState<OrchardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Help affiché uniquement à la première visite (clé SharedPrefs
+    // `page_help_dismissed_orchard`). Décalé post-frame pour laisser
+    // le screen s'installer.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) maybeShowPageHelp(context, _buildOrchardHelp(context));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final userTreesAsync = ref.watch(userFruitTreesNotifierProvider);
     final groupsAsync = ref.watch(groupedUserFruitTreesProvider);
     // Le FAB n'est utile que lorsqu'il y a déjà des arbres : sinon
@@ -105,6 +135,8 @@ class OrchardScreen extends ConsumerWidget {
                                   ],
                                 ),
                               ),
+                              PageHelpButton(help: _buildOrchardHelp(context)),
+                              const SizedBox(width: 4),
                             ],
                           ),
                           const SizedBox(height: AppSpacing.lg),

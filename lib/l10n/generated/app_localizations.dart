@@ -514,6 +514,186 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{État mis à jour} other{État mis à jour pour {count} arbres}}'**
   String orchardBatchHealthDone(int count);
 
+  /// No description provided for @pageHelpTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide'**
+  String get pageHelpTooltip;
+
+  /// No description provided for @pageHelpDismiss.
+  ///
+  /// In fr, this message translates to:
+  /// **'C\'est compris !'**
+  String get pageHelpDismiss;
+
+  /// No description provided for @pageHelpWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pourquoi ?'**
+  String get pageHelpWhy;
+
+  /// No description provided for @pageHelpHow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comment ?'**
+  String get pageHelpHow;
+
+  /// No description provided for @pageHelpWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quand ?'**
+  String get pageHelpWhen;
+
+  /// No description provided for @pageHelpWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Où ?'**
+  String get pageHelpWhere;
+
+  /// No description provided for @pageHelpOrchardWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garder un œil sur tous vos arbres fruitiers et leur état au fil des saisons, des tailles aux récoltes.'**
+  String get pageHelpOrchardWhy;
+
+  /// No description provided for @pageHelpOrchardHow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez chaque arbre (ou un lot d\'arbres identiques) avec son surnom, sa variété et son emplacement. Chaque action s\'enregistre en deux tapes.'**
+  String get pageHelpOrchardHow;
+
+  /// No description provided for @pageHelpOrchardWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'À chaque taille, traitement, récolte ou changement d\'état de santé — pour reconstituer l\'historique d\'un seul coup d\'œil.'**
+  String get pageHelpOrchardWhen;
+
+  /// No description provided for @pageHelpOrchardWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tap sur une carte pour voir les détails d\'un arbre ou d\'un groupe. Long-press sur un groupe pour appliquer une action à plusieurs arbres d\'un coup.'**
+  String get pageHelpOrchardWhere;
+
+  /// No description provided for @pageHelpPlanningWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Savoir ce qui se passe ce mois-ci dans le potager et anticiper les semis, plantations et récoltes à venir.'**
+  String get pageHelpPlanningWhy;
+
+  /// No description provided for @pageHelpPlanningHow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez vos plants pour voir leurs périodes, basculez entre Tout / Mes plants / Potagère, et utilisez le filtre par mois.'**
+  String get pageHelpPlanningHow;
+
+  /// No description provided for @pageHelpPlanningWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'À consulter en début de mois ou avant chaque sortie au jardin pour ne rater aucune fenêtre de semis ou de récolte.'**
+  String get pageHelpPlanningWhen;
+
+  /// No description provided for @pageHelpPlanningWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tap sur un plant pour voir ses détails. Tap sur une tâche potagère pour l\'enregistrer dans votre suivi.'**
+  String get pageHelpPlanningWhere;
+
+  /// No description provided for @pageHelpCarnetWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Centraliser votre journal de jardin : semis, récoltes, observations, statistiques de la saison.'**
+  String get pageHelpCarnetWhy;
+
+  /// No description provided for @pageHelpCarnetHow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Naviguez entre les onglets (Semis, Récoltes, Journal, Stats) via les marque-pages sur le bord. Ajoutez une entrée avec le « + » de chaque onglet.'**
+  String get pageHelpCarnetHow;
+
+  /// No description provided for @pageHelpCarnetWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au quotidien — quelques secondes suffisent pour noter une récolte du jour ou un semis qui a levé.'**
+  String get pageHelpCarnetWhen;
+
+  /// No description provided for @pageHelpCarnetWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Glissez depuis le bord gauche de l\'écran, ou tapez sur le bouton menu en haut à droite de l\'accueil pour ouvrir/fermer le carnet.'**
+  String get pageHelpCarnetWhere;
+
+  /// No description provided for @pageHelpGardenWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Visualiser tous vos potagers, vos rappels de soin et la météo qui les concerne, en un seul écran d\'accueil.'**
+  String get pageHelpGardenWhy;
+
+  /// No description provided for @pageHelpGardenHow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tap sur un potager pour entrer dans son éditeur (placer ou déplacer les plantes). Bouton « + » en bas pour créer un nouveau potager.'**
+  String get pageHelpGardenHow;
+
+  /// No description provided for @pageHelpGardenWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'À chaque ouverture de l\'app — c\'est votre tableau de bord. Les rappels affichent ce qu\'il faut faire aujourd\'hui.'**
+  String get pageHelpGardenWhen;
+
+  /// No description provided for @pageHelpGardenWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les cartes Météo, Potagers et Verger sont empilées du haut vers le bas. Le bouton Carnet est en haut à droite, l\'accès Premium juste à côté.'**
+  String get pageHelpGardenWhere;
+
+  /// No description provided for @pageHelpPlanningTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Planification'**
+  String get pageHelpPlanningTitle;
+
+  /// No description provided for @pageHelpGardenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon jardin'**
+  String get pageHelpGardenTitle;
+
+  /// No description provided for @pageHelpCarnetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet de bord'**
+  String get pageHelpCarnetTitle;
+
+  /// No description provided for @pageHelpCalendarTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calendrier'**
+  String get pageHelpCalendarTitle;
+
+  /// No description provided for @pageHelpCalendarWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir d\'un coup d\'œil les périodes de semis, plantation, floraison et récolte de tous vos plants.'**
+  String get pageHelpCalendarWhy;
+
+  /// No description provided for @pageHelpCalendarHow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Basculez entre la vue Calendrier (points colorés sur les jours) et la vue Liste (groupée par type d\'activité). Sélectionnez un plant pour filtrer.'**
+  String get pageHelpCalendarHow;
+
+  /// No description provided for @pageHelpCalendarWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moment de planifier vos cultures, ou pour vérifier si vous êtes dans la bonne période pour une action donnée.'**
+  String get pageHelpCalendarWhen;
+
+  /// No description provided for @pageHelpCalendarWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tap sur un jour pour ajouter un événement (semis, arrosage…). Tap sur Mon suivi pour retrouver l\'historique de toutes vos actions enregistrées.'**
+  String get pageHelpCalendarWhere;
+
   /// No description provided for @calendarTab.
   ///
   /// In fr, this message translates to:

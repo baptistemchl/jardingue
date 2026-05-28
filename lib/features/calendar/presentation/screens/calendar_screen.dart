@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../core/widgets/app_bottom_sheet.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../../../../core/widgets/page_help.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -17,9 +18,21 @@ import '../widgets/add_event_sheet.dart';
 import '../widgets/calendar_empty_states.dart';
 import '../widgets/calendar_filter_chips.dart'
     show CalendarFilterPanel;
-import '../widgets/calendar_onboarding.dart';
 import '../../../../features/carnet/presentation/widgets/carnet_menu_button.dart';
 import 'package:jardingue/l10n/generated/app_localizations.dart';
+
+PageHelp _buildCalendarHelp(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return PageHelp(
+    pageId: 'calendar',
+    title: loc.pageHelpCalendarTitle,
+    emoji: '📅',
+    why: loc.pageHelpCalendarWhy,
+    how: loc.pageHelpCalendarHow,
+    when: loc.pageHelpCalendarWhen,
+    where: loc.pageHelpCalendarWhere,
+  );
+}
 
 // ============================================
 // PROVIDER POUR LA VUE SÉLECTIONNÉE
@@ -66,7 +79,7 @@ class _CalendarScreenState
     // Popup d'aide au premier lancement
     WidgetsBinding.instance
         .addPostFrameCallback((_) {
-      maybeShowCalendarOnboarding(context);
+      if (mounted) maybeShowPageHelp(context, _buildCalendarHelp(context));
     });
   }
 
@@ -220,36 +233,8 @@ class _CalendarScreenState
                         right: 16,
                         top: 8,
                       ),
-                      child: GestureDetector(
-                        onTap: () =>
-                            showCalendarOnboarding(
-                          context,
-                        ),
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration:
-                              BoxDecoration(
-                            color: AppColors.info
-                                .withValues(
-                              alpha: 0.1,
-                            ),
-                            borderRadius:
-                                BorderRadius
-                                    .circular(
-                              10,
-                            ),
-                          ),
-                          child: Icon(
-                            PhosphorIcons
-                                .question(
-                              PhosphorIconsStyle
-                                  .bold,
-                            ),
-                            size: 16,
-                            color: AppColors.info,
-                          ),
-                        ),
+                      child: PageHelpButton(
+                        help: _buildCalendarHelp(context),
                       ),
                     ),
                     const Padding(

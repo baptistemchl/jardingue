@@ -352,6 +352,116 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get pageHelpTooltip => 'Aide';
+
+  @override
+  String get pageHelpDismiss => 'C\'est compris !';
+
+  @override
+  String get pageHelpWhy => 'Pourquoi ?';
+
+  @override
+  String get pageHelpHow => 'Comment ?';
+
+  @override
+  String get pageHelpWhen => 'Quand ?';
+
+  @override
+  String get pageHelpWhere => 'Où ?';
+
+  @override
+  String get pageHelpOrchardWhy =>
+      'Garder un œil sur tous vos arbres fruitiers et leur état au fil des saisons, des tailles aux récoltes.';
+
+  @override
+  String get pageHelpOrchardHow =>
+      'Ajoutez chaque arbre (ou un lot d\'arbres identiques) avec son surnom, sa variété et son emplacement. Chaque action s\'enregistre en deux tapes.';
+
+  @override
+  String get pageHelpOrchardWhen =>
+      'À chaque taille, traitement, récolte ou changement d\'état de santé — pour reconstituer l\'historique d\'un seul coup d\'œil.';
+
+  @override
+  String get pageHelpOrchardWhere =>
+      'Tap sur une carte pour voir les détails d\'un arbre ou d\'un groupe. Long-press sur un groupe pour appliquer une action à plusieurs arbres d\'un coup.';
+
+  @override
+  String get pageHelpPlanningWhy =>
+      'Savoir ce qui se passe ce mois-ci dans le potager et anticiper les semis, plantations et récoltes à venir.';
+
+  @override
+  String get pageHelpPlanningHow =>
+      'Sélectionnez vos plants pour voir leurs périodes, basculez entre Tout / Mes plants / Potagère, et utilisez le filtre par mois.';
+
+  @override
+  String get pageHelpPlanningWhen =>
+      'À consulter en début de mois ou avant chaque sortie au jardin pour ne rater aucune fenêtre de semis ou de récolte.';
+
+  @override
+  String get pageHelpPlanningWhere =>
+      'Tap sur un plant pour voir ses détails. Tap sur une tâche potagère pour l\'enregistrer dans votre suivi.';
+
+  @override
+  String get pageHelpCarnetWhy =>
+      'Centraliser votre journal de jardin : semis, récoltes, observations, statistiques de la saison.';
+
+  @override
+  String get pageHelpCarnetHow =>
+      'Naviguez entre les onglets (Semis, Récoltes, Journal, Stats) via les marque-pages sur le bord. Ajoutez une entrée avec le « + » de chaque onglet.';
+
+  @override
+  String get pageHelpCarnetWhen =>
+      'Au quotidien — quelques secondes suffisent pour noter une récolte du jour ou un semis qui a levé.';
+
+  @override
+  String get pageHelpCarnetWhere =>
+      'Glissez depuis le bord gauche de l\'écran, ou tapez sur le bouton menu en haut à droite de l\'accueil pour ouvrir/fermer le carnet.';
+
+  @override
+  String get pageHelpGardenWhy =>
+      'Visualiser tous vos potagers, vos rappels de soin et la météo qui les concerne, en un seul écran d\'accueil.';
+
+  @override
+  String get pageHelpGardenHow =>
+      'Tap sur un potager pour entrer dans son éditeur (placer ou déplacer les plantes). Bouton « + » en bas pour créer un nouveau potager.';
+
+  @override
+  String get pageHelpGardenWhen =>
+      'À chaque ouverture de l\'app — c\'est votre tableau de bord. Les rappels affichent ce qu\'il faut faire aujourd\'hui.';
+
+  @override
+  String get pageHelpGardenWhere =>
+      'Les cartes Météo, Potagers et Verger sont empilées du haut vers le bas. Le bouton Carnet est en haut à droite, l\'accès Premium juste à côté.';
+
+  @override
+  String get pageHelpPlanningTitle => 'Planification';
+
+  @override
+  String get pageHelpGardenTitle => 'Mon jardin';
+
+  @override
+  String get pageHelpCarnetTitle => 'Carnet de bord';
+
+  @override
+  String get pageHelpCalendarTitle => 'Calendrier';
+
+  @override
+  String get pageHelpCalendarWhy =>
+      'Voir d\'un coup d\'œil les périodes de semis, plantation, floraison et récolte de tous vos plants.';
+
+  @override
+  String get pageHelpCalendarHow =>
+      'Basculez entre la vue Calendrier (points colorés sur les jours) et la vue Liste (groupée par type d\'activité). Sélectionnez un plant pour filtrer.';
+
+  @override
+  String get pageHelpCalendarWhen =>
+      'Au moment de planifier vos cultures, ou pour vérifier si vous êtes dans la bonne période pour une action donnée.';
+
+  @override
+  String get pageHelpCalendarWhere =>
+      'Tap sur un jour pour ajouter un événement (semis, arrosage…). Tap sur Mon suivi pour retrouver l\'historique de toutes vos actions enregistrées.';
+
+  @override
   String get calendarTab => 'Calendrier';
 
   @override

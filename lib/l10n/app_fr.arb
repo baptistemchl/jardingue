@@ -106,6 +106,43 @@
   "orchardBatchHealthDone": "{count, plural, =1{État mis à jour} other{État mis à jour pour {count} arbres}}",
   "@orchardBatchHealthDone": { "placeholders": { "count": { "type": "int" } } },
 
+  "pageHelpTooltip": "Aide",
+  "pageHelpDismiss": "C'est compris !",
+  "pageHelpWhy": "Pourquoi ?",
+  "pageHelpHow": "Comment ?",
+  "pageHelpWhen": "Quand ?",
+  "pageHelpWhere": "Où ?",
+
+  "pageHelpOrchardWhy": "Garder un œil sur tous vos arbres fruitiers et leur état au fil des saisons, des tailles aux récoltes.",
+  "pageHelpOrchardHow": "Ajoutez chaque arbre (ou un lot d'arbres identiques) avec son surnom, sa variété et son emplacement. Chaque action s'enregistre en deux tapes.",
+  "pageHelpOrchardWhen": "À chaque taille, traitement, récolte ou changement d'état de santé — pour reconstituer l'historique d'un seul coup d'œil.",
+  "pageHelpOrchardWhere": "Tap sur une carte pour voir les détails d'un arbre ou d'un groupe. Long-press sur un groupe pour appliquer une action à plusieurs arbres d'un coup.",
+
+  "pageHelpPlanningWhy": "Savoir ce qui se passe ce mois-ci dans le potager et anticiper les semis, plantations et récoltes à venir.",
+  "pageHelpPlanningHow": "Sélectionnez vos plants pour voir leurs périodes, basculez entre Tout / Mes plants / Potagère, et utilisez le filtre par mois.",
+  "pageHelpPlanningWhen": "À consulter en début de mois ou avant chaque sortie au jardin pour ne rater aucune fenêtre de semis ou de récolte.",
+  "pageHelpPlanningWhere": "Tap sur un plant pour voir ses détails. Tap sur une tâche potagère pour l'enregistrer dans votre suivi.",
+
+  "pageHelpCarnetWhy": "Centraliser votre journal de jardin : semis, récoltes, observations, statistiques de la saison.",
+  "pageHelpCarnetHow": "Naviguez entre les onglets (Semis, Récoltes, Journal, Stats) via les marque-pages sur le bord. Ajoutez une entrée avec le « + » de chaque onglet.",
+  "pageHelpCarnetWhen": "Au quotidien — quelques secondes suffisent pour noter une récolte du jour ou un semis qui a levé.",
+  "pageHelpCarnetWhere": "Glissez depuis le bord gauche de l'écran, ou tapez sur le bouton menu en haut à droite de l'accueil pour ouvrir/fermer le carnet.",
+
+  "pageHelpGardenWhy": "Visualiser tous vos potagers, vos rappels de soin et la météo qui les concerne, en un seul écran d'accueil.",
+  "pageHelpGardenHow": "Tap sur un potager pour entrer dans son éditeur (placer ou déplacer les plantes). Bouton « + » en bas pour créer un nouveau potager.",
+  "pageHelpGardenWhen": "À chaque ouverture de l'app — c'est votre tableau de bord. Les rappels affichent ce qu'il faut faire aujourd'hui.",
+  "pageHelpGardenWhere": "Les cartes Météo, Potagers et Verger sont empilées du haut vers le bas. Le bouton Carnet est en haut à droite, l'accès Premium juste à côté.",
+
+  "pageHelpPlanningTitle": "Planification",
+  "pageHelpGardenTitle": "Mon jardin",
+  "pageHelpCarnetTitle": "Carnet de bord",
+  "pageHelpCalendarTitle": "Calendrier",
+
+  "pageHelpCalendarWhy": "Voir d'un coup d'œil les périodes de semis, plantation, floraison et récolte de tous vos plants.",
+  "pageHelpCalendarHow": "Basculez entre la vue Calendrier (points colorés sur les jours) et la vue Liste (groupée par type d'activité). Sélectionnez un plant pour filtrer.",
+  "pageHelpCalendarWhen": "Au moment de planifier vos cultures, ou pour vérifier si vous êtes dans la bonne période pour une action donnée.",
+  "pageHelpCalendarWhere": "Tap sur un jour pour ajouter un événement (semis, arrosage…). Tap sur Mon suivi pour retrouver l'historique de toutes vos actions enregistrées.",
+
   "calendarTab": "Calendrier",
   "listTab": "Liste",
   "myTracking": "Mon suivi",

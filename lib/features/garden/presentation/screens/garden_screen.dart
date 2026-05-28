@@ -14,17 +14,43 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/garden_providers.dart';
 import '../../../../core/services/database/app_database.dart';
 import '../../../../core/widgets/decorative_background.dart';
+import '../../../../core/widgets/page_help.dart';
 import '../../../../features/carnet/presentation/widgets/carnet_menu_button.dart';
 import '../../../../features/premium/presentation/providers/premium_providers.dart';
 import '../../../../router/app_router.dart';
 import 'garden_create_screen.dart';
 
+PageHelp _buildGardenHelp(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return PageHelp(
+    pageId: 'garden',
+    title: loc.pageHelpGardenTitle,
+    emoji: '🌿',
+    why: loc.pageHelpGardenWhy,
+    how: loc.pageHelpGardenHow,
+    when: loc.pageHelpGardenWhen,
+    where: loc.pageHelpGardenWhere,
+  );
+}
 
-class GardenScreen extends ConsumerWidget {
+class GardenScreen extends ConsumerStatefulWidget {
   const GardenScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GardenScreen> createState() => _GardenScreenState();
+}
+
+class _GardenScreenState extends ConsumerState<GardenScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) maybeShowPageHelp(context, _buildGardenHelp(context));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final gardensAsync = ref.watch(gardensListProvider);
 
     return Scaffold(
@@ -87,6 +113,14 @@ class GardenScreen extends ConsumerWidget {
                                     ),
                                   ),
                                 ],
+                              ),
+                            ),
+
+                            // Bouton aide (Pourquoi / Comment / Quand / Où)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: PageHelpButton(
+                                help: _buildGardenHelp(context),
                               ),
                             ),
 
