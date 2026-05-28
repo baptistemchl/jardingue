@@ -6,7 +6,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/providers/orchard_providers.dart';
 import '../screens/orchard_screen.dart';
-import 'fruit_tree_picker_sheet.dart';
 
 /// Widget container pour afficher le verger sur l'écran d'accueil
 class OrchardContainer extends ConsumerWidget {
@@ -93,7 +92,9 @@ class OrchardContainer extends ConsumerWidget {
           treesAsync.when(
             data: (trees) {
               if (trees.isEmpty) {
-                return _EmptyState(onAddTap: () => _showTreePicker(context));
+                return _EmptyState(
+                  onViewOrchard: () => _navigateToOrchard(context),
+                );
               }
 
               // Affiche les 3 premiers arbres
@@ -119,25 +120,17 @@ class OrchardContainer extends ConsumerWidget {
                       ),
                     ),
                   const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _ActionButton(
-                          label: AppLocalizations.of(context)!.orchardViewAll,
-                          icon: PhosphorIcons.eye(PhosphorIconsStyle.bold),
-                          onTap: () => _navigateToOrchard(context),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _ActionButton(
-                          label: AppLocalizations.of(context)!.add,
-                          icon: PhosphorIcons.plus(PhosphorIconsStyle.bold),
-                          isPrimary: true,
-                          onTap: () => _showTreePicker(context),
-                        ),
-                      ),
-                    ],
+                  // Un seul CTA — l'ajout d'un arbre se fait dans le
+                  // verger lui-même, pour éviter d'ouvrir le picker
+                  // depuis le dashboard d'accueil.
+                  SizedBox(
+                    width: double.infinity,
+                    child: _ActionButton(
+                      label: AppLocalizations.of(context)!.orchardViewAll,
+                      icon: PhosphorIcons.eye(PhosphorIconsStyle.bold),
+                      isPrimary: true,
+                      onTap: () => _navigateToOrchard(context),
+                    ),
                   ),
                 ],
               );
@@ -174,21 +167,12 @@ class OrchardContainer extends ConsumerWidget {
     );
   }
 
-  void _showTreePicker(BuildContext context) {
-    showModalBottomSheet(
-      useRootNavigator: true,
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const FruitTreePickerSheet(),
-    );
-  }
 }
 
 class _EmptyState extends StatelessWidget {
-  final VoidCallback onAddTap;
+  final VoidCallback onViewOrchard;
 
-  const _EmptyState({required this.onAddTap});
+  const _EmptyState({required this.onViewOrchard});
 
   @override
   Widget build(BuildContext context) {
@@ -202,10 +186,14 @@ class _EmptyState extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
+        // Pas de "+ Ajouter" ici : on entre d'abord dans le verger,
+        // puis l'utilisateur y ajoute son arbre via le CTA central
+        // de l'empty state ou le FAB.
         ElevatedButton.icon(
-          onPressed: onAddTap,
-          icon: Icon(PhosphorIcons.plus(PhosphorIconsStyle.bold), size: 16),
-          label: Text(AppLocalizations.of(context)!.orchardAddTree),
+          onPressed: onViewOrchard,
+          icon: Icon(PhosphorIcons.arrowRight(PhosphorIconsStyle.bold),
+              size: 16),
+          label: Text(AppLocalizations.of(context)!.orchardViewAll),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,

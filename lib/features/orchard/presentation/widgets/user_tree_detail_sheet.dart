@@ -11,10 +11,21 @@ import '../sheets/edit_variety_sheet.dart';
 
 /// Sheet affichant les détails d'un arbre du verger personnel
 /// avec édition inline de tous les champs.
+///
+/// Quand [onBack] est fourni, le widget se comporte en mode embedded :
+/// pas de container/handle externe (le parent les fournit), et le
+/// bouton de fermeture devient une flèche retour qui appelle [onBack].
+/// Utilisé par `FruitTreeGroupSheet` pour intégrer la fiche détail dans
+/// la même bottom sheet (PageView) sans empiler deux sheets.
 class UserTreeDetailSheet extends ConsumerStatefulWidget {
   final UserFruitTreeWithDetails tree;
+  final VoidCallback? onBack;
 
-  const UserTreeDetailSheet({super.key, required this.tree});
+  const UserTreeDetailSheet({
+    super.key,
+    required this.tree,
+    this.onBack,
+  });
 
   @override
   ConsumerState<UserTreeDetailSheet> createState() =>
@@ -69,16 +80,13 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
     final fruitTree = _tree.fruitTree;
     final userTree = _tree.userTree;
     final healthColor = _getHealthColor(userTree.healthStatus);
+    final embedded = widget.onBack != null;
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: Column(
-        children: [
-          // Handle
+    final content = Column(
+      children: [
+        if (!embedded)
+          // Handle (mode standalone uniquement — en mode embedded,
+          // le parent fournit déjà sa propre handle).
           Padding(
             padding: const EdgeInsets.only(top: 12, bottom: 8),
             child: Container(
@@ -198,8 +206,14 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.bold)),
+                      onPressed: embedded
+                          ? widget.onBack
+                          : () => Navigator.pop(context),
+                      icon: Icon(
+                        embedded
+                            ? PhosphorIcons.arrowLeft(PhosphorIconsStyle.bold)
+                            : PhosphorIcons.x(PhosphorIconsStyle.bold),
+                      ),
                     ),
                   ],
                 ),
@@ -391,8 +405,18 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
               ],
             ),
           ),
-        ],
+      ],
+    );
+
+    if (embedded) return content;
+
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
+      child: content,
     );
   }
 
@@ -612,7 +636,14 @@ class _UserTreeDetailSheetState extends ConsumerState<UserTreeDetailSheet> {
           .read(userFruitTreesNotifierProvider.notifier)
           .deleteTree(_tree.id);
       if (mounted) {
-        Navigator.pop(context);
+        // En mode embedded (PageView du groupe), on revient sur la
+        // liste plutôt que de pop la sheet entière — l'arbre disparaîtra
+        // de la liste car le provider est invalidé par deleteTree.
+        if (widget.onBack != null) {
+          widget.onBack!();
+        } else {
+          Navigator.pop(context);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${_tree.name} retire du verger'),

@@ -54,12 +54,43 @@ class FruitTreeGroupSheet extends ConsumerStatefulWidget {
 class _FruitTreeGroupSheetState extends ConsumerState<FruitTreeGroupSheet> {
   late Set<int> _selected;
   late bool _selectionMode;
+  late PageController _pageController;
+
+  /// Id de l'arbre actuellement ouvert en page 1 du PageView. null = on est
+  /// sur la vue groupe (page 0). On stocke l'id et non l'objet pour suivre
+  /// les mises à jour live du provider sans état stale.
+  int? _selectedTreeId;
 
   @override
   void initState() {
     super.initState();
     _selected = <int>{};
     _selectionMode = widget.startInSelection;
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _openTreeDetail(UserFruitTreeWithDetails tree) {
+    setState(() => _selectedTreeId = tree.id);
+    _pageController.animateToPage(
+      1,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  Future<void> _backToList() async {
+    await _pageController.animateToPage(
+      0,
+      duration: const Duration(milliseconds: 240),
+      curve: Curves.easeOutCubic,
+    );
+    if (mounted) setState(() => _selectedTreeId = null);
   }
 
   /// Récupère la version fraîche du groupe depuis le provider (les actions
@@ -102,23 +133,6 @@ class _FruitTreeGroupSheetState extends ConsumerState<FruitTreeGroupSheet> {
     });
   }
 
-  void _openTreeDetail(UserFruitTreeWithDetails tree) {
-    final navigator = Navigator.of(context, rootNavigator: true);
-    showModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => UserTreeDetailSheet(tree: tree),
-    ).then((_) {
-      // Le navigator est conservé pour évite warning analyzer.
-      if (mounted) setState(() {});
-    });
-    // navigator var purposely held: évite analyser unused mais documente
-    // l'intention (la sheet enfant peut pop la stack).
-    navigator.canPop();
-  }
-
   @override
   Widget build(BuildContext context) {
     final group = _currentGroup() ?? widget.group;
@@ -133,11 +147,121 @@ class _FruitTreeGroupSheetState extends ConsumerState<FruitTreeGroupSheet> {
       return const SizedBox.shrink();
     }
 
+    // Récupère l'arbre actuellement ouvert en page 1 dans la liste à jour
+    // du groupe. Si l'arbre a disparu (suppression batch), on retombe sur
+    // la page 0 au prochain frame.
+    UserFruitTreeWithDetails? selectedTree;
+    if (_selectedTreeId != null) {
+      for (final t in group.trees) {
+        if (t.id == _selectedTreeId) {
+          selectedTree = t;
+          break;
+        }
+      }
+      if (selectedTree == null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _backToList();
+        });
+      }
+    }
+
+    final isOnDetail = _selectedTreeId != null;
+
+    return PopScope(
+      // Si on est sur la fiche détail, le back système ramène à la liste
+      // au lieu de fermer la sheet — cohérent avec la métaphore "je suis
+      // entré dans un sous-écran de la sheet".
+      canPop: !isOnDetail,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && isOnDetail) _backToList();
+      },
+      child: PageView(
+        controller: _pageController,
+        // On désactive le swipe natif horizontal pour garder le contrôle —
+        // la liste contient des actions gestuelles (long-press, scroll vertical
+        // dans le ListView) qui doivent rester fluides, et le swipe horizontal
+        // accidentel ferait passer d'une vue à l'autre sans confirmation.
+        // L'utilisateur navigue via le bouton ← / le tap sur un arbre.
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+        _GroupView(
+          group: group,
+          loc: loc,
+          selectionMode: _selectionMode,
+          selected: _selected,
+          onCloseSheet: () => Navigator.of(context).pop(),
+          onEnterSelectionMode: () => setState(() => _selectionMode = true),
+          onExitSelectionMode: _exitSelectionMode,
+          onToggleSelection: _toggleSelection,
+          onLongPressTree: _enterSelectionMode,
+          onTapTree: (tree) {
+            if (_selectionMode) {
+              _toggleSelection(tree.id);
+            } else {
+              _openTreeDetail(tree);
+            }
+          },
+        ),
+        // Page 1 : fiche détail de l'arbre sélectionné, en mode embedded
+        // (sans wrapper de sheet — on est déjà dans le bottom sheet parent).
+        // Une KeyedSubtree avec key sur l'id permet de recréer l'état si
+        // on ouvre un autre arbre (sinon le State du sheet hérité reste
+        // collé au premier id ouvert).
+        if (selectedTree != null)
+          KeyedSubtree(
+            key: ValueKey(selectedTree.id),
+            child: UserTreeDetailSheet(
+              tree: selectedTree,
+              onBack: _backToList,
+            ),
+          )
+        else
+          // Placeholder vide : la page 1 doit exister dans le PageView
+          // même quand aucun arbre n'est sélectionné, sinon `animateToPage(1)`
+          // n'a pas de cible.
+          const SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
+}
+
+/// Vue principale du groupe (page 0 du PageView). Séparée en widget
+/// dédié pour garder le build du parent lisible et permettre à PageView
+/// de mémoriser correctement l'état de scroll lors du retour depuis la
+/// page 1.
+class _GroupView extends StatelessWidget {
+  final FruitTreeGroup group;
+  final AppLocalizations loc;
+  final bool selectionMode;
+  final Set<int> selected;
+  final VoidCallback onCloseSheet;
+  final VoidCallback onEnterSelectionMode;
+  final VoidCallback onExitSelectionMode;
+  final void Function(int) onToggleSelection;
+  final void Function(int) onLongPressTree;
+  final void Function(UserFruitTreeWithDetails) onTapTree;
+
+  const _GroupView({
+    required this.group,
+    required this.loc,
+    required this.selectionMode,
+    required this.selected,
+    required this.onCloseSheet,
+    required this.onEnterSelectionMode,
+    required this.onExitSelectionMode,
+    required this.onToggleSelection,
+    required this.onLongPressTree,
+    required this.onTapTree,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final pt =
         PlantingType.fromDbValue(group.plantingTypeDb) ?? PlantingType.ground;
     final ids = group.trees.map((t) => t.id).toList();
-    final selectionIds = _selected.toList();
-    final hasSelection = _selectionMode && selectionIds.isNotEmpty;
+    final selectionIds = selected.toList();
+    final hasSelection = selectionMode && selectionIds.isNotEmpty;
 
     return Column(
       children: [
@@ -145,10 +269,10 @@ class _FruitTreeGroupSheetState extends ConsumerState<FruitTreeGroupSheet> {
         _Header(
           group: group,
           plantingType: pt,
-          selectionMode: _selectionMode,
+          selectionMode: selectionMode,
           selectionCount: selectionIds.length,
-          onClose: () => Navigator.of(context).pop(),
-          onCancelSelection: _exitSelectionMode,
+          onClose: onCloseSheet,
+          onCancelSelection: onExitSelectionMode,
         ),
         const Divider(height: 1),
         Expanded(
@@ -160,7 +284,7 @@ class _FruitTreeGroupSheetState extends ConsumerState<FruitTreeGroupSheet> {
 
               // Actions sur tout le groupe (cachées en mode sélection — la
               // barre du bas prend le relais avec le même éventail)
-              if (!_selectionMode) ...[
+              if (!selectionMode) ...[
                 Text(
                   loc.orchardGroupActionsTitle,
                   style: AppTypography.labelMedium.copyWith(
@@ -175,7 +299,7 @@ class _FruitTreeGroupSheetState extends ConsumerState<FruitTreeGroupSheet> {
                 const SizedBox(height: 24),
                 if (group.count > 1) ...[
                   OutlinedButton.icon(
-                    onPressed: () => setState(() => _selectionMode = true),
+                    onPressed: onEnterSelectionMode,
                     icon: Icon(
                       PhosphorIcons.checkSquare(PhosphorIconsStyle.regular),
                       size: 18,
@@ -205,19 +329,11 @@ class _FruitTreeGroupSheetState extends ConsumerState<FruitTreeGroupSheet> {
                     padding: const EdgeInsets.only(bottom: 8),
                     child: _TreeRow(
                       tree: tree,
-                      selectionMode: _selectionMode,
-                      selected: _selected.contains(tree.id),
-                      onTap: () {
-                        if (_selectionMode) {
-                          _toggleSelection(tree.id);
-                        } else {
-                          _openTreeDetail(tree);
-                        }
-                      },
+                      selectionMode: selectionMode,
+                      selected: selected.contains(tree.id),
+                      onTap: () => onTapTree(tree),
                       onLongPress: () {
-                        if (!_selectionMode) {
-                          _enterSelectionMode(tree.id);
-                        }
+                        if (!selectionMode) onLongPressTree(tree.id);
                       },
                     ),
                   )),
@@ -226,12 +342,12 @@ class _FruitTreeGroupSheetState extends ConsumerState<FruitTreeGroupSheet> {
         ),
 
         // Barre d'action en mode sélection
-        if (_selectionMode)
+        if (selectionMode)
           _SelectionActionBar(
             count: selectionIds.length,
             enabled: hasSelection,
             targetIds: selectionIds,
-            onCancel: _exitSelectionMode,
+            onCancel: onExitSelectionMode,
           ),
       ],
     );
